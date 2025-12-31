@@ -1,0 +1,308 @@
+/* ========================================
+   RUNIC CONSOLE - SPELL EDITOR
+   Trình soạn thảo mã và biên dịch phép thuật
+   ======================================== */
+
+.runic-console-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 15, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.runic-console {
+  width: 90%;
+  max-width: 1000px;
+  height: 90vh;
+  background: var(--color-bg-panel);
+  border: var(--border-width-medium) solid var(--color-primary);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-glow-primary), var(--shadow-2xl);
+  position: relative;
+  overflow: hidden;
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* === HEADER === */
+.console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  border-bottom: 2px solid rgba(78, 204, 163, 0.2);
+  padding-bottom: var(--space-md);
+}
+
+.console-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+}
+
+.console-header h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--text-2xl);
+  font-family: var(--font-display);
+  text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
+}
+
+.spell-name {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  font-family: var(--font-code);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-accent-red);
+  font-size: var(--text-2xl);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  padding: var(--space-xs);
+  line-height: 1;
+}
+
+.close-btn:hover {
+  transform: scale(1.2) rotate(90deg);
+}
+
+/* === CONTENT CONTAINER === */
+.console-content {
+  display: flex;
+  flex: 1;
+  gap: var(--space-lg);
+  min-height: 0;
+  /* Important for scroll */
+}
+
+/* Left Panel: Description & Output */
+.console-sidebar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  overflow-y: auto;
+}
+
+.console-description {
+  background: rgba(255, 255, 255, 0.05);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  border-left: 3px solid var(--color-accent-gold);
+}
+
+.console-description p {
+  margin: 4px 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.signature {
+  font-family: var(--font-code);
+  color: var(--color-primary) !important;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px !important;
+  font-size: var(--text-xs) !important;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Right Panel: Editor */
+.console-editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.console-editor {
+  flex: 1;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* === PHASE INDICATOR === */
+.console-phase {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phase-indicator {
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--border-radius-full);
+  font-weight: bold;
+  font-size: var(--text-base);
+  font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-md);
+}
+
+.phase-indicator.syntax {
+  background: rgba(243, 156, 18, 0.2);
+  border: 1px solid var(--color-accent-gold);
+  color: var(--color-accent-gold);
+  animation: pulse 1.5s infinite;
+}
+
+.phase-indicator.memory {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid var(--color-accent-red);
+  color: var(--color-accent-red);
+  animation: pulse 1s infinite;
+}
+
+.phase-indicator.logic {
+  background: rgba(52, 152, 219, 0.2);
+  border: 1px solid var(--color-secondary);
+  color: var(--color-secondary);
+  animation: pulse 1.5s infinite;
+}
+
+.phase-indicator.success {
+  background: rgba(39, 174, 96, 0.2);
+  border: 1px solid var(--color-accent-green);
+  color: var(--color-accent-green);
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+  animation: bounce 0.5s;
+}
+
+/* === ERROR MESSAGE === */
+.console-error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid var(--color-accent-red);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+}
+
+.error-icon {
+  font-size: var(--text-xl);
+}
+
+/* === ACTIONS === */
+.console-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.console-actions button {
+  padding: 12px 32px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 2px solid var(--color-text-muted);
+  color: var(--color-text-muted);
+}
+
+.btn-cancel:hover:not(:disabled) {
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+.btn-build {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #fff;
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.btn-build:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(78, 204, 163, 0.6);
+}
+
+.console-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+/* === ANIMATIONS === */
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-10px);
+  }
+
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.vfx-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  z-index: 10;
+}
