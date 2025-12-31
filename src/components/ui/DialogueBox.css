@@ -1,0 +1,220 @@
+/* ========================================
+   DIALOGUE BOX - NPC INTERACTIONS
+   Hộp thoại hội thoại và tương tác NPC
+   ======================================== */
+
+.dialogue-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50vh;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 500;
+    pointer-events: none;
+    padding-bottom: var(--space-xl);
+}
+
+.dialogue-box {
+    width: 90%;
+    max-width: 1000px;
+    background: var(--color-bg-panel);
+    border: var(--border-width-medium) solid var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-glow-primary), 0 -10px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    gap: var(--space-lg);
+    pointer-events: auto;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+/* === NPC PORTRAIT === */
+.dialogue-portrait {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    border: 3px solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.dialogue-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    animation: portraitPulse 3s ease-in-out infinite;
+}
+
+@keyframes portraitPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+}
+
+/* === CONTENT AREA === */
+.dialogue-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Header */
+.dialogue-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid rgba(78, 204, 163, 0.3);
+    margin-bottom: var(--space-sm);
+}
+
+.dialogue-header h3 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: var(--text-xl);
+    font-family: var(--font-display);
+    text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
+}
+
+.dialogue-role {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-style: italic;
+    font-family: var(--font-body);
+}
+
+/* Text */
+.dialogue-text {
+    flex: 1;
+    padding: var(--space-sm) 0;
+    min-height: 80px;
+}
+
+.dialogue-text p {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+    font-family: 'Consolas', 'Courier New', monospace;
+    /* Typewriter feel */
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+}
+
+/* Actions */
+.dialogue-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.dialogue-actions button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--text-sm);
+    font-family: var(--font-display);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    box-shadow: var(--shadow-glow-primary);
+}
+
+.btn-next:hover {
+    transform: translateX(5px);
+}
+
+.btn-close {
+    background: linear-gradient(135deg, var(--color-accent-green), #219150);
+    color: #fff;
+}
+
+.btn-close:hover {
+    transform: scale(1.05);
+}
+
+.btn-skip {
+    background: transparent;
+    border: 1px solid var(--color-text-muted);
+    color: var(--color-text-muted);
+    padding: 6px 12px;
+    font-size: var(--text-xs);
+}
+
+.btn-skip:hover {
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-secondary);
+}
+
+/* Feature Buttons */
+.dialogue-features {
+    display: flex;
+    gap: var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+    margin-top: var(--space-md);
+}
+
+.feature-btn {
+    padding: 8px 16px;
+    background: rgba(243, 156, 18, 0.2);
+    border: 1px solid var(--color-accent-gold);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-accent-gold);
+    font-size: var(--text-sm);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-display);
+}
+
+.feature-btn:hover {
+    background: var(--color-accent-gold);
+    color: #000;
+    box-shadow: var(--shadow-glow-gold);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dialogue-box {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dialogue-portrait {
+        width: 100px;
+        height: 100px;
+    }
+
+    .dialogue-text p {
+        font-size: var(--text-sm);
+    }
+}

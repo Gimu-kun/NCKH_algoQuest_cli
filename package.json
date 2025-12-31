@@ -11,13 +11,16 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.17",
     "antd": "^6.0.0",
     "axios": "^1.13.2",
     "framer-motion": "^12.23.24",
+    "howler": "^2.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.9.6",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -1,0 +1,239 @@
+/* Matching Quiz Styles */
+
+.matching-quiz {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.question-prompt {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #4ecca3;
+}
+
+.question-prompt h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.question-points {
+    color: #4ecca3;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Matching Grid */
+.matching-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.matching-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.matching-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid #555;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 60px;
+}
+
+.matching-item.selected {
+    border-color: #4ecca3;
+    background: rgba(78, 204, 163, 0.2);
+    box-shadow: 0 0 15px rgba(78, 204, 163, 0.3);
+}
+
+.matching-item.matched {
+    border-color: #3498db;
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.matching-item.clickable {
+    border-color: #f39c12;
+}
+
+.matching-item.clickable:hover {
+    background: rgba(243, 156, 18, 0.1);
+    transform: translateX(5px);
+}
+
+.matching-item.correct {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.matching-item.wrong {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.2);
+}
+
+.matching-item:not(.matched):hover {
+    border-color: #4ecca3;
+    background: rgba(78, 204, 163, 0.1);
+}
+
+.item-text {
+    color: #fff;
+    font-size: 15px;
+    flex: 1;
+}
+
+.match-indicator {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3498db;
+    margin-left: 12px;
+}
+
+.matching-item.correct .match-indicator {
+    color: #2ecc71;
+}
+
+.matching-item.wrong .match-indicator {
+    color: #e74c3c;
+}
+
+/* Correct Matches Section */
+.correct-matches {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid #4ecca3;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.correct-matches h4 {
+    margin: 0 0 12px 0;
+    color: #4ecca3;
+    font-size: 16px;
+}
+
+.match-pair {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+.match-left,
+.match-right {
+    flex: 1;
+    color: #fff;
+    font-size: 14px;
+}
+
+.match-left {
+    text-align: right;
+    color: #4ecca3;
+}
+
+.match-right {
+    text-align: left;
+    color: #3498db;
+}
+
+.match-arrow {
+    color: #f39c12;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.explanation {
+    margin: 12px 0 0 0;
+    padding: 12px;
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 3px solid #ffc107;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Actions */
+.matching-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.instruction {
+    margin: 0;
+    color: #a8dadc;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.matching-actions button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #4ecca3, #3498db);
+    color: #fff;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(78, 204, 163, 0.5);
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-reset {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: #fff;
+    margin-left: auto;
+}
+
+.btn-reset:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .matching-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .matching-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-reset {
+        margin-left: 0;
+    }
+}
