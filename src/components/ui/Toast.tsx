@@ -1,6 +1,21 @@
 /**
- * Hệ Thống Thông Báo Nổi
- * Hiển thị thông báo tạm thời cho các sự kiện trong game
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * COMPONENT: THÔNG BÁO NỔI (Toast Notifications)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Hiển thị các thông báo ngắn gọn, tạm thời ở góc màn hình.
+ * Dùng cho: Thông báo nhận thưởng, lỗi hệ thống, hoàn thành nhiệm vụ.
+ * 
+ * TÍNH NĂNG:
+ * - Stackable: Có thể hiển thị nhiều thông báo xếp chồng lên nhau.
+ * - Auto-dismiss: Tự động biến mất sau một khoảng thời gian.
+ * - Animation: Xuất hiện và biến mất mượt mà.
+ * - Types: Success, Error, Info, Reward.
+ * 
+ * @component Toast
+ * @category UI Components
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React, { useEffect } from 'react';
@@ -12,16 +27,17 @@ export interface ToastMessage {
     id: string;
     type: 'success' | 'error' | 'info' | 'reward';
     message: string;
-    duration?: number;
+    duration?: number; // Thời gian hiển thị (ms)
 }
 
 export const Toast: React.FC = () => {
+    // Hooks truy cập global state
     const { toasts, removeToast } = useGameStore();
 
+    // Effect: Tự động xóa toast sau thời gian quy định
     useEffect(() => {
-        // Tự động xóa toast sau thời lượng
         toasts.forEach(toast => {
-            const duration = toast.duration || 3000;
+            const duration = toast.duration || 3000; // Mặc định 3 giây
             const timer = setTimeout(() => {
                 removeToast(toast.id);
             }, duration);
@@ -30,12 +46,13 @@ export const Toast: React.FC = () => {
         });
     }, [toasts, removeToast]);
 
+    // Helper: Lấy icon dựa trên loại thông báo
     const getIcon = (type: string) => {
         switch (type) {
             case 'success': return '✅';
             case 'error': return '❌';
             case 'reward': return '🎁';
-            default: return 'ℹ️';
+            case 'info': default: return 'ℹ️';
         }
     };
 
@@ -52,10 +69,13 @@ export const Toast: React.FC = () => {
                         transition={{ type: 'spring', damping: 25 }}
                     >
                         <span className="toast-icon">{getIcon(toast.type)}</span>
+
                         <span className="toast-message">{toast.message}</span>
+
                         <button
                             className="toast-close"
                             onClick={() => removeToast(toast.id)}
+                            title="Đóng thông báo"
                         >
                             ✕
                         </button>

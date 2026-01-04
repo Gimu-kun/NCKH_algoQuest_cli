@@ -1,0 +1,154 @@
+/**
+ * Resource Display Styles
+ */
+
+.resource-display {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.resource-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.resource-icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resource-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.resource-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.resource-name {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resource-amount {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== COMPACT MODE ========== */
+.resource-display-compact {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.resource-item-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.resource-icon-small {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.resource-value {
+    font-size: 1rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== SINGLE RESOURCE ========== */
+.single-resource {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.resource-icon-inline {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.resource-value-inline {
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.resource-name-inline {
+    font-size: 0.85rem;
+    color: #ccc;
+    margin-left: 0.25rem;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes resourcePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.resource-item.gained {
+    animation: resourcePulse 0.5s ease;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .resource-display {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .resource-item {
+        padding: 0.4rem 0.8rem;
+    }
+
+    .resource-icon-container {
+        width: 32px;
+        height: 32px;
+    }
+
+    .resource-amount {
+        font-size: 0.95rem;
+    }
+}

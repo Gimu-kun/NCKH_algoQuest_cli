@@ -1,6 +1,36 @@
 /**
- * Cảnh Hầm Ngục - Khám Phá Dựa Trên Lưới
- * Di chuyển qua các phòng, gặp quái vật, tìm kho báu
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * MÀN HÌNH HẦM NGỤC (Dungeon Page / Scene)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Scene chính cho việc khám phá Dungeon theo phong cách Grid-based RPG:
+ * - Render bản đồ Dungeon (Grid 5x5).
+ * - Xử lý di chuyển của Player (WASD / Arrow Keys).
+ * - Tương tác với các ô đặc biệt (Gặp quái -> Combat, Nhặt rương -> Reward).
+ * - Quản lý Fog of War (Sương mù chiến tranh - Che các ô chưa khám phá).
+ * 
+ * TÍNH NĂNG:
+ * - Điều khiển nhân vật di chuyển theo Grid.
+ * - Hệ thống Fog of War (Sương mù): Che khuất các vùng chưa khám phá.
+ * - Tương tác Event: Battle, Treasure, Boss, NPC.
+ * - Phản hồi UI (Toast Notifications, Sparky Guide).
+ * 
+ * THUẬT TOÁN & FLOW DI CHUYỂN:
+ * 1. Nhận Input (Keyboard/Button).
+ * 2. Tính tọa độ mới (Candidate Position).
+ * 3. Kiểm tra va chạm biên (Collision Detection w/ Walls).
+ * 4. Cập nhật `PlayerPos` và trạng thái `Explored` của phòng mới.
+ * 5. Trigger sự kiện phòng (gặp Monster, nhặt Item).
+ * 
+ * KỸ THUẬT:
+ * - State Management (Zustand): Đồng bộ trạng thái Dungeon toàn cục.
+ * - Event Loop: Sử dụng `useEffect` để bắt sự kiện di chuyển và trigger game logic.
+ * - CSS Grid/Flexbox: Layout bàn cờ 5x5 responsive.
+ * 
+ * @component Dungeon
+ * @category Game Scene
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React, { useState, useEffect } from 'react';
@@ -10,9 +40,11 @@ import { usePlayerStore } from '../store/playerStore';
 import { ResourceType } from '../data/models/Item';
 import { DUNGEON_1, type DungeonRoom } from '../data/dungeons/dungeon1';
 import inputManager from '../game/engine/InputManager';
+import { MonsterSpawner } from '../game/spawner/MonsterSpawner';
 import './Dungeon.css';
 
 export const Dungeon: React.FC = () => {
+    // Hooks truy cập Global State
     const {
         setScene, startCombat, showSparky,
         dungeonState, initDungeon, updateDungeonState
@@ -20,14 +52,14 @@ export const Dungeon: React.FC = () => {
     const { addResource } = usePlayerStore();
     const [showMessage, setShowMessage] = useState<React.ReactNode | null>(null);
 
-    // Initialize dungeon if needed
+    // Initial Load: Tạo Dungeon nếu chưa có
     useEffect(() => {
         if (!dungeonState) {
             initDungeon(DUNGEON_1);
         }
     }, [dungeonState, initDungeon]);
 
-    // Intro message
+    // Hướng dẫn tân thủ (Tutorial Message)
     useEffect(() => {
         const timer = setTimeout(() => {
             showSparky(
@@ -39,41 +71,48 @@ export const Dungeon: React.FC = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // If still loading state
+    // Loading State
     if (!dungeonState) {
-        return <div className="dungeon-loading">Loading Dungeon...</div>;
+        return <div className="dungeon-loading">Đang tải Hầm Ngục...</div>;
     }
 
     const { rooms, playerPos } = dungeonState;
     const currentRoom = rooms.find(r => r.x === playerPos.x && r.y === playerPos.y);
 
-    // Xử lý di chuyển
+    /**
+     * ═══════════════════════════════════════════════════════════════════════════
+     * XỬ LÝ DI CHUYỂN (Movement Logic)
+     * ═══════════════════════════════════════════════════════════════════════════
+     */
     const handleMove = (dx: number, dy: number) => {
         const newX = playerPos.x + dx;
         const newY = playerPos.y + dy;
 
-        // Kiểm tra biên
+        // 1. Kiểm tra va chạm biên (Boundary Check / Collision Detection)
         if (newX < 0 || newX >= DUNGEON_1.size.width ||
             newY < 0 || newY >= DUNGEON_1.size.height) {
-            setShowMessage(<span><i className="fi fi-rr-ban"></i> Không thể đi hướng này!</span>);
+            setShowMessage(<span><i className="fi fi-rr-ban"></i> Không thể đi hướng này! (Tường chắn)</span>);
             setTimeout(() => setShowMessage(null), 1500);
             return;
         }
 
         const newPos = { x: newX, y: newY };
 
-        // Đánh dấu phòng đã khám phá
+        // 2. Cập nhật trạng thái "Đã khám phá" (Explored) cho phòng mới
         const newRooms = rooms.map(r =>
             r.x === newX && r.y === newY ? { ...r, explored: true } : r
         );
 
+        // 3. Commit state change (Zustand Update)
         updateDungeonState({
             playerPos: newPos,
             rooms: newRooms
         });
     };
 
-    // Thiết lập điều khiển bàn phím (Moved after handleMove definition)
+    /**
+     * Đăng ký sự kiện bàn phím (Input Binding Management)
+     */
     useEffect(() => {
         const moveUp = () => handleMove(0, -1);
         const moveDown = () => handleMove(0, 1);
@@ -89,6 +128,7 @@ export const Dungeon: React.FC = () => {
         inputManager.bind('d', moveRight, 'Qua Phải');
         inputManager.bind('arrowright', moveRight, 'Qua Phải');
 
+        // Cleanup: Hủy Binding khi Component Unmount
         return () => {
             inputManager.unbind('w');
             inputManager.unbind('arrowup');
@@ -99,27 +139,36 @@ export const Dungeon: React.FC = () => {
             inputManager.unbind('d');
             inputManager.unbind('arrowright');
         };
-    }, [playerPos, rooms]); // Depend on current state
+    }, [playerPos, rooms]); // Re-bind khi state thay đổi để Closure Capture đúng giá trị mới nhất
 
-    // Xử lý khi vào phòng
+    /**
+     * ═══════════════════════════════════════════════════════════════════════════
+     * XỬ LÝ SỰ KIỆN PHÒNG (Room Event Trigger)
+     * ═══════════════════════════════════════════════════════════════════════════
+     */
     useEffect(() => {
         if (!currentRoom) return;
 
+        // CASE 1: Quái vật (Chưa bị đánh bại - Monster Encounter)
         if (currentRoom.type === 'monster' && !currentRoom.cleared) {
-            // Kích hoạt chiến đấu
             setTimeout(() => {
-                startCombat('logic_slime');
-                // Do not set scene here immediately, let store handle it? 
-                // Wait, startCombat only updates state. App renders based on state.
-                // But startCombat in store sets scene to COMBAT. So it auto switches.
+                // Spawn quái ngẫu nhiên (dựa trên config Dungeon ID)
+                const monsterId = MonsterSpawner.getRandomMonster(
+                    dungeonState?.config.id || 'dungeon_1',
+                    false // Not Boss
+                );
+                startCombat(monsterId);
             }, 500);
-        } else if (currentRoom.type === 'treasure' && !currentRoom.cleared) {
-            // Give reward
+        }
+
+        // CASE 2: Kho báu (Chưa nhặt - Treasure Event)
+        else if (currentRoom.type === 'treasure' && !currentRoom.cleared) {
+            // Trao thưởng ngẫu nhiên (Random Reward Generation)
             const reward = Math.floor(Math.random() * 20) + 10;
             addResource(ResourceType.DATA_WOOD, reward);
             setShowMessage(<span><i className="fi fi-rr-gift"></i> Tìm thấy {reward} Gỗ Dữ Liệu!</span>);
 
-            // Mark cleared
+            // Đánh dấu đã nhặt (State Update)
             updateDungeonState({
                 rooms: rooms.map(r =>
                     r.x === playerPos.x && r.y === playerPos.y
@@ -129,23 +178,31 @@ export const Dungeon: React.FC = () => {
             });
 
             setTimeout(() => setShowMessage(null), 2000);
-        } else if (currentRoom.type === 'boss' && !currentRoom.cleared) {
-            setShowMessage(<span><i className="fi fi-rr-skull"></i> Đấu Trùm! Hãy chuẩn bị!</span>);
+        }
+
+        // CASE 3: Boss Fight (Trùm Cuối)
+        else if (currentRoom.type === 'boss' && !currentRoom.cleared) {
+            setShowMessage(<span><i className="fi fi-rr-skull"></i> CẢNH BÁO: Đấu Trùm! Hãy chuẩn bị!</span>);
             setTimeout(() => {
-                startCombat('chapter1_boss');
+                const bossId = MonsterSpawner.getRandomMonster(
+                    dungeonState?.config.id || 'dungeon_1',
+                    true // Is Boss
+                );
+                startCombat(bossId);
             }, 1500);
         }
-    }, [playerPos]); // Only trigger when player moves to a new position. rooms change should not trigger this loop.
+    }, [playerPos]); // Trigger mỗi khi Player di chuyển sang ô mới
 
-
-    // Get room icon
+    /**
+     * Helper: Render Icon cho từng loại phòng (Visual Representation)
+     */
     const getRoomIcon = (room: DungeonRoom): React.ReactNode => {
-        // Player is always visible on their current tile
+        // Player Marker (Luôn hiển thị nếu Player đang ở ô này)
         if (room.x === playerPos.x && room.y === playerPos.y) {
             return (
                 <div className="player-marker">
                     <img
-                        src="/assets/images/characters/The Apprentice(Main Character)/The Apprentice Idle.png"
+                        src="/src/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
                         alt="Player"
                         className="player-sprite"
                     />
@@ -153,32 +210,34 @@ export const Dungeon: React.FC = () => {
             );
         }
 
-        // Unexplored rooms
+        // Fog of War: Phòng chưa khám phá
         if (!room.explored) return <i className="fi fi-rr-question"></i>;
 
-        // Explored rooms content
+        // Nội dung phòng đã khám phá
         if (room.type === 'boss') return room.cleared ? <i className="fi fi-rr-check"></i> : <i className="fi fi-rr-skull"></i>;
         if (room.type === 'treasure') return room.cleared ? <i className="fi fi-rr-box-open"></i> : <i className="fi fi-rr-gem"></i>;
         if (room.type === 'monster') return room.cleared ? <i className="fi fi-rr-check"></i> : <i className="fi fi-rr-spider"></i>;
         if (room.type === 'entrance') return <i className="fi fi-rr-door-open"></i>;
 
-        // Default empty explored room
+        // Phòng trống mặc định (Empty Room)
         return <span className="room-dot"></span>;
     };
 
-    // Get room class
+    /**
+     * Helper: Tính CSS Classes cho phòng (Styling Logic)
+     */
     const getRoomClass = (room: DungeonRoom): string => {
         const classes = ['dungeon-room'];
         if (room.x === playerPos.x && room.y === playerPos.y) classes.push('current');
         if (!room.explored) classes.push('unexplored');
         if (room.cleared) classes.push('cleared');
-        classes.push(`room-${room.type}`);
+        classes.push(`room-${room.type}`); // room-monster, room-treasure...
         return classes.join(' ');
     };
 
     return (
         <div className="dungeon-scene">
-            {/* Header */}
+            {/* Header / Top Bar */}
             <div className="dungeon-header">
                 <h1>{DUNGEON_1.name}</h1>
                 <p>{DUNGEON_1.description}</p>
@@ -187,7 +246,7 @@ export const Dungeon: React.FC = () => {
                 </button>
             </div>
 
-            {/* Grid Display */}
+            {/* Grid Container */}
             <div className="dungeon-grid-container">
                 <div className="dungeon-grid">
                     {rooms.map((room, index) => (
@@ -204,7 +263,7 @@ export const Dungeon: React.FC = () => {
                 </div>
             </div>
 
-            {/* Controls */}
+            {/* Controls / Instructions */}
             <div className="dungeon-controls">
                 <p className="controls-hint">Sử dụng WASD hoặc Phím Mũi Tên để di chuyển</p>
                 <div className="movement-buttons">
@@ -217,7 +276,7 @@ export const Dungeon: React.FC = () => {
                 </div>
             </div>
 
-            {/* Message Display */}
+            {/* In-Game Notifications (Toasts) */}
             {showMessage && (
                 <motion.div
                     className="dungeon-message"
@@ -229,9 +288,9 @@ export const Dungeon: React.FC = () => {
                 </motion.div>
             )}
 
-            {/* Legend */}
+            {/* Legend / Key */}
             <div className="dungeon-legend">
-                <h3>Chú Giải</h3>
+                <h3>Chú Giải Bản Đồ</h3>
                 <div className="legend-items">
                     <span><i className="fi fi-rr-user"></i> Bạn</span>
                     <span><i className="fi fi-rr-bug"></i> Quái Vật</span>

@@ -1,10 +1,36 @@
 /**
- * Matching Question Component
- * Drag-and-drop or click to match pairs
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * COMPONENT: CÂU HỎI GHÉP ĐÔI (Matching Quiz)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Hiển thị bài tập yêu cầu người chơi nối các cặp mục tương ứng từ hai cột (Trái/Phải).
+ * Ví dụ: Ghép Thuật toán -> Độ phức tạp, Cấu trúc dữ liệu -> Đặc điểm.
+ * 
+ * TÍNH NĂNG:
+ * - Giao diện 2 cột tương tác trực quan.
+ * - Hỗ trợ chọn, hủy chọn và thay đổi liên kết linh hoạt.
+ * - Visual Feedback: Đường nối logic (ẩn/hiện), màu sắc trạng thái (Selected/Matched).
+ * 
+ * FLOW TƯƠNG TÁC:
+ * 1. User chọn item cột Trái (`selectedLeft`).
+ * 2. User chọn item cột Phải -> Tạo cặp ghép (`matches`).
+ *    - Nếu item Phải đã ghép -> Ghi đè.
+ * 3. Click lại item đã ghép -> Hủy ghép (Unmatch).
+ * 4. Submit -> Kiểm tra từng cặp với `correctMatches` trong Data.
+ * 
+ * THUẬT TOÁN & KỸ THUẬT:
+ * - State Management: `matches` array lưu đặp `{leftId, rightId}`.
+ * - Lookup Check: Sử dụng `some/find` để kiểm tra trạng thái item (Matched/Correct).
+ * - Interaction Lock: Disable thao tác khi đã Submit.
+ * 
+ * @component MatchingQuiz
+ * @category Educational Components
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { MatchingQuestion } from '../../data/models/Question';
 import './MatchingQuiz.css';
 
@@ -19,35 +45,40 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
     const [submitted, setSubmitted] = useState(false);
     const [results, setResults] = useState<boolean[]>([]);
 
+    /**
+     * Xử lý click cột trái
+     */
     const handleLeftClick = (leftId: string) => {
         if (submitted) return;
 
-        // Check if already matched
+        // Nếu item này đã được ghép đôi, click vào sẽ hủy ghép (Unmatch)
         if (matches.some(m => m.leftId === leftId)) {
-            // Unmatch
             setMatches(matches.filter(m => m.leftId !== leftId));
             setSelectedLeft(null);
         } else {
+            // Nếu chưa ghép, chọn nó để chuẩn bị ghép
             setSelectedLeft(leftId);
         }
     };
 
+    /**
+     * Xử lý click cột phải
+     */
     const handleRightClick = (rightId: string) => {
         if (submitted || !selectedLeft) return;
 
-        // Check if right already matched
+        // Nếu item phải này đã được ghép với ai đó trước đó, hủy ghép cũ
         if (matches.some(m => m.rightId === rightId)) {
-            // Unmatch
             setMatches(matches.filter(m => m.rightId !== rightId));
         }
 
-        // Create new match
+        // Tạo cặp ghép mới
         setMatches([...matches, { leftId: selectedLeft, rightId }]);
-        setSelectedLeft(null);
+        setSelectedLeft(null); // Reset selection
     };
 
     const handleSubmit = () => {
-        // Check each match
+        // Kiểm tra từng cặp ghép
         const newResults = matches.map(match => {
             return question.correctMatches.some(
                 cm => cm.leftId === match.leftId && cm.rightId === match.rightId
@@ -57,6 +88,7 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
         setResults(newResults);
         setSubmitted(true);
 
+        // Đúng nếu số lượng cặp khớp đủ VÀ tất cả đều đúng
         const allCorrect = newResults.length === question.correctMatches.length &&
             newResults.every(r => r);
         onAnswer(allCorrect, matches);
@@ -69,15 +101,18 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
         setResults([]);
     };
 
+    // Helper: Tìm item phải đang ghép với item trái
     const getMatchedRight = (leftId: string) => {
         const match = matches.find(m => m.leftId === leftId);
         return match ? match.rightId : null;
     };
 
+    // Helper: Kiểm tra item phải đã được ghép chưa
     const isRightMatched = (rightId: string) => {
         return matches.some(m => m.rightId === rightId);
     };
 
+    // Helper: Lấy kết quả đúng/sai cho item trái
     const getMatchResult = (leftId: string) => {
         if (!submitted) return null;
         const matchIndex = matches.findIndex(m => m.leftId === leftId);
@@ -88,11 +123,11 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
         <div className="matching-quiz">
             <div className="question-prompt">
                 <h3>{question.question}</h3>
-                <span className="question-points">{question.points} pts | {question.bloomLevel}</span>
+                <span className="question-points">{question.points} điểm | {question.bloomLevel}</span>
             </div>
 
             <div className="matching-grid">
-                {/* Left Column */}
+                {/* Cột Trái (Left Column) */}
                 <div className="matching-column left-column">
                     {question.leftColumn.map(item => {
                         const matchedRight = getMatchedRight(item.id);
@@ -118,7 +153,7 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
                     })}
                 </div>
 
-                {/* Right Column */}
+                {/* Cột Phải (Right Column) */}
                 <div className="matching-column right-column">
                     {question.rightColumn.map(item => {
                         const isMatched = isRightMatched(item.id);
@@ -139,13 +174,14 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
                 </div>
             </div>
 
+            {/* Hiển thị kết quả chi tiết */}
             {submitted && (
                 <motion.div
                     className="correct-matches"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <h4>Correct Matches:</h4>
+                    <h4>Các cặp chính xác:</h4>
                     {question.correctMatches.map((cm, index) => {
                         const leftItem = question.leftColumn.find(l => l.id === cm.leftId);
                         const rightItem = question.rightColumn.find(r => r.id === cm.rightId);
@@ -168,19 +204,19 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
                 {!submitted ? (
                     <>
                         <p className="instruction">
-                            Click a left item, then click its match on the right
+                            Chọn một mục bên trái, sau đó chọn mục tương ứng bên phải để ghép đôi.
                         </p>
                         <button
                             className="btn-submit"
                             onClick={handleSubmit}
                             disabled={matches.length !== question.leftColumn.length}
                         >
-                            ✓ Submit Matches ({matches.length}/{question.leftColumn.length})
+                            ✓ Gửi Đáp Án ({matches.length}/{question.leftColumn.length})
                         </button>
                     </>
                 ) : (
                     <button className="btn-reset" onClick={handleReset}>
-                        ↻ Try Again
+                        ↻ Thử Lại
                     </button>
                 )}
             </div>

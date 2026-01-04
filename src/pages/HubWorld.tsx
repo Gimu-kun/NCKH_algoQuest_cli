@@ -1,6 +1,24 @@
 /**
- * Thế Giới Trung Tâm - Trung tâm với các NPC
- * Triển khai đơn giản tạm thời cho Giai đoạn 1
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * THẾ GIỚI TRUNG TÂM (Hub World Scene)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Màn hình chính nơi người chơi quay lại sau mỗi chuyến phiêu lưu (Dungeon).
+ * Nơi tập trung các NPC cung cấp dịch vụ và nhiệm vụ.
+ * 
+ * CÁC KHU VỰC:
+ * 1. NPC Zones: Tương tác với NPC (Giáo sư Alric, Linh, Bork, v.v.).
+ * 2. Navigation: Cổng vào Dungeon, Logic Farm, và các màn hình phụ (Thành tựu, Leaderboard).
+ * 3. Sparky Companion: AI trợ lý bay lơ lửng, sẵn sàng hỗ trợ.
+ * 
+ * KỸ THUẬT:
+ * - Framer Motion: Animation cho UI panels và nhân vật.
+ * - Game Store Interaction: Trigger dialogue, chuyển cảnh.
+ * 
+ * @component HubWorld
+ * @category Game Scene
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React from 'react';
@@ -10,36 +28,40 @@ import { HUD } from '../components/ui/HUD';
 import './HubWorld.css';
 
 export const HubWorld: React.FC = () => {
-    const { setScene, enterDungeon, openDialogue, openRunicConsole, theme } = useGameStore();
+    // Truy cập Global State để điều khiển chuyển cảnh và hội thoại
+    const { setScene, enterDungeon, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
 
+    // Handler Actions
     const handleEnterDungeon = () => {
-        enterDungeon('dungeon_1');
+        enterDungeon('dungeon_1'); // Mặc định vào Dungeon 1
     };
 
     const handleTestCombat = () => {
-        setScene(GameScene.COMBAT);
+        setScene(GameScene.COMBAT); // Test mode combat
     };
 
     const handleTestBuild = () => {
-        // Mở Bảng Cổ Ngữ với một phép thuật thử nghiệm
+        // Mở Bảng Cổ Ngữ với một phép thuật thử nghiệm (Blueprint ID)
         openRunicConsole('spell_is_increasing');
     };
 
     return (
         <div className="hub-world">
-            {/* Nền */}
+            {/* Background Layer - Dynamic theo Theme */}
             <div
                 className="hub-background"
                 style={{
-                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/images/Hub World Concept.png)'
+                    backgroundImage: theme === 'light' ? 'none' : 'url(/src/assets/Ảnh Assets/Hub World Concept.png)'
                 }}
             />
 
-            {/* HUD */}
+            {/* Heads-Up Display (Thanh trạng thái người chơi) */}
             <HUD />
 
-            {/* Nội Dung Trung Tâm */}
+            {/* Main Content Layer */}
             <div className="hub-content">
+
+                {/* Welcome Banner Animation */}
                 <motion.div
                     className="welcome-panel"
                     initial={{ y: -50, opacity: 0 }}
@@ -49,74 +71,85 @@ export const HubWorld: React.FC = () => {
                     <p>Chào mừng bạn trở lại! Hãy gặp gỡ các NPC để nhận nhiệm vụ.</p>
                 </motion.div>
 
-                {/* Các Khu Vực NPC - Đơn giản hóa cho Giai đoạn 1 */}
+                {/* === KHU VỰC NPC (NPC INTERACTION ZONES) === */}
                 <div className="npc-zones">
+
+                    {/* Professor Alric - Quest Giver */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('professor_alric')}
+                        onClick={() => openDialogue('ALRIC')}
                     >
-                        <img src="/assets/images/characters/Professor Alric.png" alt="Professor Alric" />
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png" alt="Professor Alric" />
                         <h3>Giáo sư Alric</h3>
                         <p>Nhiệm Vụ Chiến Dịch</p>
                         <span className="quest-marker">!</span>
                     </motion.div>
 
+                    {/* Linh - The Archivist */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('linh_archivist')}
+                        onClick={() => openDialogue('LINH')}
                     >
-                        <img src="/assets/images/characters/Linh (The Archivist).png" alt="Linh" />
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png" alt="Linh" />
                         <h3>Linh</h3>
                         <p>Huấn Luyện & Thư Viện</p>
                     </motion.div>
 
+                    {/* Bork - The Blacksmith */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('bork_blacksmith')}
+                        onClick={() => openDialogue('BORK')}
                     >
-                        <img src="/assets/images/characters/Bork (The Blacksmith).png" alt="Bork" />
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png" alt="Bork" />
                         <h3>Bork</h3>
                         <p>Cửa Hàng & Trang Trí</p>
                     </motion.div>
 
+                    {/* Guild Leader */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('guild_leader')}
+                        onClick={() => openDialogue('GUILD_LEADER')}
                     >
-                        <img src="/assets/images/characters/Guild Leader.png" alt="Guild Leader" />
-                        <h3>Guild Leader</h3>
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png" alt="Guild Leader" />
+                        <h3>Chủ Guild</h3>
                         <p>Nhiệm Vụ Đa Người Chơi</p>
                     </motion.div>
 
+                    {/* The Oracle */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('oracle')}
+                        onClick={() => openDialogue('ORACLE')}
                     >
-                        <img src="/assets/images/characters/Guild Leader.png" alt="Oracle" />
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png" alt="Oracle" />
                         <h3>Nhà Tiên Tri</h3>
                         <p>Sự Kiện Trùm</p>
                     </motion.div>
 
+                    {/* The Bookkeeper */}
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('bookkeeper')}
+                        onClick={() => openDialogue('BOOKKEEPER')}
                     >
-                        <img src="/assets/images/characters/Guild Leader.png" alt="Bookkeeper" />
+                        <img src="/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png" alt="Bookkeeper" />
                         <h3>Kẻ Giữ Sách</h3>
                         <p>Bảng Xếp Hạng</p>
                     </motion.div>
                 </div>
 
-                {/* Building Zone Access */}
+                {/* === NAVIGATION BUTTONS === */}
                 <div className="farm-access">
-                    <button className="farm-btn" onClick={() => setScene(GameScene.LOGIC_FARM)}>
-                        <i className="fi fi-rr-home"></i> Vào Trang Trại Logic
+                    <button
+                        className="farm-btn disabled"
+                        onClick={() => showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.')}
+                        style={{ opacity: 0.6, cursor: 'not-allowed', filter: 'grayscale(1)' }}
+                    >
+                        <i className="fi fi-rr-lock"></i> Trang Trại Logic (Bảo trì)
                     </button>
 
                     <button className="farm-btn achievements-btn" onClick={() => setScene(GameScene.ACHIEVEMENTS)}>
@@ -128,7 +161,7 @@ export const HubWorld: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Test Actions - For Phase 1 Demo */}
+                {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
                     <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
                     <button className="test-btn" onClick={handleEnterDungeon}>
@@ -143,12 +176,12 @@ export const HubWorld: React.FC = () => {
                 </div>
             </div>
 
-            {/* Sparky floating companion */}
+            {/* Sparky Animation */}
             <motion.div
                 className="sparky-companion"
                 animate={{
-                    y: [0, -10, 0],
-                    rotate: [0, 2, -2, 0]
+                    y: [0, -10, 0], // Floating Effect
+                    rotate: [0, 2, -2, 0] // Gentle Wobble
                 }}
                 transition={{
                     duration: 3,
@@ -157,7 +190,7 @@ export const HubWorld: React.FC = () => {
                 }}
             >
                 <img
-                    src="/assets/images/Nhân vật/Sparky/Sparky Normal.png"
+                    src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
                     alt="Sparky"
                 />
             </motion.div>

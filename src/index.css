@@ -1,6 +1,6 @@
 /**
- * Algorithm Wizard - Design System v2.0
- * Modern, Accessible, Premium Gaming Experience
+ * HỆ THỐNG THIẾT KẾ (Design System v2.0)
+ * Trải nghiệm trò chơi hiện đại, cao cấp và dễ tiếp cận
  */
 
 @import url('https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700&display=swap');
@@ -10,7 +10,7 @@
    ======================================== */
 
 :root {
-    /* === COLOR PALETTE === */
+    /* === COLOR PALETTE (Bảng màu) === */
     /* Primary */
     --color-primary: #4ecca3;
     --color-primary-dark: #3ab88f;
@@ -42,7 +42,7 @@
     --color-text-muted: #b0b0b0;
     --color-text-dimmed: #808080;
 
-    /* === TYPOGRAPHY === */
+    /* === TYPOGRAPHY (Kiểu chữ) === */
     /* Font Families */
     --font-display: 'VT323', monospace;
     --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -70,7 +70,7 @@
     --leading-normal: 1.5;
     --leading-relaxed: 1.75;
 
-    /* === SPACING === */
+    /* === SPACING (Khoảng cách) === */
     --space-xs: 8px;
     --space-sm: 16px;
     --space-md: 24px;
@@ -78,7 +78,7 @@
     --space-xl: 48px;
     --space-2xl: 64px;
 
-    /* === BORDERS === */
+    /* === BORDERS (Viền) === */
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
     --border-radius-lg: 16px;
@@ -89,23 +89,22 @@
     --border-width-medium: 3px;
     --border-width-thick: 4px;
 
-    /* === SHADOWS === */
+    /* === SHADOWS (Bóng đổ) === */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
     --shadow-glow-primary: 0 0 20px var(--color-primary-glow);
     --shadow-glow-gold: 0 0 20px rgba(243, 156, 18, 0.4);
 
-    /* === TRANSITIONS === */
-    /* === TRANSITIONS === */
+    /* === TRANSITIONS (Hiệu ứng chuyển đổi) === */
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
     --transition-slow: 350ms ease;
 }
 
 :root.light-theme {
-    /* === LIGHT COLOR PALETTE === */
-    /* Primary (Adjusted for light bg) */
+    /* === LIGHT COLOR PALETTE (Bảng màu sáng) === */
+    /* Primary (Điều chỉnh cho nền sáng) */
     --color-primary: #00b894;
     --color-primary-dark: #00a383;
     --color-primary-light: #55efc4;
@@ -136,7 +135,7 @@
 }
 
 /* ========================================
-   GLOBAL RESET
+   GLOBAL RESET (Reset toàn cục)
    ======================================== */
 
 * {
@@ -170,7 +169,7 @@ body {
 }
 
 /* ========================================
-   TYPOGRAPHY UTILITIES
+   TYPOGRAPHY UTILITIES (Tiện ích kiểu chữ)
    ======================================== */
 
 .text-display {
@@ -195,7 +194,7 @@ h6 {
 }
 
 /* ========================================
-   BUTTON SYSTEM
+   BUTTON SYSTEM (Hệ thống nút bấm)
    ======================================== */
 
 .btn {
@@ -223,7 +222,7 @@ h6 {
     transform: translateY(0);
 }
 
-/* Button Variants */
+/* Button Variants (Biến thể nút) */
 .btn-primary {
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
     color: var(--color-text-primary);
@@ -266,7 +265,7 @@ h6 {
     box-shadow: 0 0 30px rgba(231, 76, 60, 0.5), var(--shadow-md);
 }
 
-/* Button Sizes */
+/* Button Sizes (Kích thước nút) */
 .btn-sm {
     padding: 10px 20px;
     font-size: var(--text-xs);
@@ -278,7 +277,7 @@ h6 {
 }
 
 /* ========================================
-   CARD SYSTEM
+   CARD SYSTEM (Hệ thống thẻ)
    ======================================== */
 
 .card {
@@ -297,7 +296,7 @@ h6 {
 }
 
 /* ========================================
-   PIXEL ART RENDERING
+   PIXEL ART RENDERING (Kết xuất Pixel Art)
    ======================================== */
 
 .pixel-art {
@@ -307,7 +306,7 @@ h6 {
 }
 
 /* ========================================
-   LIGHT THEME OVERRIDES
+   LIGHT THEME OVERRIDES (Ghi đè giao diện sáng)
    ======================================== */
 
 :root.light-theme .menu-background,
@@ -329,7 +328,7 @@ h6 {
     background-image: none !important;
 }
 
-/* Improve panel contrast in light mode */
+/* Cải thiện độ tương phản panel trong chế độ sáng */
 :root.light-theme .card,
 :root.light-theme .settings-container,
 :root.light-theme .inventory-container,
@@ -346,7 +345,7 @@ h6 {
     box-shadow: 0 4px 15px rgba(0, 200, 255, 0.1);
 }
 
-/* Ensure text is readable */
+/* Đảm bảo văn bản dễ đọc (Ensure text is readable) */
 :root.light-theme h1,
 :root.light-theme h2,
 :root.light-theme h3,
@@ -385,7 +384,7 @@ h6 {
     color: var(--color-primary-dark);
 }
 
-/* Fix text legibility in light mode */
+/* Fix text legibility in light mode (Sửa độ rõ chữ trong chế độ sáng) */
 :root.light-theme .item-description,
 :root.light-theme .stat-row,
 :root.light-theme .controls-hint,

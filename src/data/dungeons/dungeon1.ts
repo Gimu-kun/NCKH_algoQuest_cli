@@ -26,7 +26,7 @@ export interface DungeonConfig {
 }
 
 export const DUNGEON_1: DungeonConfig = {
-    id: 'temple_of_guidance',
+    id: 'dungeon_1',
     name: 'Đền Thờ Hướng Dẫn',
     chapter: 1,
     description: 'Thử thách đầu tiên - Làm chủ kiến thức thuật toán cơ bản',
@@ -43,26 +43,26 @@ export const DUNGEON_1: DungeonConfig = {
         { x: 3, y: 3 }
     ],
     treasureRooms: [
-        { x: 1, y: 2 }, // Near entrance
-        { x: 3, y: 2 }, // Before boss
-        { x: 2, y: 1 }  // Center
+        { x: 1, y: 2 }, // Gần lối vào
+        { x: 3, y: 2 }, // Trước phòng Boss
+        { x: 2, y: 1 }  // Trung tâm
     ],
     requiredLevel: 1
 };
 
 /**
- * Generate dungeon rooms from config
+ * Sinh các phòng hầm ngục từ cấu hình (Generate dungeon rooms from config)
  */
 import { DungeonGenerator } from '../../game/engine/DungeonGenerator';
 
 /**
- * Generate dungeon rooms using Procedural Generator
+ * Sinh phòng sử dụng Bộ Sinh Tự Động (Procedural Generator)
  */
 export function generateDungeonRooms(config: DungeonConfig): DungeonRoom[] {
-    // Check if we want purely static or dynamic
-    // For now, let's use the dynamic generator
-    // We can also override the monsterRooms coordinates in config to be ignored 
-    // since the generator places them randomly based on count.
+    // Kiểm tra xem muốn dùng map tĩnh hay động
+    // Hiện tại dùng bộ sinh động (dynamic generator)
+    // Chúng ta có thể override tọa độ monsterRooms trong config nếu muốn
+    // vì generator sẽ đặt chúng ngẫu nhiên dựa trên số lượng.
 
     return DungeonGenerator.generate(config);
 }

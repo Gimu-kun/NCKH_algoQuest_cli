@@ -1,6 +1,6 @@
 /* ========================================
-   LOGIC FARM - REDESIGNED v2.0
-   Creative Building Space
+   LOGIC FARM - STYLE
+   Theme: Creative Building & Skill Tree (Premium Design)
    ======================================== */
 
 .logic-farm {
@@ -8,25 +8,388 @@
     height: 100%;
     background-color: var(--color-bg-primary);
     background-image:
-        radial-gradient(circle at 20% 30%, rgba(41, 128, 185, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(142, 68, 173, 0.15) 0%, transparent 40%);
+        radial-gradient(circle at 20% 30%, rgba(41, 128, 185, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(142, 68, 173, 0.1) 0%, transparent 40%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: cover, cover, 40px 40px, 40px 40px;
     position: relative;
     color: var(--color-text-primary);
     font-family: var(--font-display);
     overflow: hidden;
+    padding-top: 100px;
+    /* Space for HUD */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* === HEADER === */
+.farm-header {
+    text-align: center;
+    margin-bottom: var(--space-md);
+    z-index: 10;
+    pointer-events: auto;
+    position: relative;
+    animation: fadeInDown 0.5s ease-out;
+}
+
+.farm-header h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-xs);
+    text-shadow: 0 0 15px rgba(241, 196, 15, 0.6);
+    color: var(--color-accent-gold);
+    letter-spacing: 2px;
+}
+
+.farm-header p {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    opacity: 0.8;
+}
+
+/* === TABS === */
+.farm-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.farm-tabs button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 24px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--text-sm);
+    transition: all var(--transition-base);
+    border-radius: var(--border-radius-full);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.farm-tabs button.active {
+    border-color: var(--color-accent-gold);
+    color: var(--color-bg-primary);
+    background: var(--color-accent-gold);
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+    font-weight: bold;
+    transform: scale(1.05);
+}
+
+.farm-tabs button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+}
+
+/* === EXIT BUTTON === */
+.btn-exit {
+    /* Positioned top-center below HUD or nicely integrated */
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    /* Adjust to avoid overlapping Main HUD */
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid var(--color-accent-red);
+    padding: 8px 16px;
+    color: var(--color-accent-red);
+    cursor: pointer;
+    border-radius: var(--border-radius-md);
+    font-family: inherit;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-sm);
+    z-index: 20;
+    backdrop-filter: blur(5px);
+}
+
+.btn-exit:hover {
+    background: var(--color-accent-red);
+    color: white;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+/* === FARM WORKSPACE === */
+.farm-workspace {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* === SKILL TREE (ALTAR GARDEN) === */
+.altar-garden {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.altar-node {
+    position: absolute;
+    width: 120px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.altar-node:hover {
+    transform: translateY(-8px) scale(1.05);
+    z-index: 20;
+}
+
+.altar-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(10, 10, 20, 0.8);
+    border: 2px solid var(--color-text-muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.altar-node.unlocked .altar-icon {
+    border-color: var(--color-accent-green);
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(46, 204, 113, 0.1));
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
+    color: var(--color-accent-green);
+}
+
+.altar-node.locked .altar-icon {
+    border-color: #444;
+    background: rgba(0, 0, 0, 0.6);
+    filter: grayscale(100%);
+    opacity: 0.7;
+}
+
+.altar-name {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--color-text-primary);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.build-hint {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--color-accent-gold);
+    animation: pulse 1.5s infinite;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(243, 156, 18, 0.5);
+}
+
+/* === CREATIVE ZONE === */
+.creative-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    animation: fadeIn 0.5s ease;
+}
+
+.grid-placeholder {
+    display: grid;
+    grid-template-columns: repeat(5, 90px);
+    grid-gap: 15px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.grid-cell {
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-cell:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-accent-blue);
+    transform: scale(1.05);
+}
+
+.grid-cell.active-drop {
+    border-color: var(--color-accent-green);
+    background: rgba(46, 204, 113, 0.15);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    animation: pulse 1s infinite;
+    cursor: pointer;
+}
+
+.placed-decor-img {
+    max-width: 80%;
+    max-height: 80%;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.4));
+    pointer-events: none;
+    transition: transform 0.2s;
+}
+
+.grid-cell:hover .placed-decor-img {
+    transform: scale(1.1);
+}
+
+.instruction {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+/* === DECOR SELECTOR PANEL === */
+.decor-selector {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(20, 20, 30, 0.9);
+    padding: 20px;
+    border-radius: 16px;
+    border-top: 3px solid var(--color-accent-gold);
+    margin-top: 30px;
+    pointer-events: auto;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.decor-selector h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: var(--color-accent-gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.decor-list {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 5px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-gold) rgba(0, 0, 0, 0.3);
+}
+
+.decor-list::-webkit-scrollbar {
+    height: 8px;
+}
+
+.decor-list::-webkit-scrollbar-thumb {
+    background: var(--color-accent-gold);
+    border-radius: 4px;
+}
+
+.decor-option {
+    min-width: 90px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.decor-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.decor-option.selected {
+    border-color: var(--color-accent-gold);
+    background: rgba(243, 156, 18, 0.15);
+    box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+    transform: translateY(-5px);
+}
+
+.decor-option img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.decor-option span {
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* === HEADER === */
 .farm-header {
     position: absolute;
     top: 100px;
-    /* Below HUD */
+    /* Tránh đè lên HUD */
     left: 0;
     width: 100%;
     text-align: center;
     z-index: 10;
     pointer-events: none;
-    /* Let clicks pass through to grid */
+    /* Cho phép click xuyên qua vùng trống */
 }
 
 .farm-header h1 {
@@ -37,6 +400,7 @@
     pointer-events: auto;
 }
 
+/* === TABS === */
 .farm-tabs {
     display: flex;
     justify-content: center;
@@ -56,6 +420,9 @@
     transition: all var(--transition-base);
     border-radius: var(--border-radius-md);
     backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .farm-tabs button.active {
@@ -72,6 +439,7 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* === EXIT BUTTON === */
 .btn-exit {
     background: rgba(231, 76, 60, 0.2);
     border: 2px solid var(--color-accent-red);
@@ -85,6 +453,9 @@
     top: 0;
     pointer-events: auto;
     transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-exit:hover {
@@ -93,18 +464,19 @@
     box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
 }
 
-/* === FARM WORKSPACE === */
+/* === FARM WORKSPACE (CONTAINER) === */
 .farm-workspace {
     width: 100%;
     height: 100%;
     position: relative;
 }
 
-/* Altar Garden Layout */
+/* === SKILL TREE (ALTAR GARDEN) === */
 .altar-garden {
     width: 100%;
     height: 100%;
     position: relative;
+    /* Grid background effect */
     background-image:
         linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
@@ -175,7 +547,7 @@
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
-/* Creative Zone */
+/* === CREATIVE ZONE === */
 .creative-zone {
     display: flex;
     flex-direction: column;
@@ -217,7 +589,9 @@
 }
 
 @keyframes pulse {
-    0% {
+
+    0%,
+    100% {
         opacity: 0.6;
         transform: scale(1);
     }
@@ -226,9 +600,80 @@
         opacity: 1;
         transform: scale(1.1);
     }
+}
 
-    100% {
-        opacity: 0.6;
-        transform: scale(1);
-    }
+/* === NEW CREATIVE MODE STYLES === */
+.grid-cell.active-drop {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+    animation: pulse 1s infinite;
+    cursor: pointer;
+}
+
+.placed-decor-img {
+    max-width: 90%;
+    max-height: 90%;
+    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+.decor-selector {
+    width: 600px;
+    /* Aligned with grid width approx */
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    border-top: 2px solid #f39c12;
+    margin-top: 20px;
+    pointer-events: auto;
+}
+
+.decor-selector h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: #f39c12;
+    text-align: left;
+}
+
+.decor-list {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.decor-option {
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.decor-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.decor-option.selected {
+    border-color: #f39c12;
+    background: rgba(243, 156, 18, 0.2);
+    transform: translateY(-2px);
+}
+
+.decor-option img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.decor-option span {
+    font-size: 0.8rem;
+    text-align: center;
+    color: #ddd;
 }

@@ -1,6 +1,6 @@
 /**
- * All Dungeon Configurations
- * Export all 7 dungeons for easy access
+ * Tất Cả Cấu Hình Dungeon
+ * Xuất tất cả 7 dungeon để truy cập dễ dàng
  */
 
 import { DUNGEON_1, type DungeonConfig } from './dungeon1';
@@ -8,9 +8,9 @@ import { DUNGEON_1, type DungeonConfig } from './dungeon1';
 // Dungeon 2: Temple of Chaos (Chapter 2 - Search & Sort)
 export const DUNGEON_2: DungeonConfig = {
     id: 'temple_of_chaos',
-    name: 'Temple of Chaos',
+    name: 'Đền Thờ Hỗn Loạn',
     chapter: 2,
-    description: 'Master sorting and searching in this chaotic maze',
+    description: 'Làm chủ tìm kiếm và sắp xếp trong mê cung hỗn loạn này',
     size: { width: 5, height: 5 },
     entrance: { x: 2, y: 0 },
     bossRoom: { x: 2, y: 4 },
@@ -29,9 +29,9 @@ export const DUNGEON_2: DungeonConfig = {
 // Dungeon 3: Chained Corridor (Chapter 3 - Linked Lists)
 export const DUNGEON_3: DungeonConfig = {
     id: 'chained_corridor',
-    name: 'Chained Corridor',
+    name: 'Hành Lang Dây Xích',
     chapter: 3,
-    description: 'Navigate linked paths and pointer puzzles',
+    description: 'Điều hướng qua các đường dẫn liên kết và câu đố con trỏ',
     size: { width: 6, height: 4 },
     entrance: { x: 0, y: 1 },
     bossRoom: { x: 5, y: 2 },
@@ -48,9 +48,9 @@ export const DUNGEON_3: DungeonConfig = {
 // Dungeon 4: Dual Sanctuary (Chapter 4 - Stacks & Queues)
 export const DUNGEON_4: DungeonConfig = {
     id: 'dual_sanctuary',
-    name: 'Dual Sanctuary',
+    name: 'Thánh Tích Hai Mặt',
     chapter: 4,
-    description: 'Balance LIFO and FIFO mechanics',
+    description: 'Cân bằng cơ chế LIFO và FIFO',
     size: { width: 4, height: 6 },
     entrance: { x: 1, y: 0 },
     bossRoom: { x: 2, y: 5 },
@@ -69,9 +69,9 @@ export const DUNGEON_4: DungeonConfig = {
 // Dungeon 5: Recursive Forest (Chapter 5 - Trees)
 export const DUNGEON_5: DungeonConfig = {
     id: 'recursive_forest',
-    name: 'Recursive Forest',
+    name: 'Khu Rừng Đệ Quy',
     chapter: 5,
-    description: 'Explore branching paths and tree structures',
+    description: 'Khám phá các đường dẫn phân nhánh và cấu trúc cây',
     size: { width: 7, height: 5 },
     entrance: { x: 3, y: 0 },
     bossRoom: { x: 3, y: 4 },
@@ -90,9 +90,9 @@ export const DUNGEON_5: DungeonConfig = {
 // Dungeon 6: Infinite Library (Chapter 6 - Hash Tables)
 export const DUNGEON_6: DungeonConfig = {
     id: 'infinite_library',
-    name: 'Infinite Library',
+    name: 'Thư Viện Vô Hạn',
     chapter: 6,
-    description: 'Hash through endless shelves of knowledge',
+    description: 'Băm (Hash) qua vô vàn kệ sách tri thức',
     size: { width: 6, height: 6 },
     entrance: { x: 0, y: 0 },
     bossRoom: { x: 5, y: 5 },
@@ -111,9 +111,9 @@ export const DUNGEON_6: DungeonConfig = {
 // Dungeon 7: Corrupted Core (Endgame)
 export const DUNGEON_7: DungeonConfig = {
     id: 'corrupted_core',
-    name: 'Corrupted Core',
+    name: 'Lõi Hư Không',
     chapter: 7,
-    description: 'Final trial - face the source of corruption',
+    description: 'Thử thách cuối cùng - đối mặt với nguồn gốc của sự tham nhũng',
     size: { width: 7, height: 7 },
     entrance: { x: 3, y: 0 },
     bossRoom: { x: 3, y: 6 },

@@ -1,5 +1,5 @@
 /* ========================================
-   DIALOGUE BOX - NPC INTERACTIONS
+   HỘP THOẠI (Dialogue Box)
    Hộp thoại hội thoại và tương tác NPC
    ======================================== */
 
@@ -21,19 +21,24 @@
 .dialogue-box {
     width: 90%;
     max-width: 1000px;
-    background: var(--color-bg-panel);
-    border: var(--border-width-medium) solid var(--color-primary);
-    border-radius: var(--border-radius-lg);
-    padding: var(--space-lg);
-    box-shadow: var(--shadow-glow-primary), 0 -10px 40px rgba(0, 0, 0, 0.5);
+    height: 300px;
+    /* Fixed height for the image aspect ratio */
+    background-image: url('../../../assets/Ảnh Assets/UI/Dialogue UI Box.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: var(--space-xl) var(--space-2xl);
+    /* Adjust padding to fit inside the box art */
     display: flex;
     gap: var(--space-lg);
     pointer-events: auto;
     position: relative;
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); Remove blur to see image clearly */
 }
 
-/* === NPC PORTRAIT === */
+/* === NPC PORTRAIT (Chân dung NPC) === */
 .dialogue-portrait {
     width: 140px;
     height: 140px;
@@ -70,7 +75,7 @@
     }
 }
 
-/* === CONTENT AREA === */
+/* === CONTENT AREA (Khu vực nội dung) === */
 .dialogue-content {
     flex: 1;
     display: flex;
@@ -78,7 +83,7 @@
     justify-content: space-between;
 }
 
-/* Header */
+/* Header (Tiêu đề) */
 .dialogue-header {
     display: flex;
     align-items: baseline;
@@ -103,7 +108,7 @@
     font-family: var(--font-body);
 }
 
-/* Text */
+/* Text (Văn bản) */
 .dialogue-text {
     flex: 1;
     padding: var(--space-sm) 0;
@@ -115,12 +120,12 @@
     color: var(--color-text-primary);
     font-size: var(--text-base);
     font-family: 'Consolas', 'Courier New', monospace;
-    /* Typewriter feel */
+    /* Cảm giác máy đánh chữ (Typewriter feel) */
     line-height: 1.6;
     letter-spacing: 0.5px;
 }
 
-/* Actions */
+/* Actions (Hành động) */
 .dialogue-actions {
     display: flex;
     gap: var(--space-md);
@@ -173,7 +178,7 @@
     color: var(--color-text-secondary);
 }
 
-/* Feature Buttons */
+/* Feature Buttons (Nút tính năng) */
 .dialogue-features {
     display: flex;
     gap: var(--space-sm);

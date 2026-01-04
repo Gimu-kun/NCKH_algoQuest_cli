@@ -1,6 +1,34 @@
 /**
- * Trang Thành Tựu
- * Hiển thị tất cả achievements và badges của người chơi
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * PAGE: CÁC THÀNH TỰU (Achievements Page)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Hiển thị hệ thống tiến trình (Progression System) của người chơi.
+ * Nơi người chơi theo dõi các cột mốc đã đạt được, danh hiệu và bộ sưu tập huy hiệu.
+ * 
+ * TÍNH NĂNG:
+ * - Progress Tracking: Visualizer thanh tiến độ tổng (Total Completion).
+ * - Dual View: Chuyển đổi linh hoạt giữa Thành tựu (Achievements) và Huy hiệu (Badges).
+ * - Categorization: Bộ lọc theo loại (Combat, Logical, Exploration, Social).
+ * - Rarity Statistics: Thống kê phân bố độ hiếm (Common, Rare, Epic, Legendary).
+ * 
+ * FLOW HIỂN THỊ:
+ * 1. Load User Data: Lấy danh sách ID thành tựu/huy hiệu đã mở từ `PlayerStore`.
+ * 2. Data Mapping: Map ID sang thông tin chi tiết (Tên, Mô tả, Ảnh) từ `ACHIEVEMENTS`/`BADGES` constant.
+ * 3. Filter Logic: Áp dụng bộ lọc Category (nếu tab Achievements) hoặc hiển thị toàn bộ (Badges).
+ * 4. Render Grid: Hiển thị các thẻ thành tựu với trạng thái Locked/Unlocked.
+ *    - Unlocked: Sáng, tương tác được, hiện chi tiết.
+ *    - Locked: Tối màu, có thể ẩn nội dung (nếu là Hidden Achievement).
+ * 
+ * KỸ THUẬT:
+ * - Conditional Rendering: Xử lý logic hiển thị Unlock/Lock/Secret.
+ * - Array Filtering: Tính toán thống kê real-time dựa trên dữ liệu lọc.
+ * - Framer Motion: Animation cho Cards và Progress Bar.
+ * 
+ * @page Achievements
+ * @category Pages
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React, { useState } from 'react';
@@ -11,49 +39,60 @@ import { ACHIEVEMENTS, BADGES, AchievementCategory } from '../data/achievements'
 import './Achievements.css';
 
 export const Achievements: React.FC = () => {
+    // Hooks truy cập state
     const { setScene } = useGameStore();
     const { achievements: unlockedAchievements, badges: unlockedBadges } = usePlayerStore();
 
+    // Local state cho UI (Tabs, Filters)
     const [selectedCategory, setSelectedCategory] = useState<AchievementCategory | 'ALL'>('ALL');
-    const [showBadges, setShowBadges] = useState(false);
+    const [showBadges, setShowBadges] = useState(false); // Toggle giữa Achievements và Badges
 
-    // Filter achievements by category
+    /**
+     * Lọc danh sách thành tựu theo danh mục đang chọn
+     */
     const filteredAchievements = Object.values(ACHIEVEMENTS).filter(achievement => {
         if (selectedCategory === 'ALL') return true;
         return achievement.category === selectedCategory;
     });
 
-    // Check if achievement is unlocked
+    /**
+     * Kiểm tra xem thành tựu đã mở khóa chưa
+     */
     const isUnlocked = (achievementId: string) => {
         return unlockedAchievements.includes(achievementId);
     };
 
-    // Check if badge is unlocked
+    /**
+     * Kiểm tra xem huy hiệu đã mở khóa chưa
+     */
     const badgeUnlocked = (badgeId: string) => {
         return unlockedBadges.includes(badgeId);
     };
 
-    // Count unlocked by rarity
+    /**
+     * Đếm số lượng thành tựu đã mở khóa theo độ hiếm
+     */
     const countByRarity = (rarity: string) => {
         return Object.values(ACHIEVEMENTS)
             .filter(a => a.rarity === rarity && isUnlocked(a.id))
             .length;
     };
 
+    // Tính toán tiến độ tổng quan
     const totalAchievements = Object.keys(ACHIEVEMENTS).length;
     const unlockedCount = unlockedAchievements.length;
     const progress = Math.round((unlockedCount / totalAchievements) * 100);
 
     return (
         <div className="achievements-page">
-            {/* Header */}
+            {/* === HEADER === */}
             <div className="achievements-header">
                 <button className="btn-back" onClick={() => setScene(GameScene.HUB_WORLD)}>
-                    ← Về Sảnh
+                    <i className="fi fi-rr-arrow-left"></i> Về Sảnh
                 </button>
                 <h1>🏆 Thành Tựu & Huy Hiệu</h1>
 
-                {/* Progress Bar */}
+                {/* Thanh Tiến Độ */}
                 <div className="achievements-progress">
                     <div className="progress-info">
                         <span>{unlockedCount} / {totalAchievements} Đã Đạt</span>
@@ -69,7 +108,7 @@ export const Achievements: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Rarity Stats */}
+                {/* Thống Kê Độ Hiếm */}
                 <div className="rarity-stats">
                     <div className="rarity-item common">
                         <span className="rarity-icon">⚪</span>
@@ -90,7 +129,7 @@ export const Achievements: React.FC = () => {
                 </div>
             </div>
 
-            {/* Tab Navigation */}
+            {/* === TABS NAVIGATION === */}
             <div className="achievements-tabs">
                 <button
                     className={!showBadges ? 'active' : ''}
@@ -108,7 +147,7 @@ export const Achievements: React.FC = () => {
 
             {!showBadges ? (
                 <>
-                    {/* Category Filter */}
+                    {/* === CATEGORY FILTER (CHỈ HIỆN CHO THÀNH TỰU) === */}
                     <div className="category-filter">
                         <button
                             className={selectedCategory === 'ALL' ? 'active' : ''}
@@ -127,11 +166,12 @@ export const Achievements: React.FC = () => {
                         ))}
                     </div>
 
-                    {/* Achievements Grid */}
+                    {/* === ACHIEVEMENTS LIST === */}
                     <div className="achievements-grid">
                         <AnimatePresence>
                             {filteredAchievements.map(achievement => {
                                 const unlocked = isUnlocked(achievement.id);
+                                // Ẩn thông tin nếu là thành tựu bí mật và chưa mở
                                 const hidden = achievement.hidden && !unlocked;
 
                                 return (
@@ -144,15 +184,19 @@ export const Achievements: React.FC = () => {
                                         whileHover={{ scale: unlocked ? 1.05 : 1 }}
                                     >
                                         <div className="achievement-icon">
-                                            {hidden ? '❓' : achievement.displayName.split(' ')[0]}
+                                            {hidden ? '❓' : (
+                                                // Tạm thời lấy chữ cái đầu làm icon text nếu không có hình
+                                                achievement.displayName.split(' ')[0]
+                                            )}
                                         </div>
 
                                         <div className="achievement-info">
                                             <h3>{hidden ? '???' : achievement.displayName}</h3>
                                             <p className="achievement-description">
-                                                {hidden ? 'Thành tựu ẩn' : achievement.description}
+                                                {hidden ? 'Thành tựu ẩn - Hãy khám phá để mở khóa!' : achievement.description}
                                             </p>
 
+                                            {/* Hiển thị phần thưởng đính kèm nếu có */}
                                             {unlocked && achievement.rewards && (
                                                 <div className="achievement-rewards">
                                                     {achievement.rewards.oPoints && (
@@ -162,7 +206,7 @@ export const Achievements: React.FC = () => {
                                                         <span>+{achievement.rewards.logicStone} Logic-Stone</span>
                                                     )}
                                                     {achievement.rewards.title && (
-                                                        <span className="title-reward">"{achievement.rewards.title}"</span>
+                                                        <span className="title-reward">Danh hiệu: "{achievement.rewards.title}"</span>
                                                     )}
                                                 </div>
                                             )}
@@ -178,7 +222,7 @@ export const Achievements: React.FC = () => {
                     </div>
                 </>
             ) : (
-                /* Badges Grid */
+                /* === BADGES GRID === */
                 <div className="badges-grid">
                     {Object.values(BADGES).map(badge => {
                         const unlocked = badgeUnlocked(badge.id);
@@ -190,7 +234,10 @@ export const Achievements: React.FC = () => {
                                 whileHover={{ scale: unlocked ? 1.1 : 1 }}
                             >
                                 <div className="badge-icon">
-                                    {unlocked ? badge.displayName.split(' ')[0] : '🔒'}
+                                    {unlocked ? (
+                                        // TODO: Thay thế bằng Icon Image
+                                        badge.displayName.split(' ')[0]
+                                    ) : '🔒'}
                                 </div>
                                 <h4>{unlocked ? badge.displayName : '???'}</h4>
                                 <p>{unlocked ? badge.description : 'Đang khóa'}</p>

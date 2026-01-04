@@ -1,51 +1,75 @@
 /**
- * Quản Lý Trạng Thái Game
- * Quản lý cảnh hiện tại, trạng thái chiến đấu và trạng thái UI
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * QUẢN LÝ TRẠNG THÁI GAME (Game Store / State Management)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Sử dụng Zustand để quản lý Global State của Game Loop, bao gồm:
+ * - Scene Management: Chuyển đổi giữa các màn chơi (Menu, Hub, Dungeon, Coombar...).
+ * - Dungeon State: Lưu trữ trạng thái của Dungeon hiện tại (vị trí player, trạng thái phòng).
+ * - Combat State: Quản lý turn-based combat (HP, phase, câu hỏi hiện tại).
+ * - UI State: Quản lý trạng thái đóng/mở của các Panels (Inventory, Quest, Settings...).
+ * 
+ * KỸ THUẬT:
+ * - Zustand Store: State management thư viện nhẹ, hiệu năng cao.
+ * - Actions Pattern: Các hàm thay đổi state được define rõ ràng (StartCombat, EndCombat, etc.).
+ * 
+ * FLOW CHÍNH:
+ * - Init Dungeon -> Enter Dungeon -> Move -> Combat Start -> Combat Loop -> Combat End -> Update Dungeon State.
+ * 
+ * @module GameStore
+ * @category State Management
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import { create } from 'zustand';
+import { usePlayerStore } from './playerStore';
 import { DUNGEON_1, generateDungeonRooms } from '../data/dungeons/dungeon1';
 import type { DungeonRoom, DungeonConfig } from '../data/dungeons/dungeon1';
 
+// Định nghĩa State cho Dungeon Session hiện tại
 export interface DungeonState {
-    rooms: DungeonRoom[];
-    playerPos: { x: number; y: number };
-    config: DungeonConfig;
+    rooms: DungeonRoom[];          // Danh sách các phòng và trạng thái
+    playerPos: { x: number; y: number }; // Vị trí hiện tại của player (Grid coords)
+    config: DungeonConfig;         // Cấu hình của Dungeon (kích thước, loại quái...)
 }
 
+// Enum cho các Cảnh (Screen/Scene) trong game
 export const enum GameScene {
-    MAIN_MENU = 'MAIN_MENU',
-    HUB_WORLD = 'HUB_WORLD',
-    DUNGEON = 'DUNGEON',
-    LOGIC_FARM = 'LOGIC_FARM',
-    CUTSCENE = 'CUTSCENE',
-    COMBAT = 'COMBAT',
-    BUILD_INTERFACE = 'BUILD_INTERFACE',
-    SHOP = 'SHOP',
-    ACHIEVEMENTS = 'ACHIEVEMENTS',
-    LEADERBOARDS = 'LEADERBOARDS'
+    MAIN_MENU = 'MAIN_MENU',       // Màn hình chính
+    HUB_WORLD = 'HUB_WORLD',       // Thế giới trung tâm
+    DUNGEON = 'DUNGEON',           // Màn chơi Dungeon (Grid movement)
+    LOGIC_FARM = 'LOGIC_FARM',     // Khu vực Logic Farm (Future)
+    CUTSCENE = 'CUTSCENE',         // Các đoạn cắt cảnh
+    COMBAT = 'COMBAT',             // Màn hình chiến đấu
+    BUILD_INTERFACE = 'BUILD_INTERFACE', // Giao diện chế tạo phép (Future)
+    SHOP = 'SHOP',                 // Cửa hàng
+    ACHIEVEMENTS = 'ACHIEVEMENTS', // Màn hình thành tựu
+    LEADERBOARDS = 'LEADERBOARDS'  // Bảng xếp hạng
 }
 
+// State quản lý Session Combat
 export interface CombatState {
-    active: boolean;
-    monsterId: string | null;
-    currentQuestion: string | null;
-    playerHealth: number;
-    monsterHealth: number;
-    hintsUsed: number;
-    currentPhase: number;
+    active: boolean;               // Đang trong trận chiến hay không
+    monsterId: string | null;      // ID quái vật đang đánh
+    currentQuestion: string | null; // ID câu hỏi hiện tại (nếu có)
+    playerHealth: number;          // Máu người chơi (0-100)
+    monsterHealth: number;         // Máu quái vật (0-100)
+    hintsUsed: number;             // Số lần dùng gợi ý
+    currentPhase: number;          // Giai đoạn của Boss (nếu là Boss fight)
 }
 
+// Interface chính cho Game Store State
 export interface GameState {
-    // Quản lý Cảnh
+    // === Quản lý Cảnh ===
     currentScene: GameScene;
     previousScene: GameScene | null;
     currentDungeonId: string | null;
 
-    // Combat
+    // === Combat ===
     combat: CombatState;
 
-    // Trạng Thái UI
+    // === Trạng Thái UI (Visibility) ===
     sparkyVisible: boolean;
     sparkyMessage: string | null;
     dialogueOpen: boolean;
@@ -55,69 +79,72 @@ export interface GameState {
     questsOpen: boolean;
     settingsOpen: boolean;
 
-    // Bảng Cổ Ngữ (Trình Soạn Code)
+    // === Bảng Cổ Ngữ (Trình Soạn Code - Future) ===
     runicConsoleOpen: boolean;
     currentBlueprintId: string | null;
 
-    // Toast notifications
+    // === Toast Notifications (Thông báo nổi) ===
     toasts: Array<{ id: string; type: string; message: string; duration?: number }>;
 
-    // Loading
+    // === Loading State ===
     isLoading: boolean;
     loadingMessage: string;
 
-    // Theme
+    // === Theme (Giao diện Sáng/Tối) ===
     theme: 'dark' | 'light';
 
-    // Dungeon State persistence
+    // === Dungeon State Persistence ===
     dungeonState: DungeonState | null;
 }
 
+// Interface cho các Actions (Methods thay đổi state)
 interface GameActions {
-    // Chuyển Cảnh
+    // === Chuyển Cảnh ===
     setScene: (scene: GameScene) => void;
     enterDungeon: (dungeonId: string) => void;
     exitDungeon: () => void;
 
-    // Combat
+    // === Combat Actions ===
     startCombat: (monsterId: string, questionId?: string) => void;
     endCombat: (victory: boolean) => void;
     updateMonsterHealth: (health: number) => void;
+    updatePlayerHealth: (health: number) => void;
     useHint: () => void;
 
-    // Trợ Lý AI Sparky
+    // === Trợ Lý AI Sparky ===
     showSparky: (message: string) => void;
     hideSparky: () => void;
 
-    // Hội Thoại
+    // === Hệ Thống Hội Thoại (Dialogue) ===
     openDialogue: (npcId: string) => void;
     closeDialogue: () => void;
 
-    // Chuyển Đổi UI
+    // === Quản Lý UI Panels ===
     toggleInventory: () => void;
     toggleMenu: () => void;
     toggleQuests: () => void;
     toggleSettings: () => void;
 
-    // Runic Console
+    // === Runic Console ===
     openRunicConsole: (blueprintId: string) => void;
     closeRunicConsole: () => void;
 
-    // Toast notifications
+    // === Toast Notifications ===
     addToast: (type: string, message: string, duration?: number) => void;
     removeToast: (id: string) => void;
 
-    // Loading
+    // === Loading System ===
     setLoading: (loading: boolean, message?: string) => void;
 
-    // Theme System
+    // === Theme System ===
     toggleTheme: () => void;
 
-    // Dungeon State Actions
+    // === Dungeon Management ===
     initDungeon: (config: DungeonConfig) => void;
     updateDungeonState: (newState: Partial<DungeonState>) => void;
 }
 
+// Initial state cho Combat
 const initialCombatState: CombatState = {
     active: false,
     monsterId: null,
@@ -128,8 +155,13 @@ const initialCombatState: CombatState = {
     currentPhase: 1
 };
 
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * CREATE ZUSTAND STORE
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
 export const useGameStore = create<GameState & GameActions>((set, get) => ({
-    // Initial state
+    // === INITIAL STATE VALUES ===
     currentScene: GameScene.MAIN_MENU,
     previousScene: null,
     currentDungeonId: null,
@@ -147,14 +179,14 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
     toasts: [],
     isLoading: false,
     loadingMessage: '',
-
-    // Theme defaults to dark
     theme: 'dark',
-
-    // Dungeon State persistence
     dungeonState: null,
 
-    // Các Hành Động
+    // === ACTIONS IMPLEMENTATION ===
+
+    /**
+     * Chuyển đổi cảnh game (Scene Transition)
+     */
     setScene: (scene) => {
         set((state) => ({
             previousScene: state.currentScene,
@@ -162,9 +194,12 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         }));
     },
 
+    /**
+     * Khởi tạo Dungeon State mới
+     * - Generate rooms dựa trên config
+     * - Set vị trí player tại entrance
+     */
     initDungeon: (config) => {
-        // Only init if not already exists or different dungeon
-        // For simplicity in Phase 1, we force init
         const rooms = generateDungeonRooms(config);
         set({
             dungeonState: {
@@ -175,6 +210,9 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         });
     },
 
+    /**
+     * Cập nhật trạng thái Dungeon (ví dụ: Player di chuyển, Room cleared)
+     */
     updateDungeonState: (newState) => {
         set((state) => ({
             dungeonState: {
@@ -184,33 +222,52 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         }));
     },
 
+    /**
+     * Action: Vào Dungeon
+     * - Load config dungeon tương ứng (Hiện tại hardcode DUNGEON_1 cho demo)
+     * - Chuyển scene sang DUNGEON
+     * - Bật loading screen
+     */
     enterDungeon: (dungeonId) => {
-        // Initialize dungeon state based on ID
-        // For Phase 1, we only have one dungeon
+        // Registry Map for Dungeons (In real app, this might be a separate file)
+        const DUNGEON_REGISTRY: Record<string, DungeonConfig> = {
+            'dungeon_1': DUNGEON_1
+        };
 
-        let config = DUNGEON_1;
-        // Logic to select dungeon config based on ID would go here
+        const config = DUNGEON_REGISTRY[dungeonId];
+
+        if (!config) {
+            console.error(`Dungeon configuration not found for ID: ${dungeonId}`);
+            // Fallback to Dungeon 1 or handle error
+            return;
+        }
 
         const rooms = generateDungeonRooms(config);
+
+        // Find entrance to place player
+        const entrance = rooms.find(r => r.type === 'entrance');
+        const startPos = entrance ? { x: entrance.x, y: entrance.y } : { x: 0, y: 0 };
+
+        const initialState: DungeonState = {
+            rooms: rooms.map(r => ({ ...r, cleared: r.type === 'entrance' || r.type === 'empty' })),
+            playerPos: startPos,
+            config: config
+        };
 
         set({
             currentScene: GameScene.DUNGEON,
             currentDungeonId: dungeonId,
-            isLoading: true,
-            loadingMessage: 'Entering dungeon...',
-            dungeonState: {
-                rooms,
-                playerPos: config.entrance,
-                config
-            }
+            dungeonState: initialState
         });
 
-        // Mô phỏng quá trình tải
-        setTimeout(() => {
-            set({ isLoading: false });
-        }, 1000);
+        get().showSparky(`⚔️ Bạn đã bước vào: ${config.name}`);
     },
 
+    /**
+     * Action: Thoát Dungeon
+     * - Reset state về Hub World
+     * - Xóa dungeon state tạm thời
+     */
     exitDungeon: () => {
         set({
             currentScene: GameScene.HUB_WORLD,
@@ -220,6 +277,11 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         });
     },
 
+    /**
+     * Bắt đầu trận chiến (Start Combat)
+     * - Chuyển scene sang COMBAT
+     * - Init combat state (Máu, Monster ID)
+     */
     startCombat: (monsterId, questionId) => {
         set({
             currentScene: GameScene.COMBAT,
@@ -235,11 +297,17 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         });
     },
 
+    /**
+     * Kết thúc trận chiến (End Combat)
+     * - Xử lý logic thắng/thua
+     * - Nếu thắng: Đánh dấu phòng hiện tại là "Cleared"
+     * - Chuyển về scene trước đó (thường là Dungeon)
+     */
     endCombat: (victory) => {
         const state = get();
         let newDungeonState = state.dungeonState;
 
-        // Nếu thắng và đang trong Dungeon, đánh dấu phòng đã hoàn thành
+        // Nếu thắng và đang trong Dungeon, đánh dấu phòng đã hoàn thành (Cleaned/Cleared)
         if (victory && state.dungeonState) {
             const { x, y } = state.dungeonState.playerPos;
             const newRooms = state.dungeonState.rooms.map(r =>
@@ -260,10 +328,22 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         });
 
         if (victory) {
-            get().showSparky('💡 Chiến thắng! Phòng đã được dọn sạch!');
+            const combat = state.combat;
+            // Check if Boss
+            if (combat.monsterId && combat.monsterId.toLowerCase().includes('boss')) {
+                const currentDungeon = state.currentDungeonId || 'dungeon_1';
+                usePlayerStore.getState().completeDungeon(currentDungeon);
+                get().showSparky('🎉 CHÚC MỪNG! BẠN ĐÃ HOÀN THÀNH HẦM NGỤC!');
+            } else {
+                get().showSparky('💡 Chiến thắng! Phòng đã được dọn sạch!');
+            }
         }
     },
 
+    /**
+     * Cập nhật máu quái vật
+     * - Tự động kết thúc combat nếu HP <= 0
+     */
     updateMonsterHealth: (health) => {
         set((state) => ({
             combat: {
@@ -277,6 +357,27 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
         }
     },
 
+    /**
+     * Cập nhật máu người chơi
+     */
+    updatePlayerHealth: (health) => {
+        set((state) => ({
+            combat: {
+                ...state.combat,
+                playerHealth: health
+            }
+        }));
+
+        if (health <= 0) {
+            get().showSparky('⚠️ Cảnh báo: Bạn đã bị đánh bại!');
+            get().endCombat(false);
+        }
+    },
+
+    /**
+     * Action: Sử dụng gợi ý (Hint)
+     * - Tăng counter hintsUsed (ảnh hưởng tới việc đánh giá Achievement)
+     */
     useHint: () => {
         set((state) => ({
             combat: {
@@ -285,6 +386,8 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
             }
         }));
     },
+
+    // === UI ACTIONS ===
 
     showSparky: (message) => {
         set({

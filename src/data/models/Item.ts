@@ -1,7 +1,27 @@
 /**
-* Mô Hình Dữ Liệu Vật Phẩm và Tài Nguyên
-* Định nghĩa tài nguyên, bản thiết kế, đồ trang trí và trang phục
-*/
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * MÔ HÌNH DỮ LIỆU VẬT PHẨM & TÀI NGUYÊN (Item & Resource Data Model)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Định nghĩa cấu trúc dữ liệu cho hệ thống Inventory (Kho đồ):
+ * - Resources: Tài nguyên tiêu thụ (Gỗ, Đá Logic, O-Points).
+ * - Decorations: Vật phẩm trang trí Logic Farm.
+ * - Cosmetics: Trang phục và phụ kiện cho nhân vật.
+ * 
+ * KỸ THUẬT:
+ * - TypeScript Interfaces: Định nghĩa chặt chẽ các loại vật phẩm.
+ * - Discriminated Unions: Phân loại item theo `type` và `slot`.
+ * 
+ * CẤU TRÚC:
+ * - ResourceType: Enum các loại tài nguyên.
+ * - DecorationType: Enum các loại đồ trang trí.
+ * - CosmeticSlot: Enum các vị trí trang bị (Mũ, Áo, Weapon...).
+ * 
+ * @module ItemModel
+ * @category Data Models
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
 
 export const enum ResourceType {
     DATA_WOOD = 'DATA_WOOD',
@@ -10,16 +30,18 @@ export const enum ResourceType {
     GOLD = 'GOLD'
 }
 
+// Interface cho Tài Nguyên (Resources)
 export interface Resource {
     type: ResourceType;
-    name: string;
-    displayName: string;
-    description: string;
-    icon: string;
-    stackable: true;
-    maxStack: number;
+    name: string;            // Tên định danh (Internal)
+    displayName: string;     // Tên hiển thị
+    description: string;     // Mô tả
+    icon: string;            // Đường dẫn icon
+    stackable: true;         // Có thể xếp chồng
+    maxStack: number;        // Số lượng tối đa trong 1 ô
 }
 
+// Danh sách Tài Nguyên mặc định
 export const RESOURCES: Record<ResourceType, Resource> = {
     DATA_WOOD: {
         type: ResourceType.DATA_WOOD,
@@ -59,14 +81,15 @@ export const RESOURCES: Record<ResourceType, Resource> = {
     }
 };
 
-// Decoration items for Logic Farm
+// Loại đồ trang trí cho Logic Farm
 export const enum DecorationType {
-    FENCE = 'FENCE',
-    STATUE = 'STATUE',
-    PATH = 'PATH',
-    MONUMENT = 'MONUMENT'
+    FENCE = 'FENCE',       // Hàng rào
+    STATUE = 'STATUE',     // Tượng
+    PATH = 'PATH',         // Đường đi
+    MONUMENT = 'MONUMENT'  // Đài tưởng niệm
 }
 
+// Interface cho Đồ Trang Trí
 export interface DecorationItem {
     id: string;
     type: DecorationType;
@@ -74,24 +97,25 @@ export interface DecorationItem {
     displayName: string;
     description: string;
     sprite: string;
-    size: { width: number; height: number }; // Grid size
+    size: { width: number; height: number }; // Kích thước trên Grid (Số ô)
     cost: {
         logicStone?: number;
         dataWood?: number;
         gold?: number;
     };
-    unlockRequirement?: string; // Quest or achievement ID
+    unlockRequirement?: string; // Yêu cầu mở khóa (Quest/Achievement ID)
 }
 
-// Cosmetic items for player character
+// Slot trang bị cho nhân vật (Cosmetics)
 export const enum CosmeticSlot {
-    HAT = 'HAT',
-    ROBE = 'ROBE',
-    WEAPON = 'WEAPON',
-    PET = 'PET',
-    BADGE = 'BADGE'
+    HAT = 'HAT',       // Mũ / Tóc
+    ROBE = 'ROBE',     // Áo choàng / Trang phục
+    WEAPON = 'WEAPON', // Vũ khí / Gậy phép
+    PET = 'PET',       // Thú cưng đi theo
+    BADGE = 'BADGE'    // Huy hiệu ngực
 }
 
+// Interface cho Vật Phẩm Thời Trang (Cosmetic)
 export interface CosmeticItem {
     id: string;
     slot: CosmeticSlot;
@@ -99,7 +123,7 @@ export interface CosmeticItem {
     displayName: string;
     description: string;
     sprite: string;
-    vfx?: string; // Optional visual effect
+    vfx?: string;      // Hiệu ứng hình ảnh đặc biệt (Optional)
     cost: {
         logicStone?: number;
         gold?: number;
@@ -107,7 +131,7 @@ export interface CosmeticItem {
     unlockRequirement?: string;
 }
 
-// Example decorations and cosmetics
+// Dữ liệu mẫu cho Shop (Decorations & Cosmetics)
 export const SHOP_ITEMS = {
     decorations: [
         {
@@ -154,17 +178,18 @@ export const SHOP_ITEMS = {
     ]
 };
 
-// Inventory system
+// Interface cho Slot trong Kho Đồ
 export interface InventorySlot {
     item: Resource | DecorationItem | CosmeticItem | null;
     quantity: number;
-    equipped?: boolean; // For cosmetics
+    equipped?: boolean; // Đang trang bị (Cho cosmetics)
 }
 
+// Interface cho Kho Đồ Người Chơi (Inventory System)
 export interface PlayerInventory {
     resources: Record<ResourceType, number>;
     decorations: DecorationItem[];
     cosmetics: CosmeticItem[];
     equippedCosmetics: Partial<Record<CosmeticSlot, string>>; // Slot -> item ID
-    maxSlots: number;
+    maxSlots: number; // Sức chứa tối đa (Future)
 }

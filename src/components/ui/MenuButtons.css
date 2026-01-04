@@ -1,0 +1,228 @@
+/**
+ * Menu Buttons Styles
+ */
+
+.menu-buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+}
+
+.menu-button {
+    width: 64px;
+    height: 64px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-button:hover {
+    transform: translateY(-4px) scale(1.05);
+    border-color: rgba(255, 215, 0, 0.8);
+    box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.menu-button:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.menu-button-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.menu-button-label {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.menu-button:hover .menu-button-label {
+    opacity: 1;
+}
+
+/* ========== SPARKY ASSISTANT ========== */
+.sparky-container {
+    position: fixed;
+    bottom: 6rem;
+    right: 2rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    z-index: 150;
+    animation: sparkySlidein 0.5s ease;
+}
+
+@keyframes sparkySlidein {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.sparky-avatar {
+    width: 80px;
+    height: 80px;
+    animation: sparkyFloat 3s ease-in-out infinite;
+}
+
+@keyframes sparkyFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.sparky-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.sparky-message-box {
+    max-width: 300px;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #FFD700;
+    border-radius: 12px;
+    position: relative;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.sparky-message-box::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    bottom: 20px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid #FFD700;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.sparky-message {
+    margin: 0;
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.sparky-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.sparky-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== ALERT ICONS ========== */
+.alert-icon-container {
+    width: 32px;
+    height: 32px;
+    cursor: help;
+    animation: alertPulse 2s ease-in-out infinite;
+}
+
+@keyframes alertPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.6));
+    }
+}
+
+.alert-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .menu-buttons {
+        bottom: 1rem;
+        right: 1rem;
+        gap: 0.5rem;
+    }
+
+    .menu-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sparky-container {
+        bottom: 4rem;
+        right: 1rem;
+    }
+
+    .sparky-avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .sparky-message-box {
+        max-width: 200px;
+        padding: 0.75rem;
+    }
+}
+
+/* ========== VERTICAL LAYOUT (OPTIONAL) ========== */
+.menu-buttons.vertical {
+    flex-direction: column;
+    bottom: 2rem;
+    right: 2rem;
+}
