@@ -1,6 +1,6 @@
 /* ========================================
-   LEADERBOARDS PAGE - REDESIGNED v2.0
-   Competitive & Modern Rankings
+   BẢNG XẾP HẠNG (Leaderboards Page)
+   Xếp hạng cạnh tranh và hiện đại v2.0
    ======================================== */
 
 .leaderboards-page {
@@ -13,7 +13,7 @@
     font-family: var(--font-body);
 }
 
-/* === HEADER === */
+/* === HEADER (Tiêu đề) === */
 .leaderboards-header {
     text-align: center;
     margin-bottom: var(--space-xl);
@@ -55,7 +55,7 @@
     letter-spacing: 2px;
 }
 
-/* === TYPE SELECTOR === */
+/* === TYPE SELECTOR (Chọn loại bảng xếp hạng) === */
 .leaderboard-types {
     display: flex;
     justify-content: center;
@@ -135,7 +135,7 @@
     font-style: italic;
 }
 
-/* === PLAYER RANK CARD (STICKY) === */
+/* === PLAYER RANK CARD (STICKY) (Thẻ xếp hạng người chơi) === */
 .player-rank-card {
     background: linear-gradient(90deg, rgba(78, 204, 163, 0.2), rgba(78, 204, 163, 0.05));
     border: 2px solid var(--color-primary);
@@ -192,7 +192,7 @@
     color: var(--color-text-secondary);
 }
 
-/* === RANKINGS LIST === */
+/* === RANKINGS LIST (Danh sách xếp hạng) === */
 .rankings-list {
     display: flex;
     flex-direction: column;
@@ -213,7 +213,7 @@
     transform: translateX(5px);
 }
 
-/* Top 3 Styling */
+/* Top 3 Styling (Kiểu dáng Top 3) */
 .rank-entry.gold {
     background: linear-gradient(90deg, rgba(241, 196, 15, 0.2), transparent);
     border-left: 4px solid var(--color-accent-gold);
@@ -282,7 +282,7 @@
     margin-top: 2px;
 }
 
-/* === REWARDS SECTION === */
+/* === REWARDS SECTION (Khu vực phần thưởng) === */
 .rewards-section {
     margin-top: var(--space-xl);
     padding-top: var(--space-lg);

@@ -1,6 +1,6 @@
 /* ========================================
-   QUIZ BATTLE - REDESIGNED v2.0
-   Core Combat Experience
+   QUIZ BATTLE - CORE CSS
+   Hệ thống chiến đấu cốt lõi
    ======================================== */
 
 .quiz-battle-container {
@@ -16,7 +16,7 @@
     overflow: hidden;
 }
 
-/* === MONSTER SECTION === */
+/* === MONSTER DISPLAY === */
 .monster-section {
     margin-bottom: var(--space-xl);
     text-align: center;
@@ -41,6 +41,7 @@
     height: 100%;
     object-fit: contain;
     image-rendering: pixelated;
+    /* Giữ độ sắc nét cho Pixel Art */
     transition: filter var(--transition-base);
 }
 
@@ -56,7 +57,7 @@
     }
 }
 
-/* Floating Damage Number */
+/* Floating Damage Text */
 .damage-number {
     position: absolute;
     top: 10%;
@@ -95,7 +96,7 @@
     }
 }
 
-/* Health Bars */
+/* === HEALTH BARS === */
 .monster-health-bar,
 .player-health-bar {
     width: 360px;
@@ -113,6 +114,7 @@
     border-color: var(--color-accent-red);
 }
 
+/* Thanh máu người chơi nằm dưới cùng màn hình */
 .player-health-bar {
     position: absolute;
     bottom: var(--space-xl);
@@ -153,7 +155,6 @@
     font-size: var(--text-sm);
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
     line-height: 34px;
-    /* Centering vertically */
 }
 
 /* === QUESTION PANEL === */
@@ -208,7 +209,7 @@
     font-weight: var(--font-medium);
 }
 
-/* === ANSWER OPTIONS === */
+/* === ANSWER OPTIONS (MCQ) === */
 .answer-options {
     display: grid;
     grid-template-columns: 1fr;
@@ -234,6 +235,7 @@
     transition: all var(--transition-base);
     font-family: var(--font-body);
     font-size: var(--text-base);
+    color: var(--color-text-secondary);
 }
 
 .answer-option:hover:not(:disabled) {
@@ -241,12 +243,14 @@
     border-color: var(--color-primary);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: var(--color-text-primary);
 }
 
 .answer-option.selected {
     background: rgba(78, 204, 163, 0.2);
     border-color: var(--color-primary);
     box-shadow: 0 0 15px rgba(78, 204, 163, 0.3);
+    color: white;
 }
 
 .answer-option.correct {
@@ -283,31 +287,14 @@
     transition: all var(--transition-base);
 }
 
-.answer-option:hover .option-letter {
+.answer-option:hover .option-letter,
+.answer-option.selected .option-letter {
     background: var(--color-primary);
     color: var(--color-bg-primary);
 }
 
-.answer-option.correct .option-letter {
-    background: var(--color-accent-green);
-    border-color: var(--color-accent-green);
-    color: white;
-}
-
-.answer-option.wrong .option-letter {
-    background: var(--color-accent-red);
-    border-color: var(--color-accent-red);
-    color: white;
-}
-
 .option-text {
-    color: var(--color-text-secondary);
     flex: 1;
-    font-weight: var(--font-medium);
-}
-
-.answer-option.selected .option-text {
-    color: white;
 }
 
 /* === BATTLE ACTIONS === */
@@ -350,7 +337,9 @@
 }
 
 @keyframes pulseButton {
-    0% {
+
+    0%,
+    100% {
         transform: scale(1);
         box-shadow: 0 0 0 rgba(78, 204, 163, 0.7);
     }
@@ -358,11 +347,6 @@
     50% {
         transform: scale(1.05);
         box-shadow: 0 0 20px rgba(78, 204, 163, 1);
-    }
-
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 rgba(78, 204, 163, 0.7);
     }
 }
 
@@ -379,7 +363,7 @@
     box-shadow: none;
 }
 
-/* === FEEDBACK === */
+/* === FEEDBACK TOAST === */
 .feedback {
     margin-top: var(--space-md);
     padding: var(--space-md);
@@ -420,11 +404,10 @@
     font-size: var(--text-2xl);
 }
 
-.feedback-content p {
+.feedback p {
     margin: 0;
     color: #fff;
     font-size: var(--text-base);
-    font-family: var(--font-body);
 }
 
 /* === PROGRAMMING PLACEHOLDER === */
@@ -442,12 +425,6 @@
     font-size: var(--text-xl);
 }
 
-.programming-placeholder p {
-    margin: 0 0 var(--space-lg) 0;
-    color: var(--color-text-secondary);
-    font-size: var(--text-base);
-}
-
 .btn-open-console {
     padding: 16px 32px;
     background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-orange));
@@ -457,11 +434,5 @@
     font-size: var(--text-base);
     font-family: var(--font-display);
     cursor: pointer;
-    transition: all var(--transition-base);
     box-shadow: var(--shadow-glow-gold);
-}
-
-.btn-open-console:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(243, 156, 18, 0.6);
 }

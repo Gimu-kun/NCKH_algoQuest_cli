@@ -1,6 +1,24 @@
-import {Layout, Menu, Button, Row, Col, Space, Image} from "antd";
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * THANH ĐIỀU HƯỚNG (Navigation Bar)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Thanh header chính của ứng dụng, chứa logo và menu điều hướng.
+ * 
+ * CHỨC NĂNG:
+ * - Hiển thị Logo.
+ * - Menu điều hướng chính (Trang chủ, Sản phẩm, Liên hệ).
+ * - Nút Đăng nhập / Đăng ký (kích hoạt AuthForm).
+ * 
+ * @component Navbar
+ * @category Components / Layout
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+import { Layout, Menu, Button, Row, Col, Space, Image } from "antd";
 import type { MenuProps } from "antd";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/Ảnh Assets/VFS Demo/ Game Logo.png";
 import React from "react";
 
 const { Header } = Layout;
@@ -21,7 +39,7 @@ const Navbar = ({ setAuthFormstate, setIsLogin }: NavbarProps) => {
         <Header style={{ background: "#fff", padding: "0 40px", height: 60 }}>
             <Row align="middle" justify="space-between" style={{ height: "100%" }}>
                 <Col>
-                    <Image src={Logo} className="cursor-pointer" style={{ height:60 }} preview={false} />
+                    <Image src={Logo} className="cursor-pointer" style={{ height: 60 }} preview={false} />
                 </Col>
                 <Col flex="auto">
                     <Menu

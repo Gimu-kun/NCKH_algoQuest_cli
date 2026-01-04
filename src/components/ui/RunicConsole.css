@@ -1,6 +1,6 @@
 /* ========================================
-   RUNIC CONSOLE - SPELL EDITOR
-   Trình soạn thảo mã và biên dịch phép thuật
+   RUNIC CONSOLE - STYLE
+   Theme: Coding Interface & Magical IDE
    ======================================== */
 
 .runic-console-overlay {
@@ -19,16 +19,19 @@
 }
 
 .runic-console {
-  width: 90%;
-  max-width: 1000px;
-  height: 90vh;
-  background: var(--color-bg-panel);
-  border: var(--border-width-medium) solid var(--color-primary);
-  border-radius: var(--border-radius-lg);
+  width: 95%;
+  max-width: 1200px;
+  height: 85vh;
+  background-image: url('../../../assets/Ảnh Assets/UI/Coding Console UI.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  padding: var(--space-xl);
-  box-shadow: var(--shadow-glow-primary), var(--shadow-2xl);
+  padding: 60px 80px;
+  /* Adjust padding heavily to fit content inside the frame */
   position: relative;
   overflow: hidden;
   animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -85,7 +88,7 @@
   flex: 1;
   gap: var(--space-lg);
   min-height: 0;
-  /* Important for scroll */
+  /* Quan trọng để scroll trong flex item */
 }
 
 /* Left Panel: Description & Output */
@@ -261,16 +264,14 @@
 
 /* === ANIMATIONS === */
 @keyframes pulse {
-  0% {
+
+  0%,
+  100% {
     opacity: 0.8;
   }
 
   50% {
     opacity: 1;
-  }
-
-  100% {
-    opacity: 0.8;
   }
 }
 

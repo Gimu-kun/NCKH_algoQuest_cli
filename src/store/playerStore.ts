@@ -1,40 +1,62 @@
 /**
- * Quản Lý Trạng Thái Game Toàn Cục sử dụng Zustand
- * Quản lý tiến độ người chơi, kho đồ, nhiệm vụ và trạng thái game
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * QUẢN LÝ DỮ LIỆU NGƯỜI CHƠI (Player Store / Data Persistence)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Quản lý toàn bộ dữ liệu bền vững (persistent data) của người chơi:
+ * - Stats: Level, XP, tài nguyên (Gold, O-Points...).
+ * - Progression: Chapter hiện tại, ải đã qua, spells đã học.
+ * - Inventory: Items, Decorations, Cosmetics.
+ * - Achievements & Quests: Danh sách thành tựu và nhiệm vụ.
+ * 
+ * KỸ THUẬT:
+ * - Zustand Persist Middleware: Tự động lưu/đọc data từ LocalStorage.
+ * - Atomic Operations: Các hành động (mua item, nhận thưởng) đảm bảo tính toàn vẹn.
+ * 
+ * DATA STRUCTURE:
+ * - PlayerState: Chứa raw data.
+ * - PlayerActions: Chứa các hàm business logic (addGold, unlockLevel...).
+ * 
+ * @module PlayerStore
+ * @category State Management
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ResourceType } from '../data/models/Item';
+import { QUEST_DATABASE } from '../data/quests/QuestDatabase';
 
-// Thống kê và tiến độ người chơi
+// Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
-    // Thông tin cơ bản
+    // === Thông Tin Cơ Bản ===
     name: string;
     level: number;
     experience: number;
 
-    // Tài nguyên
+    // === Tài Nguyên (Economy) ===
     resources: Record<ResourceType, number>;
 
-    // Tiến độ
+    // === Tiến Độ Game (Progression) ===
     currentChapter: number;
-    completedDungeons: string[];  // Dungeon IDs
-    unlockedSpells: string[];     // Spell IDs
-    unlockedRunes: string[];      // Rune IDs
+    completedDungeons: string[];  // Danh sách ID các ải đã hoàn thành
+    unlockedSpells: string[];     // Danh sách ID các phép thuật (Blueprints)
+    unlockedRunes: string[];      // Danh sách ID các cổ ngữ (Runes)
 
-    // Kho Đồ
-    decorations: string[];        // Decoration item IDs
-    cosmetics: string[];          // Cosmetic item IDs
-    equippedCosmetics: Record<string, string>; // Slot -> item ID
+    // === Kho Đồ (Inventory) ===
+    decorations: string[];        // Vật phẩm trang trí Logic Farm (Trong kho)
+    placedDecorations: { id: string, x: number, y: number }[]; // Vật phẩm đã đặt ra farm
+    cosmetics: string[];          // Trang phục cho nhân vật
+    equippedCosmetics: Record<string, string>; // Slot (Head/Body) -> ItemID
 
-    // Thành Tựu & Huy Hiệu
-    achievements: string[];       // Unlocked achievement IDs
-    badges: string[];             // Unlocked badge IDs
-    equippedBadge: string | null; // Currently equipped badge
-    playerTitle: string | null;   // Current title
+    // === Thành Tựu & Danh Hiệu ===
+    achievements: string[];       // Thành tựu đã mở khóa
+    badges: string[];             // Huy hiệu đã thu thập
+    equippedBadge: string | null; // Huy hiệu đang đeo
+    playerTitle: string | null;   // Danh hiệu hiển thị (VD: "Algorithm Wizard")
 
-    // Nhiệm vụ
+    // === Hệ Thống Nhiệm Vụ (Quest System) ===
     quests: Array<{
         id: string;
         title: string;
@@ -47,48 +69,55 @@ export interface PlayerState {
             exp: number;
         };
     }>;
-    activeQuests: string[];       // Quest IDs
-    completedQuests: string[];
+    activeQuests: string[];       // ID các nhiệm vụ đang thực hiện
+    completedQuests: string[];    // ID các nhiệm vụ đã xong
 
-    // Thống kê
+    // === Thống Kê Tổng Hợp (Statistics) ===
     stats: {
-        questionsAnswered: number;
-        questionsCorrect: number;
-        spellsBuilt: number;
-        dungeonsCleared: number;
-        bossesDefeated: number;
+        questionsAnswered: number; // Tổng số câu hỏi đã trả lời
+        questionsCorrect: number;  // Số câu đúng
+        spellsBuilt: number;       // Số phép thuật đã chế tạo
+        dungeonsCleared: number;   // Số lần vượt ải
+        bossesDefeated: number;    // Số trùm đã hạ gục
     };
 }
 
+// Interface định nghĩa các hành động tương tác với dữ liệu
 interface PlayerActions {
-    // Tài nguyên
+    // === Quản Lý Tài Nguyên ===
     addResource: (type: ResourceType, amount: number) => void;
     removeResource: (type: ResourceType, amount: number) => boolean;
 
-    // Tiến độ
+    // === Quản Lý Tiến Độ ===
     completeDungeon: (dungeonId: string) => void;
     unlockSpell: (spellId: string) => void;
     unlockRune: (runeId: string) => void;
 
-    // Quests
+    // === Quản Lý Nhiệm Vụ ===
     startQuest: (questId: string) => void;
+    checkQuestProgress: (type: string, target: string, amount: number) => void;
     completeQuest: (questId: string) => void;
 
-    // Kho Đồ
+    // === Quản Lý Kho Đồ ===
     addDecoration: (itemId: string) => void;
+    placeDecoration: (itemId: string, x: number, y: number) => void;
     addCosmetic: (itemId: string) => void;
     equipCosmetic: (slot: string, itemId: string) => void;
 
-    // Stats
+    // === Cập Nhật Thống Kê ===
     recordAnswer: (correct: boolean) => void;
 
-    // Achievements
+    // === Thành Tựu & Danh Hiệu ===
     unlockAchievement: (achievementId: string) => void;
+    unlockBadge: (badgeId: string) => void;
+    equipBadge: (badgeId: string | null) => void;
+    setTitle: (title: string | null) => void;
 
-    // Reset (để kiểm thử)
+    // === Debug / Testing ===
     reset: () => void;
 }
 
+// Giá trị khởi tạo mặc định cho người chơi mới
 const initialPlayerState: PlayerState = {
     name: 'Apprentice',
     level: 1,
@@ -96,7 +125,7 @@ const initialPlayerState: PlayerState = {
     resources: {
         [ResourceType.DATA_WOOD]: 0,
         [ResourceType.LOGIC_STONE]: 0,
-        [ResourceType.O_POINTS]: 100,
+        [ResourceType.O_POINTS]: 100, // Tặng 100 điểm khởi đầu
         [ResourceType.GOLD]: 0
     },
     currentChapter: 1,
@@ -104,6 +133,7 @@ const initialPlayerState: PlayerState = {
     unlockedSpells: [],
     unlockedRunes: [],
     decorations: [],
+    placedDecorations: [], // Init empty
     cosmetics: [],
     equippedCosmetics: {},
     quests: [],
@@ -122,11 +152,19 @@ const initialPlayerState: PlayerState = {
     }
 };
 
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * CREATE PERSISTENT STORE
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
 export const usePlayerStore = create<PlayerState & PlayerActions>()(
     persist(
         (set, get) => ({
             ...initialPlayerState,
 
+            /**
+             * Thêm tài nguyên cho người chơi
+             */
             addResource: (type, amount) => {
                 set((state) => ({
                     resources: {
@@ -134,8 +172,14 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                         [type]: state.resources[type] + amount
                     }
                 }));
+                // Check Quests
+                get().checkQuestProgress('COLLECT_ITEMS', type, amount);
             },
 
+            /**
+             * Trừ tài nguyên (Dùng khi mua đồ, chế tạo)
+             * @returns true nếu trừ thành công, false nếu không đủ tiền
+             */
             removeResource: (type, amount) => {
                 const current = get().resources[type];
                 if (current < amount) return false;
@@ -149,6 +193,11 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                 return true;
             },
 
+            /**
+             * Ghi nhận hoàn thành ải
+             * - Thêm vào list completed
+             * - Tăng thống kê dungeonsCleared
+             */
             completeDungeon: (dungeonId) => {
                 set((state) => ({
                     completedDungeons: [...state.completedDungeons, dungeonId],
@@ -157,8 +206,13 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                         dungeonsCleared: state.stats.dungeonsCleared + 1
                     }
                 }));
+                // Check Quests
+                get().checkQuestProgress('COMPLETE_DUNGEON', dungeonId, 1);
             },
 
+            /**
+             * Mở khóa phép thuật mới (Sau khi chế tạo thành công)
+             */
             unlockSpell: (spellId) => {
                 set((state) => ({
                     unlockedSpells: [...state.unlockedSpells, spellId],
@@ -176,15 +230,91 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
             },
 
             startQuest: (questId) => {
+                const { activeQuests, completedQuests } = get();
+
+                // Kiểm tra nếu đã nhận hoặc đã xong
+                if (activeQuests.includes(questId) || completedQuests.includes(questId)) return;
+
+                const questDef = QUEST_DATABASE[questId];
+
+                if (!questDef) {
+                    console.error(`Quest ID ${questId} not found in database`);
+                    return;
+                }
+
+                const newQuestEntry = {
+                    id: questDef.id,
+                    title: questDef.name,
+                    description: questDef.description,
+                    progress: 0,
+                    target: questDef.requirements[0].count, // Giả sử quest đơn giản 1 requirement
+                    status: 'active' as const,
+                    rewards: {
+                        gold: questDef.rewards.gold || 0,
+                        exp: questDef.rewards.oPoints || 0
+                    }
+                };
+
                 set((state) => ({
-                    activeQuests: [...state.activeQuests, questId]
+                    activeQuests: [...state.activeQuests, questId],
+                    quests: [...state.quests, newQuestEntry]
                 }));
             },
 
+            checkQuestProgress: (type, target, amount) => {
+                const { quests, activeQuests, completeQuest } = get();
+
+                activeQuests.forEach(questId => {
+                    const questEntry = quests.find(q => q.id === questId);
+                    if (!questEntry) return;
+
+                    // Lookup definition for detailed requirements
+                    const questDef = QUEST_DATABASE[questId];
+                    if (!questDef) return;
+
+                    // Simple check: Assumes quest has 1 main requirement tracked by 'progress'
+                    // In a complex system, we'd track each requirement separately.
+                    const req = questDef.requirements[0];
+
+                    if (req.type === type && (req.target === target || req.target === 'any')) {
+                        const newProgress = Math.min(questEntry.progress + amount, questEntry.target);
+
+                        if (newProgress !== questEntry.progress) {
+                            // Update progress in state
+                            set(state => ({
+                                quests: state.quests.map(q =>
+                                    q.id === questId ? { ...q, progress: newProgress } : q
+                                )
+                            }));
+
+                            // Check completion
+                            if (newProgress >= questEntry.target) {
+                                completeQuest(questId);
+                            }
+                        }
+                    }
+                });
+            },
+
             completeQuest: (questId) => {
+                const { quests, addResource } = get();
+                const questEntry = quests.find(q => q.id === questId);
+
+                if (questEntry) {
+                    // Grant Rewards
+                    if (questEntry.rewards.gold > 0) addResource(ResourceType.GOLD, questEntry.rewards.gold);
+                    if (questEntry.rewards.exp > 0) addResource(ResourceType.O_POINTS, questEntry.rewards.exp);
+
+                    // Note: More complex rewards (items, blueprints) need more handlers
+                }
+
                 set((state) => ({
                     activeQuests: state.activeQuests.filter(id => id !== questId),
-                    completedQuests: [...state.completedQuests, questId]
+                    completedQuests: [...state.completedQuests, questId],
+                    // Update status in quests array
+                    quests: state.quests.map(q =>
+                        q.id === questId ? { ...q, status: 'completed' } : q
+                    )
                 }));
             },
 
@@ -192,6 +322,22 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                 set((state) => ({
                     decorations: [...state.decorations, itemId]
                 }));
+            },
+
+            placeDecoration: (itemId, x, y) => {
+                set((state) => {
+                    // Remove one instance from inventory
+                    const index = state.decorations.indexOf(itemId);
+                    if (index === -1) return {};
+
+                    const newDecorations = [...state.decorations];
+                    newDecorations.splice(index, 1);
+
+                    return {
+                        decorations: newDecorations,
+                        placedDecorations: [...state.placedDecorations, { id: itemId, x, y }]
+                    };
+                });
             },
 
             addCosmetic: (itemId) => {
@@ -209,6 +355,10 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                 }));
             },
 
+            /**
+             * Ghi lại kết quả trả lời câu hỏi
+             * - Cập nhật thống kê tổng số câu và số câu đúng
+             */
             recordAnswer: (correct) => {
                 set((state) => ({
                     stats: {
@@ -225,12 +375,29 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
                 }));
             },
 
+            unlockBadge: (badgeId) => {
+                set((state) => ({
+                    badges: [...state.badges, badgeId]
+                }));
+            },
+
+            equipBadge: (badgeId) => {
+                set({ equippedBadge: badgeId });
+            },
+
+            setTitle: (title) => {
+                set({ playerTitle: title });
+            },
+
+            /**
+             * Reset toàn bộ dữ liệu về mặc định (Dùng cho Testing/New Game)
+             */
             reset: () => {
                 set(initialPlayerState);
             }
         }),
         {
-            name: 'algorithm-wizard-player', // LocalStorage key
+            name: 'algorithm-wizard-player', // Key lưu trong LocalStorage
         }
     )
 );

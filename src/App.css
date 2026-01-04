@@ -1,5 +1,5 @@
 /**
- * Global App Styles - Algorithm Wizard
+ * KIỂU DÁNG ỨNG DỤNG TOÀN CỤC (Global App Styles)
  */
 
 .app {
@@ -10,7 +10,7 @@
   background: #0a0a0f;
 }
 
-/* Pixel Art Rendering */
+/* Hiển thị Pixel Art (Pixel Art Rendering) */
 * {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
@@ -48,7 +48,7 @@
   color: #a8dadc;
 }
 
-/* Scrollbar Styling */
+/* Scrollbar Styling (Kiểu thanh cuộn) */
 ::-webkit-scrollbar {
   width: 10px;
 }

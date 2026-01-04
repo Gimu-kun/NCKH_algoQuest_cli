@@ -1,6 +1,6 @@
 /* ========================================
-   MAIN MENU - REDESIGNED v2.0
-   Modern, Premium Entry Experience
+   MENU CHÍNH (Main Menu)
+   Trải nghiệm người dùng hiện đại, cao cấp v2.0
    ======================================== */
 
 .main-menu {
@@ -14,7 +14,7 @@
     justify-content: center;
 }
 
-/* === BACKGROUND === */
+/* === BACKGROUND (Hình nền) === */
 .menu-background {
     position: absolute;
     top: 0;
@@ -112,7 +112,7 @@
     opacity: 0.9;
 }
 
-/* === MENU BUTTONS === */
+/* === MENU BUTTONS (Nút điều hướng) === */
 .menu-buttons {
     position: relative;
     z-index: 1;
@@ -196,7 +196,7 @@
     box-shadow: var(--shadow-glow-primary);
 }
 
-/* === VERSION INFO === */
+/* === VERSION INFO (Thông tin phiên bản) === */
 .version-info {
     position: absolute;
     bottom: var(--space-md);
