@@ -84,15 +84,15 @@ export const ASSETS = {
 
     // ========== CHARACTERS (Nhân vật & NPCs) ==========
     CHARACTERS: {
-        SPARKY_NORMAL: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Normal.png`,
-        SPARKY_ALERT: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Alert.png`,
-        SPARKY_ERROR: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Error.png`,
-        SPARKY_SUCCESS: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Success.png`,
+        SPARKY_NORMAL: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Normal).png`,
+        SPARKY_ALERT: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Alert).png`,
+        SPARKY_ERROR: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Synax Error).png`,
+        SPARKY_SUCCESS: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Normal).png`, // Fallback as no success sprite
 
-        PROFESSOR_ALRIC: `${ASSET_BASE}/Nhân vật/Professor Alric.png`,
+        PROFESSOR_ALRIC: `${ASSET_BASE}/Nhân vật/Giáo Sư Alric (The Mentor).png`,
         LINH: `${ASSET_BASE}/Nhân vật/Linh (The Archivist).png`,
         BORK: `${ASSET_BASE}/Nhân vật/Bork (The Blacksmith).png`,
-        GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Guild Leader.png`,
+        GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png`,
     }
 } as const;
 

@@ -38,7 +38,7 @@ import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { usePlayerStore } from '../store/playerStore';
 import { ResourceType } from '../data/models/Item';
-import { DUNGEON_1, type DungeonRoom } from '../data/dungeons/dungeon1';
+import { type DungeonRoom } from '../data/dungeons/dungeon1';
 import inputManager from '../game/engine/InputManager';
 import { MonsterSpawner } from '../game/spawner/MonsterSpawner';
 import './Dungeon.css';
@@ -47,29 +47,37 @@ export const Dungeon: React.FC = () => {
     // Hooks truy cập Global State
     const {
         setScene, startCombat, showSparky,
-        dungeonState, initDungeon, updateDungeonState
+        dungeonState, updateDungeonState
     } = useGameStore();
     const { addResource } = usePlayerStore();
     const [showMessage, setShowMessage] = useState<React.ReactNode | null>(null);
 
-    // Initial Load: Tạo Dungeon nếu chưa có
+    // Initial Load: Tạo Dungeon nếu chưa có hoặc state bị lỗi
     useEffect(() => {
-        if (!dungeonState) {
-            initDungeon(DUNGEON_1);
+        // Kiểm tra tính hợp lệ của dungeonState
+        const isValidState = dungeonState && dungeonState.config && dungeonState.rooms && dungeonState.playerPos;
+
+        if (!isValidState) {
+            console.log("Dungeon State invalid or missing, initializing...");
+            // Nếu mất state (F5), thử vào lại dungeon hiện tại hoặc mặc định Dungeon 1
+            const dungeonId = useGameStore.getState().currentDungeonId || 'dungeon_1';
+            useGameStore.getState().enterDungeon(dungeonId);
         }
-    }, [dungeonState, initDungeon]);
+    }, [dungeonState]);
 
     // Hướng dẫn tân thủ (Tutorial Message)
     useEffect(() => {
         const timer = setTimeout(() => {
-            showSparky(
-                `Chào mừng đến với ${DUNGEON_1.name}!\n` +
-                `👉 Cách chơi: Dùng phím W-A-S-D hoặc các nút mũi tên trên màn hình để di chuyển.\n` +
-                `🎯 Nhiệm vụ: Khám phá các ô vuông để tìm Kho Báu và Trùm cuối!`
-            );
+            if (dungeonState?.config) {
+                showSparky(
+                    `Chào mừng đến với ${dungeonState.config.name}!\n` +
+                    `👉 Cách chơi: Dùng phím W-A-S-D hoặc các nút mũi tên trên màn hình để di chuyển.\n` +
+                    `🎯 Nhiệm vụ: Khám phá các ô vuông để tìm Kho Báu và Trùm cuối!`
+                );
+            }
         }, 1000);
         return () => clearTimeout(timer);
-    }, [showSparky]);
+    }, [showSparky, dungeonState?.config]);
 
     const rooms = dungeonState?.rooms;
     const playerPos = dungeonState?.playerPos;
@@ -86,8 +94,8 @@ export const Dungeon: React.FC = () => {
         const newY = playerPos.y + dy;
 
         // 1. Kiểm tra va chạm biên (Boundary Check / Collision Detection)
-        if (newX < 0 || newX >= DUNGEON_1.size.width ||
-            newY < 0 || newY >= DUNGEON_1.size.height) {
+        if (newX < 0 || newX >= dungeonState.config.size.width ||
+            newY < 0 || newY >= dungeonState.config.size.height) {
             setShowMessage(<span><i className="fi fi-rr-ban"></i> Không thể đi hướng này! (Tường chắn)</span>);
             setTimeout(() => setShowMessage(null), 1500);
             return;
@@ -238,8 +246,8 @@ export const Dungeon: React.FC = () => {
         <div className="dungeon-scene">
             {/* Header / Top Bar */}
             <div className="dungeon-header">
-                <h1>{DUNGEON_1.name}</h1>
-                <p>{DUNGEON_1.description}</p>
+                <h1>{dungeonState.config.name}</h1>
+                <p>{dungeonState.config.description}</p>
                 <button className="btn-exit" onClick={() => setScene(GameScene.HUB_WORLD)}>
                     ← Rời Hầm Ngục
                 </button>

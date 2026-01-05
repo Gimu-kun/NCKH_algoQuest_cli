@@ -33,6 +33,8 @@
 import { CHAPTER_1_QUESTIONS } from '../questions/chapter1';
 import { CHAPTER_2_QUESTIONS } from '../questions/chapter2';
 import { CHAPTER_3_QUESTIONS } from '../questions/chapter3';
+import { CHAPTER_4_QUESTIONS } from '../questions/chapter4';
+import { CHAPTER_5_QUESTIONS } from '../questions/chapter5';
 import { MonsterSpawner } from '../../game/spawner/MonsterSpawner';
 import type { Question } from '../models/Question';
 import { BloomLevel } from '../models/Question';
@@ -48,6 +50,8 @@ import { BloomLevel } from '../models/Question';
  * - Chapter 1: Algorithm Complexity (Big O, Time/Space Analysis).
  * - Chapter 2: Sorting & Searching (Bubble, Merge, Quick, Binary Search).
  * - Chapter 3: Linked Lists (Singly, Doubly, Circular, Operations).
+ * - Chapter 4: Stack & Queue.
+ * - Chapter 5: Binary Search Tree (BST).
  * 
  * MỖI BANK CÓ: 40 questions (10R + 10U + 10AP + 10AN).
  */
@@ -55,6 +59,8 @@ const QUESTION_BANKS = {
     1: CHAPTER_1_QUESTIONS,
     2: CHAPTER_2_QUESTIONS,
     3: CHAPTER_3_QUESTIONS,
+    4: CHAPTER_4_QUESTIONS,
+    5: CHAPTER_5_QUESTIONS,
 };
 
 /**

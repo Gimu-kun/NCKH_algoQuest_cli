@@ -57,6 +57,10 @@
     font-size: var(--text-2xl);
     color: var(--color-primary);
     text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 /* === CONTENT (Nội dung) === */
@@ -80,6 +84,9 @@
     color: var(--color-secondary);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .setting-item {

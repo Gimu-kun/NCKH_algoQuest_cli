@@ -84,16 +84,41 @@ export const DialogueBox: React.FC = () => {
                 useGameStore.getState().setScene(GameScene.SHOP);
                 break;
             case 'CAMPAIGN_QUESTS': {
-                const questId = 'quest_intro_1'; // Nhiệm vụ khởi đầu
                 const { activeQuests, completedQuests, startQuest } = usePlayerStore.getState();
+                let questToGive = 'quest_intro_1';
 
-                if (completedQuests.includes(questId)) {
-                    useGameStore.getState().showSparky('Bạn đã hoàn thành nhiệm vụ này rồi! Tuyệt vời!');
-                } else if (activeQuests.includes(questId)) {
-                    useGameStore.getState().showSparky('Bạn đang thực hiện nhiệm vụ này. Hãy kiểm tra Sổ Tay (Q)!');
+                // Simple quest chain logic
+                if (completedQuests.includes('quest_intro_1')) {
+                    questToGive = 'quest_chapter_2';
+                }
+                if (completedQuests.includes('quest_chapter_2')) {
+                    questToGive = 'quest_chapter_3';
+                }
+                if (completedQuests.includes('quest_chapter_3')) {
+                    questToGive = 'quest_chapter_4';
+                }
+                if (completedQuests.includes('quest_chapter_4')) {
+                    questToGive = 'quest_chapter_5';
+                }
+
+                // If chapter 5 is also completed
+                if (completedQuests.includes('quest_chapter_5')) {
+                    useGameStore.getState().showSparky('Bạn đã hoàn thành tất cả nhiệm vụ hiện có! Tuyệt vời!');
+                    break;
+                }
+
+                if (activeQuests.includes(questToGive)) {
+                    useGameStore.getState().showSparky('Bạn đang thực hiện nhiệm vụ này rồi. Hãy kiểm tra Sổ Tay (Q)!');
                 } else {
-                    startQuest(questId);
-                    useGameStore.getState().showSparky('📜 Đã nhận nhiệm vụ: Khởi Đầu Hành Trình!');
+                    startQuest(questToGive);
+                    const questNames: Record<string, string> = {
+                        'quest_intro_1': 'Khởi Đầu Hành Trình',
+                        'quest_chapter_2': 'Đền Thờ Hỗn Loạn',
+                        'quest_chapter_3': 'Hành Lang Dây Xích',
+                        'quest_chapter_4': 'Thánh Tích Hai Mặt',
+                        'quest_chapter_5': 'Khu Rừng Đệ Quy'
+                    };
+                    useGameStore.getState().showSparky(`📜 Đã nhận nhiệm vụ: ${questNames[questToGive] || 'Nhiệm Vụ Mới'}!`);
                 }
                 break;
             }

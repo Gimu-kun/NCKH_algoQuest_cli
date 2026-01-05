@@ -32,9 +32,7 @@ export const HubWorld: React.FC = () => {
     const { setScene, enterDungeon, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
 
     // Handler Actions
-    const handleEnterDungeon = () => {
-        enterDungeon('dungeon_1'); // Mặc định vào Dungeon 1
-    };
+
 
     const handleTestCombat = () => {
         setScene(GameScene.COMBAT); // Test mode combat
@@ -164,8 +162,23 @@ export const HubWorld: React.FC = () => {
                 {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
                     <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
-                    <button className="test-btn" onClick={handleEnterDungeon}>
-                        <i className="fi fi-rr-sword"></i> Vào Hầm Ngục 1
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_1')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 1 (Intro)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_2')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 2 (Sort)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_3')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 3 (Linked List)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_4')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 4 (Stack/Queue)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_5')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 5 (BST)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_7')}>
+                        <i className="fi fi-rr-skull"></i> ẢI FINAL (Void Core)
                     </button>
                     <button className="test-btn" onClick={handleTestCombat}>
                         <i className="fi fi-rr-bullseye"></i> Thử Nghiệm Chiến Đấu
