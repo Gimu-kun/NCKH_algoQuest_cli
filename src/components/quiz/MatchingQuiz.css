@@ -1,4 +1,4 @@
-/* Matching Quiz Styles */
+/* KIỂU DÁNG TRẮC NGHIỆM NỐI TỪ (Matching Quiz Styles) */
 
 .matching-quiz {
     width: 100%;
@@ -31,7 +31,7 @@
     white-space: nowrap;
 }
 
-/* Matching Grid */
+/* Matching Grid (Lưới nối từ) */
 .matching-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -113,7 +113,7 @@
     color: #e74c3c;
 }
 
-/* Correct Matches Section */
+/* Correct Matches Section (Phần kết nối đúng) */
 .correct-matches {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid #4ecca3;
@@ -170,7 +170,7 @@
     line-height: 1.6;
 }
 
-/* Actions */
+/* Actions (Hành động) */
 .matching-actions {
     display: flex;
     gap: 12px;

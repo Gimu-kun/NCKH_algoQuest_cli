@@ -1,6 +1,21 @@
 /**
- * Trang Bảng Xếp Hạng
- * Hiển thị rankings cho các loại khác nhau
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * PAGE: BẢNG XẾP HẠNG (Leaderboards)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Hiển thị thứ hạng của người chơi so với cộng đồng (Mock Data cho MVP).
+ * Khuyến khích tính cạnh tranh thông qua điểm số và tốc độ giải thuật toán.
+ * 
+ * TÍNH NĂNG:
+ * - Type Selector: Chuyển đổi giữa các bảng xếp hạng (Code Speed, Optimization, v.v.).
+ * - Ranking List: Danh sách Top 10-100 người chơi xuất sắc nhất.
+ * - Player Rank Card: Thẻ hiển thị thứ hạng hiện tại của người chơi (Sticky).
+ * - Reward Preview: Xem phần thưởng cho từng bậc xếp hạng.
+ * 
+ * @page Leaderboards
+ * @category Pages
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React, { useState } from 'react';
@@ -12,15 +27,22 @@ import type { LeaderboardEntry } from '../data/leaderboards';
 import './Leaderboards.css';
 
 export const Leaderboards: React.FC = () => {
+    // Hooks truy cập state
     const { setScene } = useGameStore();
     const { name } = usePlayerStore();
+
+    // Local state cho loại bảng xếp hạng đang xem
     const [selectedType, setSelectedType] = useState<LeaderboardType>(LeaderboardType.CODE_SPEED);
 
+    // Lấy dữ liệu bảng xếp hạng tương ứng (Mock Data)
     const currentLeaderboard = MOCK_LEADERBOARDS[selectedType];
 
-    // Mock player's rank (sẽ được lấy từ backend)
+    /**
+     * Dữ liệu giả lập thứ hạng của người chơi hiện tại
+     * Trong thực tế, dữ liệu này sẽ được fetch từ Backend API
+     */
     const playerEntry: LeaderboardEntry = {
-        rank: 25,
+        rank: 25, // Ví dụ: Đang đứng thứ 25
         playerId: 'current_player',
         playerName: name,
         score: 1200,
@@ -30,9 +52,10 @@ export const Leaderboards: React.FC = () => {
         },
         lastUpdated: new Date()
     };
-    // Note: 'Apprentice' title comes from backend/mock Logic, changing hardcoded logic here is risky without changing data structure.
-    // I will just change the UI labels.
 
+    /**
+     * Helper: Xác định màu sắc khung viền dựa trên thứ hạng (Top 3)
+     */
     const getRankColor = (rank: number) => {
         if (rank === 1) return 'gold';
         if (rank === 2) return 'silver';
@@ -40,6 +63,9 @@ export const Leaderboards: React.FC = () => {
         return 'default';
     };
 
+    /**
+     * Helper: Lấy icon huy chương cho Top 3
+     */
     const getRankIcon = (rank: number) => {
         if (rank === 1) return '🥇';
         if (rank === 2) return '🥈';
@@ -49,19 +75,23 @@ export const Leaderboards: React.FC = () => {
 
     return (
         <div className="leaderboards-page">
-            {/* Header */}
+            {/* === HEADER === */}
             <div className="leaderboards-header">
                 <button className="btn-back" onClick={() => setScene(GameScene.HUB_WORLD)}>
-                    ← Về Sảnh
+                    <i className="fi fi-rr-arrow-left"></i> Về Sảnh
                 </button>
                 <h1>🏆 Bảng Xếp Hạng</h1>
-                <p className="subtitle">Cạnh tranh với các Pháp Sư khác!</p>
+                <p className="subtitle">Cạnh tranh vinh quang cùng các Pháp Sư khác!</p>
             </div>
 
-            {/* Type Selector */}
+            {/* === LEADERBOARD TYPE SELECTOR === */}
             <div className="leaderboard-types">
                 {Object.values(LeaderboardType).map(type => {
                     const leaderboard = MOCK_LEADERBOARDS[type];
+                    // Tách icon và tên từ display name (Ví dụ: "⚡ Tốc Độ Code" -> Icon: ⚡, Name: Tốc Độ Code)
+                    const icon = leaderboard.displayName.split(' ')[0];
+                    const name = leaderboard.displayName.substring(2);
+
                     return (
                         <motion.button
                             key={type}
@@ -70,24 +100,25 @@ export const Leaderboards: React.FC = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            <span className="type-icon">{leaderboard.displayName.split(' ')[0]}</span>
-                            <span className="type-name">{leaderboard.displayName.substring(2)}</span>
+                            <span className="type-icon">{icon}</span>
+                            <span className="type-name">{name}</span>
                         </motion.button>
                     );
                 })}
             </div>
 
-            {/* Current Leaderboard */}
+            {/* === MAIN CONTENT === */}
             <div className="leaderboard-container">
+                {/* Info & Meta Data */}
                 <div className="leaderboard-info">
                     <h2>{currentLeaderboard.displayName}</h2>
                     <p>{currentLeaderboard.description}</p>
                     <span className="last-refresh">
-                        Cập nhật cuối: {currentLeaderboard.lastRefresh.toLocaleString('vi-VN')}
+                        Cập nhật cuối: {currentLeaderboard.lastRefresh.toLocaleTimeString('vi-VN')} {currentLeaderboard.lastRefresh.toLocaleDateString('vi-VN')}
                     </span>
                 </div>
 
-                {/* Player's Current Rank (Sticky) */}
+                {/* === PLAYER RANK CARD (STICKY) === */}
                 <div className="player-rank-card">
                     <div className="rank-position">{getRankIcon(playerEntry.rank)}</div>
                     <div className="player-info">
@@ -105,13 +136,13 @@ export const Leaderboards: React.FC = () => {
                                 <span>⚡ {playerEntry.stats.avgCodeSpeed}ms avg</span>
                             )}
                             {playerEntry.stats.questionsAnswered && (
-                                <span>📝 {playerEntry.stats.questionsAnswered} questions</span>
+                                <span>📝 {playerEntry.stats.questionsAnswered} câu</span>
                             )}
                         </div>
                     )}
                 </div>
 
-                {/* Top Rankings */}
+                {/* === GLOBAL RANKINGS LIST === */}
                 <div className="rankings-list">
                     {currentLeaderboard.entries.length > 0 ? (
                         currentLeaderboard.entries.map((entry, index) => (
@@ -163,21 +194,21 @@ export const Leaderboards: React.FC = () => {
                         ))
                     ) : (
                         <div className="empty-leaderboard">
-                            <p>📊 Chưa có dữ liệu xếp hạng</p>
-                            <p className="empty-subtitle">Hãy là người đầu tiên!</p>
+                            <p>📊 Chưa có dữ liệu bảng xếp hạng</p>
+                            <p className="empty-subtitle">Hãy là người đầu tiên ghi danh!</p>
                         </div>
                     )}
                 </div>
 
-                {/* Rewards Section */}
+                {/* === REWARDS PREVIEW === */}
                 {currentLeaderboard.rewards && currentLeaderboard.rewards.length > 0 && (
                     <div className="rewards-section">
-                        <h3>🎁 Phần Thưởng</h3>
+                        <h3>🎁 Phần Thưởng Tuần Này</h3>
                         <div className="rewards-list">
                             {currentLeaderboard.rewards.map((reward, index) => (
                                 <div key={index} className="reward-item">
                                     <span className="reward-rank">
-                                        Top {reward.rank === 1 ? '1st' : reward.rank === 10 ? '10' : reward.rank}
+                                        Top {reward.rank === 1 ? '1' : reward.rank === 10 ? '10' : reward.rank}
                                     </span>
                                     <span className="reward-details">
                                         {reward.oPoints && `${reward.oPoints} O-Points`}

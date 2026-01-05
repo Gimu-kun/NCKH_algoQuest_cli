@@ -1,6 +1,6 @@
 /* ========================================
-   HUD (HEADS UP DISPLAY) - REDESIGNED v2.0
-   Always-on Game Interface
+   HUD (HEADS UP DISPLAY) - STYLE
+   Theme: Always-on Game Interface v2
    ======================================== */
 
 .hud-container {
@@ -10,6 +10,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    /* Cho phép click xuyên qua vùng trống */
     z-index: 100;
     padding: var(--space-md);
 }
@@ -21,6 +22,7 @@
     border-radius: var(--border-radius-md);
     padding: 12px 20px;
     pointer-events: auto;
+    /* Bật lại click cho panel */
     box-shadow: var(--shadow-glow-primary);
     backdrop-filter: blur(8px);
 }
@@ -32,13 +34,21 @@
     display: flex;
     align-items: center;
     gap: var(--space-md);
-    min-width: 240px;
+    min-width: 300px;
+    height: 100px;
+    background-image: url('../../../assets/Ảnh Assets/UI/Player Status HUD.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 15px 40px 15px 25px;
+    /* Adjust padding based on image */
     transition: all var(--transition-base);
 }
 
 .hud-player-info:hover {
     transform: scale(1.02);
-    box-shadow: 0 0 25px rgba(78, 204, 163, 0.5);
+    filter: brightness(1.1);
+    box-shadow: none;
+    /* Shadow handled by image or not needed */
 }
 
 .player-avatar {
@@ -229,8 +239,8 @@
 
 /* Tooltip for buttons */
 .hud-btn::after {
-    content: attr(data-tooltip);
-    /* Requires adding data-tooltip in React */
+    content: attr(title);
+    /* Sử dụng title attribute làm tooltip */
     position: absolute;
     bottom: 100%;
     left: 50%;

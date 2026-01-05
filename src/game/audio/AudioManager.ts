@@ -1,213 +1,161 @@
 /**
- * Bộ Quản Lý Âm Thanh
- * Xử lý nhạc nền và hiệu ứng âm thanh
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * HỆ THỐNG ÂM THANH (Audio Manager)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Quản lý toàn bộ âm thanh trong game:
+ * - Nhạc nền (BGM): Lặp lại, chuyển bài mượt mà.
+ * - Hiệu ứng (SFX): Tiếng click, chiến đấu, thông báo.
+ * - Volume Control: Điều chỉnh âm lượng theo 3 kênh (Master, Music, SFX).
+ * 
+ * TÍNH NĂNG:
+ * - Singleton Pattern: Truy cập toàn cục thông qua `audioManager`.
+ * - Persistence: Tự động lưu cài đặt âm lượng vào LocalStorage.
+ * - Error Handling: Xử lý trường hợp trình duyệt chặn Autoplay.
+ * 
+ * @module AudioManager
+ * @category Audio System
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-class AudioManager {
-    private bgMusic: HTMLAudioElement | null = null;
-    private sfxVolume: number = 1.0;
-    private musicVolume: number = 0.8;
+export class AudioManager {
+    private static instance: AudioManager;
+
+    // Audio Elements
+    private bgm: HTMLAudioElement | null = null;
+
+    // Volume Settings (0.0 to 1.0)
     private masterVolume: number = 1.0;
-    private muted: boolean = false;
+    private musicVolume: number = 0.5;
+    private sfxVolume: number = 1.0;
 
-    // Bộ nhớ cache hiệu ứng âm thanh
-    private sfxCache: Map<string, HTMLAudioElement> = new Map();
+    // State
+    private currentBgmPath: string | null = null;
+    private isMuted: boolean = false;
 
-    constructor() {
-        // Khởi tạo với tùy chọn người dùng từ localStorage
+    private constructor() {
         this.loadSettings();
     }
 
-    /**
-     * Tải cài đặt từ localStorage
-     */
-    private loadSettings() {
-        const saved = localStorage.getItem('audio-settings');
-        if (saved) {
-            const settings = JSON.parse(saved);
-            this.masterVolume = settings.masterVolume ?? 1.0;
-            this.musicVolume = settings.musicVolume ?? 0.8;
-            this.sfxVolume = settings.sfxVolume ?? 1.0;
-            this.muted = settings.muted ?? false;
+    public static getInstance(): AudioManager {
+        if (!AudioManager.instance) {
+            AudioManager.instance = new AudioManager();
         }
+        return AudioManager.instance;
     }
 
     /**
-     * Lưu cài đặt vào localStorage
+     * Phát nhạc nền (Backgound Music)
+     * Nếu nhạc đang phát trùng với request thì không làm gì (tiếp tục phát).
+     * @param path Đường dẫn đến file âm thanh
      */
-    private saveSettings() {
-        localStorage.setItem('audio-settings', JSON.stringify({
-            masterVolume: this.masterVolume,
-            musicVolume: this.musicVolume,
-            sfxVolume: this.sfxVolume,
-            muted: this.muted
-        }));
-    }
-
-    /**
-     * Phát nhạc nền (lặp lại)
-     */
-    public playMusic(src: string) {
-        if (this.bgMusic) {
-            this.bgMusic.pause();
+    public playBGM(path: string): void {
+        if (this.currentBgmPath === path && this.bgm && !this.bgm.paused) {
+            return; // Đã đang phát bài này
         }
 
-        this.bgMusic = new Audio(src);
-        this.bgMusic.loop = true;
-        this.bgMusic.volume = this.getMusicVolume();
+        this.stopBGM();
 
-        if (!this.muted) {
-            this.bgMusic.play().catch(err => {
-                console.warn('[AudioManager] Music autoplay blocked:', err);
+        this.currentBgmPath = path;
+        this.bgm = new Audio(path);
+        this.bgm.loop = true;
+        this.updateBgmVolume();
+
+        const playPromise = this.bgm.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.warn('[AudioManager] Autoplay blocked or file not found:', error);
             });
         }
     }
 
-    /**
-     * Dừng nhạc nền
-     */
-    public stopMusic() {
-        if (this.bgMusic) {
-            this.bgMusic.pause();
-            this.bgMusic.currentTime = 0;
+    public stopBGM(): void {
+        if (this.bgm) {
+            this.bgm.pause();
+            this.bgm.currentTime = 0;
+            this.bgm = null;
         }
     }
 
     /**
-     * Phát hiệu ứng âm thanh
+     * Phát hiệu ứng âm thanh (Sound Effect)
+     * SFX luôn tạo instance mới để có thể phát chồng lên nhau (overlapping).
+     * @param path Đường dẫn file SFX
      */
-    public playSFX(name: string, src?: string) {
-        if (this.muted) return;
+    public playSFX(path: string): void {
+        const sfx = new Audio(path);
+        const volume = this.isMuted ? 0 : (this.masterVolume * this.sfxVolume);
+        sfx.volume = Math.max(0, Math.min(1, volume));
 
-        // Kiểm tra cache trước
-        let sfx = this.sfxCache.get(name);
-
-        if (!sfx && src) {
-            // Tạo element audio mới
-            sfx = new Audio(src);
-            this.sfxCache.set(name, sfx);
-        }
-
-        if (sfx) {
-            sfx.volume = this.getSFXVolume();
-            sfx.currentTime = 0; // Reset về đầu
-            sfx.play().catch(err => {
-                console.warn(`[AudioManager] SFX ${name} play failed:`, err);
-            });
-        }
-    }
-
-    /**
-     * Tải trước hiệu ứng âm thanh
-     */
-    public preloadSFX(sounds: { name: string; src: string }[]) {
-        sounds.forEach(({ name, src }) => {
-            if (!this.sfxCache.has(name)) {
-                const audio = new Audio(src);
-                audio.preload = 'auto';
-                this.sfxCache.set(name, audio);
-            }
+        sfx.play().catch(() => {
+            // SFX lỗi thường do file thiếu, ignore để không spam console
+            // console.debug('[AudioManager] SFX play failed:', path);
         });
     }
 
     /**
-     * Set master volume (0-1)
+     * CẬP NHẬT ÂM LƯỢNG
      */
-    public setMasterVolume(volume: number) {
-        this.masterVolume = Math.max(0, Math.min(1, volume));
-        this.updateVolumes();
+    public setMasterVolume(value: number): void {
+        this.masterVolume = this.clamp(value);
+        this.updateBgmVolume();
         this.saveSettings();
     }
 
-    /**
-     * Set music volume (0-1)
-     */
-    public setMusicVolume(volume: number) {
-        this.musicVolume = Math.max(0, Math.min(1, volume));
-        this.updateVolumes();
+    public setMusicVolume(value: number): void {
+        this.musicVolume = this.clamp(value);
+        this.updateBgmVolume();
         this.saveSettings();
     }
 
-    /**
-     * Set SFX volume (0-1)
-     */
-    public setSFXVolume(volume: number) {
-        this.sfxVolume = Math.max(0, Math.min(1, volume));
+    public setSfxVolume(value: number): void {
+        this.sfxVolume = this.clamp(value);
         this.saveSettings();
     }
 
-    /**
-     * Chuyển đổi tắt tiếng
-     */
-    public toggleMute() {
-        this.muted = !this.muted;
-
-        if (this.muted) {
-            this.stopMusic();
-        } else if (this.bgMusic) {
-            this.bgMusic.play().catch(() => { });
-        }
-
-        this.saveSettings();
-        return this.muted;
-    }
-
-    /**
-     * Lấy âm lượng tổng hiện tại
-     */
-    public getMasterVolume(): number {
-        return this.masterVolume;
-    }
-
-    /**
-     * Lấy âm lượng nhạc hiệu dụng
-     */
-    private getMusicVolume(): number {
-        return this.masterVolume * this.musicVolume;
-    }
-
-    /**
-     * Lấy âm lượng SFX hiệu dụng
-     */
-    private getSFXVolume(): number {
-        return this.masterVolume * this.sfxVolume;
-    }
-
-    /**
-     * Cập nhật âm lượng tất cả audio đang phát
-     */
-    private updateVolumes() {
-        if (this.bgMusic) {
-            this.bgMusic.volume = this.getMusicVolume();
-        }
-    }
-
-    /**
-     * Lấy các cài đặt hiện tại
-     */
     public getSettings() {
         return {
-            masterVolume: this.masterVolume,
-            musicVolume: this.musicVolume,
-            sfxVolume: this.sfxVolume,
-            muted: this.muted
+            master: this.masterVolume,
+            music: this.musicVolume,
+            sfx: this.sfxVolume
         };
+    }
+
+    // INTERNAL HELPERS
+    private updateBgmVolume(): void {
+        if (this.bgm) {
+            const finalVol = this.isMuted ? 0 : (this.masterVolume * this.musicVolume);
+            this.bgm.volume = Math.max(0, Math.min(1, finalVol));
+        }
+    }
+
+    private clamp(value: number): number {
+        return Math.max(0, Math.min(1, value));
+    }
+
+    private saveSettings(): void {
+        const settings = {
+            master: this.masterVolume,
+            music: this.musicVolume,
+            sfx: this.sfxVolume
+        };
+        localStorage.setItem('settings_audio', JSON.stringify(settings));
+    }
+
+    private loadSettings(): void {
+        const saved = localStorage.getItem('settings_audio');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (typeof parsed.master === 'number') this.masterVolume = parsed.master;
+                if (typeof parsed.music === 'number') this.musicVolume = parsed.music;
+                if (typeof parsed.sfx === 'number') this.sfxVolume = parsed.sfx;
+            } catch (e) {
+                console.error('[AudioManager] Failed to load settings', e);
+            }
+        }
     }
 }
 
-// Instance đơn (Singleton)
-export const audioManager = new AudioManager();
-export default audioManager;
-
-// Tên SFX định nghĩa sẵn để dễ tham khảo
-export const SFX = {
-    BUTTON_CLICK: 'button_click',
-    CORRECT_ANSWER: 'correct',
-    WRONG_ANSWER: 'wrong',
-    REWARD: 'reward',
-    LEVEL_UP: 'level_up',
-    QUEST_COMPLETE: 'quest_complete',
-    DIALOGUE_OPEN: 'dialogue_open',
-    INVENTORY_OPEN: 'inventory_open',
-    MENU_OPEN: 'menu_open'
-} as const;
+export const audioManager = AudioManager.getInstance();

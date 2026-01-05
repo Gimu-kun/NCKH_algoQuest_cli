@@ -1,6 +1,6 @@
 /* ========================================
-   SETTINGS MODAL - REDESIGNED v2.0
-   Modern Configuration & Menu
+   CÀI ĐẶT (Settings Modal)
+   Cấu hình và thực đơn hiện đại v2.0
    ======================================== */
 
 .settings-overlay {
@@ -44,7 +44,7 @@
     }
 }
 
-/* === HEADER === */
+/* === HEADER (Tiêu đề) === */
 .settings-header {
     text-align: center;
     margin-bottom: var(--space-xl);
@@ -59,7 +59,7 @@
     text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
 }
 
-/* === CONTENT === */
+/* === CONTENT (Nội dung) === */
 .settings-content {
     display: flex;
     flex-direction: column;
@@ -99,7 +99,7 @@
     font-weight: var(--font-medium);
 }
 
-/* Toggle Switch */
+/* Toggle Switch (Nút gạt) */
 .toggle-switch {
     width: 50px;
     height: 26px;
@@ -133,7 +133,7 @@
     box-shadow: 0 0 10px rgba(78, 204, 163, 0.8);
 }
 
-/* Sliders */
+/* Sliders (Thanh trượt) */
 .slider-container {
     width: 150px;
     display: flex;
@@ -174,7 +174,7 @@
     color: var(--color-accent-gold);
 }
 
-/* === MENU ACTIONS === */
+/* === MENU ACTIONS (Hành động menu) === */
 .menu-actions {
     margin-top: var(--space-xl);
     display: flex;
@@ -221,7 +221,7 @@
     box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
 }
 
-/* Version Info */
+/* Version Info (Thông tin phiên bản) */
 .settings-footer {
     margin-top: var(--space-lg);
     text-align: center;

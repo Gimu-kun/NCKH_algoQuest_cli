@@ -1,12 +1,11 @@
 /* ========================================
-   DUNGEON SCENE - REDESIGNED v2.0
-   Theme: Holographic Matrix
+   DUNGEON SCENE - STYLE
+   Theme: Holographic Matrix & Adventure
    ======================================== */
 
 .dungeon-scene {
     width: 100%;
     height: 100%;
-    /* Background handled by global theme (index.css) */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,7 +13,7 @@
     overflow: hidden;
     position: relative;
     perspective: 1200px;
-    /* Enable 3D space */
+    /* Bật chế độ 3D Perspective */
 }
 
 /* === HEADER === */
@@ -26,10 +25,8 @@
     max-width: 1000px;
     z-index: 100;
     transform: translateZ(60px);
-    /* Push UI forward ensures no overlap */
     transform-style: preserve-3d;
     pointer-events: none;
-    /* Let clicks pass through empty space */
 }
 
 .dungeon-header h1,
@@ -70,6 +67,7 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    pointer-events: auto;
 }
 
 .btn-exit:hover {
@@ -92,7 +90,6 @@
     transition: transform 0.5s ease;
 }
 
-/* Adding a slight tilt for immersion */
 .dungeon-grid-container:hover {
     transform: rotateX(5deg);
 }
@@ -113,7 +110,7 @@
     position: relative;
 }
 
-/* Add a grid floor effect */
+/* Sàn ảo (Grid floor effect) */
 .dungeon-grid::before {
     content: '';
     position: absolute;
@@ -132,7 +129,6 @@
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
-    /* Dark theme glass */
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -140,13 +136,6 @@
     position: relative;
     transform-style: preserve-3d;
     overflow: hidden;
-}
-
-/* Light Theme Override for Rooms */
-:root.light-theme .dungeon-room {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .dungeon-room:hover {
@@ -162,17 +151,13 @@
     border-color: transparent;
 }
 
-:root.light-theme .dungeon-room.unexplored {
-    background: rgba(0, 0, 0, 0.05);
-}
-
 .dungeon-room.unexplored .room-icon {
     opacity: 0.1;
     transform: scale(0.8);
     filter: blur(2px);
 }
 
-/* Current Player Position - Beacon Effect */
+/* HIỆU ỨNG VỊ TRÍ NGƯỜI CHƠI (BEACON EFFECT) */
 .dungeon-room.current {
     background: rgba(78, 204, 163, 0.15);
     border: 2px solid var(--color-primary);
@@ -181,11 +166,6 @@
         inset 0 0 10px rgba(78, 204, 163, 0.2);
     transform: translateZ(20px);
     z-index: 10;
-}
-
-:root.light-theme .dungeon-room.current {
-    background: rgba(78, 204, 163, 0.2);
-    box-shadow: 0 10px 25px rgba(78, 204, 163, 0.3);
 }
 
 .dungeon-room.current::after {
@@ -211,50 +191,28 @@
     border-color: rgba(78, 204, 163, 0.3);
 }
 
-/* Special Rooms */
+/* Các loại phòng đặc biệt */
 .dungeon-room.room-boss {
     border-color: var(--color-accent-red);
     background: rgba(231, 76, 60, 0.05);
-}
-
-.dungeon-room.room-boss.current {
-    background: rgba(231, 76, 60, 0.2);
-    border-color: var(--color-accent-red);
-    box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
 }
 
 .dungeon-room.room-treasure {
     border-color: var(--color-accent-gold);
 }
 
-.dungeon-room.room-treasure:hover {
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
-}
-
-/* Icons */
+/* ICONS */
 .room-icon {
     font-size: 2.2rem;
     position: relative;
     z-index: 2;
     transition: all 0.4s ease;
+    color: var(--color-text-secondary);
 }
 
 .dungeon-room.current .room-icon {
     color: var(--color-primary);
     filter: drop-shadow(0 0 10px var(--color-primary));
-    animation: float 2s ease-in-out infinite;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
 }
 
 /* === CONTROLS === */
@@ -268,13 +226,7 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transform: translateZ(60px);
-    /* Push forward */
     pointer-events: auto;
-}
-
-:root.light-theme .dungeon-controls {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .controls-hint {
@@ -282,7 +234,6 @@
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
     font-family: var(--font-body);
-    font-weight: 500;
 }
 
 .movement-buttons button {
@@ -296,12 +247,6 @@
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-}
-
-:root.light-theme .movement-buttons button {
-    background: #fff;
-    color: #444;
-    box-shadow: 0 4px 0 #ddd;
 }
 
 .movement-buttons button:hover {
@@ -332,20 +277,15 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     z-index: 200;
     transform: translateZ(100px);
-    /* Highest plane */
     animation: fadeInUp 0.4s ease-out;
-}
-
-:root.light-theme .dungeon-message {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 10px 30px rgba(78, 204, 163, 0.3);
 }
 
 .dungeon-legend {
     display: none;
+    /* Ẩn chú giải mặc định để tối ưu không gian */
 }
 
-/* === PLAYER & ELEMENTS === */
+/* === PLAYER SPRITE === */
 .player-marker {
     width: 100%;
     height: 100%;
@@ -380,30 +320,4 @@
     height: 6px;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-}
-
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-    .dungeon-scene {
-        padding: var(--space-md);
-    }
-
-    .dungeon-grid {
-        gap: 8px;
-        padding: 15px;
-    }
-
-    .dungeon-room {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-    }
-
-    .room-icon {
-        font-size: 1.5rem;
-    }
-
-    .player-sprite {
-        width: 50px;
-    }
 }

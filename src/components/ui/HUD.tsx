@@ -1,6 +1,26 @@
 /**
- * Thành Phần HUD (Màn Hình Hiển Thị Thông Tin)
- * Hiển thị thống kê người chơi, tài nguyên và menu truy cập nhanh
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * HUD (HEADS-UP DISPLAY) - GIAO DIỆN NGƯỜI CHƠI
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Thành phần UI luôn hiển thị trên màn hình để cung cấp thông tin quan trọng:
+ * - Player Info: Avatar, Level, Tên.
+ * - Resources: Gỗ dữ liệu, Đá Logic, O-Points, Vàng.
+ * - Quick Actions: Truy cập nhanh Túi đồ, Bản đồ, Nhiệm vụ, Cài đặt.
+ * - Quick Spells: Các phím tắt kỹ năng (1-4).
+ * - Sparky Notifications: Thông báo từ trợ lý AI.
+ * 
+ * CẤU TRÚC:
+ * Chia làm 4 góc màn hình để tối ưu không gian hiển thị:
+ * - Top Left: Player Status
+ * - Top Right: Resources
+ * - Bottom Left: Spells/Skills
+ * - Bottom Right: Menu System
+ * 
+ * @component HUD
+ * @category UI Components
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React from 'react';
@@ -8,60 +28,66 @@ import { motion } from 'framer-motion';
 import { usePlayerStore } from '../../store/playerStore';
 import { useGameStore } from '../../store/gameStore';
 import { ResourceType } from '../../data/models/Item';
-import { Inventory } from './Inventory';
-import { Settings } from './Settings';
 import './HUD.css';
 
 export const HUD: React.FC = () => {
+    // Hooks lấy dữ liệu từ Store
     const { resources, level, name, unlockedSpells } = usePlayerStore();
-    const { toggleInventory, toggleMenu, toggleQuests, sparkyVisible, sparkyMessage } = useGameStore();
+    const {
+        toggleInventory,
+        toggleMenu,
+        toggleQuests,
+        sparkyVisible,
+        sparkyMessage
+    } = useGameStore();
 
     return (
         <div className="hud-container">
-            {/* Trên Trái - Thông Tin Người Chơi */}
+            {/* === GÓC TRÊN TRÁI: THÔNG TIN NGƯỜI CHƠI === */}
             <div className="hud-panel hud-player-info">
                 <div className="player-avatar">
                     <img
-                        src="/assets/images/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
+                        src="/src/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
                         alt={name}
                     />
                 </div>
                 <div className="player-details">
                     <h3>{name}</h3>
-                    <div className="level-badge">Lv {level}</div>
+                    <div className="level-badge">Cấp {level}</div>
                 </div>
             </div>
 
-            {/* Trên Phải - Tài Nguyên */}
+            {/* === GÓC TRÊN PHẢI: TÀI NGUYÊN === */}
             <div className="hud-panel hud-resources">
-                <div className="resource-item">
-                    <img src="/assets/images/items/Data-Wood.png" alt="Data-Wood" />
+                <div className="resource-item" title="Gỗ Dữ Liệu">
+                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png" alt="Data-Wood" />
                     <span>{resources[ResourceType.DATA_WOOD]}</span>
                 </div>
-                <div className="resource-item">
-                    <img src="/assets/images/items/Logic-Stone.png" alt="Logic-Stone" />
+                <div className="resource-item" title="Đá Logic">
+                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Logic-Stone.png" alt="Logic-Stone" />
                     <span>{resources[ResourceType.LOGIC_STONE]}</span>
                 </div>
-                <div className="resource-item">
-                    <img src="/assets/images/items/O-Point.png" alt="O-Points" />
+                <div className="resource-item" title="Điểm O (Năng lượng)">
+                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/O-Point.png" alt="O-Points" />
                     <span>{resources[ResourceType.O_POINTS]}</span>
                 </div>
-                <div className="resource-item">
-                    <img src="/assets/images/items/Gold Coin.png" alt="Gold" />
+                <div className="resource-item" title="Vàng">
+                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
                     <span>{resources[ResourceType.GOLD]}</span>
                 </div>
             </div>
 
-            {/* Dưới Trái - Phép Thuật Nhanh */}
+            {/* === GÓC DƯỚI TRÁI: PHÍM TẮT KỸ NĂNG === */}
             <div className="hud-panel hud-spells">
-                <h4><i className="fi fi-rr-magic-wand"></i> Phép Thuật Nhanh</h4>
+                <h4><i className="fi fi-rr-magic-wand"></i> Phép Thuật (Hotkeys)</h4>
                 <div className="spell-slots">
                     {[0, 1, 2, 3].map(index => (
                         <div key={index} className="spell-slot">
                             {unlockedSpells[index] ? (
                                 <div className="spell-icon-frame">
+                                    {/* Placeholder icon, replace with specific spell icon later */}
                                     <img
-                                        src={`/assets/images/UI/Skill Icon Frame.png`}
+                                        src={`/src/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
                                         alt="Spell Slot"
                                     />
                                     <span className="hotkey">{index + 1}</span>
@@ -76,7 +102,7 @@ export const HUD: React.FC = () => {
                 </div>
             </div>
 
-            {/* Dưới Phải - Nút Menu */}
+            {/* === GÓC DƯỚI PHẢI: MENU HỆ THỐNG === */}
             <div className="hud-panel hud-menu-buttons">
                 <motion.button
                     className="hud-btn"
@@ -85,16 +111,17 @@ export const HUD: React.FC = () => {
                     onClick={toggleInventory}
                     title="Túi Đồ (B)"
                 >
-                    <img src="/assets/images/UI/Menu Buttons Bag.png" alt="Inventory" />
+                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
                 </motion.button>
 
                 <motion.button
                     className="hud-btn"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    title="Bản Đồ (M)"
+                    title="Bản Đồ (M) - Chưa mở"
+                    style={{ opacity: 0.5, cursor: 'not-allowed' }}
                 >
-                    <img src="/assets/images/UI/Menu Buttons Map.png" alt="Map" />
+                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
                 </motion.button>
 
                 <motion.button
@@ -104,7 +131,7 @@ export const HUD: React.FC = () => {
                     onClick={toggleQuests}
                     title="Nhiệm Vụ (Q)"
                 >
-                    <img src="/assets/images/UI/Menu Buttons Quest.png" alt="Quests" />
+                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
                 </motion.button>
 
                 <motion.button
@@ -112,13 +139,13 @@ export const HUD: React.FC = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={toggleMenu}
-                    title="Cài Đặt (ESC)"
+                    title="Cài Đặt / Menu (ESC)"
                 >
-                    <img src="/assets/images/UI/Menu Buttons Exit.png" alt="Menu" />
+                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
                 </motion.button>
             </div>
 
-            {/* Cửa Sổ Bật Lên Trợ Lý Sparky */}
+            {/* === CỬA SỔ TRỢ LÝ SPARKY (POPUP) === */}
             {sparkyVisible && sparkyMessage && (
                 <motion.div
                     className="sparky-popup"
@@ -128,22 +155,19 @@ export const HUD: React.FC = () => {
                 >
                     <div className="sparky-avatar">
                         <img
-                            src="/assets/images/Nhân vật/Sparky/Sparky Normal.png"
+                            src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
                             alt="Sparky"
                         />
                     </div>
                     <div className="sparky-bubble">
-                        <img src="/assets/images/UI/Alert Icon Lightbulb.png" alt="Hint" />
+                        <img src="/src/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
                         <p>{sparkyMessage}</p>
                     </div>
                 </motion.div>
             )}
 
-            {/* Bảng Kho Đồ */}
-            <Inventory />
-
-            {/* Settings/Menu Modal */}
-            <Settings />
+            {/* === CÁC PANEL ẨN (MODALS) === */}
+            {/* Inventory và Settings được render tại App.tsx để đảm bảo overlay toàn cục */}
         </div>
     );
 };

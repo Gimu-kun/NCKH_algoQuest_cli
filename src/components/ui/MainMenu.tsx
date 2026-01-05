@@ -1,6 +1,21 @@
 /**
- * Thành Phần Menu Chính
- * Điểm bắt đầu vào game
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * MENU CHÍNH (Main Menu)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Màn hình khởi động của trò chơi, nơi người chơi bắt đầu hành trình.
+ * 
+ * TÍNH NĂNG:
+ * - New Game: Bắt đầu chơi mới (Reset state).
+ * - Continue: Tiếp tục chơi (Load state từ LocalStorage).
+ * - Multiplayer: Vào đấu trường (Tính năng tương lai).
+ * - Settings: Mở bảng cài đặt.
+ * - Dynamic Background: Thay đổi nền theo theme Sáng/Tối.
+ * 
+ * @component MainMenu
+ * @category UI Components
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import React from 'react';
