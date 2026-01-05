@@ -22,6 +22,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
+import { ASSETS } from '../../data/AssetPaths';
 import './MainMenu.css';
 
 export const MainMenu: React.FC = () => {
@@ -64,7 +65,7 @@ export const MainMenu: React.FC = () => {
             <div
                 className="menu-background"
                 style={{
-                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/images/Main Menu Background.png)'
+                    backgroundImage: theme === 'light' ? 'none' : `url('${ASSETS.BACKGROUNDS.MAIN_MENU}')`
                 }}
             />
 
@@ -75,7 +76,7 @@ export const MainMenu: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1 }}
             >
-                <img src="/assets/images/Game Logo.png" alt="Algorithm Wizard" />
+                <img src={ASSETS.LOGO} alt="Algorithm Wizard" />
                 <h1><i className="fi fi-rr-magic-wand"></i> Pháp Sư Thuật Toán</h1>
                 <p className="subtitle">Algorithm Wizard</p>
             </motion.div>
@@ -146,7 +147,7 @@ export const MainMenu: React.FC = () => {
                 }}
             >
                 <img
-                    src="/assets/images/Nhân vật/Sparky/Sparky Normal.png"
+                    src={ASSETS.CHARACTERS.SPARKY_NORMAL}
                     alt="Sparky"
                     style={{ width: '80px' }}
                 />

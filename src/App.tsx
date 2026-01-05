@@ -33,10 +33,71 @@ import { SparkyGuide } from './components/ui/SparkyGuide';
 import { ShopInterface } from './components/ui/ShopInterface';
 import './App.css';
 
-import { useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+// Định nghĩa Mapping ngoài Component
+const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
+  [GameScene.MAIN_MENU]: '/',
+  [GameScene.HUB_WORLD]: '/hub',
+  [GameScene.COMBAT]: '/combat',
+  [GameScene.LOGIC_FARM]: '/farm',
+  [GameScene.SHOP]: '/shop',
+  [GameScene.ACHIEVEMENTS]: '/achievements',
+  [GameScene.LEADERBOARDS]: '/leaderboards',
+};
 
 function App() {
-  const { currentScene, endCombat, theme, combat } = useGameStore();
+  const { currentScene, setScene, enterDungeon, currentDungeonId, endCombat, theme, combat } = useGameStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+
+  // Sync URL -> Store (Precedence on Load / Back Button)
+  useEffect(() => {
+    // 1. Check for specific dungeon path: /dungeon/:id
+    if (location.pathname.startsWith('/dungeon/')) {
+      const dungeonId = location.pathname.split('/')[2];
+      if (dungeonId) {
+        if (currentScene !== GameScene.DUNGEON || currentDungeonId !== dungeonId) {
+          // Force entry on load/URL change
+          enterDungeon(dungeonId);
+        }
+      }
+    }
+    // 2. Check logic bình thường cho các scene khác
+    else {
+      const entry = Object.entries(SCENE_TO_PATH).find(([_, path]) => path === location.pathname);
+      if (entry) {
+        const scene = entry[0] as GameScene;
+        // Chỉ update nếu khác state hiện tại
+        if (currentScene !== scene) {
+          setScene(scene);
+        }
+      }
+    }
+  }, [location.pathname]); // Remove dependencies that might cause loop (enterDungeon, setScene are stable from zustand)
+
+  // Sync Store -> URL (Game Logic Navigation)
+  // Chỉ chạy khi state thay đổi, nhưng bỏ qua lần đầu (do URL load)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (currentScene === GameScene.DUNGEON) {
+      const dungeonPath = `/dungeon/${currentDungeonId || 'dungeon_1'}`;
+      if (location.pathname !== dungeonPath) {
+        navigate(dungeonPath);
+      }
+    } else {
+      const path = SCENE_TO_PATH[currentScene];
+      if (path && location.pathname !== path) {
+        navigate(path);
+      }
+    }
+  }, [currentScene, currentDungeonId]); // Chỉ phụ thuộc vào state change
 
   // Áp dụng lớp giao diện (Theme Class)
   useEffect(() => {
