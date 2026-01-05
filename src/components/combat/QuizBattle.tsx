@@ -40,7 +40,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
@@ -127,7 +127,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
     const monsterData = MonsterSpawner.getMonsterData(monsterId);
 
     // Lấy danh sách câu hỏi phù hợp với độ khó của quái
-    const appropriateQuestions = getQuestionsForMonster(monsterId, dungeonId);
+    const appropriateQuestions = useMemo(() => getQuestionsForMonster(monsterId, dungeonId), [monsterId, dungeonId]);
 
     /**
      * Lấy đường dẫn ảnh quái vật an toàn (Safe Sprite Retrieval)
@@ -148,7 +148,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Tải câu hỏi ngẫu nhiên (Load Random Question)
      * Reset State UI mỗi khi đổi câu hỏi.
      */
-    const loadRandomQuestion = () => {
+    const loadRandomQuestion = useCallback(() => {
         if (appropriateQuestions.length === 0) {
             console.error('Không tìm thấy câu hỏi phù hợp cho quái vật này!');
             return;
@@ -158,12 +158,12 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         setSelectedAnswer(null);
         setShowFeedback(false);
         setIsCorrect(false);
-    };
+    }, [appropriateQuestions]);
 
     // Initialize: Load câu hỏi đầu tiên khi Mount
     useEffect(() => {
         loadRandomQuestion();
-    }, []);
+    }, [loadRandomQuestion]);
 
     if (!currentQuestion) {
         return <div>Đang tải dữ liệu chiến đấu...</div>;
@@ -173,7 +173,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Xử lý khi người chơi trả lời (Handle Answer)
      * Đây là hàm trung tâm điều phối logic thưởng phạt (Game Loop Core).
      */
-    const handleAnswer = (correct: boolean, answerData?: any) => {
+    const handleAnswer = (correct: boolean, answerData?: unknown) => {
         setIsCorrect(correct);
         setShowFeedback(true);
         recordAnswer(correct); // Ghi Statistic
