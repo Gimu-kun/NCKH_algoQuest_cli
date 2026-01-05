@@ -142,7 +142,7 @@ export class DungeonGenerator {
         start: Point,
         end: Point
     ) {
-        let current = { ...start };
+        const current = { ...start };
 
         // Di chuyển cho đến khi trùng tọa độ đích
         while (current.x !== end.x || current.y !== end.y) {

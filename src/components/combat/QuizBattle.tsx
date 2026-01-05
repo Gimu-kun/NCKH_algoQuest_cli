@@ -64,7 +64,7 @@ interface QuizBattleProps {
 
 export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) => {
     // Hooks truy cập Global State
-    const { combat, updateMonsterHealth, updatePlayerHealth, useHint, showSparky } = useGameStore();
+    const { combat, updateMonsterHealth, updatePlayerHealth, useHint: consumeHint, showSparky } = useGameStore();
     const { recordAnswer, addResource, removeResource, unlockedSpells, resources } = usePlayerStore();
 
     // Local State cho UI logic
@@ -233,9 +233,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
             // Hiện gợi ý từ Sparky + Thông báo trừ máu
             const hint = sparky.provideHint(
                 currentQuestion.type,
-                currentQuestion.topic,
-                0, // Dummy Wrong Answer
-                0  // Dummy Correct Answer
+                currentQuestion.topic
             );
             showSparky(`❌ Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
         }
@@ -255,7 +253,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Sử dụng Gợi ý (Hint System)
      */
     const handleUseHint = () => {
-        useHint(); // Trừ lượt hint trong Store
+        consumeHint(); // Trừ lượt hint trong Store
         const explanation = getExplanation(currentQuestion);
         showSparky(`💡 Gợi ý: ${explanation}`);
     };
