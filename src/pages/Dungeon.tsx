@@ -33,7 +33,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { usePlayerStore } from '../store/playerStore';
@@ -69,22 +69,19 @@ export const Dungeon: React.FC = () => {
             );
         }, 1000);
         return () => clearTimeout(timer);
-    }, []);
+    }, [showSparky]);
 
-    // Loading State
-    if (!dungeonState) {
-        return <div className="dungeon-loading">Đang tải Hầm Ngục...</div>;
-    }
-
-    const { rooms, playerPos } = dungeonState;
-    const currentRoom = rooms.find(r => r.x === playerPos.x && r.y === playerPos.y);
+    const rooms = dungeonState?.rooms;
+    const playerPos = dungeonState?.playerPos;
 
     /**
      * ═══════════════════════════════════════════════════════════════════════════
      * XỬ LÝ DI CHUYỂN (Movement Logic)
      * ═══════════════════════════════════════════════════════════════════════════
      */
-    const handleMove = (dx: number, dy: number) => {
+    const handleMove = useCallback((dx: number, dy: number) => {
+        if (!dungeonState || !rooms || !playerPos) return;
+
         const newX = playerPos.x + dx;
         const newY = playerPos.y + dy;
 
@@ -98,17 +95,56 @@ export const Dungeon: React.FC = () => {
 
         const newPos = { x: newX, y: newY };
 
-        // 2. Cập nhật trạng thái "Đã khám phá" (Explored) cho phòng mới
-        const newRooms = rooms.map(r =>
-            r.x === newX && r.y === newY ? { ...r, explored: true } : r
-        );
+        // 2. Logic cập nhật phòng (Explored + Events)
+        let newRooms = [...rooms];
+        const targetRoom = rooms.find(r => r.x === newX && r.y === newY);
 
-        // 3. Commit state change (Zustand Update)
+        if (targetRoom) {
+            // Mark as Explored
+            if (!targetRoom.explored) {
+                newRooms = newRooms.map(r => r.x === newX && r.y === newY ? { ...r, explored: true } : r);
+            }
+
+            // --- EVENT HANDLING ---
+            // CASE 1: Quái vật (Monster Encounter)
+            if (targetRoom.type === 'monster' && !targetRoom.cleared) {
+                setTimeout(() => {
+                    const monsterId = MonsterSpawner.getRandomMonster(
+                        dungeonState.config.id || 'dungeon_1',
+                        false
+                    );
+                    startCombat(monsterId);
+                }, 500);
+            }
+            // CASE 2: Kho báu (Treasure)
+            else if (targetRoom.type === 'treasure' && !targetRoom.cleared) {
+                const reward = Math.floor(Math.random() * 20) + 10;
+                addResource(ResourceType.DATA_WOOD, reward);
+                setShowMessage(<span><i className="fi fi-rr-gift"></i> Tìm thấy {reward} Gỗ Dữ Liệu!</span>);
+                setTimeout(() => setShowMessage(null), 2000);
+
+                // Mark Cleared
+                newRooms = newRooms.map(r => r.x === newX && r.y === newY ? { ...r, cleared: true, explored: true } : r);
+            }
+            // CASE 3: Boss Fight
+            else if (targetRoom.type === 'boss' && !targetRoom.cleared) {
+                setShowMessage(<span><i className="fi fi-rr-skull"></i> CẢNH BÁO: Đấu Trùm! Hãy chuẩn bị!</span>);
+                setTimeout(() => {
+                    const bossId = MonsterSpawner.getRandomMonster(
+                        dungeonState.config.id || 'dungeon_1',
+                        true
+                    );
+                    startCombat(bossId);
+                }, 1500);
+            }
+        }
+
+        // 3. Commit state change
         updateDungeonState({
             playerPos: newPos,
             rooms: newRooms
         });
-    };
+    }, [dungeonState, rooms, playerPos, updateDungeonState, startCombat, addResource]);
 
     /**
      * Đăng ký sự kiện bàn phím (Input Binding Management)
@@ -139,64 +175,21 @@ export const Dungeon: React.FC = () => {
             inputManager.unbind('d');
             inputManager.unbind('arrowright');
         };
-    }, [playerPos, rooms]); // Re-bind khi state thay đổi để Closure Capture đúng giá trị mới nhất
+    }, [handleMove]); // Re-bind khi state thay đổi để Closure Capture đúng giá trị mới nhất
 
     /**
      * ═══════════════════════════════════════════════════════════════════════════
      * XỬ LÝ SỰ KIỆN PHÒNG (Room Event Trigger)
      * ═══════════════════════════════════════════════════════════════════════════
      */
-    useEffect(() => {
-        if (!currentRoom) return;
 
-        // CASE 1: Quái vật (Chưa bị đánh bại - Monster Encounter)
-        if (currentRoom.type === 'monster' && !currentRoom.cleared) {
-            setTimeout(() => {
-                // Spawn quái ngẫu nhiên (dựa trên config Dungeon ID)
-                const monsterId = MonsterSpawner.getRandomMonster(
-                    dungeonState?.config.id || 'dungeon_1',
-                    false // Not Boss
-                );
-                startCombat(monsterId);
-            }, 500);
-        }
-
-        // CASE 2: Kho báu (Chưa nhặt - Treasure Event)
-        else if (currentRoom.type === 'treasure' && !currentRoom.cleared) {
-            // Trao thưởng ngẫu nhiên (Random Reward Generation)
-            const reward = Math.floor(Math.random() * 20) + 10;
-            addResource(ResourceType.DATA_WOOD, reward);
-            setShowMessage(<span><i className="fi fi-rr-gift"></i> Tìm thấy {reward} Gỗ Dữ Liệu!</span>);
-
-            // Đánh dấu đã nhặt (State Update)
-            updateDungeonState({
-                rooms: rooms.map(r =>
-                    r.x === playerPos.x && r.y === playerPos.y
-                        ? { ...r, cleared: true }
-                        : r
-                )
-            });
-
-            setTimeout(() => setShowMessage(null), 2000);
-        }
-
-        // CASE 3: Boss Fight (Trùm Cuối)
-        else if (currentRoom.type === 'boss' && !currentRoom.cleared) {
-            setShowMessage(<span><i className="fi fi-rr-skull"></i> CẢNH BÁO: Đấu Trùm! Hãy chuẩn bị!</span>);
-            setTimeout(() => {
-                const bossId = MonsterSpawner.getRandomMonster(
-                    dungeonState?.config.id || 'dungeon_1',
-                    true // Is Boss
-                );
-                startCombat(bossId);
-            }, 1500);
-        }
-    }, [playerPos]); // Trigger mỗi khi Player di chuyển sang ô mới
 
     /**
      * Helper: Render Icon cho từng loại phòng (Visual Representation)
      */
     const getRoomIcon = (room: DungeonRoom): React.ReactNode => {
+        if (!playerPos) return null;
+
         // Player Marker (Luôn hiển thị nếu Player đang ở ô này)
         if (room.x === playerPos.x && room.y === playerPos.y) {
             return (
@@ -227,6 +220,8 @@ export const Dungeon: React.FC = () => {
      * Helper: Tính CSS Classes cho phòng (Styling Logic)
      */
     const getRoomClass = (room: DungeonRoom): string => {
+        if (!playerPos) return 'dungeon-room';
+
         const classes = ['dungeon-room'];
         if (room.x === playerPos.x && room.y === playerPos.y) classes.push('current');
         if (!room.explored) classes.push('unexplored');
@@ -234,6 +229,10 @@ export const Dungeon: React.FC = () => {
         classes.push(`room-${room.type}`); // room-monster, room-treasure...
         return classes.join(' ');
     };
+
+    if (!dungeonState || !rooms || !playerPos) {
+        return <div className="dungeon-loading">Đang tải Hầm Ngục...</div>;
+    }
 
     return (
         <div className="dungeon-scene">

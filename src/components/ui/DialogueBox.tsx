@@ -83,7 +83,7 @@ export const DialogueBox: React.FC = () => {
             case 'SHOP':
                 useGameStore.getState().setScene(GameScene.SHOP);
                 break;
-            case 'CAMPAIGN_QUESTS':
+            case 'CAMPAIGN_QUESTS': {
                 const questId = 'quest_intro_1'; // Nhiệm vụ khởi đầu
                 const { activeQuests, completedQuests, startQuest } = usePlayerStore.getState();
 
@@ -96,6 +96,7 @@ export const DialogueBox: React.FC = () => {
                     useGameStore.getState().showSparky('📜 Đã nhận nhiệm vụ: Khởi Đầu Hành Trình!');
                 }
                 break;
+            }
             case 'TRAINING_AREA':
                 // useGameStore.getState().setScene(GameScene.LOGIC_FARM);
                 useGameStore.getState().showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.');

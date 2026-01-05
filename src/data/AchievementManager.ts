@@ -35,8 +35,7 @@ n độ)
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import { ACHIEVEMENTS, BADGES, type Achievement } from './achievements';
-import type { usePlayerStore } from '../store/playerStore';
+import { ACHIEVEMENTS, type Achievement } from './achievements';
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

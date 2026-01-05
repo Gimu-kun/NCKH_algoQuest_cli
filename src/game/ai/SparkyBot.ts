@@ -61,9 +61,7 @@ export class SparkyBot {
      */
     provideHint(
         questionType: QuestionType,
-        topic: string,
-        wrongAnswer: any,
-        correctAnswer: any
+        topic: string
     ): SparkyHint {
         // Cập nhật điểm yếu
         const current = this.weaknesses.get(topic) || 0;
@@ -72,13 +70,13 @@ export class SparkyBot {
         // Routing theo loại câu hỏi
         switch (questionType) {
             case QuestionType.MULTIPLE_CHOICE:
-                return this.getMCQHint(topic, wrongAnswer, correctAnswer);
+                return this.getMCQHint(topic);
 
             case QuestionType.FILL_BLANK:
-                return this.getFillBlankHint(topic);
+                return this.getFillBlankHint();
 
             case QuestionType.MATCHING:
-                return this.getMatchingHint(topic);
+                return this.getMatchingHint();
 
             default:
                 return {
@@ -93,7 +91,7 @@ export class SparkyBot {
      * Gợi ý cho Trắc nghiệm (MCQ)
      * Dựa trên Hardcoded Rules cho các topic phổ biến.
      */
-    private getMCQHint(topic: string, _wrong: any, _correct: any): SparkyHint {
+    private getMCQHint(topic: string): SparkyHint {
         const hints: Record<string, string> = {
             'Stack': '💡 Gợi ý: Stack hoạt động theo LIFO (Vào sau, Ra trước), giống như xếp chồng đĩa!',
             'Queue': '💡 Gợi ý: Queue hoạt động theo FIFO (Vào trước, Ra trước), giống như xếp hàng mua vé!',
@@ -112,7 +110,7 @@ export class SparkyBot {
     /**
      * Gợi ý cho Điền khuyết (Coding Syntax)
      */
-    private getFillBlankHint(_topic: string): SparkyHint {
+    private getFillBlankHint(): SparkyHint {
         return {
             type: 'SYNTAX',
             message: '💡 Kiểm tra kỹ cú pháp! Đừng quên dấu chấm phẩy ; hoặc ngoặc {} nhé.',
@@ -123,7 +121,7 @@ export class SparkyBot {
     /**
      * Gợi ý cho câu hỏi Nối (Matching)
      */
-    private getMatchingHint(_topic: string): SparkyHint {
+    private getMatchingHint(): SparkyHint {
         return {
             type: 'GENERAL',
             message: '💡 Hãy suy nghĩ về mối quan hệ logic giữa các khái niệm!',
