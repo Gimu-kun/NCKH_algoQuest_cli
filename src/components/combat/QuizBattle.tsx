@@ -129,6 +129,11 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
     // Lấy danh sách câu hỏi phù hợp với độ khó của quái
     const appropriateQuestions = useMemo(() => getQuestionsForMonster(monsterId, dungeonId), [monsterId, dungeonId]);
 
+    // ═══════════════ DEBUG HOOK ═══════════════
+    useEffect(() => {
+        console.log('[DEBUG] showFeedback changed:', showFeedback);
+    }, [showFeedback]);
+
     /**
      * Lấy đường dẫn ảnh quái vật an toàn (Safe Sprite Retrieval)
      * Fallback về ảnh mặc định nếu không tìm thấy.
@@ -174,6 +179,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Đây là hàm trung tâm điều phối logic thưởng phạt (Game Loop Core).
      */
     const handleAnswer = (correct: boolean, answerData?: unknown) => {
+        console.log('[DEBUG] handleAnswer called - Correct:', correct, 'Setting showFeedback = true');
         setIsCorrect(correct);
         setShowFeedback(true);
         recordAnswer(correct); // Ghi Statistic
@@ -216,6 +222,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
             if (newHealth <= 0) {
                 setTimeout(() => onVictory(), 2000);
             }
+            // Note: Không auto-advance, người chơi bấm nút "Câu Tiếp Theo"
         } else {
             // === LOGIC PHÒNG THỦ THẤT BẠI (DEFENSE FAIL) ===
             // Dynamic Damage Scaling
@@ -236,7 +243,9 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 currentQuestion.topic
             );
             showSparky(`❌ Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
+            // Note: Không auto-advance, người chơi bấm nút "Làm Lại" hoặc "Tiếp Theo"
         }
+        console.log('[DEBUG] handleAnswer completed - showFeedback should be true now');
     };
 
     /**
@@ -258,8 +267,15 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         showSparky(`💡 Gợi ý: ${explanation}`);
     };
 
+    /**
+     * Xử lý khi bấm nút "Câu Tiếp Theo" (Handle Next Question)
+     * Reset UI state và load câu hỏi mới.
+     */
     const handleNext = () => {
-        loadRandomQuestion();
+        console.log('[DEBUG] handleNext called - Resetting feedback state');
+        setShowFeedback(false);  // Ẩn feedback
+        setSelectedAnswer(null); // Reset lựa chọn
+        loadRandomQuestion();    // Load câu mới
     };
 
     /**

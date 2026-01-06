@@ -13,7 +13,10 @@
     justify-content: center;
     padding: var(--space-xl);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    /* Cho phép scroll dọc */
+    overflow-x: hidden;
+    /* Chặn scroll ngang */
 }
 
 /* === MONSTER DISPLAY === */
@@ -165,6 +168,10 @@
     padding: var(--space-xl);
     max-width: 900px;
     width: 100%;
+    max-height: 70vh;
+    /* Giới hạn chiều cao */
+    overflow-y: auto;
+    /* Cho phép scroll trong panel */
     box-shadow: var(--shadow-glow-primary), var(--shadow-lg);
     backdrop-filter: blur(10px);
     transition: transform 0.3s;
