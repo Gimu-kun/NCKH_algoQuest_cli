@@ -32,6 +32,7 @@ import { DUNGEON_4_RELIC } from '../data/dungeons/dungeon4-data';
 import { DUNGEON_5_FOREST } from '../data/dungeons/dungeon5-data';
 import { DUNGEON_7_FINAL } from '../data/dungeons/dungeon7-data';
 import type { DungeonRoom, DungeonConfig } from '../data/dungeons/dungeon1';
+import type { DungeonData } from '../data/models/Dungeon';
 
 // Định nghĩa State cho Dungeon Session hiện tại
 export interface DungeonState {
@@ -238,7 +239,7 @@ export const useGameStore = create<GameState & GameActions>()(
              */
             enterDungeon: (dungeonId) => {
                 // Registry Map for Dungeons
-                const DUNGEON_REGISTRY: Record<string, DungeonConfig | any> = {
+                const DUNGEON_REGISTRY: Record<string, DungeonConfig | DungeonData> = {
                     'dungeon_1': DUNGEON_1,
                     'dungeon_2': DUNGEON_2_CHAOS,
                     'dungeon_3': DUNGEON_3_CHAINED,
@@ -259,7 +260,7 @@ export const useGameStore = create<GameState & GameActions>()(
                 // Check if it's the new DungeonData format (has 'layout' prop) or old DungeonConfig
                 if ('layout' in rawData) {
                     // Convert DungeonData to DungeonConfig
-                    const data = rawData as any; // Type assertion since we don't import DungeonData interface here yet
+                    const data = rawData as DungeonData; // New dungeon format with layout
                     config = {
                         id: data.id,
                         name: data.displayName, // Use display name for UI

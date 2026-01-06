@@ -67,7 +67,7 @@ function App() {
     }
     // 2. Check logic bình thường cho các scene khác
     else {
-      const entry = Object.entries(SCENE_TO_PATH).find(([_, path]) => path === location.pathname);
+      const entry = Object.entries(SCENE_TO_PATH).find(([, path]) => path === location.pathname);
       if (entry) {
         const scene = entry[0] as GameScene;
         // Chỉ update nếu khác state hiện tại
@@ -76,7 +76,7 @@ function App() {
         }
       }
     }
-  }, [location.pathname]); // Remove dependencies that might cause loop (enterDungeon, setScene are stable from zustand)
+  }, [location.pathname, currentScene, currentDungeonId, enterDungeon, setScene]); // All dependencies included (zustand functions are stable)
 
   // Sync Store -> URL (Game Logic Navigation)
   // Chỉ chạy khi state thay đổi, nhưng bỏ qua lần đầu (do URL load)
@@ -97,7 +97,7 @@ function App() {
         navigate(path);
       }
     }
-  }, [currentScene, currentDungeonId]); // Chỉ phụ thuộc vào state change
+  }, [currentScene, currentDungeonId, navigate, location.pathname]); // Include all dependencies
 
   // Áp dụng lớp giao diện (Theme Class)
   useEffect(() => {

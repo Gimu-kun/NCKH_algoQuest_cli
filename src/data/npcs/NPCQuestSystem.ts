@@ -31,7 +31,8 @@
  */
 
 import { NPCS, type Quest, type QuestRequirement } from '../models/NPC';
-import type { PlayerState } from '../../store/playerStore';
+import type { PlayerState, PlayerStore } from '../../store/playerStore';
+import { ResourceType } from '../models/Item';
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -343,21 +344,21 @@ export function getActiveNPCQuests(npcId: string, playerState: PlayerState): Que
  * 3. Đánh dấu quest đã hoàn thành trong PlayerStore.
  * 
  * @param {Quest} quest - Nhiệm vụ hoàn thành.
- * @param {any} playerStore - Player Store instance (Zustand).
+ * @param {ReturnType<typeof usePlayerStore>} playerStore - Player Store instance (Zustand).
  * @returns {Object} Thông tin phần thưởng đã trao.
  */
-export function completeQuest(quest: Quest, playerStore: any) {
+export function completeQuest(quest: Quest, playerStore: PlayerStore) {
     const rewards = quest.rewards;
 
     // Give resources
     if (rewards.oPoints) {
-        playerStore.addResource('O_POINTS', rewards.oPoints);
+        playerStore.addResource(ResourceType.O_POINTS, rewards.oPoints);
     }
     if (rewards.logicStone) {
-        playerStore.addResource('LOGIC_STONE', rewards.logicStone);
+        playerStore.addResource(ResourceType.LOGIC_STONE, rewards.logicStone);
     }
     if (rewards.dataWood) {
-        playerStore.addResource('DATA_WOOD', rewards.dataWood);
+        playerStore.addResource(ResourceType.DATA_WOOD, rewards.dataWood);
     }
 
     // Unlock blueprints/spells

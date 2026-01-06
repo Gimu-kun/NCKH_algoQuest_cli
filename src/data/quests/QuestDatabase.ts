@@ -1,4 +1,32 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * CƠ SỞ DỮ LIỆU NHIỆM VỤ (Quest Database)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * 
+ * MỤC ĐÍCH:
+ * Lưu trữ định nghĩa tĩnh (Static Definitions) của toàn bộ nhiệm vụ trong game.
+ * Được sử dụng bởi Quest System để khởi tạo và kiểm tra điều kiện hoàn thành.
+ * 
+ * PHÂN LOẠI NHIỆM VỤ:
+ * - CAMPAIGN: Nhiệm vụ cốt truyện chính, dẫn dắt người chơi qua từng Chapter.
+ * - DAILY: Nhiệm vụ hàng ngày, lặp lại để cày tài nguyên.
+ * - CHALLENGE: Thử thách kỹ năng đặc biệt (ví dụ: Giải thuật tối ưu).
+ * 
+ * CẤU TRÚC DỮ LIỆU (SCHEMA):
+ * - Requirements: Điều kiện cần để hoàn thành (Trigger Type + Target + Count).
+ * - Rewards: Phần thưởng khi hoàn thành (Gold, XP, Items, Blueprints).
+ * 
+ * @module QuestDatabase
+ * @category Game Data / Quest System
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
 import type { Quest } from '../models/NPC';
+
+/**
+ * Registry chứa tất cả nhiệm vụ có sẵn trong game.
+ * Key: QuestID (string) -> Value: Quest Object
+ */
 
 export const QUEST_DATABASE: Record<string, Quest> = {
     'quest_intro_1': {

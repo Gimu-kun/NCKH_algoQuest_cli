@@ -36,6 +36,28 @@ n độ)
  */
 
 import { ACHIEVEMENTS, type Achievement } from './achievements';
+import type { PlayerState, PlayerStore } from '../store/playerStore';
+import { ResourceType } from './models/Item';
+
+/**
+ * Context type for achievement checking
+ */
+export interface AchievementContext {
+    // Combat context
+    victory?: boolean;
+    accuracy?: number;
+    hintsUsed?: number;
+    isBoss?: boolean;
+    bossId?: string;
+
+    // Dungeon context
+    dungeonId?: string;
+    time?: number;
+    perfect?: boolean;
+
+    // Code quality context
+    complexity?: string;
+}
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -68,8 +90,8 @@ export class AchievementManager {
      * - Space: O(1) - Không allocate memory
      * 
      * @param {Achievement} achievement - Achievement object cần check
-     * @param {any} playerStats - Player statistics từ playerStore
-     * @param {any} context - Optional context (combat data, dungeon data)
+     * @param {PlayerState['stats']} playerStats - Player statistics từ playerStore
+     * @param {AchievementContext} context - Optional context (combat data, dungeon data)
      * @returns {boolean} True nếu đạt điều kiện, False nếu chưa
      * 
      * @example
@@ -79,23 +101,23 @@ export class AchievementManager {
      */
     static checkAchievement(
         achievement: Achievement,
-        playerStats: any,
-        context?: any
+        playerStats: PlayerState,
+        context?: AchievementContext
     ): boolean {
         const { criteria } = achievement;
 
         switch (criteria.type) {
             case 'DUNGEON_CLEAR':
                 // Check: Đã clear đủ số dungeons?
-                return playerStats.dungeonsCleared >= (criteria.target as number);
+                return playerStats.stats.dungeonsCleared >= (criteria.target as number);
 
             case 'QUESTIONS_CORRECT':
                 // Check: Đã trả lời đúng đủ số câu?
-                return playerStats.questionsCorrect >= (criteria.target as number);
+                return playerStats.stats.questionsCorrect >= (criteria.target as number);
 
             case 'BOSS_DEFEAT':
                 // Check: Đánh bại đúng boss + điều kiện đặc biệt
-                if (criteria.condition === 'no_hints' && context?.hintsUsed > 0) {
+                if (criteria.condition === 'no_hints' && (context?.hintsUsed ?? 0) > 0) {
                     return false; // Dùng hint → fail condition
                 }
                 return context?.bossId === criteria.target;
@@ -110,13 +132,13 @@ export class AchievementManager {
             case 'ACCURACY':
                 // Check: Đạt accuracy% trong boss fight
                 if (criteria.condition === 'boss_fight' && context?.isBoss) {
-                    return context.accuracy >= (criteria.target as number);
+                    return (context?.accuracy ?? 0) >= (criteria.target as number);
                 }
                 return false;
 
             case 'SPELL_UNLOCK':
                 // Check: Đã unlock đủ số spells
-                return playerStats.spellsUnlocked >= (criteria.target as number);
+                return playerStats.unlockedSpells.length >= (criteria.target as number);
 
             case 'CODE_QUALITY':
                 // Check: Code đạt Big O complexity tối ưu
@@ -155,8 +177,8 @@ export class AchievementManager {
      * - Sau mỗi combat/dungeon: Check xem có unlock achievement mới không
      * - Batch checking: Kiểm tra nhiều achievements cùng lúc
      * 
-     * @param {any} playerStats - Player statistics
-     * @param {any} context - Game event context
+     * @param {PlayerState} playerStats - Player statistics
+     * @param {AchievementContext} context - Game event context
      * @returns {string[]} Array of newly unlocked achievement IDs
      * 
      * @example
@@ -167,7 +189,7 @@ export class AchievementManager {
      * });
      * // → ['perfectionist'] nếu đạt 100% accuracy boss fight
      */
-    static checkAll(playerStats: any, context?: any): string[] {
+    static checkAll(playerStats: PlayerState, context?: AchievementContext): string[] {
         const unlockedAchievements: string[] = [];
 
         Object.values(ACHIEVEMENTS).forEach((achievement) => {
@@ -213,7 +235,7 @@ export class AchievementManager {
      * - Nếu 1 reward fail, các reward khác vẫn apply
      * 
      * @param {string} achievementId - ID achievement cần unlock
-     * @param {any} playerStore - Zustand player store instance
+     * @param {PlayerStore} playerStore - Zustand player store instance
      * @returns {Object|null} Achievement data + rewards, hoặc null nếu không tìm thấy
      * 
      * @example
@@ -223,7 +245,7 @@ export class AchievementManager {
      * // - 100 O-Points
      * // - "Apprentice" badge
      */
-    static unlockAchievement(achievementId: string, playerStore: any) {
+    static unlockAchievement(achievementId: string, playerStore: PlayerStore) {
         // Tra cứu achievement (case-insensitive)
         const achievement = ACHIEVEMENTS[achievementId.toUpperCase()];
 
@@ -239,10 +261,10 @@ export class AchievementManager {
         const rewards = achievement.rewards;
 
         if (rewards.oPoints) {
-            playerStore.addResource('O_POINTS', rewards.oPoints);
+            playerStore.addResource(ResourceType.O_POINTS, rewards.oPoints);
         }
         if (rewards.logicStone) {
-            playerStore.addResource('LOGIC_STONE', rewards.logicStone);
+            playerStore.addResource(ResourceType.LOGIC_STONE, rewards.logicStone);
         }
         if (rewards.badge) {
             playerStore.unlockBadge(rewards.badge);
@@ -285,7 +307,7 @@ export class AchievementManager {
      * - Notification: "5/10 dungeons cleared"
      * 
      * @param {string} achievementId - Achievement ID
-     * @param {any} playerStats - Player statistics
+     * @param {PlayerState['stats']} playerStats - Player statistics
      * @returns {number} Progress percentage (0-100)
      * 
      * @example
@@ -295,7 +317,7 @@ export class AchievementManager {
      * const progress2 = getProgress('spell_collector', { spellsUnlocked: 5 });
      * // → 50% (5/10 spells)
      */
-    static getProgress(achievementId: string, playerStats: any): number {
+    static getProgress(achievementId: string, playerStats: PlayerState): number {
         const achievement = ACHIEVEMENTS[achievementId.toUpperCase()];
         if (!achievement) return 0;
 
@@ -304,13 +326,13 @@ export class AchievementManager {
 
         switch (criteria.type) {
             case 'DUNGEON_CLEAR':
-                return Math.min(100, (playerStats.dungeonsCleared / target) * 100);
+                return Math.min(100, (playerStats.stats.dungeonsCleared / target) * 100);
 
             case 'QUESTIONS_CORRECT':
-                return Math.min(100, (playerStats.questionsCorrect / target) * 100);
+                return Math.min(100, (playerStats.stats.questionsCorrect / target) * 100);
 
             case 'SPELL_UNLOCK':
-                return Math.min(100, (playerStats.spellsUnlocked / target) * 100);
+                return Math.min(100, (playerStats.unlockedSpells.length / target) * 100);
 
             default:
                 // Binary achievements: Không có progress, chỉ 0% hoặc 100%
@@ -334,10 +356,10 @@ export class AchievementManager {
      * - Time: O(n) - n achievements
      * - Space: O(n) - Tạo enriched array
      * 
-     * @param {any} playerStats - Player statistics
+     * @param {PlayerState} playerStats - Player statistics
      * @returns {Array} Enriched achievements với unlocked flag và progress
      */
-    static getAllWithProgress(playerStats: any) {
+    static getAllWithProgress(playerStats: PlayerState) {
         return Object.values(ACHIEVEMENTS).map((achievement) => ({
             ...achievement,
             unlocked: playerStats.achievements?.includes(achievement.id) || false,
@@ -364,7 +386,7 @@ export class AchievementManager {
         isBoss: boolean;
         bossId?: string;
         time?: number;
-    }, playerStats: any): string[] {
+    }, playerStats: PlayerState): string[] {
         return this.checkAll(playerStats, combatContext);
     }
 
@@ -384,7 +406,7 @@ export class AchievementManager {
         dungeonId: string;
         time: number;
         perfect: boolean;
-    }, playerStats: any): string[] {
+    }, playerStats: PlayerState): string[] {
         return this.checkAll(playerStats, dungeonContext);
     }
 }

@@ -146,7 +146,7 @@ export const DialogueBox: React.FC = () => {
                 };
 
                 // Tìm quest tiếp theo chưa hoàn thành (linear search)
-                let questToGive = QUEST_CHAIN.find(q => !completedQuests.includes(q)) || '';
+                const questToGive = QUEST_CHAIN.find(q => !completedQuests.includes(q)) || '';
 
                 // Edge case: Đã hoàn thành tất cả quest
                 if (!questToGive) {

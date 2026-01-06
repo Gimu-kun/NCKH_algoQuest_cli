@@ -105,7 +105,7 @@ export class DungeonGenerator {
                     rooms.push({
                         x,
                         y,
-                        type: type as any,
+                        type: type as DungeonRoom['type'],
                         explored: type === 'entrance', // Entrance luôn Explored từ đầu
                         // Entrance, Empty và Treasure coi như Cleared ngay (hoặc sau khi nhặt)
                         // Monster/Boss cần đánh bại mới Cleared

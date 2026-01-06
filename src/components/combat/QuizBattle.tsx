@@ -56,6 +56,7 @@ import { MonsterSpawner } from '../../game/spawner/MonsterSpawner';
 import './QuizBattle.css';
 import { SPELLS } from '../../data/models/Spell';
 import type { SpellData } from '../../data/models/Spell';
+import { saveCombatState, loadCombatState } from '../../utils/combatPersistence';
 
 interface QuizBattleProps {
     monsterId: string;
@@ -165,10 +166,57 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         setIsCorrect(false);
     }, [appropriateQuestions]);
 
-    // Initialize: Load câu hỏi đầu tiên khi Mount
+    // ═══════════════════════════════════════════════════════════════════════
+    // INITIALIZE + RESTORE PERSISTED STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    // Load câu hỏi đầu tiên hoặc restore từ localStorage
+    // ═══════════════════════════════════════════════════════════════════════
     useEffect(() => {
-        loadRandomQuestion();
-    }, [loadRandomQuestion]);
+        const savedState = loadCombatState(monsterId);
+
+        if (savedState) {
+            // ═══ RESTORE SAVED STATE ═══
+            console.log('[Combat] Restoring saved state:', savedState);
+
+            // Tìm câu hỏi đã lưu theo ID
+            const restoredQuestion = appropriateQuestions.find(
+                q => q.id === savedState.currentQuestionId
+            );
+
+            if (restoredQuestion) {
+                setCurrentQuestion(restoredQuestion);
+                setSelectedAnswer(savedState.selectedAnswer);
+                setShowFeedback(savedState.showFeedback);
+                setIsCorrect(savedState.isCorrect);
+
+                showSparky('💾 Đã khôi phục trận chiến trước!');
+            } else {
+                // Question không tồn tại nữa → Load new
+                console.warn('[Combat] Saved question not found, loading new one');
+                loadRandomQuestion();
+            }
+        } else {
+            // ═══ NEW COMBAT ═══
+            loadRandomQuestion();
+        }
+    }, [loadRandomQuestion, appropriateQuestions, monsterId, showSparky]);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // AUTO-SAVE STATE ON CHANGE
+    // ═══════════════════════════════════════════════════════════════════════
+    // Lưu state mỗi khi có thay đổi
+    // ═══════════════════════════════════════════════════════════════════════
+    useEffect(() => {
+        if (currentQuestion) {
+            saveCombatState(
+                monsterId,
+                currentQuestion,
+                selectedAnswer,
+                showFeedback,
+                isCorrect
+            );
+        }
+    }, [monsterId, currentQuestion, selectedAnswer, showFeedback, isCorrect]);
 
     if (!currentQuestion) {
         return <div>Đang tải dữ liệu chiến đấu...</div>;

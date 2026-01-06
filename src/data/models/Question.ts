@@ -127,7 +127,7 @@ export interface QuestionBank {
 // Cấu trúc Theo Dõi Câu Trả Lời của Người chơi (Analytics)
 export interface PlayerAnswer {
     questionId: string;
-    playerAnswer: any;           // Dữ liệu trả lời (index, string, code...)
+    playerAnswer: number | string | object;           // Dữ liệu trả lời (index, string, code...)
     isCorrect: boolean;          // Đúng/Sai
     timestamp: Date;             // Thời gian trả lời
     attempts: number;            // Số lần thử

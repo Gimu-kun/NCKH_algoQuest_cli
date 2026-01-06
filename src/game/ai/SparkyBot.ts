@@ -29,7 +29,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import { BloomLevel, QuestionType } from '../../data/models/Question';
+import { type Question, BloomLevel, QuestionType } from '../../data/models/Question';
 
 export interface SparkyHint {
     type: 'SYNTAX' | 'MEMORY' | 'LOGIC' | 'GENERAL';
@@ -300,7 +300,7 @@ export class SparkyBot {
      * Trong phiên bản Production, hàm này sẽ gọi tới LLM (Gemini/GPT) để sinh câu hỏi mới.
      * Hiện tại return dummy data để demo Flow.
      */
-    generateQuestion(chapter: number, topic: string, bloomLevel: BloomLevel): any {
+    generateQuestion(chapter: number, topic: string, bloomLevel: BloomLevel): Question {
         console.log(`[Sparky ML] Generating ${bloomLevel} question for ${topic} (Chapter ${chapter})`);
 
         return {
@@ -311,7 +311,8 @@ export class SparkyBot {
             correctAnswer: 0,
             chapter,
             bloomLevel,
-            topic
+            topic,
+            points: 10
         };
     }
 
