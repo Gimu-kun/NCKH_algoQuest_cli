@@ -48,12 +48,14 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
 };
 
 function App() {
-  const { currentScene, setScene, enterDungeon, currentDungeonId, endCombat, theme, combat } = useGameStore();
+  const { currentScene, currentDungeonId, endCombat, theme, combat } = useGameStore();
   const navigate = useNavigate();
   const location = useLocation();
   const isFirstRender = useRef(true);
 
   // Sync URL -> Store (Precedence on Load / Back Button)
+  // Sync URL -> Store (Deep Linking) - DISABLED TEMPORARILY
+  /*
   useEffect(() => {
     // 1. Check for specific dungeon path: /dungeon/:id
     if (location.pathname.startsWith('/dungeon/')) {
@@ -76,7 +78,8 @@ function App() {
         }
       }
     }
-  }, [location.pathname, currentScene, currentDungeonId, enterDungeon, setScene]); // All dependencies included (zustand functions are stable)
+  }, [location.pathname, currentScene, currentDungeonId, enterDungeon, setScene]); 
+  */
 
   // Sync Store -> URL (Game Logic Navigation)
   // Chỉ chạy khi state thay đổi, nhưng bỏ qua lần đầu (do URL load)
@@ -88,16 +91,26 @@ function App() {
 
     if (currentScene === GameScene.DUNGEON) {
       const dungeonPath = `/dungeon/${currentDungeonId || 'dungeon_1'}`;
-      if (location.pathname !== dungeonPath) {
-        navigate(dungeonPath);
+      // Normalize paths to prevent loops (e.g. trailing slashes)
+      const currentPath = location.pathname.replace(/\/+$/, '');
+      const targetPath = dungeonPath.replace(/\/+$/, '');
+
+      if (currentPath !== targetPath) {
+        console.log(`[App] Syncing URL: ${currentPath} -> ${targetPath}`);
+        navigate(targetPath, { replace: true });
       }
     } else {
       const path = SCENE_TO_PATH[currentScene];
-      if (path && location.pathname !== path) {
-        navigate(path);
+      if (path) {
+        const currentPath = location.pathname.replace(/\/+$/, '');
+        const targetPath = path.replace(/\/+$/, '');
+
+        if (currentPath !== targetPath) {
+          navigate(targetPath, { replace: true });
+        }
       }
     }
-  }, [currentScene, currentDungeonId, navigate, location.pathname]); // Include all dependencies
+  }, [currentScene, currentDungeonId, navigate, location.pathname]);
 
   // Áp dụng lớp giao diện (Theme Class)
   useEffect(() => {
@@ -123,7 +136,7 @@ function App() {
     if (track) {
       import('./game/audio/AudioManager').then(({ audioManager }) => {
         audioManager.playBGM(track);
-      });
+      }).catch(e => console.warn('Audio system failed to load:', e));
     }
   }, [currentScene]);
 
