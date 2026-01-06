@@ -203,7 +203,7 @@ export const Dungeon: React.FC = () => {
             return (
                 <div className="player-marker">
                     <img
-                        src="/src/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
+                        src="/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
                         alt="Player"
                         className="player-sprite"
                     />

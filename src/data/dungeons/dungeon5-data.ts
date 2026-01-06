@@ -29,7 +29,7 @@ export const DUNGEON_5_FOREST: DungeonData = {
     displayName: 'Khu Rừng Đệ Quy',
     description: 'Lạc vào khu rừng nơi mỗi nhánh cây lặp lại quy luật của chính nó.',
     lore: 'Nơi tri thức phát triển và phân nhánh vô tận. Hãy cẩn thận đừng để bị lạc trong vòng lặp vô hạn.',
-    background: '/src/assets/Ảnh Assets/Ải/Ải 5 Khu Rừng Đệ Quy (The Recursive Forest).png',
+    background: '/assets/Ảnh Assets/Ải/Ải 5 Khu Rừng Đệ Quy (The Recursive Forest).png',
 
     monsters: {
         minions: [
@@ -41,10 +41,10 @@ export const DUNGEON_5_FOREST: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 5,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 1 (R) Leaf Sprite (Quái Thường)/Leaf Sprite (Death).png'
                 },
                 stats: { health: 200, difficulty: 3 },
                 attackPattern: {
@@ -65,10 +65,10 @@ export const DUNGEON_5_FOREST: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 5,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 2 (U) Root Crawler (Quái Biến Thể)/Root Crawler (Death).png'
                 },
                 stats: { health: 250, difficulty: 4 },
                 attackPattern: {
@@ -91,10 +91,10 @@ export const DUNGEON_5_FOREST: DungeonData = {
                 type: MonsterType.ELITE,
                 chapter: 5,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 3 (AP) Balanced Treant (Quái Tinh Anh)/Balanced Treant (Death).png'
                 },
                 stats: { health: 400, difficulty: 6 },
                 attackPattern: {
@@ -117,10 +117,10 @@ export const DUNGEON_5_FOREST: DungeonData = {
             type: MonsterType.BOSS,
             chapter: 5,
             sprite: {
-                idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Idle).png',
-                attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Attack).png',
-                hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Hurt).png',
-                death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Death).png'
+                idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Idle).png',
+                attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Attack).png',
+                hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Hurt).png',
+                death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 5 KHU RỪNG ĐỆ QUY (CHƯƠNG 5)/Tier 4 (AN) Unbalanced Treant (Boss)/Unbalanced Treant (Death).png'
             },
             stats: { health: 800, difficulty: 9 },
             attackPattern: {

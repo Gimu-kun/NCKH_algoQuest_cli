@@ -23,7 +23,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-const ASSET_BASE = '/src/assets/Ảnh Assets';
+const ASSET_BASE = '/assets/Ảnh Assets';
 
 export const ASSETS = {
     // ========== LOGOS & BRANDING ==========
@@ -73,7 +73,6 @@ export const ASSETS = {
 
         // HUD
         PLAYER_STATUS_HUD: `${ASSET_BASE}/UI/Player Status HUD.png`,
-        DIALOGUE_BOX: `${ASSET_BASE}/UI/Dialogue UI Box.png`,
         CODING_CONSOLE: `${ASSET_BASE}/UI/Coding Console UI.png`,
 
         // Inventory
@@ -89,10 +88,10 @@ export const ASSETS = {
         SPARKY_ERROR: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Synax Error).png`,
         SPARKY_SUCCESS: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Normal).png`, // Fallback as no success sprite
 
-        PROFESSOR_ALRIC: `${ASSET_BASE}/Nhân vật/Giáo Sư Alric (The Mentor).png`,
-        LINH: `${ASSET_BASE}/Nhân vật/Linh (The Archivist).png`,
-        BORK: `${ASSET_BASE}/Nhân vật/Bork (The Blacksmith).png`,
-        GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png`,
+        PROFESSOR_ALRIC: `${ASSET_BASE}/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png`,
+        LINH: `${ASSET_BASE}/Nhân vật/Linh (The Archivist)/Linh (Idle).png`,
+        BORK: `${ASSET_BASE}/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png`,
+        GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png`,
     }
 } as const;
 

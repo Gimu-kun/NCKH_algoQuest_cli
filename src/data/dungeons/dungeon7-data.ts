@@ -22,7 +22,7 @@ import type { DungeonData } from '../models/Dungeon';
 import { MonsterType } from '../models/Dungeon';
 import { QuestionType, BloomLevel } from '../models/Question';
 
-const ASSETS_BASE = '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 7 LÕI HƯ KHÔNG (CHƯƠNG CUỐI)';
+const ASSETS_BASE = '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 7 LÕI HƯ KHÔNG (CHƯƠNG CUỐI)';
 
 export const DUNGEON_7_FINAL: DungeonData = {
     id: 'dungeon_7',
@@ -31,7 +31,7 @@ export const DUNGEON_7_FINAL: DungeonData = {
     displayName: 'Lõi Hư Không (Chương Cuối)',
     description: 'Đối mặt với Lỗi Hư Không tại trung tâm của Mạng Lưới Logic. Thử thách cuối cùng!',
     lore: 'Nơi khởi nguồn của sự sụp đổ. The Corruptor đang nuốt chửng mọi dữ liệu tại đây.',
-    background: '/src/assets/Ảnh Assets/Ải/Ải Cuối Lõi Hư Không (The Corrupted Core).png',
+    background: '/assets/Ảnh Assets/Ải/Ải Cuối Lõi Hư Không (The Corrupted Core).png',
 
     monsters: {
         minions: [

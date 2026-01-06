@@ -18,7 +18,7 @@
 
 import { Layout, Menu, Button, Row, Col, Space, Image } from "antd";
 import type { MenuProps } from "antd";
-import Logo from "../assets/Ảnh Assets/VFS Demo/ Game Logo.png";
+import { ASSETS } from "../data/AssetPaths";
 import React from "react";
 
 const { Header } = Layout;
@@ -39,7 +39,7 @@ const Navbar = ({ setAuthFormstate, setIsLogin }: NavbarProps) => {
         <Header style={{ background: "#fff", padding: "0 40px", height: 60 }}>
             <Row align="middle" justify="space-between" style={{ height: "100%" }}>
                 <Col>
-                    <Image src={Logo} className="cursor-pointer" style={{ height: 60 }} preview={false} />
+                    <Image src={ASSETS.LOGO} className="cursor-pointer" style={{ height: 60 }} preview={false} />
                 </Col>
                 <Col flex="auto">
                     <Menu

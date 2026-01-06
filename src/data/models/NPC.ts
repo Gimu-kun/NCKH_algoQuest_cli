@@ -103,8 +103,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Giáo sư thông thái dẫn dắt hành trình của bạn qua 6 chương.',
         location: { x: 400, y: 300, zone: 'CENTRAL_PLAZA' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Talk).png'
         },
         dialogues: [
             {
@@ -128,8 +128,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Một mảnh vỡ AI của Lõi Logic đã vỡ, trợ lý ML cá nhân của bạn.',
         location: { x: 0, y: -50, zone: 'FOLLOWS_PLAYER' }, // Bay phía trên người chơi
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Alert).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Alert).png'
         },
         dialogues: [
             {
@@ -152,8 +152,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Người bảo vệ Thư Viện Vô Tận, quản lý huấn luyện và nội dung người dùng.',
         location: { x: 200, y: 500, zone: 'LIBRARY' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Talk).png'
         },
         dialogues: [
             {
@@ -172,8 +172,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Thợ rèn cộc cằn chuyên bán đồ trang trí và trang phục.',
         location: { x: 600, y: 400, zone: 'FORGE' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Talk).png'
         },
         dialogues: [
             {
@@ -195,8 +195,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Quản lý các hoạt động nhiều người chơi và nhiệm vụ hàng ngày.',
         location: { x: 500, y: 200, zone: 'ARENA' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Talk).png'
         },
         dialogues: [
             {
@@ -215,8 +215,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Thông báo các sự kiện trùm và thử thách thế giới.',
         location: { x: 400, y: 100, zone: 'OBSERVATORY' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Talk).png'
         },
         dialogues: [
             {
@@ -235,8 +235,8 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Duy trì bảng xếp hạng và hồ sơ thành tựu.',
         location: { x: 300, y: 600, zone: 'HALL_OF_FAME' },
         sprite: {
-            idle: '/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png',
-            talk: '/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png'
+            idle: '/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Idle).png',
+            talk: '/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Talk).png'
         },
         dialogues: [
             {

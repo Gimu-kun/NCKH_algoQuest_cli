@@ -139,9 +139,9 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         }
         // Fallback cho ID cũ (Backward Compatibility)
         if (monsterId === 'chapter1_boss' || monsterId === 'initialization_golem') {
-            return "/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png";
+            return "/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png";
         }
-        return "/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png";
+        return "/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png";
     };
 
     /**

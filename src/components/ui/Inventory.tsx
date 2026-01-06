@@ -38,6 +38,7 @@ import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { RESOURCES, ResourceType } from '../../data/models/Item';
 import type { Resource, DecorationItem, CosmeticItem } from '../../data/models/Item';
+import { SHOP_ITEMS } from '../../data/models/Item';
 import './Inventory.css';
 
 // Định nghĩa các tab trong kho đồ
@@ -45,10 +46,14 @@ type InventoryTab = 'RESOURCES' | 'DECORATIONS' | 'COSMETICS';
 
 export const Inventory: React.FC = () => {
     const { inventoryOpen, toggleInventory } = useGameStore();
-    const { resources, decorations, cosmetics } = usePlayerStore();
+    const { resources, decorations: decorationIds, cosmetics: cosmeticIds } = usePlayerStore();
 
     const [activeTab, setActiveTab] = useState<InventoryTab>('RESOURCES');
     const [selectedItem, setSelectedItem] = useState<Resource | DecorationItem | CosmeticItem | null>(null);
+
+    // Helper to resolve items
+    const getDecoration = (id: string) => SHOP_ITEMS.decorations.find(d => d.id === id);
+    const getCosmetic = (id: string) => SHOP_ITEMS.cosmetics.find(c => c.id === id);
 
     // Nếu kho đồ chưa mở, không render gì cả
     if (!inventoryOpen) return null;
@@ -83,30 +88,38 @@ export const Inventory: React.FC = () => {
                 });
 
             case 'DECORATIONS':
-                // Hiển thị danh sách đồ trang trí (Placeholder)
-                if (decorations.length === 0) {
+                // Hiển thị danh sách đồ trang trí
+                if (decorationIds.length === 0) {
                     return <div className="empty-state">Chưa có vật phẩm trang trí nào.</div>;
                 }
-                return decorations.map((item: any, index: number) => (
-                    <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
-                        <div className="item-icon">
-                            <img src={item.sprite || '/src/assets/Ảnh Assets/Vật Phẩm/DefaultBox.png'} alt={item.displayName} />
+                return decorationIds.map((id, index) => {
+                    const item = getDecoration(id);
+                    if (!item) return null; // Bỏ qua nếu item không tồn tại
+                    return (
+                        <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
+                            <div className="item-icon">
+                                <img src={item.sprite || '/assets/Ảnh Assets/Vật Phẩm/DefaultBox.png'} alt={item.displayName} />
+                            </div>
                         </div>
-                    </div>
-                ));
+                    );
+                });
 
             case 'COSMETICS':
-                // Hiển thị danh sách trang phục (Placeholder)
-                if (cosmetics.length === 0) {
+                // Hiển thị danh sách trang phục
+                if (cosmeticIds.length === 0) {
                     return <div className="empty-state">Chưa có trang phục nào.</div>;
                 }
-                return cosmetics.map((item: any, index: number) => (
-                    <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
-                        <div className="item-icon">
-                            <img src={item.sprite || '/src/assets/Ảnh Assets/Vật Phẩm/DefaultRobe.png'} alt={item.displayName} />
+                return cosmeticIds.map((id, index) => {
+                    const item = getCosmetic(id);
+                    if (!item) return null;
+                    return (
+                        <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
+                            <div className="item-icon">
+                                <img src={item.sprite || '/assets/Ảnh Assets/Vật Phẩm/DefaultRobe.png'} alt={item.displayName} />
+                            </div>
                         </div>
-                    </div>
-                ));
+                    );
+                });
 
             default:
                 return null;

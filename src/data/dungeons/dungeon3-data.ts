@@ -29,7 +29,7 @@ export const DUNGEON_3_CHAINED: DungeonData = {
     displayName: 'Hành Lang Dây Xích',
     description: 'Điều hướng các lối đi liên kết và làm chủ thao tác con trỏ.',
     lore: 'Mảnh vỡ thứ ba bị mắc kẹt trong một hành lang vô tận nơi mỗi bước đi đều liên kết với bước tiếp theo.',
-    background: '/src/assets/Ảnh Assets/Main Menu Background.png',
+    background: '/assets/Ảnh Assets/Main Menu Background.png',
 
     monsters: {
         minions: [
@@ -41,10 +41,10 @@ export const DUNGEON_3_CHAINED: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 3,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 1 (R) Broken Link (Quái Thường)/Broken Link (Death).png'
                 },
                 stats: { health: 140, difficulty: 3 },
                 attackPattern: {
@@ -67,10 +67,10 @@ export const DUNGEON_3_CHAINED: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 3,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 2 (U) Null Pointer Wisp (Quái Biến Thể)/Null Pointer Wisp (Death).png'
                 },
                 stats: { health: 190, difficulty: 4 },
                 attackPattern: {
@@ -95,10 +95,10 @@ export const DUNGEON_3_CHAINED: DungeonData = {
                 type: MonsterType.ELITE,
                 chapter: 3,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 3 (AP) Bridge Keeper (Quái Tinh Anh)/Bridge Keeper (Death).png'
                 },
                 stats: { health: 350, difficulty: 6 },
                 attackPattern: {
@@ -123,10 +123,10 @@ export const DUNGEON_3_CHAINED: DungeonData = {
             type: MonsterType.BOSS,
             chapter: 3,
             sprite: {
-                idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Idle).png',
-                attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Attack).png',
-                hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Hurt).png',
-                death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Death).png'
+                idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Idle).png',
+                attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Attack).png',
+                hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Hurt).png',
+                death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 3 HÀNH LANG DÂY XÍCH (CHƯƠNG 3)/Tier 4 (AN) The Messy Hydra (Boss)/The Messy Hydra (Death).png'
             },
             stats: { health: 700, difficulty: 9 },
             attackPattern: {

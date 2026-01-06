@@ -139,75 +139,80 @@ export const DialogueBox: React.FC = () => {
             <AnimatePresence>
                 <motion.div
                     className="dialogue-box"
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 100, opacity: 0 }}
+                    exit={{ y: 50, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25 }}
+                    style={{
+                        backgroundImage: `url("${npc.sprite.talk}")`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'left center'
+                    }}
                 >
-                    {/* === CHÂN DUNG NPC === */}
-                    <div className="dialogue-portrait">
-                        <img
-                            src={npc.sprite.talk}
-                            alt={npc.displayName}
-                        />
+                    {/* === CHÂN DUNG NPC (Removed - Image is now Background) === */}
+                    {/* <div className="dialogue-portrait">...</div> */}
+
+                    {/* === HEADER (NAME & ROLE) - Positioned Absolutely === */}
+                    <div className="dialogue-header">
+                        <h3>{npc.displayName}</h3>
                     </div>
 
                     {/* === NỘI DUNG HỘI THOẠI === */}
                     <div className="dialogue-content">
-                        {/* Header: Tên & Vai Trò */}
-                        <div className="dialogue-header">
-                            <h3>{npc.displayName}</h3>
-                            <span className="dialogue-role">{npc.description}</span>
-                        </div>
+                        {/* Văn Bản Chính (Removed Header from here) */}
 
                         {/* Văn Bản Chính */}
                         <div className="dialogue-text">
                             <p>{currentDialogue.text}</p>
+                            <span className="dialogue-role">{npc.description}</span>
                         </div>
 
-                        {/* Các Nút Điều Hướng */}
-                        <div className="dialogue-actions">
-                            {/* Nút Skip: Đóng nhanh */}
-                            <button className="btn-skip" onClick={handleClose}>
-                                Đóng ✕
-                            </button>
-
-                            {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
-                                <button className="btn-next" onClick={handleNext}>
-                                    Tiếp Theo ➡️
-                                </button>
-                            ) : (
-                                <button className="btn-close" onClick={handleClose}>
-                                    Hoàn Tất ✓
-                                </button>
+                        {/* === BOTTOM ROW: Features + Actions === */}
+                        <div className="dialogue-bottom-row">
+                            {/* === TÍNH NĂNG NPC (NẾU CÓ) === */}
+                            {npc.features && npc.features.length > 0 && (
+                                <div className="dialogue-features">
+                                    {npc.features.includes('CAMPAIGN_QUESTS') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
+                                            📜 Nhận Nhiệm Vụ
+                                        </button>
+                                    )}
+                                    {npc.features.includes('TRAINING_AREA') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
+                                            🎓 Khu Tập Luyện
+                                        </button>
+                                    )}
+                                    {npc.features.includes('SHOP') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
+                                            🛒 Xem Cửa Hàng
+                                        </button>
+                                    )}
+                                    {npc.features.includes('MULTIPLAYER') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
+                                            🤝 Vào Đấu Trường
+                                        </button>
+                                    )}
+                                </div>
                             )}
-                        </div>
 
-                        {/* === TÍNH NĂNG NPC (NẾU CÓ) === */}
-                        {npc.features && npc.features.length > 0 && (
-                            <div className="dialogue-features">
-                                {npc.features.includes('CAMPAIGN_QUESTS') && (
-                                    <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
-                                        📜 Nhận Nhiệm Vụ
+                            {/* Các Nút Điều Hướng */}
+                            <div className="dialogue-actions">
+                                {/* Nút Skip: Đóng nhanh */}
+                                <button className="btn-skip" onClick={handleClose}>
+                                    Đóng ✕
+                                </button>
+
+                                {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
+                                    <button className="btn-next" onClick={handleNext}>
+                                        Tiếp Theo ➡️
                                     </button>
-                                )}
-                                {npc.features.includes('TRAINING_AREA') && (
-                                    <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
-                                        🎓 Khu Tập Luyện
-                                    </button>
-                                )}
-                                {npc.features.includes('SHOP') && (
-                                    <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
-                                        🛒 Xem Cửa Hàng
-                                    </button>
-                                )}
-                                {npc.features.includes('MULTIPLAYER') && (
-                                    <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
-                                        🤝 Vào Đấu Trường
+                                ) : (
+                                    <button className="btn-close" onClick={handleClose}>
+                                        Hoàn Tất ✓
                                     </button>
                                 )}
                             </div>
-                        )}
+                        </div>
                     </div>
                 </motion.div>
             </AnimatePresence>

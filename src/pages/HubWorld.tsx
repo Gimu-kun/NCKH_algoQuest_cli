@@ -49,7 +49,7 @@ export const HubWorld: React.FC = () => {
             <div
                 className="hub-background"
                 style={{
-                    backgroundImage: theme === 'light' ? 'none' : 'url(/src/assets/Ảnh Assets/Hub World Concept.png)'
+                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/Ảnh Assets/Hub World Concept.png)'
                 }}
             />
 
@@ -78,7 +78,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('ALRIC')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png" alt="Professor Alric" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png" alt="Professor Alric" />
                         <h3>Giáo sư Alric</h3>
                         <p>Nhiệm Vụ Chiến Dịch</p>
                         <span className="quest-marker">!</span>
@@ -90,7 +90,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('LINH')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png" alt="Linh" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png" alt="Linh" />
                         <h3>Linh</h3>
                         <p>Huấn Luyện & Thư Viện</p>
                     </motion.div>
@@ -101,7 +101,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('BORK')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png" alt="Bork" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png" alt="Bork" />
                         <h3>Bork</h3>
                         <p>Cửa Hàng & Trang Trí</p>
                     </motion.div>
@@ -112,7 +112,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('GUILD_LEADER')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png" alt="Guild Leader" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png" alt="Guild Leader" />
                         <h3>Chủ Guild</h3>
                         <p>Nhiệm Vụ Đa Người Chơi</p>
                     </motion.div>
@@ -123,7 +123,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('ORACLE')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png" alt="Oracle" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Idle).png" alt="Oracle" />
                         <h3>Nhà Tiên Tri</h3>
                         <p>Sự Kiện Trùm</p>
                     </motion.div>
@@ -134,7 +134,7 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('BOOKKEEPER')}
                     >
-                        <img src="/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png" alt="Bookkeeper" />
+                        <img src="/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Idle).png" alt="Bookkeeper" />
                         <h3>Kẻ Giữ Sách</h3>
                         <p>Bảng Xếp Hạng</p>
                     </motion.div>
@@ -203,7 +203,7 @@ export const HubWorld: React.FC = () => {
                 }}
             >
                 <img
-                    src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+                    src="/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
                     alt="Sparky"
                 />
             </motion.div>

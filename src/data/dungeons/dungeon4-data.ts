@@ -29,7 +29,7 @@ export const DUNGEON_4_RELIC: DungeonData = {
     displayName: 'Thánh Tích Hai Mặt',
     description: 'Thám hiểm di tích cổ đại nơi quy tắc Vào Trước-Ra Trước và Vào Sau-Ra Trước ngự trị.',
     lore: 'Nơi lưu giữ ký ức của những thuật toán sơ khai, chia làm hai bản thể đối lập nhau.',
-    background: '/src/assets/Ảnh Assets/Ải/Ải 4 Thánh Tích Hai Mặt (The Two-Faced Relic).png',
+    background: '/assets/Ảnh Assets/Ải/Ải 4 Thánh Tích Hai Mặt (The Two-Faced Relic).png',
 
     monsters: {
         minions: [
@@ -42,10 +42,10 @@ export const DUNGEON_4_RELIC: DungeonData = {
                 chapter: 4,
                 sprite: {
                     // NOTE: Folder names in assets seem swapped. LIFO folder contains FIFO sprites.
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) LIFO Spirit (Stack) (Quái Thường)/FIFO Spirit (Death).png'
                 },
                 stats: { health: 180, difficulty: 3 },
                 attackPattern: {
@@ -66,10 +66,10 @@ export const DUNGEON_4_RELIC: DungeonData = {
                 chapter: 4,
                 sprite: {
                     // NOTE: Folder names in assets seem swapped. FIFO folder contains LIFO sprites.
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 1 (R) FIFO Spirit (Queue) (Quái Thường)/LIFO Spirit (Death).png'
                 },
                 stats: { health: 180, difficulty: 3 },
                 attackPattern: {
@@ -90,10 +90,10 @@ export const DUNGEON_4_RELIC: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 4,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Idle).png',
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 2 (U) Overflow Slime (Quái Biến Thể)/Overflow Slime (Death).png'
                 },
                 stats: { health: 220, difficulty: 4 },
                 attackPattern: {
@@ -116,10 +116,10 @@ export const DUNGEON_4_RELIC: DungeonData = {
                 type: MonsterType.ELITE,
                 chapter: 4,
                 sprite: {
-                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Idle).png', // Assuming name matches
-                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Attack).png',
-                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Hurt).png',
-                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Death).png'
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Idle).png', // Assuming name matches
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 3 (AP) Polish Gatekeeper (Quái Tinh Anh)/Polish Gatekeeper (Death).png'
                 },
                 stats: { health: 350, difficulty: 6 },
                 attackPattern: {
@@ -142,10 +142,10 @@ export const DUNGEON_4_RELIC: DungeonData = {
             type: MonsterType.BOSS,
             chapter: 4,
             sprite: {
-                idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Idle).png', // Assuming name matches
-                attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Attack).png',
-                hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Hurt).png',
-                death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Death).png'
+                idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Idle).png', // Assuming name matches
+                attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Attack).png',
+                hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Hurt).png',
+                death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 4 THÁNH TÍCH HAI MẶT (CHƯƠNG 4)/Tier 4 (AN) Balanced Chimera (Boss)/Balanced Chimera (Death).png'
             },
             stats: { health: 700, difficulty: 8 },
             attackPattern: {

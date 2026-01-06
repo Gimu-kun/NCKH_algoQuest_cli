@@ -47,7 +47,7 @@ export const HUD: React.FC = () => {
             <div className="hud-panel hud-player-info">
                 <div className="player-avatar">
                     <img
-                        src="/src/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
+                        src="/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
                         alt={name}
                     />
                 </div>
@@ -60,19 +60,19 @@ export const HUD: React.FC = () => {
             {/* === GÓC TRÊN PHẢI: TÀI NGUYÊN === */}
             <div className="hud-panel hud-resources">
                 <div className="resource-item" title="Gỗ Dữ Liệu">
-                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png" alt="Data-Wood" />
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png" alt="Data-Wood" />
                     <span>{resources[ResourceType.DATA_WOOD]}</span>
                 </div>
                 <div className="resource-item" title="Đá Logic">
-                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Logic-Stone.png" alt="Logic-Stone" />
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Logic-Stone.png" alt="Logic-Stone" />
                     <span>{resources[ResourceType.LOGIC_STONE]}</span>
                 </div>
                 <div className="resource-item" title="Điểm O (Năng lượng)">
-                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/O-Point.png" alt="O-Points" />
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/O-Point.png" alt="O-Points" />
                     <span>{resources[ResourceType.O_POINTS]}</span>
                 </div>
                 <div className="resource-item" title="Vàng">
-                    <img src="/src/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
                     <span>{resources[ResourceType.GOLD]}</span>
                 </div>
             </div>
@@ -87,7 +87,7 @@ export const HUD: React.FC = () => {
                                 <div className="spell-icon-frame">
                                     {/* Placeholder icon, replace with specific spell icon later */}
                                     <img
-                                        src={`/src/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
+                                        src={`/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
                                         alt="Spell Slot"
                                     />
                                     <span className="hotkey">{index + 1}</span>
@@ -111,7 +111,7 @@ export const HUD: React.FC = () => {
                     onClick={toggleInventory}
                     title="Túi Đồ (B)"
                 >
-                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
                 </motion.button>
 
                 <motion.button
@@ -121,7 +121,7 @@ export const HUD: React.FC = () => {
                     title="Bản Đồ (M) - Chưa mở"
                     style={{ opacity: 0.5, cursor: 'not-allowed' }}
                 >
-                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
                 </motion.button>
 
                 <motion.button
@@ -131,7 +131,7 @@ export const HUD: React.FC = () => {
                     onClick={toggleQuests}
                     title="Nhiệm Vụ (Q)"
                 >
-                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
                 </motion.button>
 
                 <motion.button
@@ -141,7 +141,7 @@ export const HUD: React.FC = () => {
                     onClick={toggleMenu}
                     title="Cài Đặt / Menu (ESC)"
                 >
-                    <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
                 </motion.button>
             </div>
 
@@ -155,12 +155,12 @@ export const HUD: React.FC = () => {
                 >
                     <div className="sparky-avatar">
                         <img
-                            src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+                            src="/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
                             alt="Sparky"
                         />
                     </div>
                     <div className="sparky-bubble">
-                        <img src="/src/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
+                        <img src="/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
                         <p>{sparkyMessage}</p>
                     </div>
                 </motion.div>

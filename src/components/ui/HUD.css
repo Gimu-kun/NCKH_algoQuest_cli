@@ -28,37 +28,42 @@
 }
 
 /* === PLAYER INFO (TOP LEFT) === */
+/* === PLAYER INFO (TOP LEFT) === */
 .hud-player-info {
     top: var(--space-md);
     left: var(--space-md);
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    min-width: 300px;
-    height: 100px;
-    background-image: url('../../../assets/Ảnh Assets/UI/Player Status HUD.png');
-    background-size: 100% 100%;
+    width: 420px;
+    /* Increased from 330px */
+    height: 140px;
+    /* Increased from 110px */
+    background-image: url('/assets/Ảnh Assets/UI/Player Status HUD.png');
+    background-size: contain;
     background-repeat: no-repeat;
-    padding: 15px 40px 15px 25px;
-    /* Adjust padding based on image */
+    background-position: center;
+    padding: 0;
     transition: all var(--transition-base);
+    position: relative;
 }
 
 .hud-player-info:hover {
     transform: scale(1.02);
     filter: brightness(1.1);
-    box-shadow: none;
-    /* Shadow handled by image or not needed */
 }
 
 .player-avatar {
-    width: 56px;
-    height: 56px;
-    border: 3px solid var(--color-primary);
+    position: absolute;
+    /* Căn chỉnh vào "Hình tròn" trong ảnh */
+    top: 13px;
+    left: 18px;
+    width: 108px;
+    height: 108px;
     border-radius: 50%;
     overflow: hidden;
-    background: var(--color-bg-tertiary);
-    box-shadow: 0 0 15px rgba(78, 204, 163, 0.3);
+    /* Xóa style vẽ khung cũ */
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    z-index: 1;
 }
 
 .player-avatar img {
@@ -68,25 +73,60 @@
     image-rendering: pixelated;
 }
 
+.player-details {
+    /* Container ảo, không cần style */
+    position: static;
+}
+
 .player-details h3 {
+    position: absolute;
+    /* Căn chỉnh vào "Hình chữ nhật" trong ảnh */
+    top: 32px;
+    left: 140px;
+    width: 230px;
+    /* Giới hạn chiều rộng text */
     margin: 0;
-    color: var(--color-primary);
-    font-size: var(--text-base);
+
+    /* Text Style */
+    color: var(--color-text-primary);
+    font-size: 20px;
     font-family: var(--font-display);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    text-align: left;
+    /* Hoặc center tùy ảnh */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+
+    /* Xóa style vẽ khung cũ */
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .level-badge {
-    background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-orange));
-    color: var(--color-text-primary);
-    padding: 4px 10px;
-    border-radius: var(--border-radius-sm);
-    font-size: var(--text-xs);
+    position: absolute;
+    /* Căn chỉnh vào "Hình lục giác" trong ảnh */
+    top: 76px;
+    /* Giả định nằm dưới tên */
+    left: 140px;
+
+    /* Text Style */
+    color: var(--color-accent-gold);
+    font-size: 18px;
     font-weight: bold;
-    font-family: var(--font-display);
-    display: inline-block;
-    margin-top: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-family: var(--font-code);
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px #000;
+
+    /* Xóa style vẽ khung cũ */
+    background: none;
+    box-shadow: none;
+    clip-path: none;
+    border: none;
+    padding: 0;
+    min-width: auto;
+    width: auto;
 }
 
 /* === RESOURCES (TOP RIGHT) === */

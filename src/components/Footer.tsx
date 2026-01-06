@@ -16,7 +16,7 @@
  */
 
 import { Layout, Row, Col, Typography, Space } from "antd";
-import Logo from "../assets/logo.png";
+import { ASSETS } from "../data/AssetPaths";
 
 const { Footer: AntFooter } = Layout;
 const { Title, Text, Link } = Typography;
@@ -29,7 +29,7 @@ const Footer = () => {
                     {/* Logo + Giới thiệu */}
                     <Col xs={24} md={8}>
                         <div className="flex items-center mb-4">
-                            <img src={Logo} alt="Logo" style={{ height: 60 }} />
+                            <img src={ASSETS.LOGO} alt="Logo" style={{ height: 60 }} />
                             <Title level={4} className="ml-2 text-white">Code & Play</Title>
                         </div>
                         <Text className="text-gray-300">

@@ -149,7 +149,7 @@
 .inventory-slot {
     width: 80px;
     height: 80px;
-    background-image: url('../../../assets/Ảnh Assets/UI/Inventory Slot.png');
+    background-image: url('/assets/Ảnh Assets/UI/Inventory Slot.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-color: transparent;
