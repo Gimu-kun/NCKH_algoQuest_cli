@@ -10,7 +10,9 @@
     flex-direction: column;
     align-items: center;
     padding: var(--space-xl);
-    overflow: hidden;
+    overflow-y: auto;
+    /* Cho phép cuộn dọc nếu màn hình nhỏ */
+    overflow-x: hidden;
     position: relative;
     perspective: 1200px;
     /* Bật chế độ 3D Perspective */
@@ -52,14 +54,16 @@
 }
 
 .btn-exit {
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: fixed;
+    /* Fixed position để luôn nổi trên cùng */
+    top: 20px;
+    left: 20px;
     padding: 12px 24px;
-    background: transparent;
-    border: 2px solid var(--color-accent-red);
+    background: rgba(231, 76, 60, 0.9);
+    /* Màu đỏ nổi bật */
+    border: 2px solid #fff;
     border-radius: 30px;
-    color: var(--color-accent-red);
+    color: #fff;
     font-size: var(--text-sm);
     font-weight: bold;
     font-family: var(--font-display);
@@ -68,13 +72,16 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     pointer-events: auto;
+    z-index: 9999;
+    /* Đảm bảo đè lên mọi thứ */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
 }
 
 .btn-exit:hover {
-    background: var(--color-accent-red);
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-    transform: translateY(-2px);
+    background: #c0392b;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
 }
 
 /* === GRID CONTAINER (3D TABLE) === */
