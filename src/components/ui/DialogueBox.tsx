@@ -31,6 +31,8 @@ export const DialogueBox: React.FC = () => {
     // State cục bộ để theo dõi dòng hội thoại hiện tại
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
 
+    const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
+
     // Không hiển thị nếu chưa kích hoạt hội thoại
     if (!dialogueOpen || !dialogueNPC) return null;
 
@@ -72,6 +74,7 @@ export const DialogueBox: React.FC = () => {
      */
     const handleClose = () => {
         setCurrentDialogueIndex(0);
+        setIsSelectingDungeon(false); // Reset state chọn ải
         closeDialogue();
     };
 
@@ -96,6 +99,7 @@ export const DialogueBox: React.FC = () => {
      * - Scene navigation
      */
     const handleFeatureClick = (feature: string) => {
+        setIsSelectingDungeon(false); // Reset UI mode
         closeDialogue(); // UI cleanup - Đóng hội thoại trước khi xử lý
 
         switch (feature) {
@@ -308,55 +312,133 @@ export const DialogueBox: React.FC = () => {
                         backgroundPosition: 'left center'
                     }}
                 >
-                    {/* === CHÂN DUNG NPC (Removed - Image is now Background) === */}
-                    {/* <div className="dialogue-portrait">...</div> */}
-
-                    {/* === HEADER (NAME & ROLE) - Positioned Absolutely === */}
+                    {/* === HEADER (NAME & ROLE) === */}
                     <div className="dialogue-header">
                         <h3>{npc.displayName}</h3>
                     </div>
 
                     {/* === NỘI DUNG HỘI THOẠI === */}
                     <div className="dialogue-content">
-                        {/* Văn Bản Chính (Removed Header from here) */}
 
-                        {/* Văn Bản Chính */}
-                        <div className="dialogue-text">
-                            <p>{currentDialogue.text}</p>
-                            <span className="dialogue-role">{npc.description}</span>
-                        </div>
+                        {/* HIỂN THỊ TEXT (Chỉ hiện khi KHÔNG chọn ải) */}
+                        {!isSelectingDungeon && (
+                            <div className="dialogue-text">
+                                <p>{currentDialogue.text}</p>
+                                <span className="dialogue-role">{npc.description}</span>
+                            </div>
+                        )}
+
+                        {/* HIỂN THỊ DANH SÁCH ẢI (Chỉ hiện khi ĐANG chọn ải) */}
+                        {isSelectingDungeon && (
+                            <div className="dungeon-selector-panel" style={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                overflow: 'hidden',
+                                minHeight: 0
+                            }}>
+                                <h4 style={{ margin: '0 0 10px 0', flexShrink: 0 }}>🔻 Chọn Thử Thách 🔻</h4>
+                                {/* Scrollable Grid Container */}
+                                <div className="dungeon-selector-grid" style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '10px',
+                                    overflowY: 'auto',  // Enable scrolling
+                                    paddingRight: '5px',
+                                    flex: 1
+                                }}>
+                                    {[
+                                        { id: 'dungeon_1', name: 'Ải 1: Hướng Dẫn' },
+                                        { id: 'dungeon_2', name: 'Ải 2: Hỗn Loạn' },
+                                        { id: 'dungeon_3', name: 'Ải 3: Dây Xích' },
+                                        { id: 'dungeon_4', name: 'Ải 4: Hai Mặt' },
+                                        { id: 'dungeon_5', name: 'Ải 5: Đệ Quy' },
+                                        { id: 'dungeon_7', name: 'Ải 7: Lõi Hư Vô' },
+                                    ].map(d => (
+                                        <button
+                                            key={d.id}
+                                            className="feature-btn dungeon-btn"
+                                            onClick={() => {
+                                                useGameStore.getState().enterDungeon(d.id);
+                                                handleClose();
+                                            }}
+                                            style={{ minHeight: '40px' }}
+                                        >
+                                            ⚔️ {d.name}
+                                        </button>
+                                    ))}
+                                </div>
+                                {/* Removed Back Button from here */}
+                            </div>
+                        )}
 
                         {/* === BOTTOM ROW: Features + Actions === */}
                         <div className="dialogue-bottom-row">
-                            {/* === TÍNH NĂNG NPC (NẾU CÓ) === */}
-                            {npc.features && npc.features.length > 0 && (
+
+                            {/* === LIST BUTTON TÍNH NĂNG === */}
+                            {npc.features && (npc.features?.length || 0) > 0 && (
                                 <div className="dialogue-features">
-                                    {npc.features.includes('CAMPAIGN_QUESTS') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
-                                            📜 Nhận Nhiệm Vụ
+
+                                    {/* --- LOGIC ĐẶC BIỆT: NÚT TOGGLE BACK / QUEST --- */}
+
+                                    {isSelectingDungeon ? (
+                                        // Khi đang chọn ải: Hiện nút Quay Lại (thay cho nhận nhiệm vụ/chọn ải)
+                                        <button
+                                            className="feature-btn"
+                                            onClick={() => setIsSelectingDungeon(false)}
+                                            style={{
+                                                background: 'rgba(0, 0, 0, 0.3)',
+                                                border: '1px solid #d4a036',
+                                                color: '#d4a036'
+                                            }}
+                                        >
+                                            ⬅️ Quay Lại
                                         </button>
+                                    ) : (
+                                        // Khi bình thường: Hiện các nút tính năng chính
+                                        <>
+                                            {/* ƯU TIÊN 1: Nhận Nhiệm Vụ (Chỉ hiện khi KHÔNG chọn ải) */}
+                                            {npc.features?.includes('CAMPAIGN_QUESTS') && (
+                                                <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
+                                                    📜 Nhận Nhiệm Vụ
+                                                </button>
+                                            )}
+
+                                            {/* ƯU TIÊN 2: Chọn Ải (Chỉ hiện khi KHÔNG chọn ải) */}
+                                            {npc.features?.includes('SELECT_DUNGEON') && (
+                                                <button
+                                                    className="feature-btn"
+                                                    onClick={() => setIsSelectingDungeon(true)}
+                                                    style={{ background: 'linear-gradient(45deg, #FFD700, #FFA500)', color: '#000', fontWeight: 'bold' }}
+                                                >
+                                                    🗺️ Chọn Ải
+                                                </button>
+                                            )}
+                                        </>
                                     )}
-                                    {npc.features.includes('TRAINING_AREA') && (
+
+                                    {/* Các Feature Khác (Luôn hiện nếu có, trừ khi bị collision layout, thường thì ít NPC có nhiều feature conflicting) */}
+                                    {npc.features?.includes('TRAINING_AREA') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
                                             🎓 Khu Tập Luyện
                                         </button>
                                     )}
-                                    {npc.features.includes('SHOP') && (
+                                    {npc.features?.includes('SHOP') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
                                             🛒 Xem Cửa Hàng
                                         </button>
                                     )}
-                                    {npc.features.includes('MULTIPLAYER') && (
+                                    {npc.features?.includes('MULTIPLAYER') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
                                             🤝 Vào Đấu Trường
                                         </button>
                                     )}
-                                    {npc.features.includes('LEADERBOARDS') && (
+                                    {npc.features?.includes('LEADERBOARDS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('LEADERBOARDS')}>
                                             🏆 Bảng Xếp Hạng
                                         </button>
                                     )}
-                                    {npc.features.includes('ACHIEVEMENTS') && (
+                                    {npc.features?.includes('ACHIEVEMENTS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')}>
                                             🎖️ Thành Tựu
                                         </button>
@@ -364,25 +446,30 @@ export const DialogueBox: React.FC = () => {
                                 </div>
                             )}
 
-                            {/* Các Nút Điều Hướng */}
+                            {/* === CÁC NÚT ĐIỀU HƯỚNG / CLOSE === */}
                             <div className="dialogue-actions">
-                                {/* Nút Skip: Đóng nhanh */}
-                                <button className="btn-skip" onClick={handleClose}>
-                                    Đóng ✕
-                                </button>
+                                {/* Chỉ hiện nút đóng/next khi KHÔNG đang chọn ải (để tránh rối UI) */}
+                                {!isSelectingDungeon && (
+                                    <>
+                                        <button className="btn-skip" onClick={handleClose}>
+                                            Đóng ✕
+                                        </button>
 
-                                {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
-                                    <button className="btn-next" onClick={handleNext}>
-                                        Tiếp Theo ➡️
-                                    </button>
-                                ) : (
-                                    <button className="btn-close" onClick={handleClose}>
-                                        Hoàn Tất ✓
-                                    </button>
+                                        {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
+                                            <button className="btn-next" onClick={handleNext}>
+                                                Tiếp Theo ➡️
+                                            </button>
+                                        ) : (
+                                            <button className="btn-close" onClick={handleClose}>
+                                                Hoàn Tất ✓
+                                            </button>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
                     </div>
+
                 </motion.div>
             </AnimatePresence>
         </div>

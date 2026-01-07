@@ -117,7 +117,7 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
                 text: 'Hãy bắt đầu hành trình tại Đền Thờ Hướng Dẫn. Học các nền tảng của tư duy thuật toán.',
             }
         ],
-        features: ['CAMPAIGN_QUESTS']
+        features: ['CAMPAIGN_QUESTS', 'SELECT_DUNGEON']
     },
 
     SPARKY: {
