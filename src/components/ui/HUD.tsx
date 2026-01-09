@@ -53,7 +53,7 @@ export const HUD: React.FC = () => {
                 </div>
                 <div className="player-details">
                     <h3>{name}</h3>
-                    <div className="level-badge">Cấp {level}</div>
+                    <div className="level-badge">{level}</div>
                 </div>
             </div>
 

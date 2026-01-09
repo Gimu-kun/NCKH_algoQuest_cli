@@ -31,6 +31,7 @@ import { QuestTracker } from './components/quests/QuestTracker';
 import { Settings } from './components/ui/Settings';
 import { SparkyGuide } from './components/ui/SparkyGuide';
 import { ShopInterface } from './components/ui/ShopInterface';
+import { Inventory } from './components/ui/Inventory';
 import './App.css';
 
 import { useRef, useEffect } from 'react';
@@ -190,6 +191,7 @@ function App() {
 
       <SparkyGuide />
       <Settings />
+      <Inventory />
     </div>
   );
 }
