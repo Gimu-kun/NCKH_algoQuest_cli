@@ -161,7 +161,7 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
                 text: 'Chào mừng đến với Thư Viện Vô Tận. Tại đây bạn có thể luyện tập bất kỳ chủ đề nào hoặc tạo nội dung của riêng mình.',
             }
         ],
-        features: ['TRAINING_AREA', 'UGC', 'QUESTION_CRAFTER', 'TEST_CRAFTER']
+        features: ['TRAINING_AREA', 'ALGO_LAB', 'UGC', 'QUESTION_CRAFTER', 'TEST_CRAFTER']
     },
 
     BORK: {

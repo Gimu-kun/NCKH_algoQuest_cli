@@ -121,6 +121,15 @@ export const MainMenu: React.FC = () => {
                     className="menu-btn menu-btn-secondary"
                     whileHover={{ scale: 1.05, x: 10 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => setScene(GameScene.ALGO_LAB)}
+                >
+                    <i className="fi fi-rr-flask"></i> Phòng Thí Nghiệm
+                </motion.button>
+
+                <motion.button
+                    className="menu-btn menu-btn-secondary"
+                    whileHover={{ scale: 1.05, x: 10 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleSettings}
                 >
                     <i className="fi fi-rr-settings"></i> Cài Đặt

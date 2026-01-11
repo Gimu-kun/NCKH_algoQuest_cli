@@ -188,7 +188,7 @@ export const FillBlankQuiz: React.FC<FillBlankQuizProps> = ({ question, onAnswer
                         </div>
                     ))}
                     {question.explanation && (
-                        <p className="explanation">💡 {question.explanation}</p>
+                        <p className="explanation"><i className="fi fi-rr-bulb"></i> {question.explanation}</p>
                     )}
                 </motion.div>
             )}

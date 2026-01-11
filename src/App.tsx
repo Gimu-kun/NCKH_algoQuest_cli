@@ -36,6 +36,7 @@ import './App.css';
 
 import { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { AlgoLab } from './pages/AlgoLab';
 
 // Định nghĩa Mapping ngoài Component
 const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
@@ -46,6 +47,7 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
   [GameScene.SHOP]: '/shop',
   [GameScene.ACHIEVEMENTS]: '/achievements',
   [GameScene.LEADERBOARDS]: '/leaderboards',
+  [GameScene.ALGO_LAB]: '/lab',
 };
 
 function App() {
@@ -131,6 +133,7 @@ function App() {
       [GameScene.DUNGEON]: '/assets/audio/bgm_dungeon.mp3',
       [GameScene.COMBAT]: '/assets/audio/bgm_combat.mp3',
       [GameScene.SHOP]: '/assets/audio/bgm_shop.mp3',
+      [GameScene.ALGO_LAB]: '/assets/audio/bgm_hub.mp3',
     };
 
     const track = bgmMap[currentScene];
@@ -174,6 +177,9 @@ function App() {
 
       case GameScene.LEADERBOARDS:
         return <Leaderboards />;
+
+      case GameScene.ALGO_LAB:
+        return <AlgoLab />;
 
       default:
         return <MainMenu />;

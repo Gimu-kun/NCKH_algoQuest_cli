@@ -185,6 +185,16 @@ export const DialogueBox: React.FC = () => {
                 break;
 
             // ───────────────────────────────────────────────────────────────────
+            // ALGO LAB - Phòng Thí Nghiệm (Linh)
+            // ───────────────────────────────────────────────────────────────────
+            // Role: ARCHIVIST/TRAINER
+            // Mô tả: Nơi chạy thử code mẫu và thử nghiệm thuật toán
+            // ───────────────────────────────────────────────────────────────────
+            case 'ALGO_LAB':
+                useGameStore.getState().setScene(GameScene.ALGO_LAB);
+                break;
+
+            // ───────────────────────────────────────────────────────────────────
             // LEADERBOARDS - Bảng Xếp Hạng (The Bookkeeper)
             // ───────────────────────────────────────────────────────────────────
             // Role: ARCHIVIST
@@ -286,7 +296,7 @@ export const DialogueBox: React.FC = () => {
             case 'ERROR_DETECTION':
             case 'CONTENT_GENERATION':
                 // Sparky features đã tích hợp trong gameplay, không cần action riêng
-                useGameStore.getState().showSparky('💡 Sparky luôn sẵn sàng hỗ trợ bạn!');
+                useGameStore.getState().showSparky('Sparky luôn sẵn sàng hỗ trợ bạn!');
                 break;
 
             // ───────────────────────────────────────────────────────────────────
@@ -421,6 +431,11 @@ export const DialogueBox: React.FC = () => {
                                     {npc.features?.includes('TRAINING_AREA') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
                                             🎓 Khu Tập Luyện
+                                        </button>
+                                    )}
+                                    {npc.features?.includes('ALGO_LAB') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('ALGO_LAB')}>
+                                            🧪 Phòng Thí Nghiệm
                                         </button>
                                     )}
                                     {npc.features?.includes('SHOP') && (

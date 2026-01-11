@@ -195,7 +195,7 @@ export const MatchingQuiz: React.FC<MatchingQuizProps> = ({ question, onAnswer }
                         );
                     })}
                     {question.explanation && (
-                        <p className="explanation">💡 {question.explanation}</p>
+                        <p className="explanation"><i className="fi fi-rr-bulb"></i> {question.explanation}</p>
                     )}
                 </motion.div>
             )}

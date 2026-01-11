@@ -52,7 +52,8 @@ export const enum GameScene {
     BUILD_INTERFACE = 'BUILD_INTERFACE', // Giao diện chế tạo phép (Future)
     SHOP = 'SHOP',                 // Cửa hàng
     ACHIEVEMENTS = 'ACHIEVEMENTS', // Màn hình thành tựu
-    LEADERBOARDS = 'LEADERBOARDS'  // Bảng xếp hạng
+    LEADERBOARDS = 'LEADERBOARDS', // Bảng xếp hạng
+    ALGO_LAB = 'ALGO_LAB'          // Phòng thí nghiệm thuật toán
 }
 
 // State quản lý Session Combat

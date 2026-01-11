@@ -189,7 +189,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 setShowFeedback(savedState.showFeedback);
                 setIsCorrect(savedState.isCorrect);
 
-                showSparky('💾 Đã khôi phục trận chiến trước!');
+                showSparky('[Khôi phục] Đã khôi phục trận chiến trước!');
             } else {
                 // Question không tồn tại nữa → Load new
                 console.warn('[Combat] Saved question not found, loading new one');
@@ -263,7 +263,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 useGameStore.getState().showSparky("⚠️ CẢNH BÁO: Trùm Nổi Giận! Sát thương nhận vào sẽ tăng gấp đôi!");
                 // Future: setPhase(2) via action
             } else {
-                showSparky(`💡 Chính xác! Gây ${damage} sát thương! Nhận +${woodReward} Gỗ, +${oPointsReward} O-Points!`);
+                showSparky(`[Chính xác] Chính xác! Gây ${damage} sát thương! Nhận +${woodReward} Gỗ, +${oPointsReward} O-Points!`);
             }
 
             // Kiểm tra chiến thắng (Victory Check)
@@ -290,7 +290,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 currentQuestion.type,
                 currentQuestion.topic
             );
-            showSparky(`❌ Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
+            showSparky(`[Sai] Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
             // Note: Không auto-advance, người chơi bấm nút "Làm Lại" hoặc "Tiếp Theo"
         }
         console.log('[DEBUG] handleAnswer completed - showFeedback should be true now');
@@ -312,7 +312,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
     const handleUseHint = () => {
         consumeHint(); // Trừ lượt hint trong Store
         const explanation = getExplanation(currentQuestion);
-        showSparky(`💡 Gợi ý: ${explanation}`);
+        showSparky(`[Gợi ý] ${explanation}`);
     };
 
     /**
@@ -417,7 +417,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                         onClick={handleUseHint}
                         disabled={showFeedback}
                     >
-                        💡 Gợi ý (Đã dùng: {combat.hintsUsed})
+                        <i className="fi fi-rr-bulb"></i> Gợi ý (Đã dùng: {combat.hintsUsed})
                     </button>
 
                     {!showFeedback ? (
@@ -449,12 +449,12 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                         >
                             {isCorrect ? (
                                 <div className="feedback-content">
-                                    <span className="feedback-icon">✅</span>
+                                    <span className="feedback-icon"><i className="fi fi-rr-check-circle"></i></span>
                                     <p>Chính xác! Quái vật chịu sát thương!</p>
                                 </div>
                             ) : (
                                 <div className="feedback-content">
-                                    <span className="feedback-icon">❌</span>
+                                    <span className="feedback-icon"><i className="fi fi-rr-cross-circle"></i></span>
                                     <p>Sai rồi. Đáp án đúng là: {mcqQuestion.options[mcqQuestion.correctAnswer]}</p>
                                 </div>
                             )}

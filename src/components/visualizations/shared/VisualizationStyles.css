@@ -1,0 +1,559 @@
+/**
+ * =============================================================================
+ * FILE: VisualizationStyles.css
+ * =============================================================================
+ * 
+ * MỤC TIÊU (Purpose):
+ * - Định nghĩa các CSS Variables và Styles dùng chung cho TẤT CẢ các Algorithm 
+ *   Visualization Components trong project.
+ * - Đảm bảo tính nhất quán (Consistency) về màu sắc, animations, và layout.
+ * 
+ * KỸ THUẬT SỬ DỤNG (Techniques):
+ * 1. CSS Custom Properties (Variables): Dễ dàng thay đổi theme, tái sử dụng.
+ * 2. Glassmorphism Effect: Hiệu ứng kính mờ hiện đại (backdrop-filter blur).
+ * 3. CSS Animations với @keyframes: Định nghĩa các hiệu ứng chuyển động.
+ * 4. BEM Naming Convention (Block__Element--Modifier): Tổ chức CSS có cấu trúc.
+ * 
+ * ƯU ĐIỂM (Advantages):
+ * - Maintainable: Thay đổi 1 variable → cập nhật toàn bộ components.
+ * - Reusable: Styles có thể import và dùng lại ở nhiều nơi.
+ * - Scalable: Dễ thêm themes mới (dark mode, light mode).
+ * 
+ * NHƯỢC ĐIỂM (Disadvantages):
+ * - Browser Support: backdrop-filter không hoạt động trên IE và một số browser cũ.
+ * - CSS Variables cần fallback cho browsers không hỗ trợ.
+ * 
+ * SO SÁNH VỚI CÁC PHƯƠNG PHÁP KHÁC:
+ * - CSS-in-JS (Styled Components): Linh hoạt hơn nhưng bundle size lớn hơn.
+ * - Tailwind CSS: Utility-first, nhanh hơn nhưng ít semantic.
+ * - SASS/SCSS: Mạnh hơn về nesting và mixins nhưng cần build step.
+ * → Chọn Vanilla CSS với Variables: Đơn giản, không cần thêm dependencies.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   ROOT - CSS VARIABLES (Biến CSS toàn cục)
+   =============================================================================
+   Lợi ích của CSS Variables:
+   - Centralized: Tất cả values quan trọng ở 1 chỗ.
+   - Dynamic: Có thể thay đổi bằng JavaScript khi runtime.
+   - Cascading: Kế thừa xuống các child elements.
+   ============================================================================= */
+:root {
+    /* -------------------------------------------------------------------------
+       COLOR PALETTE - Màu sắc dùng cho các trạng thái visualization
+       ------------------------------------------------------------------------- */
+
+    /* Trạng thái bình thường (Normal State) - Neutral blue */
+    --viz-color-normal: #4a90d9;
+    --viz-color-normal-hover: #5a9fe9;
+
+    /* Trạng thái đang so sánh (Comparing State) - Vibrant yellow/amber */
+    /* Màu vàng thu hút sự chú ý, dễ phân biệt với các màu khác */
+    --viz-color-comparing: #fbbf24;
+    --viz-color-comparing-glow: rgba(251, 191, 36, 0.5);
+
+    /* Trạng thái đang hoán đổi/swap (Swapping State) - Alert red/orange */
+    /* Màu đỏ/cam thể hiện "action" đang xảy ra */
+    --viz-color-swapping: #ef4444;
+    --viz-color-swapping-glow: rgba(239, 68, 68, 0.5);
+
+    /* Trạng thái đã sắp xếp xong (Sorted State) - Success green */
+    /* Màu xanh lá thể hiện "hoàn thành" */
+    --viz-color-sorted: #22c55e;
+    --viz-color-sorted-glow: rgba(34, 197, 94, 0.4);
+
+    /* Trạng thái tìm thấy (Found State) - Bright cyan */
+    --viz-color-found: #06b6d4;
+    --viz-color-found-glow: rgba(6, 182, 212, 0.5);
+
+    /* Trạng thái không active / bị loại bỏ (Inactive/Eliminated) */
+    --viz-color-inactive: #374151;
+    --viz-color-inactive-dim: rgba(55, 65, 81, 0.4);
+
+    /* Trạng thái pointer/highlight đặc biệt */
+    --viz-color-pointer: #a855f7;
+    --viz-color-pointer-glow: rgba(168, 85, 247, 0.5);
+
+    /* -------------------------------------------------------------------------
+       BACKGROUND COLORS - Màu nền cho containers
+       ------------------------------------------------------------------------- */
+    --viz-bg-primary: rgba(15, 23, 42, 0.95);
+    --viz-bg-secondary: rgba(30, 41, 59, 0.9);
+    --viz-bg-glass: rgba(255, 255, 255, 0.05);
+    --viz-bg-glass-hover: rgba(255, 255, 255, 0.1);
+
+    /* -------------------------------------------------------------------------
+       BORDER COLORS - Màu viền
+       ------------------------------------------------------------------------- */
+    --viz-border-primary: rgba(255, 255, 255, 0.1);
+    --viz-border-accent: rgba(74, 144, 217, 0.5);
+
+    /* -------------------------------------------------------------------------
+       TEXT COLORS - Màu chữ
+       ------------------------------------------------------------------------- */
+    --viz-text-primary: #f1f5f9;
+    --viz-text-secondary: #94a3b8;
+    --viz-text-muted: #64748b;
+
+    /* -------------------------------------------------------------------------
+       ANIMATION TIMING - Thời gian animations
+       Đơn vị: ms (milliseconds)
+       ------------------------------------------------------------------------- */
+    /* Rất nhanh - dùng cho hover effects */
+    --viz-animation-fast: 150ms;
+    /* Trung bình - dùng cho state transitions */
+    --viz-animation-normal: 300ms;
+    /* Chậm - dùng cho major animations (swap, move) */
+    --viz-animation-slow: 500ms;
+    /* Rất chậm - dùng cho step-by-step demo */
+    --viz-animation-step: 800ms;
+
+    /* -------------------------------------------------------------------------
+       EASING FUNCTIONS - Hàm easing cho animations
+       ------------------------------------------------------------------------- 
+       So sánh các easing functions:
+       - linear: Đều đặn, không tự nhiên
+       - ease: Default, chậm ở đầu và cuối
+       - ease-in-out: Mượt mà nhất, tự nhiên
+       - cubic-bezier: Custom, kiểm soát tốt nhất
+       ------------------------------------------------------------------------- */
+    --viz-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --viz-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --viz-easing-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* -------------------------------------------------------------------------
+       SIZING - Kích thước
+       ------------------------------------------------------------------------- */
+    --viz-bar-min-width: 30px;
+    --viz-bar-max-width: 60px;
+    --viz-bar-gap: 4px;
+    --viz-node-size: 50px;
+    --viz-container-padding: 24px;
+    --viz-border-radius: 12px;
+    --viz-border-radius-sm: 8px;
+
+    /* -------------------------------------------------------------------------
+       SHADOWS - Bóng đổ
+       ------------------------------------------------------------------------- */
+    --viz-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --viz-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --viz-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --viz-shadow-glow: 0 0 20px;
+}
+
+/* =============================================================================
+   CONTAINER STYLES - Styles cho các containers chính
+   =============================================================================
+   Sử dụng Glassmorphism Effect:
+   - backdrop-filter: blur() tạo hiệu ứng kính mờ
+   - Background gradient với transparency
+   - Border với opacity thấp
+   ============================================================================= */
+
+/* Container chính bao bọc toàn bộ visualization */
+.viz-container {
+    background: var(--viz-bg-primary);
+    border: 1px solid var(--viz-border-primary);
+    border-radius: var(--viz-border-radius);
+    padding: var(--viz-container-padding);
+
+    /* Glassmorphism Effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* Safari support */
+
+    /* Box shadow để tạo depth */
+    box-shadow: var(--viz-shadow-lg);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* Size constraints */
+    min-height: 400px;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+
+    /* Scroll */
+    overflow-y: auto;
+}
+
+/* Container chứa array visualization (bars) */
+.viz-array-container {
+    display: flex;
+    align-items: flex-end;
+    /* Align bars từ bottom lên */
+    justify-content: center;
+    gap: var(--viz-bar-gap);
+
+    min-height: 280px;
+    padding: 20px;
+
+    background: var(--viz-bg-glass);
+    border-radius: var(--viz-border-radius-sm);
+    border: 1px solid var(--viz-border-primary);
+
+    /* Position context cho absolute positioned elements */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Grid lines background - tạo hiệu ứng grid nhẹ */
+.viz-array-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+/* =============================================================================
+   HEADER & INFO SECTION - Phần header và thông tin
+   ============================================================================= */
+.viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.viz-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--viz-text-primary);
+    margin: 0;
+
+    /* Text gradient effect */
+    background: linear-gradient(135deg, var(--viz-text-primary), var(--viz-color-normal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.viz-subtitle {
+    font-size: 0.9rem;
+    color: var(--viz-text-secondary);
+    margin: 4px 0 0 0;
+}
+
+/* Info badges - hiển thị thông tin như Complexity, Step count, etc. */
+.viz-info-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.viz-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    background: var(--viz-bg-glass);
+    border: 1px solid var(--viz-border-primary);
+    border-radius: 20px;
+    color: var(--viz-text-secondary);
+
+    transition: all var(--viz-animation-fast) var(--viz-easing-smooth);
+}
+
+.viz-badge:hover {
+    background: var(--viz-bg-glass-hover);
+    border-color: var(--viz-border-accent);
+}
+
+.viz-badge--highlight {
+    background: rgba(74, 144, 217, 0.2);
+    border-color: var(--viz-color-normal);
+    color: var(--viz-color-normal);
+}
+
+/* =============================================================================
+   STEP DESCRIPTION - Mô tả bước hiện tại
+   ============================================================================= */
+.viz-step-description {
+    padding: 16px 20px;
+
+    background: linear-gradient(135deg, var(--viz-bg-secondary), var(--viz-bg-glass));
+    border-left: 4px solid var(--viz-color-normal);
+    border-radius: 0 var(--viz-border-radius-sm) var(--viz-border-radius-sm) 0;
+
+    font-size: 0.95rem;
+    color: var(--viz-text-primary);
+    line-height: 1.6;
+}
+
+.viz-step-description code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    color: var(--viz-color-found);
+}
+
+/* =============================================================================
+   LEGEND - Chú thích các màu sắc/trạng thái
+   ============================================================================= */
+.viz-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 12px 16px;
+    background: var(--viz-bg-glass);
+    border-radius: var(--viz-border-radius-sm);
+}
+
+.viz-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 0.85rem;
+    color: var(--viz-text-secondary);
+}
+
+.viz-legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    box-shadow: var(--viz-shadow-sm);
+}
+
+.viz-legend-color--normal {
+    background: var(--viz-color-normal);
+}
+
+.viz-legend-color--comparing {
+    background: var(--viz-color-comparing);
+}
+
+.viz-legend-color--swapping {
+    background: var(--viz-color-swapping);
+}
+
+.viz-legend-color--sorted {
+    background: var(--viz-color-sorted);
+}
+
+.viz-legend-color--found {
+    background: var(--viz-color-found);
+}
+
+.viz-legend-color--pointer {
+    background: var(--viz-color-pointer);
+}
+
+/* =============================================================================
+   KEYFRAME ANIMATIONS - Định nghĩa các animations
+   =============================================================================
+   So sánh với Framer Motion:
+   - CSS @keyframes: Nhẹ hơn, không cần JS, nhưng ít linh hoạt.
+   - Framer Motion: Mạnh hơn, declarative, dễ chain animations.
+   → Kết hợp cả hai: CSS cho simple effects, Framer Motion cho complex logic.
+   ============================================================================= */
+
+/* Pulse effect - hiệu ứng đập nhẹ, thu hút sự chú ý */
+@keyframes viz-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+/* Glow effect - hiệu ứng phát sáng */
+@keyframes viz-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px currentColor;
+    }
+
+    50% {
+        box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+}
+
+/* Bounce in - hiệu ứng nhảy vào từ dưới */
+@keyframes viz-bounce-in {
+    0% {
+        transform: translateY(20px) scale(0.9);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(-5px) scale(1.02);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Fade slide right - Trượt và mờ dần từ trái sang phải */
+@keyframes viz-fade-slide-right {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Shake effect - Hiệu ứng rung, dùng khi swap thất bại hoặc lỗi */
+@keyframes viz-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-3px);
+    }
+}
+
+/* Highlight flash - Hiệu ứng flash highlight */
+@keyframes viz-highlight-flash {
+    0% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(1.5);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}
+
+/* =============================================================================
+   UTILITY CLASSES - Classes tiện ích có thể dùng lại
+   ============================================================================= */
+
+/* Animation utility classes */
+.viz-animate-pulse {
+    animation: viz-pulse 1.5s var(--viz-easing-smooth) infinite;
+}
+
+.viz-animate-glow {
+    animation: viz-glow 2s ease-in-out infinite;
+}
+
+.viz-animate-bounce-in {
+    animation: viz-bounce-in 0.5s var(--viz-easing-spring) forwards;
+}
+
+.viz-animate-shake {
+    animation: viz-shake 0.4s var(--viz-easing-smooth);
+}
+
+/* State utility classes - Có thể apply trực tiếp */
+.viz-state-comparing {
+    background: var(--viz-color-comparing) !important;
+    box-shadow: var(--viz-shadow-glow) var(--viz-color-comparing-glow);
+}
+
+.viz-state-swapping {
+    background: var(--viz-color-swapping) !important;
+    box-shadow: var(--viz-shadow-glow) var(--viz-color-swapping-glow);
+}
+
+.viz-state-sorted {
+    background: var(--viz-color-sorted) !important;
+    box-shadow: var(--viz-shadow-glow) var(--viz-color-sorted-glow);
+}
+
+.viz-state-found {
+    background: var(--viz-color-found) !important;
+    box-shadow: var(--viz-shadow-glow) var(--viz-color-found-glow);
+}
+
+.viz-state-inactive {
+    background: var(--viz-color-inactive) !important;
+    opacity: 0.5;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN - Điều chỉnh cho các kích thước màn hình khác nhau
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    :root {
+        --viz-bar-min-width: 20px;
+        --viz-bar-max-width: 40px;
+        --viz-container-padding: 16px;
+        --viz-node-size: 40px;
+    }
+
+    .viz-container {
+        padding: 16px;
+        min-height: 300px;
+    }
+
+    .viz-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .viz-title {
+        font-size: 1.25rem;
+    }
+
+    .viz-legend {
+        gap: 12px;
+    }
+
+    .viz-legend-item {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --viz-bar-min-width: 16px;
+        --viz-bar-max-width: 30px;
+        --viz-bar-gap: 2px;
+    }
+
+    .viz-info-badges {
+        gap: 8px;
+    }
+
+    .viz-badge {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
