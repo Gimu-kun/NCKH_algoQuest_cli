@@ -86,7 +86,7 @@
  * =============================================================================
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
@@ -125,6 +125,7 @@ interface LinkedListVisualizerProps {
      * showInfo: Hiển thị thông tin complexity.
      */
     showInfo?: boolean;
+    onRegenerate?: () => void;
 }
 
 // =============================================================================
@@ -144,6 +145,7 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
     maxSize = 8,
     title,
     showInfo = true,
+    onRegenerate,
 }) => {
     // =========================================================================
     // STATE
@@ -158,10 +160,31 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
         initialItems.map(value => ({ id: generateId(), value }))
     );
 
+    useEffect(() => {
+        setList(initialItems.map(value => ({ id: generateId(), value })));
+    }, [initialItems]);
+
     const [inputValue, setInputValue] = useState<string>('');
     const [message, setMessage] = useState<string>('Linked List: Các nodes liên kết qua pointers.');
     const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
     const [traversingIndex, setTraversingIndex] = useState<number | null>(null);
+    const [codeDisplay, setCodeDisplay] = useState<string>(`// SINGLY LINKED LIST
+// Mỗi node chứa value và pointer 'next'
+
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+    // Các thao tác: Append, Prepend, Delete, Traverse
+}`);
 
     // =========================================================================
     // COMPUTED VALUES
@@ -203,6 +226,20 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
         setInputValue('');
         setHighlightedIndex(0);
         setMessage(`[PREPEND] Thêm ${value} vào đầu. O(1) - Cực nhanh!`);
+        setCodeDisplay(`// PREPEND - Thêm vào đầu list
+// Time Complexity: O(1)
+
+function prepend(value) {
+    const newNode = new Node(${value});
+    
+    // 1. Link new node to current head
+    newNode.next = this.head;
+    
+    // 2. Update head
+    this.head = newNode;
+}
+
+// Result: [${value}] -> [${list.length > 0 ? list[0].value : 'null'}]...`);
 
         setTimeout(() => setHighlightedIndex(null), 1500);
     }, [inputValue, isFull, maxSize]);
@@ -244,6 +281,27 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
         setInputValue('');
         setHighlightedIndex(list.length);
         setMessage(`[APPEND] Thêm ${value} vào cuối. Đã duyệt ${list.length} nodes.`);
+        setCodeDisplay(`// APPEND - Thêm vào cuối list
+// Time Complexity: O(n) (nếu không có tail pointer)
+
+function append(value) {
+    const newNode = new Node(${value});
+
+    // 1. If list is empty
+    if (!this.head) {
+        this.head = newNode;
+        return;
+    }
+
+    // 2. Traverse to end
+    let current = this.head;
+    while (current.next) {
+        current = current.next; // Duyệt ${list.length} bước
+    }
+
+    // 3. Link last node to new node
+    current.next = newNode;
+}`);
 
         setTimeout(() => setHighlightedIndex(null), 1500);
     }, [inputValue, isFull, maxSize, list.length]);
@@ -291,6 +349,29 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
         // Delete the node
         setList(prev => prev.filter((_, idx) => idx !== foundIndex));
         setMessage(`[DELETE] Đã xóa node ${value} tại vị trí ${foundIndex}.`);
+        setCodeDisplay(`// DELETE - Xóa node theo value
+// Time Complexity: O(n) để tìm + O(1) để xóa
+
+function delete(value) {
+    if (!this.head) return;
+
+    // Case 1: Delete head
+    if (this.head.value === ${value}) {
+        this.head = this.head.next;
+        return;
+    }
+
+    // Case 2: Traverse and find
+    let current = this.head;
+    while (current.next) {
+        if (current.next.value === ${value}) {
+            // Relink: Bỏ qua node cần xóa
+            current.next = current.next.next;
+            return;
+        }
+        current = current.next;
+    }
+}`);
     }, [inputValue, isEmpty, list]);
 
     /**
@@ -312,6 +393,20 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
 
         setTraversingIndex(null);
         setMessage(`[TRAVERSE] Hoàn thành! Đã duyệt ${list.length} nodes.`);
+        setCodeDisplay(`// TRAVERSE - Duyệt từng node
+// Time Complexity: O(n)
+
+function traverse() {
+    let current = this.head;
+    
+    // Duyệt đến khi current === null
+    while (current) {
+        print(current.value);
+        current = current.next;
+    }
+}
+
+// Đã duyệt ${list.length} nodes.`);
     }, [isEmpty, list]);
 
     /**
@@ -695,6 +790,32 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
                 >
                     <i className="fi fi-rr-trash"></i> CLEAR
                 </motion.button>
+
+
+                {onRegenerate && (
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={onRegenerate}
+                        style={{
+                            marginTop: '12px',
+                            padding: '10px',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-color-found)',
+                            background: 'transparent',
+                            color: 'var(--viz-color-found)',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            width: '100%'
+                        }}
+                    >
+                        <i className="fi fi-rr-refresh"></i> Tạo Dữ Liệu Mới
+                    </motion.button>
+                )}
             </div>
 
             {/* Message */}
@@ -707,68 +828,111 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
                 {message}
             </motion.div>
 
-            {/* Info Section */}
-            {showInfo && (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                    gap: '10px',
+            {/* Code Display Section */}
+            <motion.div
+                key={codeDisplay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                    marginTop: '16px',
+                    marginBottom: '16px',
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))',
+                    borderRadius: '12px',
+                    border: '1px solid var(--viz-border-primary)',
+                }}
+            >
+                <h4 style={{
+                    margin: '0 0 12px 0',
+                    color: 'var(--viz-color-pointer)',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
                 }}>
+                    <i className="fi fi-rr-code-simple"></i> CODE MINH HỌA
+                </h4>
+                <pre style={{
+                    margin: 0,
+                    padding: '12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    lineHeight: '1.5',
+                    color: 'var(--viz-text-primary)',
+                    overflow: 'auto',
+                    maxHeight: '200px',
+                    fontFamily: 'JetBrains Mono, Consolas, monospace',
+                }}>
+                    {codeDisplay}
+                </pre>
+            </motion.div>
+
+            {/* Info Section */}
+            {
+                showInfo && (
                     <div style={{
-                        padding: '12px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                        gap: '10px',
                     }}>
-                        <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-pointer)', fontSize: '0.85rem' }}>
-                            PREPEND
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
-                            Thêm vào đầu. O(1)
-                        </p>
+                        <div style={{
+                            padding: '12px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-pointer)', fontSize: '0.85rem' }}>
+                                PREPEND
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
+                                Thêm vào đầu. O(1)
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '12px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-sorted)', fontSize: '0.85rem' }}>
+                                APPEND
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
+                                Thêm vào cuối. O(n)
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '12px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-swapping)', fontSize: '0.85rem' }}>
+                                DELETE
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
+                                Tìm và xóa. O(n)
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '12px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-comparing)', fontSize: '0.85rem' }}>
+                                TRAVERSE
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
+                                Duyệt qua nodes. O(n)
+                            </p>
+                        </div>
                     </div>
-                    <div style={{
-                        padding: '12px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-sorted)', fontSize: '0.85rem' }}>
-                            APPEND
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
-                            Thêm vào cuối. O(n)
-                        </p>
-                    </div>
-                    <div style={{
-                        padding: '12px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-swapping)', fontSize: '0.85rem' }}>
-                            DELETE
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
-                            Tìm và xóa. O(n)
-                        </p>
-                    </div>
-                    <div style={{
-                        padding: '12px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 4px 0', color: 'var(--viz-color-comparing)', fontSize: '0.85rem' }}>
-                            TRAVERSE
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--viz-text-secondary)' }}>
-                            Duyệt qua nodes. O(n)
-                        </p>
-                    </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

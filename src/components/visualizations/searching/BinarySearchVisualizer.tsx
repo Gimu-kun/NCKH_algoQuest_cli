@@ -117,6 +117,11 @@ interface SearchStep {
      * isComplete: Đã hoàn thành tìm kiếm chưa.
      */
     isComplete: boolean;
+
+    /**
+     * codeSnippet: Đoạn code minh họa cho bước này.
+     */
+    codeSnippet?: string;
 }
 
 /**
@@ -137,7 +142,6 @@ interface BinarySearchVisualizerProps {
      * title: Tiêu đề tùy chọn.
      */
     title?: string;
-
     /**
      * showLegend: Hiển thị legend không.
      */
@@ -147,6 +151,11 @@ interface BinarySearchVisualizerProps {
      * autoStart: Tự động play khi mount.
      */
     autoStart?: boolean;
+
+    /**
+     * onRegenerate: Callback khi người dùng muốn tạo lại mảng/target mới.
+     */
+    onRegenerate?: () => void;
 
     /**
      * onComplete: Callback khi hoàn thành.
@@ -185,6 +194,21 @@ function generateBinarySearchSteps(arr: number[], target: number): SearchStep[] 
         eliminated: [],
         description: `Bắt đầu Binary Search. Tìm target = ${target}. Search space: [${left}, ${right}]`,
         isComplete: false,
+        codeSnippet: `// BINARY SEARCH - O(log n) time, O(1) space
+// ĐIỀU KIỆN: Mảng PHẢI được sắp xếp!
+
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor(left + (right - left) / 2);
+        if (arr[mid] === target) return mid;
+        if (arr[mid] < target) left = mid + 1;  // Tìm bên PHẢI
+        else right = mid - 1;                   // Tìm bên TRÁI
+    }
+    return -1;
+}`,
     });
 
     while (left <= right) {
@@ -203,6 +227,13 @@ function generateBinarySearchSteps(arr: number[], target: number): SearchStep[] 
             eliminated: [...eliminated],
             description: `mid = ${left} + (${right} - ${left}) / 2 = ${mid}. arr[${mid}] = ${midValue}`,
             isComplete: false,
+            codeSnippet: `// Tính mid - QUAN TRỌNG: Tránh overflow!
+// SAI: mid = (left + right) / 2  // Có thể overflow
+// ĐÚNg: mid = left + (right - left) / 2
+
+let mid = ${left} + (${right} - ${left}) / 2 = ${mid}
+// arr[${mid}] = ${midValue}
+// So sánh với target = ${target}`,
         });
 
         if (midValue === target) {
@@ -217,6 +248,13 @@ function generateBinarySearchSteps(arr: number[], target: number): SearchStep[] 
                 eliminated: [...eliminated],
                 description: `[TÌM THẤY] arr[${mid}] = ${midValue} = target. Index = ${mid}`,
                 isComplete: true,
+                codeSnippet: `// ✓ TÌM THẤY!
+if (arr[${mid}] === ${target}) {
+    return ${mid};  // Trả về index
+}
+
+// KếT QUẢ: target ${target} ở index ${mid}
+// Số bước: ${steps.length + 1} (O(log n) = ~${Math.ceil(Math.log2(n))})`,
             });
             return steps;
         }
@@ -309,6 +347,7 @@ const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({
     title,
     showLegend = true,
     autoStart = false,
+    onRegenerate,
     onComplete,
 }) => {
     // =========================================================================
@@ -418,9 +457,13 @@ const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({
     }, [currentStep]);
 
     const handleReset = useCallback(() => {
-        setCurrentStep(0);
-        setIsPlaying(false);
-    }, []);
+        if (onRegenerate) {
+            onRegenerate();
+        } else {
+            setCurrentStep(0);
+            setIsPlaying(false);
+        }
+    }, [onRegenerate]);
 
     const handleSpeedChange = useCallback((newSpeed: number) => {
         setSpeed(newSpeed);

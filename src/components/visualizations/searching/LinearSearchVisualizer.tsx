@@ -112,6 +112,12 @@ interface LinearSearchStep {
      * comparisonCount: Số lần so sánh đã thực hiện.
      */
     comparisonCount: number;
+
+    /**
+     * codeSnippet: Đoạn code minh họa cho bước này.
+     * Hiển thị pseudo-code hoặc code thực tế.
+     */
+    codeSnippet?: string;
 }
 
 /**
@@ -132,16 +138,15 @@ interface LinearSearchVisualizerProps {
      * title: Tiêu đề tùy chọn.
      */
     title?: string;
-
     /**
-     * showLegend: Hiển thị legend.
+     * showLegend: Hiển thị chú giải.
      */
     showLegend?: boolean;
-
     /**
      * autoStart: Tự động bắt đầu.
      */
     autoStart?: boolean;
+    onRegenerate?: () => void;
 
     /**
      * onComplete: Callback khi hoàn thành.
@@ -183,6 +188,16 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
         description: `Bắt đầu Linear Search. Tìm target = ${target}. Duyệt từ đầu đến cuối.`,
         isComplete: false,
         comparisonCount: 0,
+        codeSnippet: `// LINEAR SEARCH - O(n) time, O(1) space
+// Duyệt tuần tự từ đầu đến cuối mảng
+function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target) {
+            return i;  // Tìm thấy!
+        }
+    }
+    return -1;  // Không tìm thấy
+}`,
     });
 
     for (let i = 0; i < n; i++) {
@@ -196,6 +211,11 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
             description: `Xét index ${i}: arr[${i}] = ${array[i]}`,
             isComplete: false,
             comparisonCount,
+            codeSnippet: `// Bước ${i + 1}: Xét phần tử tại index ${i}
+for (let i = ${i}; i < ${n}; i++) {
+    // Đang xét: arr[${i}] = ${array[i]}
+    // So sánh với target = ${target}
+}`,
         });
 
         // Step: Compare
@@ -209,6 +229,10 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
             description: `So sánh: ${array[i]} ${array[i] === target ? '==' : '!='} ${target}?`,
             isComplete: false,
             comparisonCount,
+            codeSnippet: `// So sánh lần ${comparisonCount}
+if (arr[${i}] === target) {  // ${array[i]} === ${target} ?
+    // Kết quả: ${array[i] === target ? 'TRUE - Tìm thấy!' : 'FALSE - Tiếp tục'}
+}`,
         });
 
         if (array[i] === target) {
@@ -222,6 +246,15 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
                 description: `[TÌM THẤY] arr[${i}] = ${array[i]} = target. Sau ${comparisonCount} lần so sánh.`,
                 isComplete: true,
                 comparisonCount,
+                codeSnippet: `// ✓ TÌM THẤY!
+if (arr[${i}] === ${target}) {
+    return ${i};  // Trả về index
+}
+// Kết quả: index = ${i}, so sánh ${comparisonCount} lần
+
+// SO SÁNH VỚI BINARY SEARCH:
+// Linear: O(n) = ${n} lần (worst case)
+// Binary: O(log n) = ${Math.ceil(Math.log2(n))} lần (nếu sorted)`,
             });
             return steps;
         }
@@ -237,6 +270,10 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
             description: `${array[i]} ≠ ${target}. Tiếp tục tìm...`,
             isComplete: false,
             comparisonCount,
+            codeSnippet: `// Không khớp, tiếp tục vòng lặp
+// ${array[i]} !== ${target}
+i++;  // i = ${i + 1}
+// Đã kiểm tra: ${checkedIndices.length} phần tử`,
         });
     }
 
@@ -250,6 +287,14 @@ function generateLinearSearchSteps(arr: number[], target: number): LinearSearchS
         description: `[KHÔNG TÌM THẤY] Đã duyệt hết mảng. ${comparisonCount} lần so sánh.`,
         isComplete: true,
         comparisonCount,
+        codeSnippet: `// ✗ KHÔNG TÌM THẤY
+// Đã duyệt hết ${n} phần tử
+// So sánh ${comparisonCount} lần
+return -1;
+
+// NHẬN XÉT:
+// Worst case của Linear Search: O(n)
+// Target không có trong mảng hoặc ở cuối`,
     });
 
     return steps;
@@ -266,6 +311,7 @@ const LinearSearchVisualizer: React.FC<LinearSearchVisualizerProps> = ({
     showLegend = true,
     autoStart = false,
     onComplete,
+    onRegenerate,
 }) => {
     // =========================================================================
     // STATE
@@ -372,10 +418,14 @@ const LinearSearchVisualizer: React.FC<LinearSearchVisualizerProps> = ({
         }
     }, [currentStep]);
 
-    const handleReset = useCallback(() => {
-        setCurrentStep(0);
-        setIsPlaying(false);
-    }, []);
+    const handleReset = () => {
+        if (onRegenerate) {
+            onRegenerate();
+        } else {
+            setIsPlaying(false);
+            setCurrentStep(0);
+        }
+    };
 
     const handleSpeedChange = useCallback((newSpeed: number) => {
         setSpeed(newSpeed);

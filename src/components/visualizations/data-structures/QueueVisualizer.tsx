@@ -78,7 +78,7 @@
  * =============================================================================
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
@@ -117,6 +117,7 @@ interface QueueVisualizerProps {
      * showInfo: Hiển thị thông tin về complexity.
      */
     showInfo?: boolean;
+    onRegenerate?: () => void;
 }
 
 // =============================================================================
@@ -136,6 +137,7 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
     maxSize = 8,
     title,
     showInfo = true,
+    onRegenerate,
 }) => {
     // =========================================================================
     // STATE
@@ -150,9 +152,26 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
         initialItems.map(value => ({ id: generateId(), value }))
     );
 
+    useEffect(() => {
+        setQueue(initialItems.map(value => ({ id: generateId(), value })));
+    }, [initialItems]);
+
     const [inputValue, setInputValue] = useState<string>('');
     const [message, setMessage] = useState<string>('Hàng đợi FIFO: Vào trước, Ra trước.');
     const [frontHighlight, setFrontHighlight] = useState(false);
+    const [codeDisplay, setCodeDisplay] = useState<string>(`// QUEUE - FIFO (First In, First Out)
+// Các thao tác: O(1) time complexity
+
+class Queue {
+    constructor() {
+        this.items = [];
+    }
+    
+    enqueue(value) { this.items.push(value); }
+    dequeue() { return this.items.shift(); }
+    front() { return this.items[0]; }
+    isEmpty() { return this.items.length === 0; }
+}`);
 
     // =========================================================================
     // COMPUTED VALUES
@@ -197,7 +216,17 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
         setQueue(prev => [...prev, newItem]);
         setInputValue('');
         setMessage(`[ENQUEUE] Thêm ${value} vào cuối hàng đợi (REAR).`);
-    }, [inputValue, isFull, maxSize]);
+        setCodeDisplay(`// ENQUEUE - Thêm vào cuối (REAR)
+// Time Complexity: O(1)
+
+function enqueue(value) {
+    // Thêm vào cuối mảng (REAR)
+    this.items.push(${value});
+}
+
+// Queue sau ENQUEUE: [${[...queue.map(q => q.value), value].join(' → ')}]
+// FRONT = ${queue.length > 0 ? queue[0].value : value}, REAR = ${value}`);
+    }, [inputValue, isFull, maxSize, queue]);
 
     /**
      * handleDequeue - Lấy và xóa phần tử từ đầu hàng đợi (FRONT).
@@ -216,6 +245,19 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
         const dequeuedItem = queue[0];
         setQueue(prev => prev.slice(1));
         setMessage(`[DEQUEUE] Lấy ${dequeuedItem.value} ra khỏi đầu hàng đợi (FRONT).`);
+        setCodeDisplay(`// DEQUEUE - Lấy và xóa từ đầu (FRONT)
+// Time Complexity: O(n) với Array, O(1) với Linked List
+// FIFO: First In, First Out
+
+function dequeue() {
+    if (this.items.length === 0) {
+        throw new Error("Queue underflow");
+    }
+    // Lấy và xóa phần tử đầu tiên (FRONT)
+    return this.items.shift();  // => ${dequeuedItem.value}
+}
+
+// Queue sau DEQUEUE: [${queue.slice(1).map(q => q.value).join(' → ')}]`);
     }, [isEmpty, queue]);
 
     /**
@@ -229,9 +271,22 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
 
         setFrontHighlight(true);
         setMessage(`[FRONT] Phần tử đầu hàng đợi là ${frontItem.value} (không xóa).`);
+        setCodeDisplay(`// FRONT/PEEK - Xem phần tử đầu mà KHÔNG xóa
+// Time Complexity: O(1)
+
+function front() {
+    if (this.items.length === 0) {
+        return undefined;
+    }
+    // Trả về phần tử đầu (FRONT)
+    return this.items[0];
+}
+
+// Kết quả: front() = ${frontItem.value}
+// Queue vẫn còn nguyên: [${queue.map(q => q.value).join(' → ')}]`);
 
         setTimeout(() => setFrontHighlight(false), 1500);
-    }, [isEmpty, frontItem]);
+    }, [isEmpty, frontItem, queue]);
 
     /**
      * handleClear - Xóa toàn bộ queue.
@@ -583,6 +638,32 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
                 </div>
             </div>
 
+            {onRegenerate && (
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={onRegenerate}
+                    style={{
+                        marginTop: '12px',
+                        padding: '10px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--viz-color-found)',
+                        background: 'transparent',
+                        color: 'var(--viz-color-found)',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        width: '100%'
+                    }}
+                >
+                    <i className="fi fi-rr-refresh"></i> Tạo Dữ Liệu Mới
+                </motion.button>
+            )}
+
+
             {/* Message */}
             <motion.div
                 key={message}
@@ -593,68 +674,110 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
                 {message}
             </motion.div>
 
-            {/* Info Section */}
-            {showInfo && (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: '12px',
+            {/* Code Display Section */}
+            <motion.div
+                key={codeDisplay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                    marginBottom: '16px',
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))',
+                    borderRadius: '12px',
+                    border: '1px solid var(--viz-border-primary)',
+                }}
+            >
+                <h4 style={{
+                    margin: '0 0 12px 0',
+                    color: 'var(--viz-color-pointer)',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
                 }}>
+                    <i className="fi fi-rr-code-simple"></i> CODE MINH HỌA
+                </h4>
+                <pre style={{
+                    margin: 0,
+                    padding: '12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    lineHeight: '1.5',
+                    color: 'var(--viz-text-primary)',
+                    overflow: 'auto',
+                    maxHeight: '200px',
+                    fontFamily: 'JetBrains Mono, Consolas, monospace',
+                }}>
+                    {codeDisplay}
+                </pre>
+            </motion.div>
+
+            {/* Info Section */}
+            {
+                showInfo && (
                     <div style={{
-                        padding: '14px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                        gap: '12px',
                     }}>
-                        <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-sorted)', fontSize: '0.9rem' }}>
-                            <i className="fi fi-rr-inbox-in"></i> ENQUEUE
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
-                            Thêm vào REAR. O(1).
-                        </p>
+                        <div style={{
+                            padding: '14px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-sorted)', fontSize: '0.9rem' }}>
+                                <i className="fi fi-rr-inbox-in"></i> ENQUEUE
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
+                                Thêm vào REAR. O(1).
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '14px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-swapping)', fontSize: '0.9rem' }}>
+                                <i className="fi fi-rr-box-alt"></i> DEQUEUE
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
+                                Lấy từ FRONT. O(1)*.
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '14px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-comparing)', fontSize: '0.9rem' }}>
+                                <i className="fi fi-rr-eye"></i> FRONT
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
+                                Xem phần tử đầu. O(1).
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '14px',
+                            background: 'var(--viz-bg-glass)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-border-primary)',
+                        }}>
+                            <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-pointer)', fontSize: '0.9rem' }}>
+                                <i className="fi fi-rr-bulb"></i> Ứng dụng
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
+                                BFS, Task scheduling, Buffers.
+                            </p>
+                        </div>
                     </div>
-                    <div style={{
-                        padding: '14px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-swapping)', fontSize: '0.9rem' }}>
-                            <i className="fi fi-rr-box-alt"></i> DEQUEUE
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
-                            Lấy từ FRONT. O(1)*.
-                        </p>
-                    </div>
-                    <div style={{
-                        padding: '14px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-comparing)', fontSize: '0.9rem' }}>
-                            <i className="fi fi-rr-eye"></i> FRONT
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
-                            Xem phần tử đầu. O(1).
-                        </p>
-                    </div>
-                    <div style={{
-                        padding: '14px',
-                        background: 'var(--viz-bg-glass)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--viz-border-primary)',
-                    }}>
-                        <h4 style={{ margin: '0 0 6px 0', color: 'var(--viz-color-pointer)', fontSize: '0.9rem' }}>
-                            <i className="fi fi-rr-bulb"></i> Ứng dụng
-                        </h4>
-                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--viz-text-secondary)' }}>
-                            BFS, Task scheduling, Buffers.
-                        </p>
-                    </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

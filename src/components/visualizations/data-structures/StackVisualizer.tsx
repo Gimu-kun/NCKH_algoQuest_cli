@@ -72,7 +72,7 @@
  * =============================================================================
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
@@ -126,6 +126,7 @@ interface StackVisualizerProps {
      * showInfo: Hiển thị thông tin về complexity.
      */
     showInfo?: boolean;
+    onRegenerate?: () => void;
 }
 
 // =============================================================================
@@ -149,6 +150,7 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
     maxSize = 10,
     title,
     showInfo = true,
+    onRegenerate,
 }) => {
     // =========================================================================
     // STATE
@@ -161,6 +163,10 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
     const [stack, setStack] = useState<StackItem[]>(
         initialItems.map(value => ({ id: generateId(), value }))
     );
+
+    useEffect(() => {
+        setStack(initialItems.map(value => ({ id: generateId(), value })));
+    }, [initialItems]);
 
     /**
      * inputValue: Giá trị trong input field để push.
@@ -182,6 +188,23 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
      * peekHighlight: Có đang highlight top item để peek không.
      */
     const [peekHighlight, setPeekHighlight] = useState(false);
+
+    /**
+     * codeDisplay: Code minh họa cho action hiện tại.
+     */
+    const [codeDisplay, setCodeDisplay] = useState<string>(`// STACK - LIFO (Last In, First Out)
+// Các thao tác cơ bản: O(1) time complexity
+
+class Stack {
+    constructor() {
+        this.items = [];
+    }
+    
+    push(value) { this.items.push(value); }
+    pop() { return this.items.pop(); }
+    peek() { return this.items[this.items.length - 1]; }
+    isEmpty() { return this.items.length === 0; }
+}`);
 
     // =========================================================================
     // COMPUTED VALUES
@@ -230,10 +253,21 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
         setStack(prev => [...prev, newItem]);
         setInputValue('');
         setMessage(`[PUSH] Thêm ${value} vào đỉnh stack.`);
+        setCodeDisplay(`// PUSH - Thêm phần tử vào đỉnh stack
+// Time Complexity: O(1)
+
+function push(value) {
+    // Thêm vào cuối mảng = đỉnh stack
+    this.items.push(${value});
+    // Stack size: ${stack.length} -> ${stack.length + 1}
+}
+
+// Kết quả: [${[...stack.map(s => s.value), value].join(', ')}]
+// TOP = ${value}`);
 
         // Reset action sau animation
         setTimeout(() => setCurrentAction('idle'), 500);
-    }, [inputValue, isFull, maxSize]);
+    }, [inputValue, isFull, maxSize, stack]);
 
     /**
      * handlePop - Lấy và xóa phần tử từ đỉnh stack.
@@ -256,6 +290,20 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
         setCurrentAction('pop');
         setStack(prev => prev.slice(0, -1));
         setMessage(`[POP] Lấy ${poppedItem.value} ra khỏi stack.`);
+        setCodeDisplay(`// POP - Lấy và xóa phần tử đỉnh
+// Time Complexity: O(1)
+// LIFO: Last In, First Out
+
+function pop() {
+    if (this.items.length === 0) {
+        throw new Error("Stack underflow");
+    }
+    // Lấy và xóa phần tử cuối (top)
+    return this.items.pop();  // => ${poppedItem.value}
+}
+
+// Stack sau POP: [${stack.slice(0, -1).map(s => s.value).join(', ')}]
+// TOP mới = ${stack.length > 1 ? stack[stack.length - 2].value : '(rỗng)'}`);
 
         setTimeout(() => setCurrentAction('idle'), 500);
     }, [isEmpty, stack]);
@@ -278,12 +326,25 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
         setCurrentAction('peek');
         setPeekHighlight(true);
         setMessage(`[PEEK] Phần tử đỉnh là ${topItem.value} (không xóa).`);
+        setCodeDisplay(`// PEEK - Xem phần tử đỉnh mà KHÔNG xóa
+// Time Complexity: O(1)
+
+function peek() {
+    if (this.items.length === 0) {
+        return undefined;
+    }
+    // Trả về phần tử cuối (top) mà không xóa
+    return this.items[this.items.length - 1];
+}
+
+// Kết quả: peek() = ${topItem.value}
+// Stack vẫn còn nguyên: [${stack.map(s => s.value).join(', ')}]`);
 
         setTimeout(() => {
             setCurrentAction('idle');
             setPeekHighlight(false);
         }, 1500);
-    }, [isEmpty, topItem]);
+    }, [isEmpty, topItem, stack]);
 
     /**
      * handleClear - Xóa toàn bộ stack.
@@ -622,6 +683,26 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
                         <i className="fi fi-rr-trash"></i> Xóa tất cả
                     </motion.button>
 
+                    {onRegenerate && (
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={onRegenerate}
+                            style={{
+                                padding: '10px',
+                                borderRadius: '8px',
+                                border: '1px solid var(--viz-color-found)',
+                                background: 'transparent',
+                                color: 'var(--viz-color-found)',
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                                marginTop: '8px'
+                            }}
+                        >
+                            <i className="fi fi-rr-refresh"></i> Tạo Dữ Liệu Mới
+                        </motion.button>
+                    )}
+
                     {/* Message */}
                     <motion.div
                         key={message}
@@ -641,6 +722,46 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
                     </motion.div>
                 </div>
             </div>
+
+            {/* Code Display Section */}
+            <motion.div
+                key={codeDisplay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                    marginTop: '16px',
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))',
+                    borderRadius: '12px',
+                    border: '1px solid var(--viz-border-primary)',
+                }}
+            >
+                <h4 style={{
+                    margin: '0 0 12px 0',
+                    color: 'var(--viz-color-pointer)',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                }}>
+                    <i className="fi fi-rr-code-simple"></i> CODE MINH HỌA
+                </h4>
+                <pre style={{
+                    margin: 0,
+                    padding: '12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    lineHeight: '1.5',
+                    color: 'var(--viz-text-primary)',
+                    overflow: 'auto',
+                    maxHeight: '200px',
+                    fontFamily: 'JetBrains Mono, Consolas, monospace',
+                }}>
+                    {codeDisplay}
+                </pre>
+            </motion.div>
 
             {/* Info Section */}
             {showInfo && (

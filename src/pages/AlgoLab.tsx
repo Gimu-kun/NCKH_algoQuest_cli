@@ -28,6 +28,7 @@ import { quickSort } from '../algo_demos/Chapter_2_Search_Sort/QuickSort';
 import { mergeSort } from '../algo_demos/Chapter_2_Search_Sort/MergeSort';
 import { selectionSort } from '../algo_demos/Chapter_2_Search_Sort/SelectionSort';
 import { insertionSort } from '../algo_demos/Chapter_2_Search_Sort/InsertionSort';
+import { heapSort } from '../algo_demos/Chapter_2_Search_Sort/HeapSort';
 
 // Import Visualization Components
 import SortingVisualizer from '../components/visualizations/sorting/SortingVisualizer';
@@ -37,6 +38,9 @@ import StackVisualizer from '../components/visualizations/data-structures/StackV
 import QueueVisualizer from '../components/visualizations/data-structures/QueueVisualizer';
 import LinkedListVisualizer from '../components/visualizations/data-structures/LinkedListVisualizer';
 import BSTVisualizer from '../components/visualizations/data-structures/BSTVisualizer';
+import GraphVisualizer from '../components/visualizations/graph/GraphVisualizer';
+import DPVisualizer from '../components/visualizations/dp/DPVisualizer';
+import ComplexityVisualizer from '../components/visualizations/complexity/ComplexityVisualizer';
 
 // =============================================================================
 // TYPES
@@ -49,20 +53,28 @@ type VisualizationType =
     | 'stack'
     | 'queue'
     | 'linkedList'
-    | 'bst';
+    | 'bst'
+    | 'graph'
+    | 'graph'
+    | 'dp'
+    | 'complexity';
 
-type SortingAlgorithmType = 'bubble' | 'selection' | 'insertion' | 'merge' | 'quick';
+type SortingAlgorithmType = 'bubble' | 'selection' | 'insertion' | 'merge' | 'quick' | 'heap';
+export type GraphAlgorithmType = 'bfs' | 'dfs';
+export type DPAlgorithmType = 'fibonacci' | 'knapsack';
 
 interface AlgoMetadata {
     id: string;
     name: string;
     description: string;
     icon: string; // Flaticon class
-    inputType: 'array' | 'array_target' | 'interactive';
-    defaultArray: number[];
+    inputType: 'array' | 'array_target' | 'active_node' | 'number' | 'interactive' | 'none';
+    defaultArray?: number[];
     defaultTarget?: number;
     visualization: VisualizationType;
     sortingType?: SortingAlgorithmType;
+    graphType?: GraphAlgorithmType;
+    dpType?: DPAlgorithmType;
     timeComplexity: string;
     spaceComplexity: string;
     execute?: (arr: number[], target?: number) => any;
@@ -80,6 +92,25 @@ interface Chapter {
 // =============================================================================
 
 const CHAPTERS: Chapter[] = [
+    {
+        id: 'overview',
+        title: 'Chương 1: Tổng Quan',
+        icon: 'fi fi-rr-info',
+        algos: [
+            {
+                id: 'complexity',
+                name: 'Độ Phức Tạp (Big O)',
+                description: 'Hiểu về Time & Space Complexity',
+                icon: 'fi fi-rr-chart-histogram',
+                inputType: 'none',
+                defaultArray: [],
+                visualization: 'complexity',
+                timeComplexity: 'N/A',
+                spaceComplexity: 'N/A',
+                execute: () => { },
+            },
+        ],
+    },
     {
         id: 'search',
         title: 'Tìm Kiếm',
@@ -183,6 +214,19 @@ const CHAPTERS: Chapter[] = [
                 spaceComplexity: 'O(log n)',
                 execute: (arr) => quickSort([...arr]),
             },
+            {
+                id: 'heapSort',
+                name: 'Heap Sort',
+                description: 'Sắp xếp dùng Max-Heap',
+                icon: 'fi fi-rr-hierarchy-alt',
+                inputType: 'array',
+                defaultArray: [64, 25, 12, 22, 11, 90, 42],
+                visualization: 'sorting',
+                sortingType: 'heap',
+                timeComplexity: 'O(n log n)',
+                spaceComplexity: 'O(1)',
+                execute: (arr) => heapSort([...arr]),
+            },
         ],
     },
     {
@@ -236,6 +280,54 @@ const CHAPTERS: Chapter[] = [
             },
         ],
     },
+    {
+        id: 'graph',
+        title: 'Đồ Thị',
+        icon: 'fi fi-rr-vector',
+        algos: [
+            {
+                id: 'bfs',
+                name: 'Breadth First Search (BFS)',
+                description: 'Duyệt theo chiều rộng',
+                icon: 'fi fi-rr-chart-network',
+                inputType: 'active_node',
+                visualization: 'graph',
+                graphType: 'bfs',
+                timeComplexity: 'O(V + E)',
+                spaceComplexity: 'O(V)',
+            },
+            {
+                id: 'dfs',
+                name: 'Depth First Search (DFS)',
+                description: 'Duyệt theo chiều sâu',
+                icon: 'fi fi-rr-diagram-project',
+                inputType: 'active_node',
+                visualization: 'graph',
+                graphType: 'dfs',
+                timeComplexity: 'O(V + E)',
+                spaceComplexity: 'O(V)',
+            },
+        ],
+    },
+    {
+        id: 'dp',
+        title: 'Quy Hoạch Động',
+        icon: 'fi fi-rr-chart-histogram',
+        algos: [
+            {
+                id: 'fibonacci',
+                name: 'Fibonacci Sequence',
+                description: 'Tính số Fibonacci thứ n',
+                icon: 'fi fi-rr-calculator',
+                inputType: 'number',
+                visualization: 'dp',
+                dpType: 'fibonacci',
+                defaultTarget: 5,
+                timeComplexity: 'O(n) / O(2^n)',
+                spaceComplexity: 'O(n)',
+            },
+        ],
+    },
 ];
 
 // =============================================================================
@@ -279,7 +371,7 @@ export const AlgoLab: React.FC = () => {
         if (activeAlgo) {
             setArrayInput(JSON.stringify(activeAlgo.defaultArray));
             setTargetInput(activeAlgo.defaultTarget?.toString() || '');
-            setVizArray(activeAlgo.defaultArray);
+            setVizArray(activeAlgo.defaultArray || []);
             setVizTarget(activeAlgo.defaultTarget || 0);
             setVizKey((prev) => prev + 1);
         }
@@ -310,15 +402,72 @@ export const AlgoLab: React.FC = () => {
         }
     }, [arrayInput, targetInput]);
 
-    const handleReset = useCallback(() => {
-        if (activeAlgo) {
-            setArrayInput(JSON.stringify(activeAlgo.defaultArray));
-            setTargetInput(activeAlgo.defaultTarget?.toString() || '');
-            setVizArray(activeAlgo.defaultArray);
-            setVizTarget(activeAlgo.defaultTarget || 0);
+    const handleRegenerate = useCallback(() => {
+        if (!activeAlgo) return;
+
+        let newArray: number[] = [];
+        let newTarget: number | undefined = undefined;
+
+        // DP Case
+        if (activeAlgo.inputType === 'number') {
+            const newN = Math.floor(Math.random() * 14) + 2; // 2 to 15
+            setVizTarget(newN);
             setVizKey((prev) => prev + 1);
+            return;
         }
+
+        // Complexity Case
+        if (activeAlgo.visualization === 'complexity') {
+            // No random data needed
+            return;
+        }
+
+        // Graph Case
+        if (activeAlgo.inputType === 'active_node') {
+            setVizKey((prev) => prev + 1);
+            return;
+        }
+
+        // Array / Array Target
+        const isSort = activeAlgo.visualization === 'sorting';
+        const length = isSort ? 7 : 10;
+
+        newArray = Array.from({ length }, () => Math.floor(Math.random() * 50) + 1);
+
+        if (activeAlgo.id === 'binarySearch' || activeAlgo.id === 'bst') {
+            newArray.sort((a, b) => a - b);
+            if (activeAlgo.id === 'bst') {
+                newArray = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
+            }
+        }
+
+        if (activeAlgo.inputType === 'array_target') {
+            const exists = Math.random() > 0.4;
+            if (exists) {
+                newTarget = newArray[Math.floor(Math.random() * newArray.length)];
+            } else {
+                newTarget = Math.floor(Math.random() * 50) + 1;
+            }
+        }
+
+        // Sync inputs so user sees the change!
+        setVizArray(newArray);
+        setArrayInput(JSON.stringify(newArray));
+
+        if (newTarget !== undefined) {
+            setVizTarget(newTarget);
+            setTargetInput(newTarget.toString());
+        }
+
+        setVizKey((prev) => prev + 1);
     }, [activeAlgo]);
+
+    const handleReset = useCallback(() => {
+        // User request: Reset button should generate random input
+        handleRegenerate();
+    }, [handleRegenerate]);
+
+
 
     // -------------------------------------------------------------------------
     // RENDER VISUALIZATION
@@ -337,6 +486,7 @@ export const AlgoLab: React.FC = () => {
                         initialArray={vizArray}
                         algorithm={activeAlgo.sortingType || 'bubble'}
                         autoStart={false}
+                        onRegenerate={handleRegenerate}
                     />
                 );
 
@@ -347,6 +497,7 @@ export const AlgoLab: React.FC = () => {
                         array={vizArray}
                         target={vizTarget}
                         autoStart={false}
+                        onRegenerate={handleRegenerate}
                     />
                 );
 
@@ -357,20 +508,46 @@ export const AlgoLab: React.FC = () => {
                         array={vizArray}
                         target={vizTarget}
                         autoStart={false}
+                        onRegenerate={handleRegenerate}
                     />
                 );
 
             case 'stack':
-                return <StackVisualizer key={key} initialItems={vizArray} maxSize={10} />;
+                return <StackVisualizer key={key} initialItems={vizArray} maxSize={10} onRegenerate={handleRegenerate} />;
 
             case 'queue':
-                return <QueueVisualizer key={key} initialItems={vizArray} maxSize={10} />;
+                return <QueueVisualizer key={key} initialItems={vizArray} maxSize={10} onRegenerate={handleRegenerate} />;
 
             case 'linkedList':
-                return <LinkedListVisualizer key={key} initialItems={vizArray} maxSize={10} />;
+                return <LinkedListVisualizer key={key} initialItems={vizArray} maxSize={10} onRegenerate={handleRegenerate} />;
 
             case 'bst':
-                return <BSTVisualizer key={key} initialValues={vizArray} />;
+                return <BSTVisualizer key={key} initialValues={vizArray} onRegenerate={handleRegenerate} />;
+
+            case 'graph':
+                return (
+                    <GraphVisualizer
+                        key={key}
+                        algorithm={activeAlgo.graphType || 'bfs'}
+                        onRegenerate={handleRegenerate}
+                    />
+                );
+
+                return (
+                    <DPVisualizer
+                        key={key}
+                        algorithm={activeAlgo!.dpType || 'fibonacci'}
+                        target={vizTarget}
+                        onRegenerate={handleRegenerate}
+                    />
+                );
+
+            case 'complexity':
+                return (
+                    <ComplexityVisualizer
+                        key={key}
+                    />
+                );
 
             default:
                 return null;

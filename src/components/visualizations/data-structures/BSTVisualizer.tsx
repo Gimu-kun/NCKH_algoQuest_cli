@@ -72,7 +72,7 @@
  * =============================================================================
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
@@ -123,6 +123,7 @@ interface BSTVisualizerProps {
      * showInfo: Hiển thị thông tin complexity.
      */
     showInfo?: boolean;
+    onRegenerate?: () => void;
 }
 
 // =============================================================================
@@ -280,6 +281,7 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
     initialValues = [],
     title,
     showInfo = true,
+    onRegenerate,
 }) => {
     // =========================================================================
     // STATE
@@ -290,19 +292,42 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
      * null = empty tree.
      */
     const [root, setRoot] = useState<TreeNode | null>(() => {
-        // Build initial tree
-        let tree: TreeNode | null = null;
-        for (const value of initialValues) {
-            tree = insertNode(tree, value);
-        }
-        return tree;
+        if (!initialValues || initialValues.length === 0) return null;
+        let root: TreeNode | null = null;
+        initialValues.forEach(v => { root = insertNode(root, v); });
+        return root;
     });
+
+    useEffect(() => {
+        if (!initialValues || initialValues.length === 0) {
+            setRoot(null);
+            setMessage('Cây rỗng.');
+            return;
+        }
+        let root: TreeNode | null = null;
+        initialValues.forEach(v => { root = insertNode(root, v); });
+        setRoot(root);
+        setMessage('Đã tạo cây mới từ dữ liệu ngẫu nhiên.');
+    }, [initialValues]);
 
     const [inputValue, setInputValue] = useState<string>('');
     const [message, setMessage] = useState<string>('Binary Search Tree: Left < Root <= Right');
     const [highlightedNodes, setHighlightedNodes] = useState<string[]>([]);
     const [foundNode, setFoundNode] = useState<string | null>(null);
     const [traversalResult, setTraversalResult] = useState<number[]>([]);
+    const [codeDisplay, setCodeDisplay] = useState<string>(`// BINARY SEARCH TREE (BST)
+// Tính chất: Left < Root < Right
+
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+// Các thao tác: Insert, Search, Traversals
+// Time Complexity: O(log n) average`);
 
     // =========================================================================
     // COMPUTED VALUES
@@ -356,6 +381,22 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
         }
 
         setMessage(`[INSERT] Đã chèn ${value} vào BST.`);
+        setCodeDisplay(`// INSERT - Chèn value vào BST
+// Rule: Nhỏ hơn sang trái, Lớn hơn sang phải
+
+function insert(node, value) {
+    if (node === null) {
+        return new TreeNode(value);
+    }
+    
+    if (value < node.value) {
+        node.left = insert(node.left, value);
+    } else if (value > node.value) {
+        node.right = insert(node.right, value);
+    }
+    
+    return node;
+}`);
 
         setTimeout(() => setHighlightedNodes([]), 1500);
     }, [inputValue, root]);
@@ -395,6 +436,24 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
         if (foundPosition) {
             setFoundNode(foundPosition.node.id);
             setMessage(`[TÌM THẤY] ${value}! Đi qua ${path.length} nodes.`);
+            setCodeDisplay(`// SEARCH - Tìm value trong BST
+// Time Complexity: O(log n)
+
+function search(node, value) {
+    if (node === null || node.value === value) {
+        return node; // Tìm thấy hoặc không tồn tại
+    }
+
+    // Nếu value nhỏ hơn -> tìm bên trái
+    if (value < node.value) {
+        return search(node.left, value);
+    }
+
+    // Nếu value lớn hơn -> tìm bên phải
+    return search(node.right, value);
+}
+
+// Kết quả: Found ${value} at depth ${path.length - 1}`);
         } else {
             setMessage(`[KHÔNG TÌM THẤY] ${value}. Đã kiểm tra ${path.length} nodes.`);
         }
@@ -441,6 +500,40 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
 
         setHighlightedNodes([]);
         setMessage(`[Hoàn thành] ${typeNames[type]}!`);
+
+        const codeSnippets: Record<TraversalType, string> = {
+            inorder: `// IN-ORDER Traversal
+// Left -> Root -> Right
+// Kết quả: Các giá trị được SẮP XẾP TĂNG DẦN
+
+function inorder(node) {
+    if (node === null) return;
+    inorder(node.left);
+    print(node.value);
+    inorder(node.right);
+}`,
+            preorder: `// PRE-ORDER Traversal
+// Root -> Left -> Right
+// Dùng để copy cây hoặc serialize
+
+function preorder(node) {
+    if (node === null) return;
+    print(node.value);
+    preorder(node.left);
+    preorder(node.right);
+}`,
+            postorder: `// POST-ORDER Traversal
+// Left -> Right -> Root
+// Dùng để xóa cây (delete children before parent)
+
+function postorder(node) {
+    if (node === null) return;
+    postorder(node.left);
+    postorder(node.right);
+    print(node.value);
+}`
+        };
+        setCodeDisplay(codeSnippets[type]);
     }, [isEmpty, root, positions]);
 
     /**
@@ -805,6 +898,25 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
                 >
                     <i className="fi fi-rr-trash"></i> CLEAR
                 </motion.button>
+
+                {onRegenerate && (
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={onRegenerate}
+                        style={{
+                            padding: '10px 16px',
+                            borderRadius: '8px',
+                            border: '1px solid var(--viz-color-found)',
+                            background: 'transparent',
+                            color: 'var(--viz-color-found)',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <i className="fi fi-rr-refresh"></i>
+                    </motion.button>
+                )}
             </div>
 
             {/* Message */}
@@ -815,6 +927,46 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
                 className="viz-step-description"
             >
                 {message}
+            </motion.div>
+
+            {/* Code Display Section */}
+            <motion.div
+                key={codeDisplay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                    marginBottom: '16px',
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))',
+                    borderRadius: '12px',
+                    border: '1px solid var(--viz-border-primary)',
+                }}
+            >
+                <h4 style={{
+                    margin: '0 0 12px 0',
+                    color: 'var(--viz-color-pointer)',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                }}>
+                    <i className="fi fi-rr-code-simple"></i> CODE MINH HỌA
+                </h4>
+                <pre style={{
+                    margin: 0,
+                    padding: '12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    lineHeight: '1.5',
+                    color: 'var(--viz-text-primary)',
+                    overflow: 'auto',
+                    maxHeight: '200px',
+                    fontFamily: 'JetBrains Mono, Consolas, monospace',
+                }}>
+                    {codeDisplay}
+                </pre>
             </motion.div>
 
             {/* Info Section */}

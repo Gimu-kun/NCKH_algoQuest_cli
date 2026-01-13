@@ -103,7 +103,8 @@ export type SortingAlgorithmType =
     | 'selection'
     | 'insertion'
     | 'merge'
-    | 'quick';
+    | 'quick'
+    | 'heap';
 
 /**
  * SortingStep - Đại diện cho một bước trong quá trình sắp xếp.
@@ -188,7 +189,7 @@ interface SortingVisualizerProps {
      * Default = false.
      */
     autoStart?: boolean;
-
+    onRegenerate?: () => void;
     /**
      * onComplete: Callback khi sắp xếp hoàn tất.
      * Optional.
@@ -244,6 +245,13 @@ const ALGORITHM_INFO: Record<SortingAlgorithmType, {
         nameVi: 'Sắp xếp nhanh',
         timeComplexity: 'O(n log n)',
         spaceComplexity: 'O(log n)',
+        stable: false,
+    },
+    heap: {
+        name: 'Heap Sort',
+        nameVi: 'Sắp xếp vun đống',
+        timeComplexity: 'O(n log n)',
+        spaceComplexity: 'O(1)',
         stable: false,
     },
 };
@@ -733,6 +741,9 @@ function quickSort(arr, low, high) {
             sorted: [...sorted],
             pivot: high,
             description: `Chọn pivot = arr[${high}] = ${pivot}`,
+            codeSnippet: `// Chọn Pivot là phần tử cuối
+pivot = arr[high]; // ${pivot}
+i = low - 1;       // Index của phần tử nhỏ hơn pivot`,
         });
 
         let i = low - 1; // Index của smaller element
@@ -745,6 +756,11 @@ function quickSort(arr, low, high) {
                 sorted: [...sorted],
                 pivot: high,
                 description: `So sánh arr[${j}]=${array[j]} với pivot=${pivot}`,
+                codeSnippet: `// Duyệt qua mảng hiện tại
+// So sánh arr[${j}] với pivot
+if (arr[${j}] < pivot) { // ${array[j]} < ${pivot} ?
+    // Nếu nhỏ hơn pivot -> swap vào vùng nhỏ hơn
+}`,
             });
 
             if (array[j] < pivot) {
@@ -758,6 +774,10 @@ function quickSort(arr, low, high) {
                         sorted: [...sorted],
                         pivot: high,
                         description: `${array[j]} < ${pivot} → Swap arr[${i}] với arr[${j}]`,
+                        codeSnippet: `// Swap phần tử nhỏ hơn vào vị trí i
+i++; // i = ${i}
+swap(arr[${i}], arr[${j}]);
+// Đưa ${array[j]} về đầu`,
                     });
 
                     [array[i], array[j]] = [array[j], array[i]];
@@ -769,6 +789,8 @@ function quickSort(arr, low, high) {
                         sorted: [...sorted],
                         pivot: high,
                         description: `Sau swap: arr[${i}]=${array[i]}, arr[${j}]=${array[j]}`,
+                        codeSnippet: `// Mảng sau khi swap:
+// [${array.join(', ')}]`,
                     });
                 }
             }
@@ -785,6 +807,9 @@ function quickSort(arr, low, high) {
                 sorted: [...sorted],
                 pivot: high,
                 description: `Đặt pivot vào vị trí đúng: Swap arr[${pivotFinalPos}] với arr[${high}]`,
+                codeSnippet: `// Đưa Pivot về đúng vị trí (chính giữa)
+swap(arr[i + 1], arr[high]);
+// Pivot ${pivot} chốt tại vị trí ${pivotFinalPos}`,
             });
 
             [array[pivotFinalPos], array[high]] = [array[high], array[pivotFinalPos]];
@@ -798,6 +823,8 @@ function quickSort(arr, low, high) {
             swapping: [],
             sorted: [...sorted],
             description: `Pivot ${array[pivotFinalPos]} đã ở đúng vị trí ${pivotFinalPos}.`,
+            codeSnippet: `// Hoàn thành partition
+return ${pivotFinalPos}; // index của pivot`,
         });
 
         return pivotFinalPos;
@@ -811,7 +838,29 @@ function quickSort(arr, low, high) {
      */
     function quickSort(low: number, high: number): void {
         if (low < high) {
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Gọi đệ quy Quick Sort cho đoạn [${low}..${high}]`,
+                codeSnippet: `// Gọi Quick Sort trên [${low}..${high}]
+// 1. Partition để tìm vị trí pivot
+pi = partition(arr, ${low}, ${high});`,
+            });
+
             const pi = partition(low, high);
+
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Pivot tại ${pi}. Tiếp tục sort 2 nửa trái/phải.`,
+                codeSnippet: `// 2. Đệ quy sắp xếp 2 phần
+quickSort(arr, ${low}, ${pi - 1});  // Trái
+quickSort(arr, ${pi + 1}, ${high}); // Phải`,
+            });
 
             // Recursively sort left and right partitions
             quickSort(low, pi - 1);
@@ -825,6 +874,8 @@ function quickSort(arr, low, high) {
                 swapping: [],
                 sorted: [...sorted],
                 description: `Phần tử đơn arr[${low}]=${array[low]} đã được sắp xếp.`,
+                codeSnippet: `// Base case: Mảng 1 phần tử
+// arr[${low}] coi như đã sorted`,
             });
         }
     }
@@ -914,7 +965,12 @@ function mergeSort(arr, left, right) {
             comparing: [],
             swapping: [],
             sorted: [...sorted],
-            description: `Merge: [${leftArr.join(', ')}] và [${rightArr.join(', ')}]`,
+            description: `Chuẩn bị merge: Left=[${leftArr.join(', ')}], Right=[${rightArr.join(', ')}]`,
+            codeSnippet: `// Merge 2 dãy con đã sắp xếp
+// Left: index ${left} -> ${mid}
+// Right: index ${mid + 1} -> ${right}
+leftArr = arr.slice(left, mid + 1);
+rightArr = arr.slice(mid + 1, right + 1);`,
         });
 
         let i = 0, j = 0, k = left;
@@ -925,51 +981,79 @@ function mergeSort(arr, left, right) {
                 comparing: [left + i, mid + 1 + j],
                 swapping: [],
                 sorted: [...sorted],
-                description: `So sánh ${leftArr[i]} với ${rightArr[j]}`,
+                description: `So sánh left[${i}]=${leftArr[i]} và right[${j}]=${rightArr[j]}`,
+                codeSnippet: `// So sánh phần tử đầu của 2 dãy
+if (leftArr[${i}] <= rightArr[${j}]) {
+    // ${leftArr[i]} <= ${rightArr[j]}
+    arr[${k}] = leftArr[${i}];
+} else {
+    arr[${k}] = rightArr[${j}];
+}`,
             });
 
             if (leftArr[i] <= rightArr[j]) {
                 array[k] = leftArr[i];
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [k],
+                    sorted: [...sorted],
+                    description: `Chọn ${leftArr[i]} (nhỏ hơn) đưa vào mảng gốc tại vị trí ${k}`,
+                    codeSnippet: `// Chọn phần tử bên trái
+arr[${k}] = leftArr[${i}]; // = ${leftArr[i]}
+i++; k++;`,
+                });
                 i++;
             } else {
                 array[k] = rightArr[j];
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [k],
+                    sorted: [...sorted],
+                    description: `Chọn ${rightArr[j]} (nhỏ hơn) đưa vào mảng gốc tại vị trí ${k}`,
+                    codeSnippet: `// Chọn phần tử bên phải
+arr[${k}] = rightArr[${j}]; // = ${rightArr[j]}
+j++; k++;`,
+                });
                 j++;
             }
-
-            steps.push({
-                array: [...array],
-                comparing: [],
-                swapping: [k],
-                sorted: [...sorted],
-                description: `Đặt ${array[k]} vào vị trí ${k}`,
-            });
-
             k++;
         }
 
         // Copy remaining elements
         while (i < leftArr.length) {
-            array[k] = leftArr[i];
             steps.push({
                 array: [...array],
                 comparing: [],
                 swapping: [k],
                 sorted: [...sorted],
-                description: `Copy ${leftArr[i]} vào vị trí ${k}`,
+                description: `Copy phần tử còn lại từ Left: ${leftArr[i]}`,
+                codeSnippet: `// Copy phần dư bên trái
+while (i < leftLen) {
+    arr[k] = leftArr[i]; // ${leftArr[i]}
+    i++; k++;
+}`,
             });
+            array[k] = leftArr[i];
             i++;
             k++;
         }
 
         while (j < rightArr.length) {
-            array[k] = rightArr[j];
             steps.push({
                 array: [...array],
                 comparing: [],
                 swapping: [k],
                 sorted: [...sorted],
-                description: `Copy ${rightArr[j]} vào vị trí ${k}`,
+                description: `Copy phần tử còn lại từ Right: ${rightArr[j]}`,
+                codeSnippet: `// Copy phần dư bên phải
+while (j < rightLen) {
+    arr[k] = rightArr[j]; // ${rightArr[j]}
+    j++; k++;
+}`,
             });
+            array[k] = rightArr[j];
             j++;
             k++;
         }
@@ -979,7 +1063,9 @@ function mergeSort(arr, left, right) {
             comparing: [],
             swapping: [],
             sorted: [...sorted],
-            description: `Merge hoàn thành: [${array.slice(left, right + 1).join(', ')}]`,
+            description: `Merge xong đoạn [${left}..${right}]: [${array.slice(left, right + 1).join(', ')}]`,
+            codeSnippet: `// Hoàn tất merge đoạn [${left}..${right}]
+// Tiếp tục đệ quy hoặc hoàn thành.`,
         });
     }
 
@@ -998,7 +1084,11 @@ function mergeSort(arr, left, right) {
                 comparing: [],
                 swapping: [],
                 sorted: [...sorted],
-                description: `Chia: [${left}..${mid}] và [${mid + 1}..${right}]`,
+                description: `Chia đoạn [${left}..${right}] thành 2 nửa: [${left}..${mid}] và [${mid + 1}..${right}]`,
+                codeSnippet: `// DIVIDE (Chia):
+// mid = (${left} + ${right}) / 2 = ${mid}
+mergeSort(arr, ${left}, ${mid});      // Đệ quy nửa trái
+mergeSort(arr, ${mid + 1}, ${right}); // Đệ quy nửa phải`,
             });
 
             mergeSort(left, mid);
@@ -1034,6 +1124,225 @@ function mergeSort(arr, left, right) {
 }
 
 /**
+ * generateHeapSortSteps - Tạo các bước cho Heap Sort.
+ *
+ * THUẬT TOÁN HEAP SORT:
+ * 1. Build Max-Heap: Biến mảng thành Max-Heap (parent >= children).
+ * 2. Extract Max: Swap root (max) với cuối, giảm heap size, heapify root.
+ * 3. Repeat: Cho đến khi heap size = 1.
+ *
+ * HEAP PROPERTY (Tính chất Heap):
+ * - Max-Heap: parent >= cả 2 children.
+ * - Complete Binary Tree: Đầy đủ trừ level cuối (từ trái sang phải).
+ * - Array Representation: 
+ *   - Parent(i) = floor((i-1)/2)
+ *   - Left(i) = 2*i + 1
+ *   - Right(i) = 2*i + 2
+ *
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
+ */
+function generateHeapSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const sorted: number[] = [];
+
+    // Step 0: Initial
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Heap Sort. Bước 1: Xây dựng Max-Heap.',
+        codeSnippet: `// HEAP SORT - O(n log n) time, O(1) space
+// Sử dụng cấu trúc Max-Heap
+
+// Bước 1: Build Max-Heap từ mảng
+for (i = n/2 - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+}
+
+// Bước 2: Extract max liên tục
+for (i = n-1; i > 0; i--) {
+    swap(arr[0], arr[i]);  // Đưa max về cuối
+    heapify(arr, i, 0);    // Heapify phần còn lại
+}`,
+    });
+
+    /**
+     * heapify - Duy trì tính chất Max-Heap cho subtree có root tại index i.
+     * 
+     * @param heapSize - Kích thước heap hiện tại
+     * @param i - Index của root cần heapify
+     */
+    function heapify(heapSize: number, i: number): void {
+        let largest = i;
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+
+        // So sánh với left child
+        if (left < heapSize) {
+            steps.push({
+                array: [...array],
+                comparing: [largest, left],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Heapify: So sánh arr[${largest}]=${array[largest]} với left child arr[${left}]=${array[left]}`,
+                codeSnippet: `// So sánh với left child
+left = 2 * ${i} + 1 = ${left}
+if (arr[${left}] > arr[${largest}]) {  // ${array[left]} > ${array[largest]} ?
+    largest = ${left};
+}`,
+            });
+
+            if (array[left] > array[largest]) {
+                largest = left;
+            }
+        }
+
+        // So sánh với right child  
+        if (right < heapSize) {
+            steps.push({
+                array: [...array],
+                comparing: [largest, right],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Heapify: So sánh arr[${largest}]=${array[largest]} với right child arr[${right}]=${array[right]}`,
+                codeSnippet: `// So sánh với right child
+right = 2 * ${i} + 2 = ${right}
+if (arr[${right}] > arr[${largest}]) {  // ${array[right]} > ${array[largest]} ?
+    largest = ${right};
+}`,
+            });
+
+            if (array[right] > array[largest]) {
+                largest = right;
+            }
+        }
+
+        // Nếu largest không phải root, swap và đệ quy heapify
+        if (largest !== i) {
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [i, largest],
+                sorted: [...sorted],
+                description: `Swap arr[${i}]=${array[i]} với arr[${largest}]=${array[largest]} để duy trì Max-Heap`,
+                codeSnippet: `// Largest không phải root → Swap
+[arr[${i}], arr[${largest}]] = [arr[${largest}], arr[${i}]];
+// ${array[i]} ↔ ${array[largest]}
+// Tiếp tục heapify subtree bị ảnh hưởng`,
+            });
+
+            [array[i], array[largest]] = [array[largest], array[i]];
+
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Sau swap: arr[${i}]=${array[i]}, arr[${largest}]=${array[largest]}. Tiếp tục heapify.`,
+            });
+
+            // Đệ quy heapify subtree
+            heapify(heapSize, largest);
+        }
+    }
+
+    // Phase 1: Build Max-Heap
+    // Bắt đầu từ node không phải leaf cuối cùng
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Xây dựng Max-Heap: Heapify từ dưới lên, bắt đầu từ non-leaf node cuối.',
+        codeSnippet: `// BUILD MAX-HEAP
+// Non-leaf node cuối: index = n/2 - 1 = ${Math.floor(n / 2) - 1}
+// Heapify từ dưới lên để đảm bảo subtree đã là heap
+for (i = ${Math.floor(n / 2) - 1}; i >= 0; i--) {
+    heapify(arr, n, i);
+}`,
+    });
+
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(n, i);
+    }
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: `Max-Heap đã xây dựng xong! Root arr[0]=${array[0]} là giá trị lớn nhất.`,
+        codeSnippet: `// Max-Heap hoàn thành!
+// arr = [${array.join(', ')}]
+// arr[0] = ${array[0]} là MAX
+// Bây giờ extract max liên tục...`,
+    });
+
+    // Phase 2: Extract elements from heap
+    for (let i = n - 1; i > 0; i--) {
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [0, i],
+            sorted: [...sorted],
+            description: `Extract: Swap root arr[0]=${array[0]} với arr[${i}]=${array[i]}`,
+            codeSnippet: `// EXTRACT MAX
+// Swap max (root) với cuối heap
+[arr[0], arr[${i}]] = [arr[${i}], arr[0]];
+// ${array[0]} ↔ ${array[i]}`,
+        });
+
+        [array[0], array[i]] = [array[i], array[0]];
+
+        sorted.push(i);
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `arr[${i}]=${array[i]} đã ở đúng vị trí. Giảm heap size và heapify root.`,
+            codeSnippet: `// Phần tử ${array[i]} đã sorted
+// Giảm heap size: ${i}
+// Heapify root để duy trì Max-Heap
+heapify(arr, ${i}, 0);`,
+        });
+
+        // Heapify root với heap size giảm
+        heapify(i, 0);
+    }
+
+    // Mark first element as sorted
+    sorted.push(0);
+
+    // Final step
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [...sorted],
+        description: '[Hoàn thành] Heap Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH HEAP SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - O(n log n) worst case - predictable
+// - In-place: O(1) space
+// - Không có worst case như Quick Sort
+//
+// NHƯỢC ĐIỂM:
+// - Unstable sort
+// - Cache-unfriendly (truy cập không liên tục)
+// - Hằng số lớn hơn Quick Sort trong practice`,
+    });
+
+    return steps;
+}
+
+/**
  * generateSortingSteps - Factory function chọn generator phù hợp.
  *
  * Factory Pattern: Tạo object (steps) dựa trên type.
@@ -1054,6 +1363,8 @@ function generateSortingSteps(arr: number[], algorithm: SortingAlgorithmType): S
             return generateMergeSortSteps(arr);
         case 'quick':
             return generateQuickSortSteps(arr);
+        case 'heap':
+            return generateHeapSortSteps(arr);
         default:
             // TypeScript exhaustiveness check
             // Nếu thêm algorithm mới mà quên handle, compiler sẽ warn.
@@ -1080,6 +1391,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
     title,
     showLegend = true,
     autoStart = false,
+    onRegenerate,
     onComplete,
 }) => {
     // =========================================================================
@@ -1264,9 +1576,13 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
      * handleReset: Reset về trạng thái ban đầu.
      */
     const handleReset = useCallback(() => {
-        setCurrentStep(0);
-        setIsPlaying(false);
-    }, []);
+        if (onRegenerate) {
+            onRegenerate();
+        } else {
+            setCurrentStep(0);
+            setIsPlaying(false);
+        }
+    }, [onRegenerate]);
 
     /**
      * handleSpeedChange: Thay đổi tốc độ.
