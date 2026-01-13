@@ -149,6 +149,13 @@ interface SortingStep {
      * Hiển thị cho user để giải thích đang làm gì.
      */
     description: string;
+
+    /**
+     * codeSnippet: Đoạn code minh họa cho bước này.
+     * Hiển thị pseudo-code hoặc code thực tế để user hiểu thuật toán.
+     * Optional - không phải step nào cũng cần code.
+     */
+    codeSnippet?: string;
 }
 
 /**
@@ -264,36 +271,56 @@ function generateBubbleSortSteps(arr: number[]): SortingStep[] {
     const n = array.length;
     const sorted: number[] = [];
 
-    // Step 0: Initial state
+    // Step 0: Initial state - Hiển thị cấu trúc thuật toán tổng quan
     steps.push({
         array: [...array],
         comparing: [],
         swapping: [],
         sorted: [],
         description: 'Bắt đầu Bubble Sort. Duyệt và so sánh các cặp phần tử liền kề.',
+        codeSnippet: `// BUBBLE SORT - O(n²) time, O(1) space
+// Ý tưởng: Phần tử lớn "nổi" lên cuối như bọt khí
+for (i = 0; i < n-1; i++) {
+    for (j = 0; j < n-i-1; j++) {
+        if (arr[j] > arr[j+1]) {
+            swap(arr[j], arr[j+1]);
+        }
+    }
+}`,
     });
 
     for (let i = 0; i < n - 1; i++) {
         let swapped = false;
 
         for (let j = 0; j < n - i - 1; j++) {
-            // Step: Comparing
+            // Step: Comparing - Hiển thị code so sánh
             steps.push({
                 array: [...array],
                 comparing: [j, j + 1],
                 swapping: [],
                 sorted: [...sorted],
                 description: `So sánh arr[${j}]=${array[j]} với arr[${j + 1}]=${array[j + 1]}`,
+                codeSnippet: `// So sánh 2 phần tử liền kề
+if (arr[${j}] > arr[${j + 1}]) {  // ${array[j]} > ${array[j + 1]} ?
+    // Nếu sai thứ tự → cần swap
+}`,
             });
 
             if (array[j] > array[j + 1]) {
-                // Step: Swapping
+                // Step: Swapping - Hiển thị code swap
                 steps.push({
                     array: [...array],
                     comparing: [],
                     swapping: [j, j + 1],
                     sorted: [...sorted],
                     description: `${array[j]} > ${array[j + 1]} → Swap!`,
+                    codeSnippet: `// Hoán đổi (Swap) hai phần tử
+// Kỹ thuật: Destructuring assignment
+[arr[${j}], arr[${j + 1}]] = [arr[${j + 1}], arr[${j}]];
+// Hoặc dùng biến tạm (temp variable):
+// temp = arr[${j}];
+// arr[${j}] = arr[${j + 1}];
+// arr[${j + 1}] = temp;`,
                 });
 
                 // Perform swap
@@ -307,6 +334,9 @@ function generateBubbleSortSteps(arr: number[]): SortingStep[] {
                     swapping: [],
                     sorted: [...sorted],
                     description: `Sau swap: arr[${j}]=${array[j]}, arr[${j + 1}]=${array[j + 1]}`,
+                    codeSnippet: `// Kết quả sau swap:
+arr = [${array.join(', ')}]
+// Phần tử lớn hơn đã "nổi" lên 1 vị trí`,
                 });
             }
         }
@@ -319,6 +349,10 @@ function generateBubbleSortSteps(arr: number[]): SortingStep[] {
             swapping: [],
             sorted: [...sorted],
             description: `Pass ${i + 1} hoàn thành. Phần tử ${array[n - i - 1]} đã ở đúng vị trí.`,
+            codeSnippet: `// Kết thúc pass ${i + 1}
+// Phần tử lớn nhất trong vùng chưa sắp xếp
+// đã "nổi" lên đúng vị trí cuối
+// sorted: [${sorted.join(', ')}]`,
         });
 
         // Optimization: Early termination
@@ -335,6 +369,11 @@ function generateBubbleSortSteps(arr: number[]): SortingStep[] {
                 swapping: [],
                 sorted: [...sorted],
                 description: 'Không có swap → Mảng đã sắp xếp. Dừng sớm!',
+                codeSnippet: `// TỐI ƯU: Early termination
+// Nếu không có swap trong 1 pass
+// → Mảng đã sorted → Dừng sớm
+if (!swapped) break;
+// Giảm từ O(n²) xuống O(n) cho mảng đã sắp xếp`,
             });
             break;
         }
@@ -348,6 +387,17 @@ function generateBubbleSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: allSorted,
         description: '[Hoàn thành] Bubble Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH BUBBLE SORT
+// Kết quả: [${array.join(', ')}]
+// 
+// ƯU ĐIỂM:
+// - Đơn giản, dễ hiểu, dễ cài đặt
+// - Stable sort (giữ thứ tự tương đối)
+// - In-place (không cần bộ nhớ phụ)
+//
+// NHƯỢC ĐIỂM:
+// - Chậm: O(n²) ngay cả với mảng gần đúng
+// - Không phù hợp với dữ liệu lớn`,
     });
 
     return steps;
@@ -378,6 +428,15 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: [],
         description: 'Bắt đầu Selection Sort. Tìm phần tử nhỏ nhất và đưa về đầu.',
+        codeSnippet: `// SELECTION SORT - O(n²) time, O(1) space
+// Ý tưởng: Chọn min từ unsorted, đưa vào sorted
+for (i = 0; i < n-1; i++) {
+    minIdx = i;
+    for (j = i+1; j < n; j++) {
+        if (arr[j] < arr[minIdx]) minIdx = j;
+    }
+    swap(arr[i], arr[minIdx]);
+}`,
     });
 
     for (let i = 0; i < n - 1; i++) {
@@ -391,6 +450,10 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
                 swapping: [],
                 sorted: [...sorted],
                 description: `Tìm min: So sánh arr[${minIdx}]=${array[minIdx]} với arr[${j}]=${array[j]}`,
+                codeSnippet: `// Tìm phần tử nhỏ nhất trong vùng unsorted
+if (arr[${j}] < arr[${minIdx}]) {  // ${array[j]} < ${array[minIdx]} ?
+    minIdx = ${j};  // Cập nhật vị trí min
+}`,
             });
 
             if (array[j] < array[minIdx]) {
@@ -401,6 +464,9 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
                     swapping: [],
                     sorted: [...sorted],
                     description: `Min mới tìm thấy: arr[${minIdx}]=${array[minIdx]}`,
+                    codeSnippet: `// Tìm thấy min mới!
+minIdx = ${minIdx};  // arr[${minIdx}] = ${array[minIdx]}
+// Tiếp tục tìm trong phần còn lại...`,
                 });
             }
         }
@@ -413,6 +479,10 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
                 swapping: [i, minIdx],
                 sorted: [...sorted],
                 description: `Swap arr[${i}]=${array[i]} với min arr[${minIdx}]=${array[minIdx]}`,
+                codeSnippet: `// Đưa min về đầu vùng unsorted
+// Swap vị trí ${i} với vị trí ${minIdx}
+[arr[${i}], arr[${minIdx}]] = [arr[${minIdx}], arr[${i}]];
+// ${array[i]} ↔ ${array[minIdx]}`,
             });
 
             [array[i], array[minIdx]] = [array[minIdx], array[i]];
@@ -423,6 +493,9 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
                 swapping: [],
                 sorted: [...sorted],
                 description: `Sau swap: vị trí ${i} có giá trị ${array[i]}`,
+                codeSnippet: `// Kết quả sau swap:
+arr = [${array.join(', ')}]
+// Phần tử ${array[i]} đã ở đúng vị trí`,
             });
         }
 
@@ -433,6 +506,9 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
             swapping: [],
             sorted: [...sorted],
             description: `Phần tử ${array[i]} đã ở đúng vị trí ${i}.`,
+            codeSnippet: `// Hoàn thành iteration ${i + 1}
+// sorted region: [${sorted.map(idx => array[idx]).join(', ')}]
+// unsorted region: [${array.slice(i + 1).join(', ')}]`,
         });
     }
 
@@ -444,6 +520,16 @@ function generateSelectionSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: [...sorted],
         description: '[Hoàn thành] Selection Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH SELECTION SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Ít thao tác swap (tối đa n-1 lần)
+// - In-place, không cần bộ nhớ phụ
+//
+// NHƯỢC ĐIỂM:
+// - Unstable sort
+// - Luôn O(n²) dù mảng đã sorted`,
     });
 
     return steps;
@@ -475,6 +561,18 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: [0],
         description: 'Bắt đầu Insertion Sort. Phần tử đầu tiên được coi là đã sắp xếp.',
+        codeSnippet: `// INSERTION SORT - O(n²) time, O(1) space
+// Ý tưởng: Như sắp xếp bài tây trong tay
+for (i = 1; i < n; i++) {
+    key = arr[i];  // Phần tử cần chèn
+    j = i - 1;
+    // Dời các phần tử lớn hơn key sang phải
+    while (j >= 0 && arr[j] > key) {
+        arr[j+1] = arr[j];
+        j--;
+    }
+    arr[j+1] = key;  // Chèn key vào đúng vị trí
+}`,
     });
 
     for (let i = 1; i < n; i++) {
@@ -487,6 +585,10 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
             swapping: [],
             sorted: [...sorted],
             description: `Chọn key = arr[${i}] = ${key}. Tìm vị trí để chèn.`,
+            codeSnippet: `// Bước ${i}: Chọn key để chèn vào sorted region
+key = arr[${i}];  // key = ${key}
+j = ${i - 1};     // Bắt đầu từ cuối sorted region
+// Tìm vị trí đúng cho key...`,
         });
 
         // Compare and shift
@@ -497,6 +599,12 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
                 swapping: [],
                 sorted: [...sorted],
                 description: `arr[${j}]=${array[j]} > ${key} → Shift arr[${j}] sang phải.`,
+                codeSnippet: `// So sánh với phần tử trong sorted region
+if (arr[${j}] > key) {  // ${array[j]} > ${key}
+    // Dời phần tử sang phải để tạo chỗ trống
+    arr[${j + 1}] = arr[${j}];
+    j--;
+}`,
             });
 
             array[j + 1] = array[j];
@@ -507,6 +615,9 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
                 swapping: [j, j + 1],
                 sorted: [...sorted],
                 description: `Shifted: arr[${j + 1}] = ${array[j + 1]}`,
+                codeSnippet: `// Kết quả sau shift:
+arr = [${array.join(', ')}]
+// Chỗ trống đang ở vị trí ${j + 1}`,
             });
 
             j--;
@@ -521,6 +632,9 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
             swapping: [],
             sorted: [...sorted],
             description: `Chèn ${key} vào vị trí ${j + 1}.`,
+            codeSnippet: `// Tìm thấy vị trí đúng! Chèn key vào
+arr[${j + 1}] = ${key};
+// arr = [${array.join(', ')}]`,
         });
 
         // Update sorted indices
@@ -531,6 +645,9 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
             swapping: [],
             sorted: [...sorted],
             description: `Phần tử ${key} đã được chèn đúng vị trí.`,
+            codeSnippet: `// Hoàn thành insertion cho key = ${key}
+// sorted region mở rộng: [0..${i}]
+// [${array.slice(0, i + 1).join(', ')}] đã sorted`,
         });
     }
 
@@ -541,6 +658,17 @@ function generateInsertionSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: allSorted,
         description: '[Hoàn thành] Insertion Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH INSERTION SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Stable sort
+// - Rất nhanh với mảng gần sorted: O(n)
+// - Hiệu quả với mảng nhỏ
+// - Online algorithm (sort từng phần tử khi nhận)
+//
+// NHƯỢC ĐIỂM:
+// - O(n²) với mảng random lớn`,
     });
 
     return steps;
@@ -576,6 +704,16 @@ function generateQuickSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: [],
         description: 'Bắt đầu Quick Sort. Chọn pivot và phân hoạch (partition) mảng.',
+        codeSnippet: `// QUICK SORT - O(n log n) avg, O(n²) worst
+// Divide and Conquer: Phân hoạch rồi đệ quy
+function quickSort(arr, low, high) {
+    if (low < high) {
+        pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);   // Sort trái
+        quickSort(arr, pi + 1, high);  // Sort phải
+    }
+}
+// partition: Đưa pivot về đúng vị trí`,
     });
 
     /**
@@ -701,6 +839,18 @@ function generateQuickSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: allSorted,
         description: '[Hoàn thành] Quick Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH QUICK SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Rất nhanh trong thực tế: O(n log n)
+// - In-place (space O(log n) cho stack)
+// - Cache-friendly
+//
+// NHƯỢC ĐIỂM:
+// - Unstable sort
+// - Worst case O(n²) với mảng đã sorted
+// - Cần chọn pivot tốt`,
     });
 
     return steps;
@@ -735,6 +885,17 @@ function generateMergeSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: [],
         description: 'Bắt đầu Merge Sort. Chia đôi mảng rồi merge lại.',
+        codeSnippet: `// MERGE SORT - O(n log n) time, O(n) space
+// Divide and Conquer: Chia để trị
+function mergeSort(arr, left, right) {
+    if (left < right) {
+        mid = (left + right) / 2;
+        mergeSort(arr, left, mid);      // Chia nửa trái
+        mergeSort(arr, mid+1, right);   // Chia nửa phải
+        merge(arr, left, mid, right);   // Trộn lại
+    }
+}
+// merge: Kết hợp 2 mảng đã sorted`,
     });
 
     /**
@@ -856,6 +1017,17 @@ function generateMergeSortSteps(arr: number[]): SortingStep[] {
         swapping: [],
         sorted: allSorted,
         description: '[Hoàn thành] Merge Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH MERGE SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Stable sort (giữ thứ tự tương đối)
+// - Luôn O(n log n) - predictable
+// - Tốt cho external sorting (dữ liệu lớn)
+//
+// NHƯỢC ĐIỂM:
+// - Cần O(n) bộ nhớ phụ
+// - Không in-place`,
     });
 
     return steps;
@@ -1192,6 +1364,46 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
             >
                 {currentStepData.description || 'Đang chuẩn bị...'}
             </motion.div>
+
+            {/* Code Snippet Display - Hiển thị code minh họa cho từng bước */}
+            {currentStepData.codeSnippet && (
+                <motion.div
+                    key={`code-${currentStep}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    style={{
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        marginTop: '8px',
+                        border: '1px solid var(--viz-border-primary)',
+                        fontFamily: '"Fira Code", "Consolas", monospace',
+                        fontSize: '0.8rem',
+                        lineHeight: '1.5',
+                        color: 'var(--viz-text-secondary)',
+                        whiteSpace: 'pre-wrap',
+                        overflowX: 'auto',
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                    }}
+                >
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        marginBottom: '8px',
+                        color: 'var(--viz-color-comparing)',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        fontFamily: 'inherit',
+                    }}>
+                        <i className="fi fi-rr-code-simple"></i>
+                        CODE MINH HỌA
+                    </div>
+                    {currentStepData.codeSnippet}
+                </motion.div>
+            )}
 
             {/* Animation Controls */}
             <AnimationControls

@@ -539,8 +539,8 @@ const BSTVisualizer: React.FC<BSTVisualizerProps> = ({
                 </div>
 
                 <div className="viz-info-badges">
-                    <span className="viz-badge">🌳 Nodes: {nodeCount}</span>
-                    <span className="viz-badge">📏 Height: {treeHeight}</span>
+                    <span className="viz-badge"><i className="fi fi-rr-tree"></i> Nodes: {nodeCount}</span>
+                    <span className="viz-badge"><i className="fi fi-rr-ruler-combined"></i> Height: {treeHeight}</span>
                     <span className="viz-badge"><i className="fi fi-rr-clock"></i> Search: O(log n)</span>
                 </div>
             </header>
