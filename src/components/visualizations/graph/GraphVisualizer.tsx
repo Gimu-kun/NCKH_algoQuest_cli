@@ -44,6 +44,11 @@ interface GraphStep {
 
 interface GraphVisualizerProps {
     algorithm: GraphAlgorithmType;
+    graphData?: {
+        nodes: GraphNode[];
+        edges: GraphEdge[];
+        adjList: Record<number, number[]>;
+    };
     autoStart?: boolean;
     onRegenerate?: () => void;
 }
@@ -86,7 +91,7 @@ const ADJ_LIST: Record<number, number[]> = {
 // ALGORITHMS
 // =============================================================================
 
-function generateBFSSteps(startNode: number): GraphStep[] {
+function generateBFSSteps(startNode: number, adjList: Record<number, number[]>): GraphStep[] {
     const steps: GraphStep[] = [];
     const visited: number[] = [];
     const queue: number[] = [startNode];
@@ -123,7 +128,7 @@ int u = q.dequeue();  // u = ${u}
         queue.shift(); // Dequeue
         visited.push(u);
 
-        const neighbors = ADJ_LIST[u] || [];
+        const neighbors = adjList[u] || [];
         for (const v of neighbors) {
             if (!visitedSet.has(v)) {
                 visitedSet.add(v);
@@ -164,7 +169,7 @@ if (!visited[${v}]) {
     return steps;
 }
 
-function generateDFSSteps(startNode: number): GraphStep[] {
+function generateDFSSteps(startNode: number, adjList: Record<number, number[]>): GraphStep[] {
     const steps: GraphStep[] = [];
     const visited: number[] = [];
     const stack: number[] = [startNode]; // Simulate recursion stack
@@ -203,7 +208,7 @@ if (!visited[u]) {
 }`,
             });
 
-            const neighbors = ADJ_LIST[u] || [];
+            const neighbors = adjList[u] || [];
             // Reverse neighbors to simulate correct stack order (left to right)
             // or normal order depending on implementation.
             for (let i = neighbors.length - 1; i >= 0; i--) {
@@ -249,21 +254,26 @@ if (!visited[${v}]) {
 // COMPONENT
 // =============================================================================
 
-const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, autoStart = false, onRegenerate }) => {
+const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, graphData, autoStart = false, onRegenerate }) => {
     const [steps, setSteps] = useState<GraphStep[]>([]);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [speed, setSpeed] = useState(1);
     const timerRef = useRef<any>(null);
 
+    // Use provided graphData or fall back to default
+    const nodes = graphData?.nodes || NODES;
+    const edges = graphData?.edges || EDGES;
+    const adjList = graphData?.adjList || ADJ_LIST;
+
     useEffect(() => {
         const generatedSteps = algorithm === 'bfs'
-            ? generateBFSSteps(0)
-            : generateDFSSteps(0);
+            ? generateBFSSteps(0, adjList)
+            : generateDFSSteps(0, adjList);
         setSteps(generatedSteps);
         setCurrentStepIndex(0);
         setIsPlaying(autoStart);
-    }, [algorithm, autoStart]);
+    }, [algorithm, autoStart, graphData]);
 
     useEffect(() => {
         if (isPlaying && currentStepIndex < steps.length - 1) {
@@ -301,9 +311,9 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, autoStart 
                 {/* Graph Area */}
                 <div style={{ position: 'relative', height: '300px', background: 'var(--viz-bg-secondary)', borderRadius: '12px', border: '1px solid var(--viz-border-primary)' }}>
                     <svg style={{ width: '100%', height: '100%', position: 'absolute' }}>
-                        {EDGES.map((edge, idx) => {
-                            const start = NODES.find(n => n.id === edge.source)!;
-                            const end = NODES.find(n => n.id === edge.target)!;
+                        {edges.map((edge, idx) => {
+                            const start = nodes.find(n => n.id === edge.source)!;
+                            const end = nodes.find(n => n.id === edge.target)!;
                             return (
                                 <line
                                     key={idx}
@@ -316,7 +326,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, autoStart 
                         })}
                     </svg>
 
-                    {NODES.map(node => {
+                    {nodes.map(node => {
                         const isVisited = currentStep.visited.includes(node.id);
                         const isActive = currentStep.activeNode === node.id;
                         const isInQueue = currentStep.queueOrStack.includes(node.id) && !isVisited && !isActive;

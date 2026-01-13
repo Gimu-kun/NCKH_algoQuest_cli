@@ -1,70 +1,45 @@
 /**
  * =============================================================================
- * FILE: HeapSort.ts
+ * FILE: HeapSort.ts (Sắp Xếp Vun Đống)
  * =============================================================================
  *
- * MỤC TIÊU (Purpose):
- * - Cài đặt thuật toán Heap Sort (Sắp xếp vun đống).
- * - Sử dụng cấu trúc Max-Heap để sắp xếp mảng tăng dần.
+ * 1. MỤC TIÊU (GOAL):
+ *    - Sắp xếp mảng theo thứ tự tăng dần.
+ *    - Sử dụng cấu trúc dữ liệu Heap để tối ưu việc tìm phần tử lớn nhất.
  *
- * THUẬT TOÁN HEAP SORT (Algorithm):
+ * 2. THUẬT TOÁN & KỸ THUẬT (ALGORITHM & TECHNIQUE):
+ *    - **Max-Heap (Đống cực đại)**: Một cây nhị phân hoàn chỉnh (Complete Binary Tree) nơi mỗi node cha luôn lớn hơn hoặc bằng các node con.
+ *    - **Heapify (Vun đống)**: Quá trình sắp xếp lại các node để đảm bảo tính chất Max-Heap.
+ *    - **Extract Max**: Lấy phần tử lớn nhất (ở gốc Heap) ra khỏi Heap và để vào cuối mảng (vị trí đã sort).
  *
- * KHÁI NIỆM HEAP:
- * - Heap là Complete Binary Tree thỏa mãn Heap Property.
- * - Max-Heap: Mỗi parent >= tất cả children của nó.
- * - Min-Heap: Mỗi parent <= tất cả children của nó.
+ * 3. BƯỚC THỰC HIỆN (STEPS FLOW):
+ *    - B1: **Build Max-Heap**: Chuyển mảng input ban đầu thành một Max-Heap hợp lệ.
+ *          + Bắt đầu từ node không phải lá (non-leaf) cuối cùng (`n/2 - 1`) lùi về 0.
+ *          + Gọi hàm `heapify` cho mỗi node đó.
+ *    - B2: **Extraction Phase** (Lặp `n-1` lần):
+ *          + Hoán đổi (Swap) phần tử lớn nhất (`arr[0]`) với phần tử cuối cùng của Heap (`arr[i]`).
+ *          + "Cắt" phần tử cuối cùng đó ra khỏi Heap (coi như đã sort).
+ *          + Gọi `heapify` cho Root (`arr[0]`) để khôi phục tính chất Max-Heap cho phần còn lại.
  *
- * CÁC BƯỚC THỰC HIỆN:
- * 1. BUILD MAX-HEAP: Biến mảng input thành Max-Heap.
- *    - Bắt đầu từ non-leaf node cuối cùng (index = n/2 - 1).
- *    - Heapify từ dưới lên để đảm bảo mỗi subtree là valid heap.
+ * 4. ĐỘ PHỨC TẠP (COMPLEXITY):
+ *    - **Time Complexity**: O(n log n)
+ *      + Bước Build Heap: O(n).
+ *      + Bước Extract Max: n lần, mỗi lần Heapify tốn O(log n) -> Total O(n log n).
+ *      + Ổn định tốt trong mọi trường hợp (Best/Avg/Worst đều là O(n log n)).
+ *    - **Space Complexity**: O(1)
+ *      + In-place sorting (Sắp xếp tại chỗ).
  *
- * 2. EXTRACT MAX LIÊN TỤC:
- *    - Swap root (max element) với phần tử cuối của heap.
- *    - Giảm heap size đi 1 (phần tử cuối đã sorted).
- *    - Heapify root để duy trì Max-Heap property.
- *    - Lặp lại cho đến khi heap size = 1.
+ * 5. ƯU ĐIỂM & NHƯỢC ĐIỂM (PROS & CONS):
+ *    - **Ưu điểm**:
+ *      + Hiệu năng tốt và ổn định (không bị O(n^2) như Quick Sort).
+ *      + Không tốn bộ nhớ phụ (O(1) space) như Merge Sort.
+ *    - **Nhược điểm**:
+ *      + Unstable Sort (Không ổn định).
+ *      + Chậm hơn Quick Sort trong thực tế vì hằng số lớn và kém thân thiện với Cache (do truy cập chỉ số nhảy cóc `2*i`).
  *
- * HEAPIFY (Vun đống):
- * - Đảm bảo subtree có root tại index i thỏa mãn Max-Heap property.
- * - So sánh node với 2 children, swap với child lớn nhất nếu cần.
- * - Đệ quy heapify subtree bị ảnh hưởng.
- *
- * ARRAY REPRESENTATION:
- * - Parent(i) = floor((i - 1) / 2)
- * - Left Child(i) = 2 * i + 1
- * - Right Child(i) = 2 * i + 2
- *
- * ĐỘ PHỨC TẠP (Complexity):
- * - Time: O(n log n) cho TẤT CẢ cases (best, average, worst).
- * - Space: O(1) - In-place algorithm.
- *
- * SO SÁNH VỚI CÁC THUẬT TOÁN KHÁC:
- * ┌──────────────┬────────────────┬────────────────┬─────────┬────────┐
- * │ Algorithm    │ Time (avg)     │ Time (worst)   │ Space   │ Stable │
- * ├──────────────┼────────────────┼────────────────┼─────────┼────────┤
- * │ Heap Sort    │ O(n log n)     │ O(n log n)     │ O(1)    │ No     │
- * │ Quick Sort   │ O(n log n)     │ O(n²)          │ O(log n)│ No     │
- * │ Merge Sort   │ O(n log n)     │ O(n log n)     │ O(n)    │ Yes    │
- * └──────────────┴────────────────┴────────────────┴─────────┴────────┘
- *
- * ƯU ĐIỂM:
- * - O(n log n) trong MỌI trường hợp - không có worst case O(n²).
- * - In-place: chỉ cần O(1) bộ nhớ phụ.
- * - Không cần recursion stack như Quick Sort.
- *
- * NHƯỢC ĐIỂM:
- * - Unstable sort: không bảo toàn thứ tự tương đối của phần tử bằng nhau.
- * - Cache-unfriendly: truy cập bộ nhớ không liên tục (parent-child xa nhau).
- * - Hằng số lớn hơn Quick Sort, thường chậm hơn trong practice.
- *
- * ỨNG DỤNG THỰC TẾ:
- * 1. Priority Queue implementation.
- * 2. Selection problem (tìm k phần tử lớn/nhỏ nhất).
- * 3. Embedded systems với bộ nhớ hạn chế.
- * 4. Systems yêu cầu worst-case guarantees.
- *
- * =============================================================================
+ * 6. SO SÁNH (VS OTHER ALGORITHMS):
+ *    - So với **Merge Sort**: Heap Sort tiết kiệm RAM hơn (O(1) vs O(n)) nhưng Merge Sort nhanh hơn và stable.
+ *    - So với **Quick Sort**: Heap Sort an toàn hơn (không có Worst Case O(n^2)) nhưng thường chậm hơn trung bình.
  */
 
 /**

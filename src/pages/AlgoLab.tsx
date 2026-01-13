@@ -331,6 +331,105 @@ const CHAPTERS: Chapter[] = [
 ];
 
 // =============================================================================
+// HELPER: Random Graph Generation
+// =============================================================================
+
+/**
+ * generateRandomGraph - Tạo một đồ thị ngẫu nhiên (tree-like structure) cho BFS/DFS.
+ * 
+ * @param numNodes - Số lượng đỉnh (5-7 recommended)
+ * @returns Graph data với nodes, edges, và adjList
+ */
+function generateRandomGraph(numNodes: number) {
+    interface GraphNode {
+        id: number;
+        x: number;
+        y: number;
+        label: string;
+    }
+
+    interface GraphEdge {
+        source: number;
+        target: number;
+    }
+
+    const nodes: GraphNode[] = [];
+    const edges: GraphEdge[] = [];
+    const adjList: Record<number, number[]> = {};
+
+    // Generate node positions in a circular layout
+    const centerX = 250;
+    const centerY = 150;
+    const radius = 100;
+
+    for (let i = 0; i < numNodes; i++) {
+        const angle = (i / numNodes) * 2 * Math.PI;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        nodes.push({
+            id: i,
+            x: Math.round(x),
+            y: Math.round(y),
+            label: String(i),
+        });
+
+        adjList[i] = [];
+    }
+
+    // Generate edges: Create a tree-like structure (each node connects to 1-2 random children)
+    // Start from node 0 as root
+    const visited = new Set<number>([0]);
+    const queue = [0];
+
+    while (queue.length > 0 && visited.size < numNodes) {
+        const parent = queue.shift()!;
+        const maxChildren = 2; // Binary tree-ish
+        const numChildren = Math.min(
+            Math.floor(Math.random() * maxChildren) + 1,
+            numNodes - visited.size
+        );
+
+        for (let i = 0; i < numChildren; i++) {
+            // Find an unvisited node
+            let child = -1;
+            for (let j = 0; j < numNodes; j++) {
+                if (!visited.has(j)) {
+                    child = j;
+                    break;
+                }
+            }
+
+            if (child === -1) break;
+
+            visited.add(child);
+            queue.push(child);
+
+            // Add edge (bidirectional for undirected graph)
+            edges.push({ source: parent, target: child });
+            adjList[parent].push(child);
+            adjList[child].push(parent);
+        }
+    }
+
+    // Add a few random cross-edges to make it more interesting (optional)
+    if (numNodes > 4) {
+        const numCrossEdges = Math.min(2, Math.floor(numNodes / 3));
+        for (let i = 0; i < numCrossEdges; i++) {
+            const a = Math.floor(Math.random() * numNodes);
+            const b = Math.floor(Math.random() * numNodes);
+            if (a !== b && !adjList[a].includes(b)) {
+                edges.push({ source: a, target: b });
+                adjList[a].push(b);
+                adjList[b].push(a);
+            }
+        }
+    }
+
+    return { nodes, edges, adjList };
+}
+
+// =============================================================================
 // MAIN COMPONENT
 // =============================================================================
 
@@ -351,6 +450,7 @@ export const AlgoLab: React.FC = () => {
     // Visualization data
     const [vizArray, setVizArray] = useState<number[]>([]);
     const [vizTarget, setVizTarget] = useState<number>(0);
+    const [vizGraphData, setVizGraphData] = useState<any>(null);
 
     // Key để force re-render visualization
     const [vizKey, setVizKey] = useState<number>(0);
@@ -422,8 +522,11 @@ export const AlgoLab: React.FC = () => {
             return;
         }
 
-        // Graph Case
+        // Graph Case - Generate random graph
         if (activeAlgo.inputType === 'active_node') {
+            const numNodes = 5 + Math.floor(Math.random() * 3); // 5-7 nodes
+            const generatedGraph = generateRandomGraph(numNodes);
+            setVizGraphData(generatedGraph);
             setVizKey((prev) => prev + 1);
             return;
         }
@@ -529,10 +632,12 @@ export const AlgoLab: React.FC = () => {
                     <GraphVisualizer
                         key={key}
                         algorithm={activeAlgo.graphType || 'bfs'}
+                        graphData={vizGraphData}
                         onRegenerate={handleRegenerate}
                     />
                 );
 
+            case 'dp':
                 return (
                     <DPVisualizer
                         key={key}
