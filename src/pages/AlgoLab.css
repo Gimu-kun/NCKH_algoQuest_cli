@@ -330,7 +330,60 @@
     color: var(--lab-text-muted);
 }
 
-/* Target Input (for search algorithms) */
+/* Target Input - TOP position (for search algorithms) */
+.lab-target-input-top {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+}
+
+.lab-target-input-top label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--lab-warning);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.lab-target-input-top label i {
+    font-size: 1rem;
+}
+
+.lab-target-input-top input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(245, 158, 11, 0.4);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--lab-warning);
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.lab-target-input-top input:focus {
+    outline: none;
+    border-color: var(--lab-warning);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.lab-target-input-top input::placeholder {
+    color: var(--lab-text-muted);
+    font-weight: 400;
+    font-size: 0.875rem;
+}
+
+/* Target Input (for search algorithms) - BOTTOM position - kept for backwards compatibility */
 .lab-target-input {
     display: flex;
     align-items: center;

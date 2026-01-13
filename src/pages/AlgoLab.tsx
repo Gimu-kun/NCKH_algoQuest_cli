@@ -502,19 +502,12 @@ export const AlgoLab: React.FC = () => {
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <textarea
-                                                        value={arrayInput}
-                                                        onChange={(e) => setArrayInput(e.target.value)}
-                                                        placeholder="[1, 2, 3, 4, 5]"
-                                                        className="lab-input-textarea"
-                                                        spellCheck={false}
-                                                    />
-
+                                                    {/* Target input - hiển thị trước cho search algorithms */}
                                                     {activeAlgo.inputType === 'array_target' && (
-                                                        <div className="lab-target-input">
+                                                        <div className="lab-target-input-top">
                                                             <label>
                                                                 <i className="fi fi-rr-bullseye"></i>
-                                                                Target
+                                                                Giá Trị Cần Tìm (Target)
                                                             </label>
                                                             <input
                                                                 type="number"
@@ -522,10 +515,18 @@ export const AlgoLab: React.FC = () => {
                                                                 onChange={(e) =>
                                                                     setTargetInput(e.target.value)
                                                                 }
-                                                                placeholder="Giá trị cần tìm"
+                                                                placeholder="Nhập giá trị target..."
                                                             />
                                                         </div>
                                                     )}
+
+                                                    <textarea
+                                                        value={arrayInput}
+                                                        onChange={(e) => setArrayInput(e.target.value)}
+                                                        placeholder="[1, 2, 3, 4, 5]"
+                                                        className="lab-input-textarea"
+                                                        spellCheck={false}
+                                                    />
                                                 </>
                                             )}
                                         </div>
