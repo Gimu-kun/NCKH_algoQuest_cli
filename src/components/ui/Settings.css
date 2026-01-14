@@ -57,6 +57,13 @@
     font-size: var(--text-2xl);
     color: var(--color-primary);
     text-shadow: 0 0 10px rgba(78, 204, 163, 0.5);
+<<<<<<< HEAD
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 /* === CONTENT (Nội dung) === */
@@ -80,6 +87,12 @@
     color: var(--color-secondary);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 8px;
+<<<<<<< HEAD
+    display: flex;
+    align-items: center;
+    gap: 10px;
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .setting-item {

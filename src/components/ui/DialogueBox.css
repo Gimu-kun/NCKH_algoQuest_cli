@@ -1,25 +1,119 @@
 /* ========================================
+<<<<<<< HEAD
+   HỘP THOẠI (Dialogue Box) - VISUAL NOVEL STYLE
+   Thiết kế khít với ảnh Talk của NPC
+=======
    HỘP THOẠI (Dialogue Box)
    Hộp thoại hội thoại và tương tác NPC
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
    ======================================== */
 
 .dialogue-overlay {
     position: fixed;
     bottom: 0;
     left: 0;
+<<<<<<< HEAD
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+=======
     right: 0;
     height: 50vh;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     display: flex;
     align-items: flex-end;
     justify-content: center;
     z-index: 500;
     pointer-events: none;
+<<<<<<< HEAD
+    padding-bottom: 40px;
+=======
     padding-bottom: var(--space-xl);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .dialogue-box {
     width: 90%;
+<<<<<<< HEAD
+    max-width: 1100px;
+    height: 280px;
+    display: flex;
+    position: relative;
+    pointer-events: auto;
+
+    /* Background set via inline style (NPC Sprite) */
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: none;
+}
+
+/* === NPC PORTRAIT (Hidden - using background) === */
+.dialogue-portrait {
+    display: none;
+}
+
+/* === HEADER (Name) - Top-Left Scroll Area === */
+.dialogue-header h3 {
+    position: absolute;
+    top: 1px;
+    left: 180px;
+    margin: 0;
+    padding: 6px 20px;
+
+    font-size: 22px;
+    font-weight: bold;
+    color: #d4a036;
+    font-family: var(--font-display);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+
+    background: transparent;
+    border: none;
+    outline: none;
+    z-index: 602;
+}
+
+/* === ROLE/DESCRIPTION - Below dialogue text === */
+.dialogue-role {
+    display: block;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(212, 160, 54, 0.3);
+
+    font-size: 17px;
+    font-style: italic;
+    color: #d4a036;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* === CONTENT AREA (Main Text) === */
+.dialogue-content {
+    position: absolute;
+    top: 50px;
+    right: 140px;
+    width: 58%;
+    max-width: 800px;
+    height: calc(100% - 90px);
+
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    /* Subtle dark overlay for readability */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+    border-radius: 10px;
+    backdrop-filter: blur(2px);
+}
+
+/* === MAIN TEXT === */
+.dialogue-text {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+=======
     max-width: 1000px;
     height: 300px;
     /* Fixed height for the image aspect ratio */
@@ -113,10 +207,37 @@
     flex: 1;
     padding: var(--space-sm) 0;
     min-height: 80px;
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .dialogue-text p {
     margin: 0;
+<<<<<<< HEAD
+    font-size: 18px;
+    line-height: 1.7;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* === BOTTOM ROW WRAPPER === */
+.dialogue-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* === ACTION BUTTONS === */
+.dialogue-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 0;
+=======
     color: var(--color-text-primary);
     font-size: var(--text-base);
     font-family: 'Consolas', 'Courier New', monospace;
@@ -131,11 +252,38 @@
     gap: var(--space-md);
     justify-content: flex-end;
     align-items: center;
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .dialogue-actions button {
     padding: 10px 24px;
     border: none;
+<<<<<<< HEAD
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #4ecdc4, #44a5a5);
+    color: #fff;
+}
+
+.btn-next:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+}
+
+.btn-close {
+    background: linear-gradient(135deg, #52c752, #3ea63e);
+=======
     border-radius: var(--border-radius-md);
     font-size: var(--text-sm);
     font-family: var(--font-display);
@@ -158,15 +306,54 @@
 
 .btn-close {
     background: linear-gradient(135deg, var(--color-accent-green), #219150);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     color: #fff;
 }
 
 .btn-close:hover {
     transform: scale(1.05);
+<<<<<<< HEAD
+    box-shadow: 0 4px 12px rgba(82, 199, 82, 0.4);
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .btn-skip {
     background: transparent;
+<<<<<<< HEAD
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn-skip:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* === FEATURE BUTTONS === */
+.dialogue-features {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 0;
+    border-top: none;
+    margin-top: 0;
+}
+
+.feature-btn {
+    padding: 8px 18px;
+    background: rgba(212, 160, 54, 0.2);
+    border: 1px solid #d4a036;
+    border-radius: 6px;
+    color: #f4d088;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+=======
     border: 1px solid var(--color-text-muted);
     color: var(--color-text-muted);
     padding: 6px 12px;
@@ -198,10 +385,41 @@
     font-weight: bold;
     cursor: pointer;
     transition: all var(--transition-base);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     font-family: var(--font-display);
 }
 
 .feature-btn:hover {
+<<<<<<< HEAD
+    background: #d4a036;
+    color: #000;
+    box-shadow: 0 0 15px rgba(212, 160, 54, 0.5);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .dialogue-box {
+        height: 240px;
+    }
+
+    .dialogue-content {
+        width: 60%;
+        padding: 15px 20px;
+    }
+
+    .dialogue-header h3 {
+        font-size: 20px;
+        left: 60px;
+    }
+
+    .dialogue-role {
+        left: 240px;
+        font-size: 13px;
+    }
+
+    .dialogue-text p {
+        font-size: 16px;
+=======
     background: var(--color-accent-gold);
     color: #000;
     box-shadow: var(--shadow-glow-gold);
@@ -221,5 +439,6 @@
 
     .dialogue-text p {
         font-size: var(--text-sm);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     }
 }

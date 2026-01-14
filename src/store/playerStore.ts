@@ -83,7 +83,11 @@ export interface PlayerState {
 }
 
 // Interface định nghĩa các hành động tương tác với dữ liệu
+<<<<<<< HEAD
+export interface PlayerActions {
+=======
 interface PlayerActions {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     // === Quản Lý Tài Nguyên ===
     addResource: (type: ResourceType, amount: number) => void;
     removeResource: (type: ResourceType, amount: number) => boolean;
@@ -152,12 +156,22 @@ const initialPlayerState: PlayerState = {
     }
 };
 
+<<<<<<< HEAD
+// Export type for external use
+export type PlayerStore = PlayerState & PlayerActions;
+
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * CREATE PERSISTENT STORE
  * ═══════════════════════════════════════════════════════════════════════════
  */
+<<<<<<< HEAD
+export const usePlayerStore = create<PlayerStore>()(
+=======
 export const usePlayerStore = create<PlayerState & PlayerActions>()(
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     persist(
         (set, get) => ({
             ...initialPlayerState,

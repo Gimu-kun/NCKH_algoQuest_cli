@@ -1,0 +1,661 @@
+/* AlgoLab.css - Modern Laboratory Theme v2 */
+/* Thiết kế lại với layout: Input + Visualization Output */
+
+/* ==========================================================================
+   CSS VARIABLES - Color Palette & Design Tokens
+   ========================================================================== */
+:root {
+    /* Background Colors */
+    --lab-bg-dark: #0c0d12;
+    --lab-bg-secondary: #13151c;
+    --lab-panel-bg: rgba(18, 21, 31, 0.95);
+    --lab-card-bg: rgba(24, 28, 40, 0.9);
+
+    /* Accent Colors */
+    --lab-primary: #6366f1;
+    /* Indigo - Primary */
+    --lab-primary-glow: rgba(99, 102, 241, 0.4);
+    --lab-accent: #22d3ee;
+    /* Cyan - Accent */
+    --lab-accent-glow: rgba(34, 211, 238, 0.3);
+    --lab-success: #10b981;
+    /* Emerald */
+    --lab-warning: #f59e0b;
+    /* Amber */
+    --lab-error: #ef4444;
+    /* Red */
+
+    /* Border Colors */
+    --lab-border: rgba(99, 102, 241, 0.2);
+    --lab-border-accent: rgba(34, 211, 238, 0.3);
+
+    /* Text Colors */
+    --lab-text-primary: #f1f5f9;
+    --lab-text-secondary: #94a3b8;
+    --lab-text-muted: #64748b;
+
+    /* Grid */
+    --lab-grid-color: rgba(99, 102, 241, 0.03);
+}
+
+/* ==========================================================================
+   MAIN CONTAINER
+   ========================================================================== */
+.algo-lab-container {
+    background-color: var(--lab-bg-dark);
+    background-image:
+        radial-gradient(ellipse at top, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        linear-gradient(var(--lab-grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--lab-grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: var(--lab-text-primary);
+    overflow: visible;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+/* ==========================================================================
+   SCROLLBAR
+   ========================================================================== */
+.algo-lab-container ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.algo-lab-container ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.algo-lab-container ::-webkit-scrollbar-thumb {
+    background: var(--lab-border);
+    border-radius: 3px;
+}
+
+.algo-lab-container ::-webkit-scrollbar-thumb:hover {
+    background: var(--lab-primary);
+}
+
+/* ==========================================================================
+   SIDEBAR - Algorithm List
+   ========================================================================== */
+.lab-sidebar {
+    background: var(--lab-panel-bg);
+    border-right: 1px solid var(--lab-border);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.lab-sidebar-header {
+    border-bottom: 1px solid var(--lab-border);
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.08) 0%,
+            transparent 100%);
+}
+
+.lab-sidebar-header h1 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.lab-sidebar-header h1 i {
+    color: var(--lab-primary);
+}
+
+/* Chapter Title */
+.chapter-title {
+    color: var(--lab-text-secondary);
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.chapter-title .chapter-dot {
+    width: 3px;
+    height: 14px;
+    background: linear-gradient(180deg, var(--lab-primary) 0%, var(--lab-accent) 100%);
+    border-radius: 2px;
+}
+
+/* Algorithm Tab */
+.algo-tab {
+    position: relative;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.algo-tab:hover {
+    background: rgba(99, 102, 241, 0.06);
+    border-color: var(--lab-border);
+}
+
+.algo-tab.active {
+    background: linear-gradient(135deg,
+            rgba(99, 102, 241, 0.12) 0%,
+            rgba(34, 211, 238, 0.06) 100%);
+    border-color: var(--lab-primary);
+    box-shadow:
+        0 0 20px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.algo-tab.active .algo-tab-name {
+    color: var(--lab-accent);
+}
+
+.algo-tab-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--lab-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.algo-tab-desc {
+    font-size: 0.7rem;
+    color: var(--lab-text-muted);
+    margin-top: 2px;
+}
+
+/* VIZ Badge */
+.viz-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    background: rgba(34, 211, 238, 0.15);
+    color: var(--lab-accent);
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   MAIN CONTENT AREA
+   ========================================================================== */
+.lab-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Header */
+.lab-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--lab-border);
+}
+
+.lab-algo-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--lab-text-primary);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lab-algo-type-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--lab-primary);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.lab-algo-desc {
+    font-size: 0.875rem;
+    color: var(--lab-text-secondary);
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   WORKSPACE LAYOUT - Input + Visualization
+   ========================================================================== */
+/* Main content area - scrollable */
+.lab-main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.lab-workspace {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Input Panel */
+.lab-input-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.lab-panel {
+    background: var(--lab-card-bg);
+    border: 1px solid var(--lab-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.lab-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--lab-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--lab-text-secondary);
+}
+
+.lab-panel-header i {
+    font-size: 0.875rem;
+}
+
+.lab-panel-header.input {
+    color: var(--lab-accent);
+}
+
+.lab-panel-header.output {
+    color: var(--lab-success);
+}
+
+.lab-panel-header.viz {
+    color: var(--lab-primary);
+}
+
+.lab-panel-body {
+    flex: 1;
+    padding: 1rem;
+    overflow: auto;
+}
+
+/* Input Textarea */
+.lab-input-textarea {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--lab-border);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--lab-accent);
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    resize: none;
+    transition: all 0.2s ease;
+}
+
+.lab-input-textarea:focus {
+    outline: none;
+    border-color: var(--lab-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.lab-input-textarea::placeholder {
+    color: var(--lab-text-muted);
+}
+
+/* Target Input - TOP position (for search algorithms) */
+.lab-target-input-top {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+}
+
+.lab-target-input-top label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--lab-warning);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.lab-target-input-top label i {
+    font-size: 1rem;
+}
+
+.lab-target-input-top input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(245, 158, 11, 0.4);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--lab-warning);
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.lab-target-input-top input:focus {
+    outline: none;
+    border-color: var(--lab-warning);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.lab-target-input-top input::placeholder {
+    color: var(--lab-text-muted);
+    font-weight: 400;
+    font-size: 0.875rem;
+}
+
+/* Target Input (for search algorithms) - BOTTOM position - kept for backwards compatibility */
+.lab-target-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--lab-border);
+    margin-top: 12px;
+}
+
+.lab-target-input label {
+    font-size: 0.75rem;
+    color: var(--lab-text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.lab-target-input input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--lab-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--lab-warning);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+}
+
+.lab-target-input input:focus {
+    outline: none;
+    border-color: var(--lab-warning);
+}
+
+/* Run Button */
+.lab-run-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, var(--lab-primary) 0%, #4f46e5 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow:
+        0 4px 15px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.lab-run-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 20px rgba(99, 102, 241, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+.lab-run-btn:active {
+    transform: translateY(0);
+}
+
+.lab-run-btn i {
+    font-size: 1rem;
+}
+
+/* Reset Button */
+.lab-reset-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--lab-error);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lab-reset-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: var(--lab-error);
+}
+
+/* ==========================================================================
+   VISUALIZATION PANEL
+   ========================================================================== */
+.lab-viz-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.lab-viz-content {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* Info Bar */
+.lab-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid var(--lab-border);
+    font-size: 0.75rem;
+    color: var(--lab-text-secondary);
+}
+
+.lab-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lab-info-item i {
+    color: var(--lab-text-muted);
+}
+
+.lab-info-item .value {
+    color: var(--lab-accent);
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+}
+
+/* ==========================================================================
+   COMPLEXITY BADGES
+   ========================================================================== */
+.complexity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+}
+
+.complexity-badge.time {
+    color: var(--lab-warning);
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.complexity-badge.space {
+    color: var(--lab-success);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================================================
+   NO INPUT MESSAGE
+   ========================================================================== */
+.lab-no-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--lab-text-muted);
+    text-align: center;
+    gap: 12px;
+}
+
+.lab-no-input i {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.lab-no-input span {
+    font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   DISCONNECT BUTTON
+   ========================================================================== */
+.lab-disconnect-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: transparent;
+    color: var(--lab-error);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lab-disconnect-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--lab-error);
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .lab-workspace {
+        grid-template-columns: 280px 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .lab-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .lab-sidebar {
+        width: 100%;
+        max-height: 200px;
+    }
+}

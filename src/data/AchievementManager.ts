@@ -35,8 +35,34 @@ n độ)
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
+<<<<<<< HEAD
+import { ACHIEVEMENTS, type Achievement } from './achievements';
+import type { PlayerState, PlayerStore } from '../store/playerStore';
+import { ResourceType } from './models/Item';
+
+/**
+ * Context type for achievement checking
+ */
+export interface AchievementContext {
+    // Combat context
+    victory?: boolean;
+    accuracy?: number;
+    hintsUsed?: number;
+    isBoss?: boolean;
+    bossId?: string;
+
+    // Dungeon context
+    dungeonId?: string;
+    time?: number;
+    perfect?: boolean;
+
+    // Code quality context
+    complexity?: string;
+}
+=======
 import { ACHIEVEMENTS, BADGES, type Achievement } from './achievements';
 import type { usePlayerStore } from '../store/playerStore';
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -69,8 +95,13 @@ export class AchievementManager {
      * - Space: O(1) - Không allocate memory
      * 
      * @param {Achievement} achievement - Achievement object cần check
+<<<<<<< HEAD
+     * @param {PlayerState['stats']} playerStats - Player statistics từ playerStore
+     * @param {AchievementContext} context - Optional context (combat data, dungeon data)
+=======
      * @param {any} playerStats - Player statistics từ playerStore
      * @param {any} context - Optional context (combat data, dungeon data)
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
      * @returns {boolean} True nếu đạt điều kiện, False nếu chưa
      * 
      * @example
@@ -80,14 +111,30 @@ export class AchievementManager {
      */
     static checkAchievement(
         achievement: Achievement,
+<<<<<<< HEAD
+        playerStats: PlayerState,
+        context?: AchievementContext
+=======
         playerStats: any,
         context?: any
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     ): boolean {
         const { criteria } = achievement;
 
         switch (criteria.type) {
             case 'DUNGEON_CLEAR':
                 // Check: Đã clear đủ số dungeons?
+<<<<<<< HEAD
+                return playerStats.stats.dungeonsCleared >= (criteria.target as number);
+
+            case 'QUESTIONS_CORRECT':
+                // Check: Đã trả lời đúng đủ số câu?
+                return playerStats.stats.questionsCorrect >= (criteria.target as number);
+
+            case 'BOSS_DEFEAT':
+                // Check: Đánh bại đúng boss + điều kiện đặc biệt
+                if (criteria.condition === 'no_hints' && (context?.hintsUsed ?? 0) > 0) {
+=======
                 return playerStats.dungeonsCleared >= (criteria.target as number);
 
             case 'QUESTIONS_CORRECT':
@@ -97,6 +144,7 @@ export class AchievementManager {
             case 'BOSS_DEFEAT':
                 // Check: Đánh bại đúng boss + điều kiện đặc biệt
                 if (criteria.condition === 'no_hints' && context?.hintsUsed > 0) {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     return false; // Dùng hint → fail condition
                 }
                 return context?.bossId === criteria.target;
@@ -111,13 +159,21 @@ export class AchievementManager {
             case 'ACCURACY':
                 // Check: Đạt accuracy% trong boss fight
                 if (criteria.condition === 'boss_fight' && context?.isBoss) {
+<<<<<<< HEAD
+                    return (context?.accuracy ?? 0) >= (criteria.target as number);
+=======
                     return context.accuracy >= (criteria.target as number);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 }
                 return false;
 
             case 'SPELL_UNLOCK':
                 // Check: Đã unlock đủ số spells
+<<<<<<< HEAD
+                return playerStats.unlockedSpells.length >= (criteria.target as number);
+=======
                 return playerStats.spellsUnlocked >= (criteria.target as number);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
             case 'CODE_QUALITY':
                 // Check: Code đạt Big O complexity tối ưu
@@ -156,8 +212,13 @@ export class AchievementManager {
      * - Sau mỗi combat/dungeon: Check xem có unlock achievement mới không
      * - Batch checking: Kiểm tra nhiều achievements cùng lúc
      * 
+<<<<<<< HEAD
+     * @param {PlayerState} playerStats - Player statistics
+     * @param {AchievementContext} context - Game event context
+=======
      * @param {any} playerStats - Player statistics
      * @param {any} context - Game event context
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
      * @returns {string[]} Array of newly unlocked achievement IDs
      * 
      * @example
@@ -168,7 +229,11 @@ export class AchievementManager {
      * });
      * // → ['perfectionist'] nếu đạt 100% accuracy boss fight
      */
+<<<<<<< HEAD
+    static checkAll(playerStats: PlayerState, context?: AchievementContext): string[] {
+=======
     static checkAll(playerStats: any, context?: any): string[] {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         const unlockedAchievements: string[] = [];
 
         Object.values(ACHIEVEMENTS).forEach((achievement) => {
@@ -214,7 +279,11 @@ export class AchievementManager {
      * - Nếu 1 reward fail, các reward khác vẫn apply
      * 
      * @param {string} achievementId - ID achievement cần unlock
+<<<<<<< HEAD
+     * @param {PlayerStore} playerStore - Zustand player store instance
+=======
      * @param {any} playerStore - Zustand player store instance
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
      * @returns {Object|null} Achievement data + rewards, hoặc null nếu không tìm thấy
      * 
      * @example
@@ -224,7 +293,11 @@ export class AchievementManager {
      * // - 100 O-Points
      * // - "Apprentice" badge
      */
+<<<<<<< HEAD
+    static unlockAchievement(achievementId: string, playerStore: PlayerStore) {
+=======
     static unlockAchievement(achievementId: string, playerStore: any) {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         // Tra cứu achievement (case-insensitive)
         const achievement = ACHIEVEMENTS[achievementId.toUpperCase()];
 
@@ -240,10 +313,17 @@ export class AchievementManager {
         const rewards = achievement.rewards;
 
         if (rewards.oPoints) {
+<<<<<<< HEAD
+            playerStore.addResource(ResourceType.O_POINTS, rewards.oPoints);
+        }
+        if (rewards.logicStone) {
+            playerStore.addResource(ResourceType.LOGIC_STONE, rewards.logicStone);
+=======
             playerStore.addResource('O_POINTS', rewards.oPoints);
         }
         if (rewards.logicStone) {
             playerStore.addResource('LOGIC_STONE', rewards.logicStone);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         }
         if (rewards.badge) {
             playerStore.unlockBadge(rewards.badge);
@@ -286,7 +366,11 @@ export class AchievementManager {
      * - Notification: "5/10 dungeons cleared"
      * 
      * @param {string} achievementId - Achievement ID
+<<<<<<< HEAD
+     * @param {PlayerState['stats']} playerStats - Player statistics
+=======
      * @param {any} playerStats - Player statistics
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
      * @returns {number} Progress percentage (0-100)
      * 
      * @example
@@ -296,7 +380,11 @@ export class AchievementManager {
      * const progress2 = getProgress('spell_collector', { spellsUnlocked: 5 });
      * // → 50% (5/10 spells)
      */
+<<<<<<< HEAD
+    static getProgress(achievementId: string, playerStats: PlayerState): number {
+=======
     static getProgress(achievementId: string, playerStats: any): number {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         const achievement = ACHIEVEMENTS[achievementId.toUpperCase()];
         if (!achievement) return 0;
 
@@ -305,6 +393,15 @@ export class AchievementManager {
 
         switch (criteria.type) {
             case 'DUNGEON_CLEAR':
+<<<<<<< HEAD
+                return Math.min(100, (playerStats.stats.dungeonsCleared / target) * 100);
+
+            case 'QUESTIONS_CORRECT':
+                return Math.min(100, (playerStats.stats.questionsCorrect / target) * 100);
+
+            case 'SPELL_UNLOCK':
+                return Math.min(100, (playerStats.unlockedSpells.length / target) * 100);
+=======
                 return Math.min(100, (playerStats.dungeonsCleared / target) * 100);
 
             case 'QUESTIONS_CORRECT':
@@ -312,6 +409,7 @@ export class AchievementManager {
 
             case 'SPELL_UNLOCK':
                 return Math.min(100, (playerStats.spellsUnlocked / target) * 100);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
             default:
                 // Binary achievements: Không có progress, chỉ 0% hoặc 100%
@@ -335,10 +433,17 @@ export class AchievementManager {
      * - Time: O(n) - n achievements
      * - Space: O(n) - Tạo enriched array
      * 
+<<<<<<< HEAD
+     * @param {PlayerState} playerStats - Player statistics
+     * @returns {Array} Enriched achievements với unlocked flag và progress
+     */
+    static getAllWithProgress(playerStats: PlayerState) {
+=======
      * @param {any} playerStats - Player statistics
      * @returns {Array} Enriched achievements với unlocked flag và progress
      */
     static getAllWithProgress(playerStats: any) {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         return Object.values(ACHIEVEMENTS).map((achievement) => ({
             ...achievement,
             unlocked: playerStats.achievements?.includes(achievement.id) || false,
@@ -365,7 +470,11 @@ export class AchievementManager {
         isBoss: boolean;
         bossId?: string;
         time?: number;
+<<<<<<< HEAD
+    }, playerStats: PlayerState): string[] {
+=======
     }, playerStats: any): string[] {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         return this.checkAll(playerStats, combatContext);
     }
 
@@ -385,7 +494,11 @@ export class AchievementManager {
         dungeonId: string;
         time: number;
         perfect: boolean;
+<<<<<<< HEAD
+    }, playerStats: PlayerState): string[] {
+=======
     }, playerStats: any): string[] {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         return this.checkAll(playerStats, dungeonContext);
     }
 }

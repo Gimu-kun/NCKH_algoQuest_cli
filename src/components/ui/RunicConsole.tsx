@@ -65,10 +65,20 @@ export const RunicConsole: React.FC = () => {
     // Effect: Reset state khi mở một bài tập mới
     useEffect(() => {
         if (spell) {
+<<<<<<< HEAD
+            const timer = setTimeout(() => {
+                setCode(spell.starterCode);
+                setPhase('EDITING');
+                setError(null);
+                setVfxActive(null);
+            }, 0);
+            return () => clearTimeout(timer);
+=======
             setCode(spell.starterCode);
             setPhase('EDITING');
             setError(null);
             setVfxActive(null);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         }
     }, [spell]);
 

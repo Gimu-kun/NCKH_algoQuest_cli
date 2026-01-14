@@ -29,7 +29,11 @@ export const DUNGEON_1_TEMPLE: DungeonData = {
     displayName: 'Đền Thờ Hướng Dẫn',
     description: 'Học các nền tảng của độ phức tạp thuật toán và Big O.',
     lore: 'Mảnh vỡ đầu tiên của Mạng Lưới Logic nằm ở đây, được canh giữ bởi các cấu trúc sơ cấp.',
+<<<<<<< HEAD
+    background: '/assets/Ảnh Assets/Mở Đầu Sự Sụp Đổ (The Shattering).png',
+=======
     background: '/src/assets/Ảnh Assets/Mở Đầu Sự Sụp Đổ (The Shattering).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     monsters: {
         minions: [
@@ -41,10 +45,17 @@ export const DUNGEON_1_TEMPLE: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 1,
                 sprite: {
+<<<<<<< HEAD
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Death).png'
+=======
                     idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png',
                     attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Attack).png',
                     hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Hurt).png',
                     death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 100, difficulty: 1 },
                 attackPattern: {
@@ -67,10 +78,17 @@ export const DUNGEON_1_TEMPLE: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 1,
                 sprite: {
+<<<<<<< HEAD
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Death).png'
+=======
                     idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Idle).png',
                     attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Attack).png',
                     hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Hurt).png',
                     death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 2 (U) Syntax Bat (Quái Biến Thể)/Syntax Bat (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 150, difficulty: 2 },
                 attackPattern: {
@@ -95,10 +113,17 @@ export const DUNGEON_1_TEMPLE: DungeonData = {
                 type: MonsterType.ELITE,
                 chapter: 1,
                 sprite: {
+<<<<<<< HEAD
+                    idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Idle).png',
+                    attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Attack).png',
+                    hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Hurt).png',
+                    death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Death).png'
+=======
                     idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Idle).png',
                     attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Attack).png',
                     hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Hurt).png',
                     death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 3 (AP) Rune Golem (Quái Tinh Anh)/Rune Golem (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 250, difficulty: 4 },
                 attackPattern: {
@@ -124,10 +149,17 @@ export const DUNGEON_1_TEMPLE: DungeonData = {
             type: MonsterType.BOSS,
             chapter: 1,
             sprite: {
+<<<<<<< HEAD
+                idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png',
+                attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Attack).png',
+                hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Hurt).png',
+                death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Death).png'
+=======
                 idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png',
                 attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Attack).png',
                 hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Hurt).png',
                 death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
             },
             stats: { health: 500, difficulty: 7 },
             attackPattern: {

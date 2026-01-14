@@ -49,10 +49,17 @@ export const Toast: React.FC = () => {
     // Helper: Lấy icon dựa trên loại thông báo
     const getIcon = (type: string) => {
         switch (type) {
+<<<<<<< HEAD
+            case 'success': return <i className="fi fi-rr-check-circle"></i>;
+            case 'error': return <i className="fi fi-rr-cross-circle"></i>;
+            case 'reward': return <i className="fi fi-rr-gift"></i>;
+            case 'info': default: return <i className="fi fi-rr-info"></i>;
+=======
             case 'success': return '✅';
             case 'error': return '❌';
             case 'reward': return '🎁';
             case 'info': default: return 'ℹ️';
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         }
     };
 

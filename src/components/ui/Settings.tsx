@@ -29,6 +29,22 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
+<<<<<<< HEAD
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useGameStore } from '../../store/gameStore';
+import './Settings.css';
+import { AudioSettings } from './settings/AudioSettings';
+import { ControlSettings } from './settings/ControlSettings';
+import { DisplaySettings } from './settings/DisplaySettings';
+import { MenuActions } from './settings/MenuActions';
+
+export const Settings: React.FC = () => {
+    const { menuOpen, toggleMenu } = useGameStore();
+
+    if (!menuOpen) return null;
+
+=======
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
@@ -73,6 +89,7 @@ export const Settings: React.FC = () => {
 
     const keyBindings = inputManager.getBindings();
 
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     return (
         <div className="settings-overlay" onClick={toggleMenu}>
             <AnimatePresence>
@@ -83,13 +100,28 @@ export const Settings: React.FC = () => {
                     exit={{ scale: 0.9, opacity: 0 }}
                     onClick={(e) => e.stopPropagation()}
                 >
+<<<<<<< HEAD
+                    {/* Header */}
+                    <div className="settings-header">
+                        <h2><i className="fi fi-rr-settings"></i>Cài Đặt</h2>
+=======
                     {/* Tiêu Đề (Header) */}
                     <div className="settings-header">
                         <h2><i className="fi fi-rr-settings"></i> Cài Đặt</h2>
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <button className="btn-close" onClick={toggleMenu}><i className="fi fi-rr-cross"></i></button>
                     </div>
 
                     <div className="settings-content">
+<<<<<<< HEAD
+                        <AudioSettings />
+                        <ControlSettings />
+                        <DisplaySettings />
+                        <MenuActions onClose={toggleMenu} />
+                    </div>
+
+                    {/* Footer */}
+=======
                         {/* Cài Đặt Âm Thanh (Audio Settings) */}
                         <div className="setting-group">
                             <h3><i className="fi fi-rr-volume"></i> Âm Thanh</h3>
@@ -225,6 +257,7 @@ export const Settings: React.FC = () => {
                     </div>
 
                     {/* Chân Trang (Footer) */}
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     <div className="settings-footer">
                         <p>Algorithm Wizard v0.1.0 • Build 20250101</p>
                     </div>
@@ -233,3 +266,7 @@ export const Settings: React.FC = () => {
         </div>
     );
 };
+<<<<<<< HEAD
+
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b

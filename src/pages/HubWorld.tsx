@@ -32,9 +32,13 @@ export const HubWorld: React.FC = () => {
     const { setScene, enterDungeon, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
 
     // Handler Actions
+<<<<<<< HEAD
+
+=======
     const handleEnterDungeon = () => {
         enterDungeon('dungeon_1'); // Mặc định vào Dungeon 1
     };
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     const handleTestCombat = () => {
         setScene(GameScene.COMBAT); // Test mode combat
@@ -51,7 +55,11 @@ export const HubWorld: React.FC = () => {
             <div
                 className="hub-background"
                 style={{
+<<<<<<< HEAD
+                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/Ảnh Assets/Hub World Concept.png)'
+=======
                     backgroundImage: theme === 'light' ? 'none' : 'url(/src/assets/Ảnh Assets/Hub World Concept.png)'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 }}
             />
 
@@ -80,7 +88,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('ALRIC')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png" alt="Professor Alric" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png" alt="Professor Alric" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Giáo sư Alric</h3>
                         <p>Nhiệm Vụ Chiến Dịch</p>
                         <span className="quest-marker">!</span>
@@ -92,7 +104,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('LINH')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png" alt="Linh" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png" alt="Linh" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Linh</h3>
                         <p>Huấn Luyện & Thư Viện</p>
                     </motion.div>
@@ -103,7 +119,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('BORK')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png" alt="Bork" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png" alt="Bork" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Bork</h3>
                         <p>Cửa Hàng & Trang Trí</p>
                     </motion.div>
@@ -114,7 +134,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('GUILD_LEADER')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png" alt="Guild Leader" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png" alt="Guild Leader" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Chủ Guild</h3>
                         <p>Nhiệm Vụ Đa Người Chơi</p>
                     </motion.div>
@@ -125,7 +149,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('ORACLE')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Idle).png" alt="Oracle" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png" alt="Oracle" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Nhà Tiên Tri</h3>
                         <p>Sự Kiện Trùm</p>
                     </motion.div>
@@ -136,7 +164,11 @@ export const HubWorld: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         onClick={() => openDialogue('BOOKKEEPER')}
                     >
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Idle).png" alt="Bookkeeper" />
+=======
                         <img src="/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png" alt="Bookkeeper" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <h3>Kẻ Giữ Sách</h3>
                         <p>Bảng Xếp Hạng</p>
                     </motion.div>
@@ -164,8 +196,28 @@ export const HubWorld: React.FC = () => {
                 {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
                     <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
+<<<<<<< HEAD
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_1')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 1 (Intro)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_2')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 2 (Sort)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_3')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 3 (Linked List)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_4')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 4 (Stack/Queue)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_5')}>
+                        <i className="fi fi-rr-sword"></i> Vào Ải 5 (BST)
+                    </button>
+                    <button className="test-btn" onClick={() => enterDungeon('dungeon_7')}>
+                        <i className="fi fi-rr-skull"></i> ẢI FINAL (Void Core)
+=======
                     <button className="test-btn" onClick={handleEnterDungeon}>
                         <i className="fi fi-rr-sword"></i> Vào Hầm Ngục 1
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     </button>
                     <button className="test-btn" onClick={handleTestCombat}>
                         <i className="fi fi-rr-bullseye"></i> Thử Nghiệm Chiến Đấu
@@ -190,7 +242,11 @@ export const HubWorld: React.FC = () => {
                 }}
             >
                 <img
+<<<<<<< HEAD
+                    src="/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+=======
                     src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     alt="Sparky"
                 />
             </motion.div>

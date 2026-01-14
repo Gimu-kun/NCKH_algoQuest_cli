@@ -47,19 +47,42 @@ export const HUD: React.FC = () => {
             <div className="hud-panel hud-player-info">
                 <div className="player-avatar">
                     <img
+<<<<<<< HEAD
+                        src="/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
+=======
                         src="/src/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         alt={name}
                     />
                 </div>
                 <div className="player-details">
                     <h3>{name}</h3>
+<<<<<<< HEAD
+                    <div className="level-badge">{level}</div>
+=======
                     <div className="level-badge">Cấp {level}</div>
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </div>
             </div>
 
             {/* === GÓC TRÊN PHẢI: TÀI NGUYÊN === */}
             <div className="hud-panel hud-resources">
                 <div className="resource-item" title="Gỗ Dữ Liệu">
+<<<<<<< HEAD
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png" alt="Data-Wood" />
+                    <span>{resources[ResourceType.DATA_WOOD]}</span>
+                </div>
+                <div className="resource-item" title="Đá Logic">
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Logic-Stone.png" alt="Logic-Stone" />
+                    <span>{resources[ResourceType.LOGIC_STONE]}</span>
+                </div>
+                <div className="resource-item" title="Điểm O (Năng lượng)">
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/O-Point.png" alt="O-Points" />
+                    <span>{resources[ResourceType.O_POINTS]}</span>
+                </div>
+                <div className="resource-item" title="Vàng">
+                    <img src="/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
+=======
                     <img src="/src/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png" alt="Data-Wood" />
                     <span>{resources[ResourceType.DATA_WOOD]}</span>
                 </div>
@@ -73,6 +96,7 @@ export const HUD: React.FC = () => {
                 </div>
                 <div className="resource-item" title="Vàng">
                     <img src="/src/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     <span>{resources[ResourceType.GOLD]}</span>
                 </div>
             </div>
@@ -87,7 +111,11 @@ export const HUD: React.FC = () => {
                                 <div className="spell-icon-frame">
                                     {/* Placeholder icon, replace with specific spell icon later */}
                                     <img
+<<<<<<< HEAD
+                                        src={`/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
+=======
                                         src={`/src/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                                         alt="Spell Slot"
                                     />
                                     <span className="hotkey">{index + 1}</span>
@@ -111,7 +139,11 @@ export const HUD: React.FC = () => {
                     onClick={toggleInventory}
                     title="Túi Đồ (B)"
                 >
+<<<<<<< HEAD
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
+=======
                     <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </motion.button>
 
                 <motion.button
@@ -121,7 +153,11 @@ export const HUD: React.FC = () => {
                     title="Bản Đồ (M) - Chưa mở"
                     style={{ opacity: 0.5, cursor: 'not-allowed' }}
                 >
+<<<<<<< HEAD
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
+=======
                     <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </motion.button>
 
                 <motion.button
@@ -131,7 +167,11 @@ export const HUD: React.FC = () => {
                     onClick={toggleQuests}
                     title="Nhiệm Vụ (Q)"
                 >
+<<<<<<< HEAD
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
+=======
                     <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </motion.button>
 
                 <motion.button
@@ -141,7 +181,11 @@ export const HUD: React.FC = () => {
                     onClick={toggleMenu}
                     title="Cài Đặt / Menu (ESC)"
                 >
+<<<<<<< HEAD
+                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
+=======
                     <img src="/src/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </motion.button>
             </div>
 
@@ -155,12 +199,20 @@ export const HUD: React.FC = () => {
                 >
                     <div className="sparky-avatar">
                         <img
+<<<<<<< HEAD
+                            src="/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+=======
                             src="/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png"
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                             alt="Sparky"
                         />
                     </div>
                     <div className="sparky-bubble">
+<<<<<<< HEAD
+                        <img src="/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
+=======
                         <img src="/src/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         <p>{sparkyMessage}</p>
                     </div>
                 </motion.div>

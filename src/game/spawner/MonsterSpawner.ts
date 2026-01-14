@@ -37,6 +37,12 @@ import type { DungeonData } from '../../data/models/Dungeon';
 import { DUNGEON_1_TEMPLE } from '../../data/dungeons/dungeon1-data';
 import { DUNGEON_2_CHAOS } from '../../data/dungeons/dungeon2-data';
 import { DUNGEON_3_CHAINED } from '../../data/dungeons/dungeon3-data';
+<<<<<<< HEAD
+import { DUNGEON_4_RELIC } from '../../data/dungeons/dungeon4-data';
+import { DUNGEON_5_FOREST } from '../../data/dungeons/dungeon5-data';
+import { DUNGEON_7_FINAL } from '../../data/dungeons/dungeon7-data';
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -59,6 +65,18 @@ const DUNGEON_DATA_MAP: Record<string, DungeonData> = {
 
     'dungeon_3': DUNGEON_3_CHAINED,
     'chained_corridor': DUNGEON_3_CHAINED,
+<<<<<<< HEAD
+
+    'dungeon_4': DUNGEON_4_RELIC,
+    'two_faced_relic': DUNGEON_4_RELIC,
+
+    'dungeon_5': DUNGEON_5_FOREST,
+    'recursive_forest': DUNGEON_5_FOREST,
+
+    'dungeon_7': DUNGEON_7_FINAL,
+    'void_core': DUNGEON_7_FINAL,
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 };
 
 /**

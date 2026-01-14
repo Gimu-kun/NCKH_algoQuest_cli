@@ -31,12 +31,98 @@ import { QuestTracker } from './components/quests/QuestTracker';
 import { Settings } from './components/ui/Settings';
 import { SparkyGuide } from './components/ui/SparkyGuide';
 import { ShopInterface } from './components/ui/ShopInterface';
+<<<<<<< HEAD
+import { Inventory } from './components/ui/Inventory';
+import './App.css';
+
+import { useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AlgoLab } from './pages/AlgoLab';
+
+// Định nghĩa Mapping ngoài Component
+const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
+  [GameScene.MAIN_MENU]: '/',
+  [GameScene.HUB_WORLD]: '/hub',
+  [GameScene.COMBAT]: '/combat',
+  [GameScene.LOGIC_FARM]: '/farm',
+  [GameScene.SHOP]: '/shop',
+  [GameScene.ACHIEVEMENTS]: '/achievements',
+  [GameScene.LEADERBOARDS]: '/leaderboards',
+  [GameScene.ALGO_LAB]: '/lab',
+};
+
+function App() {
+  const { currentScene, currentDungeonId, endCombat, theme, combat } = useGameStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+
+  // Sync URL -> Store (Precedence on Load / Back Button)
+  // Sync URL -> Store (Deep Linking) - DISABLED TEMPORARILY
+  /*
+  useEffect(() => {
+    // 1. Check for specific dungeon path: /dungeon/:id
+    if (location.pathname.startsWith('/dungeon/')) {
+      const dungeonId = location.pathname.split('/')[2];
+      if (dungeonId) {
+        if (currentScene !== GameScene.DUNGEON || currentDungeonId !== dungeonId) {
+          // Force entry on load/URL change
+          enterDungeon(dungeonId);
+        }
+      }
+    }
+    // 2. Check logic bình thường cho các scene khác
+    else {
+      const entry = Object.entries(SCENE_TO_PATH).find(([, path]) => path === location.pathname);
+      if (entry) {
+        const scene = entry[0] as GameScene;
+        // Chỉ update nếu khác state hiện tại
+        if (currentScene !== scene) {
+          setScene(scene);
+        }
+      }
+    }
+  }, [location.pathname, currentScene, currentDungeonId, enterDungeon, setScene]); 
+  */
+
+  // Sync Store -> URL (Game Logic Navigation)
+  // Chỉ chạy khi state thay đổi, nhưng bỏ qua lần đầu (do URL load)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (currentScene === GameScene.DUNGEON) {
+      const dungeonPath = `/dungeon/${currentDungeonId || 'dungeon_1'}`;
+      // Normalize paths to prevent loops (e.g. trailing slashes)
+      const currentPath = location.pathname.replace(/\/+$/, '');
+      const targetPath = dungeonPath.replace(/\/+$/, '');
+
+      if (currentPath !== targetPath) {
+        console.log(`[App] Syncing URL: ${currentPath} -> ${targetPath}`);
+        navigate(targetPath, { replace: true });
+      }
+    } else {
+      const path = SCENE_TO_PATH[currentScene];
+      if (path) {
+        const currentPath = location.pathname.replace(/\/+$/, '');
+        const targetPath = path.replace(/\/+$/, '');
+
+        if (currentPath !== targetPath) {
+          navigate(targetPath, { replace: true });
+        }
+      }
+    }
+  }, [currentScene, currentDungeonId, navigate, location.pathname]);
+=======
 import './App.css';
 
 import { useEffect } from 'react';
 
 function App() {
   const { currentScene, endCombat, theme, combat } = useGameStore();
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
   // Áp dụng lớp giao diện (Theme Class)
   useEffect(() => {
@@ -56,13 +142,21 @@ function App() {
       [GameScene.DUNGEON]: '/assets/audio/bgm_dungeon.mp3',
       [GameScene.COMBAT]: '/assets/audio/bgm_combat.mp3',
       [GameScene.SHOP]: '/assets/audio/bgm_shop.mp3',
+<<<<<<< HEAD
+      [GameScene.ALGO_LAB]: '/assets/audio/bgm_hub.mp3',
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     };
 
     const track = bgmMap[currentScene];
     if (track) {
       import('./game/audio/AudioManager').then(({ audioManager }) => {
         audioManager.playBGM(track);
+<<<<<<< HEAD
+      }).catch(e => console.warn('Audio system failed to load:', e));
+=======
       });
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     }
   }, [currentScene]);
 
@@ -100,6 +194,12 @@ function App() {
       case GameScene.LEADERBOARDS:
         return <Leaderboards />;
 
+<<<<<<< HEAD
+      case GameScene.ALGO_LAB:
+        return <AlgoLab />;
+
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
       default:
         return <MainMenu />;
     }
@@ -116,6 +216,10 @@ function App() {
 
       <SparkyGuide />
       <Settings />
+<<<<<<< HEAD
+      <Inventory />
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     </div>
   );
 }
