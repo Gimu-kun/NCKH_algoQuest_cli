@@ -29,7 +29,11 @@ export const DUNGEON_2_CHAOS: DungeonData = {
     displayName: 'Đền Thờ Hỗn Loạn',
     description: 'Làm chủ các thuật toán tìm kiếm và sắp xếp trong sự hỗn loạn.',
     lore: 'Mảnh vỡ thứ hai nằm trong ngôi đền nơi trật tự đã bị biến chất thành hỗn mang.',
+<<<<<<< HEAD
     background: '/assets/Ảnh Assets/Main Menu Background.png', // Background tạm thời
+=======
+    background: '/src/assets/Ảnh Assets/Main Menu Background.png', // Background tạm thời
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     monsters: {
         minions: [
@@ -41,10 +45,17 @@ export const DUNGEON_2_CHAOS: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 2,
                 sprite: {
+<<<<<<< HEAD
                     idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Idle).png',
                     attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Attack).png',
                     hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Hurt).png',
                     death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Death).png'
+=======
+                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Idle).png',
+                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Attack).png',
+                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Hurt).png',
+                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 1 (R) Unsorted Book (Quái Thường)/Unsorted Book (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 120, difficulty: 2 },
                 attackPattern: {
@@ -64,10 +75,17 @@ export const DUNGEON_2_CHAOS: DungeonData = {
                 type: MonsterType.MINION,
                 chapter: 2,
                 sprite: {
+<<<<<<< HEAD
                     idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Idle).png',
                     attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Attack).png',
                     hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Hurt).png',
                     death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Death).png'
+=======
+                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Idle).png',
+                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Attack).png',
+                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Hurt).png',
+                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 2 (U) Index Spider (Quái Biến Thể)/Index Spider (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 170, difficulty: 3 },
                 attackPattern: {
@@ -89,10 +107,17 @@ export const DUNGEON_2_CHAOS: DungeonData = {
                 type: MonsterType.ELITE,
                 chapter: 2,
                 sprite: {
+<<<<<<< HEAD
                     idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Idle).png',
                     attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Attack).png',
                     hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Hurt).png',
                     death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Death).png'
+=======
+                    idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Idle).png',
+                    attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Attack).png',
+                    hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Hurt).png',
+                    death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 3 (AP) Binary Sentry (Quái Tinh Anh)/Binary Sentry (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 },
                 stats: { health: 300, difficulty: 5 },
                 attackPattern: {
@@ -114,10 +139,17 @@ export const DUNGEON_2_CHAOS: DungeonData = {
             type: MonsterType.BOSS,
             chapter: 2,
             sprite: {
+<<<<<<< HEAD
                 idle: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Idle).png',
                 attack: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Attack).png',
                 hurt: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Hurt).png',
                 death: '/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Death).png'
+=======
+                idle: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Idle).png',
+                attack: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Attack).png',
+                hurt: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Hurt).png',
+                death: '/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 2 ĐỀN THỜ HỖN LOẠN (CHƯƠNG 2)/Tier 4 (AN) The Chaotic Boss (Boss)/The Chaotic Boss (Death).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
             },
             stats: { health: 600, difficulty: 8 },
             attackPattern: {

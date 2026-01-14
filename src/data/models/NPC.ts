@@ -103,8 +103,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Giáo sư thông thái dẫn dắt hành trình của bạn qua 6 chương.',
         location: { x: 400, y: 300, zone: 'CENTRAL_PLAZA' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -117,7 +122,11 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
                 text: 'Hãy bắt đầu hành trình tại Đền Thờ Hướng Dẫn. Học các nền tảng của tư duy thuật toán.',
             }
         ],
+<<<<<<< HEAD
         features: ['CAMPAIGN_QUESTS', 'SELECT_DUNGEON']
+=======
+        features: ['CAMPAIGN_QUESTS']
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     },
 
     SPARKY: {
@@ -128,8 +137,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Một mảnh vỡ AI của Lõi Logic đã vỡ, trợ lý ML cá nhân của bạn.',
         location: { x: 0, y: -50, zone: 'FOLLOWS_PLAYER' }, // Bay phía trên người chơi
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Alert).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Normal).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Sparky/Sparky (Alert).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -152,8 +166,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Người bảo vệ Thư Viện Vô Tận, quản lý huấn luyện và nội dung người dùng.',
         location: { x: 200, y: 500, zone: 'LIBRARY' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Linh (The Archivist).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -161,7 +180,11 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
                 text: 'Chào mừng đến với Thư Viện Vô Tận. Tại đây bạn có thể luyện tập bất kỳ chủ đề nào hoặc tạo nội dung của riêng mình.',
             }
         ],
+<<<<<<< HEAD
         features: ['TRAINING_AREA', 'ALGO_LAB', 'UGC', 'QUESTION_CRAFTER', 'TEST_CRAFTER']
+=======
+        features: ['TRAINING_AREA', 'UGC', 'QUESTION_CRAFTER', 'TEST_CRAFTER']
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     },
 
     BORK: {
@@ -172,8 +195,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Thợ rèn cộc cằn chuyên bán đồ trang trí và trang phục.',
         location: { x: 600, y: 400, zone: 'FORGE' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -195,8 +223,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Quản lý các hoạt động nhiều người chơi và nhiệm vụ hàng ngày.',
         location: { x: 500, y: 200, zone: 'ARENA' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Thur Lĩnh Guild (The Guild Leader).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -215,8 +248,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Thông báo các sự kiện trùm và thử thách thế giới.',
         location: { x: 400, y: 100, zone: 'OBSERVATORY' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {
@@ -235,8 +273,13 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         description: 'Duy trì bảng xếp hạng và hồ sơ thành tựu.',
         location: { x: 300, y: 600, zone: 'HALL_OF_FAME' },
         sprite: {
+<<<<<<< HEAD
             idle: '/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Idle).png',
             talk: '/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Talk).png'
+=======
+            idle: '/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png',
+            talk: '/src/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper).png'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         },
         dialogues: [
             {

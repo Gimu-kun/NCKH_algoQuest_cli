@@ -22,7 +22,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
+<<<<<<< HEAD
 import { ASSETS } from '../../data/AssetPaths';
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 import './MainMenu.css';
 
 export const MainMenu: React.FC = () => {
@@ -65,7 +68,11 @@ export const MainMenu: React.FC = () => {
             <div
                 className="menu-background"
                 style={{
+<<<<<<< HEAD
                     backgroundImage: theme === 'light' ? 'none' : `url('${ASSETS.BACKGROUNDS.MAIN_MENU}')`
+=======
+                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/images/Main Menu Background.png)'
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 }}
             />
 
@@ -76,7 +83,11 @@ export const MainMenu: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1 }}
             >
+<<<<<<< HEAD
                 <img src={ASSETS.LOGO} alt="Algorithm Wizard" />
+=======
+                <img src="/assets/images/Game Logo.png" alt="Algorithm Wizard" />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 <h1><i className="fi fi-rr-magic-wand"></i> Pháp Sư Thuật Toán</h1>
                 <p className="subtitle">Algorithm Wizard</p>
             </motion.div>
@@ -121,6 +132,7 @@ export const MainMenu: React.FC = () => {
                     className="menu-btn menu-btn-secondary"
                     whileHover={{ scale: 1.05, x: 10 }}
                     whileTap={{ scale: 0.95 }}
+<<<<<<< HEAD
                     onClick={() => setScene(GameScene.ALGO_LAB)}
                 >
                     <i className="fi fi-rr-flask"></i> Phòng Thí Nghiệm
@@ -130,6 +142,8 @@ export const MainMenu: React.FC = () => {
                     className="menu-btn menu-btn-secondary"
                     whileHover={{ scale: 1.05, x: 10 }}
                     whileTap={{ scale: 0.95 }}
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     onClick={handleSettings}
                 >
                     <i className="fi fi-rr-settings"></i> Cài Đặt
@@ -156,7 +170,11 @@ export const MainMenu: React.FC = () => {
                 }}
             >
                 <img
+<<<<<<< HEAD
                     src={ASSETS.CHARACTERS.SPARKY_NORMAL}
+=======
+                    src="/assets/images/Nhân vật/Sparky/Sparky Normal.png"
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     alt="Sparky"
                     style={{ width: '80px' }}
                 />

@@ -104,9 +104,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Kiểm tra xem mảng có được sắp xếp tăng dần không.',
         category: SpellCategory.SORTING,
         chapter: 1,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.CHECK,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Phép Tìm Kiếm (Search Scan - Yellow).png',
+=======
+        icon: '/assets/images/spells/is_increasing.png',
+        animation: AnimationType.CHECK,
+        vfxSprite: '/assets/images/vfx/Phép Tìm Kiếm (Search Scan - Yellow).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch1_isIncreasing',
         manaCost: 10,
         combatType: 'BUFF',
@@ -126,9 +132,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Sắp xếp các viên đá bằng cách hoán đổi các cặp liền kề.',
         category: SpellCategory.SORTING,
         chapter: 2,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.SWAP,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Hiệu Ứng Phép Thuật (SuccessActive Spells).png',
+=======
+        icon: '/assets/images/spells/bubble_sort.png',
+        animation: AnimationType.SWAP,
+        vfxSprite: '/assets/images/vfx/Hiệu Ứng Phép Thuật (SuccessActive Spells).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch2_bubbleSort',
         manaCost: 25,
         combatType: 'ATTACK',
@@ -147,9 +159,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Tìm cuốn sách trong thư viện đã sắp xếp một cách hiệu quả.',
         category: SpellCategory.SEARCHING,
         chapter: 2,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.SCAN,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Phép Tìm Kiếm (Search Scan - Yellow).png',
+=======
+        icon: '/assets/images/spells/binary_search.png',
+        animation: AnimationType.SCAN,
+        vfxSprite: '/assets/images/vfx/Phép Tìm Kiếm (Search Scan - Yellow).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch2_binarySearch',
         manaCost: 20,
         combatType: 'ATTACK',
@@ -169,9 +187,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Đảo ngược chuỗi danh sách liên kết.',
         category: SpellCategory.LIST_MANIPULATION,
         chapter: 3,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.TRANSFORM,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Phép Cấu Trúc (LinkedTree - Green).png',
+=======
+        icon: '/assets/images/spells/reverse_list.png',
+        animation: AnimationType.TRANSFORM,
+        vfxSprite: '/assets/images/vfx/Phép Cấu Trúc (LinkedTree - Green).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch3_reverseList',
         manaCost: 30,
         combatType: 'HEAL',
@@ -191,9 +215,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Kiểm tra xem các dấu ngoặc có cân bằng không bằng ngăn xếp (stack).',
         category: SpellCategory.STACK_QUEUE,
         chapter: 4,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.CHECK,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Phép Tìm Kiếm (Search Scan - Yellow).png',
+=======
+        icon: '/assets/images/spells/is_balanced.png',
+        animation: AnimationType.CHECK,
+        vfxSprite: '/assets/images/vfx/Phép Tìm Kiếm (Search Scan - Yellow).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch4_isBalanced',
         manaCost: 20,
         combatType: 'BUFF',
@@ -213,9 +243,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Chèn một nút vào cây tìm kiếm nhị phân (BST).',
         category: SpellCategory.TREE_OPERATION,
         chapter: 5,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.INSERT,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Phép Cấu Trúc (LinkedTree - Green).png',
+=======
+        icon: '/assets/images/spells/insert_bst.png',
+        animation: AnimationType.INSERT,
+        vfxSprite: '/assets/images/vfx/Phép Cấu Trúc (LinkedTree - Green).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch5_insertBST',
         manaCost: 35,
         combatType: 'ATTACK',
@@ -235,9 +271,15 @@ export const SPELLS: Record<string, SpellData> = {
         description: 'Chèn vào bảng băm với xử lý va chạm.',
         category: SpellCategory.HASH_TABLE,
         chapter: 6,
+<<<<<<< HEAD
         icon: '/assets/Ảnh Assets/UI/Skill Icon Frame.png',
         animation: AnimationType.INSERT,
         vfxSprite: '/assets/Ảnh Assets/VFX Demo/Hiệu Ứng Phép Thuật (SuccessActive Spells).png',
+=======
+        icon: '/assets/images/spells/hash_insert.png',
+        animation: AnimationType.INSERT,
+        vfxSprite: '/assets/images/vfx/Hiệu Ứng Phép Thuật (SuccessActive Spells).png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         unlockQuestion: 'prog_ch6_hashInsert',
         manaCost: 40,
         combatType: 'ATTACK',

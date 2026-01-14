@@ -22,8 +22,11 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
+<<<<<<< HEAD
 import { ASSETS } from './AssetPaths';
 
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 export enum AchievementCategory {
     DUNGEON = 'DUNGEON',       // Thám hiểm hầm ngục
     COMBAT = 'COMBAT',         // Chiến đấu
@@ -61,7 +64,10 @@ export interface Achievement {
 }
 
 // Định nghĩa Danh sách Thành Tựu
+<<<<<<< HEAD
 
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 export const ACHIEVEMENTS: Record<string, Achievement> = {
     FIRST_STEPS: {
         id: 'first_steps',
@@ -69,7 +75,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '🎓 Bước Đầu Tiên',
         description: 'Hoàn thành Dungeon đầu tiên.',
         category: AchievementCategory.DUNGEON,
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_QUEST,
+=======
+        icon: '/assets/images/achievements/first_steps.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'COMMON',
         hidden: false,
         criteria: {
@@ -88,7 +98,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '⚡ Tốc Hành Gia',
         description: 'Hoàn thành dungeon dưới 5 phút.',
         category: AchievementCategory.COMBAT,
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_MAP,
+=======
+        icon: '/assets/images/achievements/speedrunner.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'RARE',
         hidden: false,
         criteria: {
@@ -109,7 +123,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '💯 Người Hoàn Hảo',
         description: 'Đánh bại boss với độ chính xác 100%.',
         category: AchievementCategory.COMBAT,
+<<<<<<< HEAD
         icon: ASSETS.UI.SKILL_FRAME,
+=======
+        icon: '/assets/images/achievements/perfect.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'EPIC',
         hidden: false,
         criteria: {
@@ -131,7 +149,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '🧙 Đại Pháp Sư',
         description: 'Viết giải pháp với độ phức tạp tối ưu O(log n) hoặc tốt hơn.',
         category: AchievementCategory.CODE,
+<<<<<<< HEAD
         icon: ASSETS.UI.CODING_CONSOLE,
+=======
+        icon: '/assets/images/achievements/code_wizard.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'LEGENDARY',
         hidden: false,
         criteria: {
@@ -153,7 +175,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '📚 Nhà Sưu Tầm',
         description: 'Mở khóa 10 phép thuật khác nhau.',
         category: AchievementCategory.COLLECTION,
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_BAG,
+=======
+        icon: '/assets/images/achievements/collector.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'RARE',
         hidden: false,
         criteria: {
@@ -172,7 +198,11 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
         displayName: '👁️ ???', // Tên ẩn
         description: 'Đánh bại Kẻ Tham Nhũng mà không dùng bất kỳ gợi ý nào.',
         category: AchievementCategory.HIDDEN,
+<<<<<<< HEAD
         icon: ASSETS.LOGO,
+=======
+        icon: '/assets/images/achievements/hidden.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'LEGENDARY',
         hidden: true,
         criteria: {
@@ -207,7 +237,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'apprentice',
         displayName: '🎓 Học Viên',
         description: 'Hoàn thành dungeon đầu tiên.',
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_QUEST,
+=======
+        icon: '/assets/images/badges/apprentice.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'COMMON',
         unlockedBy: 'first_steps'
     },
@@ -217,7 +251,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'speedrunner',
         displayName: '⚡ Tốc Hành',
         description: 'Bậc thầy tốc độ.',
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_MAP,
+=======
+        icon: '/assets/images/badges/speedrunner.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'RARE',
         unlockedBy: 'speedrunner'
     },
@@ -227,7 +265,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'perfectionist',
         displayName: '💯 Hoàn Hảo',
         description: 'Thực thi không tì vết.',
+<<<<<<< HEAD
         icon: ASSETS.UI.SKILL_FRAME,
+=======
+        icon: '/assets/images/badges/perfectionist.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'EPIC',
         unlockedBy: 'perfectionist'
     },
@@ -237,7 +279,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'grandmaster',
         displayName: '🧙 Đại Pháp Sư',
         description: 'Huyền thoại của giới thuật toán.',
+<<<<<<< HEAD
         icon: ASSETS.UI.CODING_CONSOLE,
+=======
+        icon: '/assets/images/badges/grandmaster.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'LEGENDARY',
         unlockedBy: 'code_wizard'
     },
@@ -247,7 +293,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'collector',
         displayName: '📚 Sưu Tầm',
         description: 'Người đam mê sưu tập phép thuật.',
+<<<<<<< HEAD
         icon: ASSETS.UI.BUTTON_BAG,
+=======
+        icon: '/assets/images/badges/collector.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'RARE',
         unlockedBy: 'spell_collector'
     },
@@ -257,7 +307,11 @@ export const BADGES: Record<string, Badge> = {
         name: 'hiddenMaster',
         displayName: '👁️ Bí Mật',
         description: 'Bậc thầy của những lối đi ẩn.',
+<<<<<<< HEAD
         icon: ASSETS.LOGO,
+=======
+        icon: '/assets/images/badges/hidden.png',
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         rarity: 'LEGENDARY',
         unlockedBy: 'hidden_master'
     }

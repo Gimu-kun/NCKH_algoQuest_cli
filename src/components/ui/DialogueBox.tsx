@@ -31,8 +31,11 @@ export const DialogueBox: React.FC = () => {
     // State cục bộ để theo dõi dòng hội thoại hiện tại
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
 
+<<<<<<< HEAD
     const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
 
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     // Không hiển thị nếu chưa kích hoạt hội thoại
     if (!dialogueOpen || !dialogueNPC) return null;
 
@@ -74,6 +77,7 @@ export const DialogueBox: React.FC = () => {
      */
     const handleClose = () => {
         setCurrentDialogueIndex(0);
+<<<<<<< HEAD
         setIsSelectingDungeon(false); // Reset state chọn ải
         closeDialogue();
     };
@@ -304,6 +308,41 @@ export const DialogueBox: React.FC = () => {
             // ───────────────────────────────────────────────────────────────────
             default:
                 useGameStore.getState().showSparky(`⚠️ Tính năng "${feature}" đang được phát triển!`);
+=======
+        closeDialogue();
+    };
+
+    // Xử lý sự kiện khi nhấn nút tính năng
+    const handleFeatureClick = (feature: string) => {
+        closeDialogue(); // Đóng hội thoại trước khi chuyển cảnh
+
+        switch (feature) {
+            case 'SHOP':
+                useGameStore.getState().setScene(GameScene.SHOP);
+                break;
+            case 'CAMPAIGN_QUESTS':
+                const questId = 'quest_intro_1'; // Nhiệm vụ khởi đầu
+                const { activeQuests, completedQuests, startQuest } = usePlayerStore.getState();
+
+                if (completedQuests.includes(questId)) {
+                    useGameStore.getState().showSparky('Bạn đã hoàn thành nhiệm vụ này rồi! Tuyệt vời!');
+                } else if (activeQuests.includes(questId)) {
+                    useGameStore.getState().showSparky('Bạn đang thực hiện nhiệm vụ này. Hãy kiểm tra Sổ Tay (Q)!');
+                } else {
+                    startQuest(questId);
+                    useGameStore.getState().showSparky('📜 Đã nhận nhiệm vụ: Khởi Đầu Hành Trình!');
+                }
+                break;
+            case 'TRAINING_AREA':
+                // useGameStore.getState().setScene(GameScene.LOGIC_FARM);
+                useGameStore.getState().showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.');
+                break;
+            case 'MULTIPLAYER':
+                useGameStore.getState().setScene(GameScene.LEADERBOARDS);
+                break;
+            default:
+                useGameStore.getState().showSparky('Tính năng này đang được phát triển!');
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         }
     };
 
@@ -312,6 +351,7 @@ export const DialogueBox: React.FC = () => {
             <AnimatePresence>
                 <motion.div
                     className="dialogue-box"
+<<<<<<< HEAD
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 50, opacity: 0 }}
@@ -325,10 +365,24 @@ export const DialogueBox: React.FC = () => {
                     {/* === HEADER (NAME & ROLE) === */}
                     <div className="dialogue-header">
                         <h3>{npc.displayName}</h3>
+=======
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 100, opacity: 0 }}
+                    transition={{ type: 'spring', damping: 25 }}
+                >
+                    {/* === CHÂN DUNG NPC === */}
+                    <div className="dialogue-portrait">
+                        <img
+                            src={npc.sprite.talk}
+                            alt={npc.displayName}
+                        />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     </div>
 
                     {/* === NỘI DUNG HỘI THOẠI === */}
                     <div className="dialogue-content">
+<<<<<<< HEAD
 
                         {/* HIỂN THỊ TEXT (Chỉ hiện khi KHÔNG chọn ải) */}
                         {!isSelectingDungeon && (
@@ -485,6 +539,63 @@ export const DialogueBox: React.FC = () => {
                         </div>
                     </div>
 
+=======
+                        {/* Header: Tên & Vai Trò */}
+                        <div className="dialogue-header">
+                            <h3>{npc.displayName}</h3>
+                            <span className="dialogue-role">{npc.description}</span>
+                        </div>
+
+                        {/* Văn Bản Chính */}
+                        <div className="dialogue-text">
+                            <p>{currentDialogue.text}</p>
+                        </div>
+
+                        {/* Các Nút Điều Hướng */}
+                        <div className="dialogue-actions">
+                            {/* Nút Skip: Đóng nhanh */}
+                            <button className="btn-skip" onClick={handleClose}>
+                                Đóng ✕
+                            </button>
+
+                            {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
+                                <button className="btn-next" onClick={handleNext}>
+                                    Tiếp Theo ➡️
+                                </button>
+                            ) : (
+                                <button className="btn-close" onClick={handleClose}>
+                                    Hoàn Tất ✓
+                                </button>
+                            )}
+                        </div>
+
+                        {/* === TÍNH NĂNG NPC (NẾU CÓ) === */}
+                        {npc.features && npc.features.length > 0 && (
+                            <div className="dialogue-features">
+                                {npc.features.includes('CAMPAIGN_QUESTS') && (
+                                    <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
+                                        📜 Nhận Nhiệm Vụ
+                                    </button>
+                                )}
+                                {npc.features.includes('TRAINING_AREA') && (
+                                    <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
+                                        🎓 Khu Tập Luyện
+                                    </button>
+                                )}
+                                {npc.features.includes('SHOP') && (
+                                    <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
+                                        🛒 Xem Cửa Hàng
+                                    </button>
+                                )}
+                                {npc.features.includes('MULTIPLAYER') && (
+                                    <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
+                                        🤝 Vào Đấu Trường
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                 </motion.div>
             </AnimatePresence>
         </div>
