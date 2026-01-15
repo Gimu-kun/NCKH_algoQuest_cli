@@ -71,8 +71,8 @@ export const Dungeon: React.FC = () => {
             if (dungeonState?.config) {
                 showSparky(
                     `Chào mừng đến với ${dungeonState.config.name}!\n` +
-                    `👉 Cách chơi: Dùng phím W-A-S-D hoặc các nút mũi tên trên màn hình để di chuyển.\n` +
-                    `🎯 Nhiệm vụ: Khám phá các ô vuông để tìm Kho Báu và Trùm cuối!`
+                    `<i class="fi fi-rr-fingerprint"></i> Cách chơi: Dùng phím W-A-S-D hoặc các nút mũi tên trên màn hình để di chuyển.\n` +
+                    `<i class="fi fi-rr-bullseye"></i> Nhiệm vụ: Khám phá các ô vuông để tìm Kho Báu và Trùm cuối!`
                 );
             }
         }, 1000);

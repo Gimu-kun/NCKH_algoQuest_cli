@@ -67,9 +67,9 @@ export const Leaderboards: React.FC = () => {
      * Helper: Lấy icon huy chương cho Top 3
      */
     const getRankIcon = (rank: number) => {
-        if (rank === 1) return '🥇';
-        if (rank === 2) return '🥈';
-        if (rank === 3) return '🥉';
+        if (rank === 1) return <i className="fi fi-rr-medal" style={{ color: '#ffd700' }}></i>;
+        if (rank === 2) return <i className="fi fi-rr-medal" style={{ color: '#c0c0c0' }}></i>;
+        if (rank === 3) return <i className="fi fi-rr-medal" style={{ color: '#cd7f32' }}></i>;
         return `#${rank}`;
     };
 
@@ -80,7 +80,7 @@ export const Leaderboards: React.FC = () => {
                 <button className="btn-back" onClick={() => setScene(GameScene.HUB_WORLD)}>
                     <i className="fi fi-rr-arrow-left"></i> Về Sảnh
                 </button>
-                <h1>🏆 Bảng Xếp Hạng</h1>
+                <h1><i className="fi fi-rr-trophy"></i> Bảng Xếp Hạng</h1>
                 <p className="subtitle">Cạnh tranh vinh quang cùng các Pháp Sư khác!</p>
             </div>
 
@@ -126,17 +126,20 @@ export const Leaderboards: React.FC = () => {
                             {playerEntry.playerName} <span className="you-label">(Bạn)</span>
                         </div>
                         {playerEntry.badge && (
-                            <span className="player-badge">🎖️ {playerEntry.badge}</span>
+                            <span className="player-badge"><i className="fi fi-rr-badge"></i> {playerEntry.badge}</span>
                         )}
                     </div>
                     <div className="player-score">{playerEntry.score.toLocaleString()}</div>
                     {playerEntry.stats && (
                         <div className="player-stats">
                             {playerEntry.stats.avgCodeSpeed && (
-                                <span>⚡ {playerEntry.stats.avgCodeSpeed}ms avg</span>
+                                <span><i className="fi fi-rr-bolt"></i> {playerEntry.stats.avgCodeSpeed}ms avg</span>
+                            )}
+                            {playerEntry.stats.avgCodeSpeed && playerEntry.stats.questionsAnswered && (
+                                <div className="stat-separator"></div>
                             )}
                             {playerEntry.stats.questionsAnswered && (
-                                <span>📝 {playerEntry.stats.questionsAnswered} câu</span>
+                                <span><i className="fi fi-rr-edit"></i> {playerEntry.stats.questionsAnswered} câu</span>
                             )}
                         </div>
                     )}
@@ -173,7 +176,7 @@ export const Leaderboards: React.FC = () => {
                                         <div className="player-title">"{entry.title}"</div>
                                     )}
                                     {entry.badge && (
-                                        <div className="player-badge">🎖️ {entry.badge}</div>
+                                        <div className="player-badge"><i className="fi fi-rr-badge"></i> {entry.badge}</div>
                                     )}
                                 </div>
 
@@ -182,10 +185,13 @@ export const Leaderboards: React.FC = () => {
                                     {entry.stats && (
                                         <div className="score-stats">
                                             {entry.stats.avgCodeSpeed && (
-                                                <span>⚡ {entry.stats.avgCodeSpeed}ms</span>
+                                                <span><i className="fi fi-rr-bolt"></i> {entry.stats.avgCodeSpeed}ms</span>
+                                            )}
+                                            {entry.stats.avgCodeSpeed && entry.stats.accuracy && (
+                                                <div className="stat-separator"></div>
                                             )}
                                             {entry.stats.accuracy && (
-                                                <span>🎯 {entry.stats.accuracy}%</span>
+                                                <span><i className="fi fi-rr-bullseye"></i> {entry.stats.accuracy}%</span>
                                             )}
                                         </div>
                                     )}
@@ -194,7 +200,7 @@ export const Leaderboards: React.FC = () => {
                         ))
                     ) : (
                         <div className="empty-leaderboard">
-                            <p>📊 Chưa có dữ liệu bảng xếp hạng</p>
+                            <p><i className="fi fi-rr-chart-histogram"></i> Chưa có dữ liệu bảng xếp hạng</p>
                             <p className="empty-subtitle">Hãy là người đầu tiên ghi danh!</p>
                         </div>
                     )}
@@ -203,7 +209,7 @@ export const Leaderboards: React.FC = () => {
                 {/* === REWARDS PREVIEW === */}
                 {currentLeaderboard.rewards && currentLeaderboard.rewards.length > 0 && (
                     <div className="rewards-section">
-                        <h3>🎁 Phần Thưởng Tuần Này</h3>
+                        <h3><i className="fi fi-rr-gift"></i> Phần Thưởng Tuần Này</h3>
                         <div className="rewards-list">
                             {currentLeaderboard.rewards.map((reward, index) => (
                                 <div key={index} className="reward-item">

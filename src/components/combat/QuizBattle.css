@@ -443,3 +443,33 @@
     cursor: pointer;
     box-shadow: var(--shadow-glow-gold);
 }
+
+/* === EXIT COMBAT BUTTON === */
+.btn-exit-combat {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 2px solid rgba(239, 68, 68, 0.4);
+    border-radius: var(--border-radius-md);
+    color: var(--color-accent-red);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+.btn-exit-combat:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: var(--color-accent-red);
+    transform: translateY(-2px);
+}
+
+.btn-exit-combat i {
+    font-size: 1rem;
+}

@@ -90,7 +90,7 @@ export const Achievements: React.FC = () => {
                 <button className="btn-back" onClick={() => setScene(GameScene.HUB_WORLD)}>
                     <i className="fi fi-rr-arrow-left"></i> Về Sảnh
                 </button>
-                <h1>🏆 Thành Tựu & Huy Hiệu</h1>
+                <h1><i className="fi fi-rr-trophy"></i> Thành Tựu & Huy Hiệu</h1>
 
                 {/* Thanh Tiến Độ */}
                 <div className="achievements-progress">
@@ -111,37 +111,37 @@ export const Achievements: React.FC = () => {
                 {/* Thống Kê Độ Hiếm */}
                 <div className="rarity-stats">
                     <div className="rarity-item common">
-                        <span className="rarity-icon">⚪</span>
-                        <span>{countByRarity('COMMON')} Common</span>
+                        <span className="rarity-icon"><i className="fi fi-rr-circle" style={{ color: '#cbd5e1' }}></i></span>
+                        <span>Phổ Biến</span>
                     </div>
-                    <div className="rarity-item rare">
-                        <span className="rarity-icon">🔵</span>
-                        <span>{countByRarity('RARE')} Rare</span>
+                    <div className="rarity-legend-item rare">
+                        <span className="rarity-icon"><i className="fi fi-rr-circle" style={{ color: '#60a5fa' }}></i></span>
+                        <span>Hiếm</span>
                     </div>
-                    <div className="rarity-item epic">
-                        <span className="rarity-icon">🟣</span>
-                        <span>{countByRarity('EPIC')} Epic</span>
+                    <div className="rarity-legend-item epic">
+                        <span className="rarity-icon"><i className="fi fi-rr-circle" style={{ color: '#c084fc' }}></i></span>
+                        <span>Sử Thi</span>
                     </div>
-                    <div className="rarity-item legendary">
-                        <span className="rarity-icon">🟠</span>
+                    <div className="rarity-legend-item legendary">
+                        <span className="rarity-icon"><i className="fi fi-rr-circle" style={{ color: '#fbbf24' }}></i></span>
                         <span>{countByRarity('LEGENDARY')} Legendary</span>
                     </div>
                 </div>
             </div>
 
             {/* === TABS NAVIGATION === */}
-            <div className="achievements-tabs">
+            <div className="tabs">
                 <button
-                    className={!showBadges ? 'active' : ''}
+                    className={`tab-btn ${!showBadges ? 'active' : ''}`}
                     onClick={() => setShowBadges(false)}
                 >
-                    🏆 Thành Tựu
+                    <i className="fi fi-rr-trophy"></i> Thành Tựu
                 </button>
                 <button
-                    className={showBadges ? 'active' : ''}
+                    className={`tab-btn ${showBadges ? 'active' : ''}`}
                     onClick={() => setShowBadges(true)}
                 >
-                    🎖️ Huy Hiệu
+                    <i className="fi fi-rr-badge"></i> Huy Hiệu
                 </button>
             </div>
 
@@ -237,7 +237,7 @@ export const Achievements: React.FC = () => {
                                     {unlocked ? (
                                         // TODO: Thay thế bằng Icon Image
                                         badge.displayName.split(' ')[0]
-                                    ) : '🔒'}
+                                    ) : <i className="fi fi-rr-lock"></i>}
                                 </div>
                                 <h4>{unlocked ? badge.displayName : '???'}</h4>
                                 <p>{unlocked ? badge.description : 'Đang khóa'}</p>

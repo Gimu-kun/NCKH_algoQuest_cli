@@ -29,7 +29,7 @@ import './HubWorld.css';
 
 export const HubWorld: React.FC = () => {
     // Truy cập Global State để điều khiển chuyển cảnh và hội thoại
-    const { setScene, enterDungeon, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
+    const { setScene, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
 
     // Handler Actions
 
@@ -144,7 +144,7 @@ export const HubWorld: React.FC = () => {
                 <div className="farm-access">
                     <button
                         className="farm-btn disabled"
-                        onClick={() => showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.')}
+                        onClick={() => showSparky('<i class="fi fi-rr-construction"></i> Khu vực này đang được nâng cấp! Vui lòng quay lại sau.')}
                         style={{ opacity: 0.6, cursor: 'not-allowed', filter: 'grayscale(1)' }}
                     >
                         <i className="fi fi-rr-lock"></i> Trang Trại Logic (Bảo trì)
@@ -161,30 +161,17 @@ export const HubWorld: React.FC = () => {
 
                 {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
-                    <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_1')}>
-                        <i className="fi fi-rr-sword"></i> Vào Ải 1 (Intro)
-                    </button>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_2')}>
-                        <i className="fi fi-rr-sword"></i> Vào Ải 2 (Sort)
-                    </button>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_3')}>
-                        <i className="fi fi-rr-sword"></i> Vào Ải 3 (Linked List)
-                    </button>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_4')}>
-                        <i className="fi fi-rr-sword"></i> Vào Ải 4 (Stack/Queue)
-                    </button>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_5')}>
-                        <i className="fi fi-rr-sword"></i> Vào Ải 5 (BST)
-                    </button>
-                    <button className="test-btn" onClick={() => enterDungeon('dungeon_7')}>
-                        <i className="fi fi-rr-skull"></i> ẢI FINAL (Void Core)
-                    </button>
                     <button className="test-btn" onClick={handleTestCombat}>
                         <i className="fi fi-rr-bullseye"></i> Thử Nghiệm Chiến Đấu
                     </button>
                     <button className="test-btn" onClick={handleTestBuild}>
                         <i className="fi fi-rr-hammer"></i> Thử Nghiệm Bảng Cổ Ngữ
+                    </button>
+                    <button className="test-btn study-btn" onClick={() => setScene(GameScene.STUDY_MATERIALS)}>
+                        <i className="fi fi-rr-book-open-cover"></i> Study Materials
+                    </button>
+                    <button className="test-btn algo-lab-btn" onClick={() => setScene(GameScene.ALGO_LAB)}>
+                        <i className="fi fi-rr-flask"></i> Algo Lab
                     </button>
                 </div>
             </div>

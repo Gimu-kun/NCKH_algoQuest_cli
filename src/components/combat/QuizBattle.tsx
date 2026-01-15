@@ -65,8 +65,14 @@ interface QuizBattleProps {
 
 export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) => {
     // Hooks truy cập Global State
-    const { combat, updateMonsterHealth, updatePlayerHealth, useHint: consumeHint, showSparky } = useGameStore();
+    const { combat, updateMonsterHealth, updatePlayerHealth, useHint: consumeHint, showSparky, endCombat } = useGameStore();
     const { recordAnswer, addResource, removeResource, unlockedSpells, resources } = usePlayerStore();
+
+    // Handler thoát combat - quay về dungeon
+    const handleExitCombat = () => {
+        // End current combat as loss (không reset máu quái, không tính thắng)
+        endCombat(false);
+    };
 
     // Local State cho UI logic
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -531,6 +537,11 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 />
                 <span className="health-text">{combat.playerHealth} / 100</span>
             </div>
+
+            {/* === NÚT THOÁT COMBAT (EXIT BUTTON) === */}
+            <button className="btn-exit-combat" onClick={handleExitCombat}>
+                <i className="fi fi-rr-door-open"></i> Thoát xem trận (Thua)
+            </button>
 
             {/* === THANH KỸ NĂNG (SPELL BAR) === */}
             <div className="combat-spell-bar">
