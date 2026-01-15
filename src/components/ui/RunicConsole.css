@@ -22,7 +22,11 @@
   width: 95%;
   max-width: 1200px;
   height: 85vh;
+<<<<<<< HEAD
   background-image: url('/assets/Ảnh Assets/UI/Coding Console UI.png');
+=======
+  background-image: url('../../../assets/Ảnh Assets/UI/Coding Console UI.png');
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-color: transparent;

@@ -20,7 +20,11 @@ import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
+<<<<<<< HEAD
     <HashRouter>
         <App />
     </HashRouter>
+=======
+    <App />
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 )

@@ -40,7 +40,11 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
+<<<<<<< HEAD
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
@@ -56,7 +60,10 @@ import { MonsterSpawner } from '../../game/spawner/MonsterSpawner';
 import './QuizBattle.css';
 import { SPELLS } from '../../data/models/Spell';
 import type { SpellData } from '../../data/models/Spell';
+<<<<<<< HEAD
 import { saveCombatState, loadCombatState } from '../../utils/combatPersistence';
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
 interface QuizBattleProps {
     monsterId: string;
@@ -65,14 +72,12 @@ interface QuizBattleProps {
 
 export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) => {
     // Hooks truy cập Global State
-    const { combat, updateMonsterHealth, updatePlayerHealth, useHint: consumeHint, showSparky, endCombat } = useGameStore();
+<<<<<<< HEAD
+    const { combat, updateMonsterHealth, updatePlayerHealth, useHint: consumeHint, showSparky } = useGameStore();
+=======
+    const { combat, updateMonsterHealth, updatePlayerHealth, useHint, showSparky } = useGameStore();
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     const { recordAnswer, addResource, removeResource, unlockedSpells, resources } = usePlayerStore();
-
-    // Handler thoát combat - quay về dungeon
-    const handleExitCombat = () => {
-        // End current combat as loss (không reset máu quái, không tính thắng)
-        endCombat(false);
-    };
 
     // Local State cho UI logic
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -134,12 +139,16 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
     const monsterData = MonsterSpawner.getMonsterData(monsterId);
 
     // Lấy danh sách câu hỏi phù hợp với độ khó của quái
+<<<<<<< HEAD
     const appropriateQuestions = useMemo(() => getQuestionsForMonster(monsterId, dungeonId), [monsterId, dungeonId]);
 
     // ═══════════════ DEBUG HOOK ═══════════════
     useEffect(() => {
         console.log('[DEBUG] showFeedback changed:', showFeedback);
     }, [showFeedback]);
+=======
+    const appropriateQuestions = getQuestionsForMonster(monsterId, dungeonId);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     /**
      * Lấy đường dẫn ảnh quái vật an toàn (Safe Sprite Retrieval)
@@ -151,16 +160,26 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         }
         // Fallback cho ID cũ (Backward Compatibility)
         if (monsterId === 'chapter1_boss' || monsterId === 'initialization_golem') {
+<<<<<<< HEAD
             return "/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png";
         }
         return "/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png";
+=======
+            return "/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 4 (AN) Initialization Golem (Boss)/Initialization Golem (Idle).png";
+        }
+        return "/src/assets/Ảnh Assets/Quái vật/QUÁI ẢI 1 ĐỀN THỜ HƯỚNG DẪN (CHƯƠNG 1)/Tier 1 (R) Logic Slime (Quái Thường)/Logic Slime (Idle).png";
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     };
 
     /**
      * Tải câu hỏi ngẫu nhiên (Load Random Question)
      * Reset State UI mỗi khi đổi câu hỏi.
      */
+<<<<<<< HEAD
     const loadRandomQuestion = useCallback(() => {
+=======
+    const loadRandomQuestion = () => {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         if (appropriateQuestions.length === 0) {
             console.error('Không tìm thấy câu hỏi phù hợp cho quái vật này!');
             return;
@@ -170,6 +189,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         setSelectedAnswer(null);
         setShowFeedback(false);
         setIsCorrect(false);
+<<<<<<< HEAD
     }, [appropriateQuestions]);
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -223,6 +243,14 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
             );
         }
     }, [monsterId, currentQuestion, selectedAnswer, showFeedback, isCorrect]);
+=======
+    };
+
+    // Initialize: Load câu hỏi đầu tiên khi Mount
+    useEffect(() => {
+        loadRandomQuestion();
+    }, []);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     if (!currentQuestion) {
         return <div>Đang tải dữ liệu chiến đấu...</div>;
@@ -232,8 +260,12 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Xử lý khi người chơi trả lời (Handle Answer)
      * Đây là hàm trung tâm điều phối logic thưởng phạt (Game Loop Core).
      */
+<<<<<<< HEAD
     const handleAnswer = (correct: boolean, answerData?: unknown) => {
         console.log('[DEBUG] handleAnswer called - Correct:', correct, 'Setting showFeedback = true');
+=======
+    const handleAnswer = (correct: boolean, answerData?: any) => {
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         setIsCorrect(correct);
         setShowFeedback(true);
         recordAnswer(correct); // Ghi Statistic
@@ -269,14 +301,21 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 useGameStore.getState().showSparky("⚠️ CẢNH BÁO: Trùm Nổi Giận! Sát thương nhận vào sẽ tăng gấp đôi!");
                 // Future: setPhase(2) via action
             } else {
+<<<<<<< HEAD
                 showSparky(`[Chính xác] Chính xác! Gây ${damage} sát thương! Nhận +${woodReward} Gỗ, +${oPointsReward} O-Points!`);
+=======
+                showSparky(`💡 Chính xác! Gây ${damage} sát thương! Nhận +${woodReward} Gỗ, +${oPointsReward} O-Points!`);
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
             }
 
             // Kiểm tra chiến thắng (Victory Check)
             if (newHealth <= 0) {
                 setTimeout(() => onVictory(), 2000);
             }
+<<<<<<< HEAD
             // Note: Không auto-advance, người chơi bấm nút "Câu Tiếp Theo"
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         } else {
             // === LOGIC PHÒNG THỦ THẤT BẠI (DEFENSE FAIL) ===
             // Dynamic Damage Scaling
@@ -294,12 +333,21 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
             // Hiện gợi ý từ Sparky + Thông báo trừ máu
             const hint = sparky.provideHint(
                 currentQuestion.type,
+<<<<<<< HEAD
                 currentQuestion.topic
             );
             showSparky(`[Sai] Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
             // Note: Không auto-advance, người chơi bấm nút "Làm Lại" hoặc "Tiếp Theo"
         }
         console.log('[DEBUG] handleAnswer completed - showFeedback should be true now');
+=======
+                currentQuestion.topic,
+                0, // Dummy Wrong Answer
+                0  // Dummy Correct Answer
+            );
+            showSparky(`❌ Sai rồi! Bạn bị trừ ${damageTaken} HP.\n${hint.message}`);
+        }
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     };
 
     /**
@@ -316,6 +364,7 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
      * Sử dụng Gợi ý (Hint System)
      */
     const handleUseHint = () => {
+<<<<<<< HEAD
         consumeHint(); // Trừ lượt hint trong Store
         const explanation = getExplanation(currentQuestion);
         showSparky(`[Gợi ý] ${explanation}`);
@@ -330,6 +379,15 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
         setShowFeedback(false);  // Ẩn feedback
         setSelectedAnswer(null); // Reset lựa chọn
         loadRandomQuestion();    // Load câu mới
+=======
+        useHint(); // Trừ lượt hint trong Store
+        const explanation = getExplanation(currentQuestion);
+        showSparky(`💡 Gợi ý: ${explanation}`);
+    };
+
+    const handleNext = () => {
+        loadRandomQuestion();
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     };
 
     /**
@@ -423,7 +481,11 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                         onClick={handleUseHint}
                         disabled={showFeedback}
                     >
+<<<<<<< HEAD
                         <i className="fi fi-rr-bulb"></i> Gợi ý (Đã dùng: {combat.hintsUsed})
+=======
+                        💡 Gợi ý (Đã dùng: {combat.hintsUsed})
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     </button>
 
                     {!showFeedback ? (
@@ -455,12 +517,20 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                         >
                             {isCorrect ? (
                                 <div className="feedback-content">
+<<<<<<< HEAD
                                     <span className="feedback-icon"><i className="fi fi-rr-check-circle"></i></span>
+=======
+                                    <span className="feedback-icon">✅</span>
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                                     <p>Chính xác! Quái vật chịu sát thương!</p>
                                 </div>
                             ) : (
                                 <div className="feedback-content">
+<<<<<<< HEAD
                                     <span className="feedback-icon"><i className="fi fi-rr-cross-circle"></i></span>
+=======
+                                    <span className="feedback-icon">❌</span>
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                                     <p>Sai rồi. Đáp án đúng là: {mcqQuestion.options[mcqQuestion.correctAnswer]}</p>
                                 </div>
                             )}
@@ -537,11 +607,6 @@ export const QuizBattle: React.FC<QuizBattleProps> = ({ monsterId, onVictory }) 
                 />
                 <span className="health-text">{combat.playerHealth} / 100</span>
             </div>
-
-            {/* === NÚT THOÁT COMBAT (EXIT BUTTON) === */}
-            <button className="btn-exit-combat" onClick={handleExitCombat}>
-                <i className="fi fi-rr-door-open"></i> Thoát xem trận (Thua)
-            </button>
 
             {/* === THANH KỸ NĂNG (SPELL BAR) === */}
             <div className="combat-spell-bar">

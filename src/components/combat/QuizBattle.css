@@ -13,10 +13,14 @@
     justify-content: center;
     padding: var(--space-xl);
     position: relative;
+<<<<<<< HEAD
     overflow-y: auto;
     /* Cho phép scroll dọc */
     overflow-x: hidden;
     /* Chặn scroll ngang */
+=======
+    overflow: hidden;
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 /* === MONSTER DISPLAY === */
@@ -168,10 +172,13 @@
     padding: var(--space-xl);
     max-width: 900px;
     width: 100%;
+<<<<<<< HEAD
     max-height: 70vh;
     /* Giới hạn chiều cao */
     overflow-y: auto;
     /* Cho phép scroll trong panel */
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     box-shadow: var(--shadow-glow-primary), var(--shadow-lg);
     backdrop-filter: blur(10px);
     transition: transform 0.3s;

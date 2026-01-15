@@ -25,7 +25,11 @@
     background-position: center;
     filter: brightness(0.7) saturate(1.1);
     z-index: 0;
+<<<<<<< HEAD
     background-image: url('/assets/Ảnh Assets/Hub World Concept.png');
+=======
+    background-image: url('/src/assets/Ảnh Assets/Hub World Concept.png');
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 /* Gradient overlay để làm nổi bật nội dung */
@@ -235,8 +239,11 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+<<<<<<< HEAD
     gap: 8px;
     /* Thêm khoảng cách giữa icon và text */
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 .farm-btn:hover {

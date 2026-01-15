@@ -31,13 +31,13 @@ import { QuestTracker } from './components/quests/QuestTracker';
 import { Settings } from './components/ui/Settings';
 import { SparkyGuide } from './components/ui/SparkyGuide';
 import { ShopInterface } from './components/ui/ShopInterface';
+<<<<<<< HEAD
 import { Inventory } from './components/ui/Inventory';
 import './App.css';
 
 import { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AlgoLab } from './pages/AlgoLab';
-import { StudyMaterialsPage } from './pages/StudyMaterialsPage';
 
 // Định nghĩa Mapping ngoài Component
 const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
@@ -49,7 +49,6 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
   [GameScene.ACHIEVEMENTS]: '/achievements',
   [GameScene.LEADERBOARDS]: '/leaderboards',
   [GameScene.ALGO_LAB]: '/lab',
-  [GameScene.STUDY_MATERIALS]: '/study',
 };
 
 function App() {
@@ -116,6 +115,14 @@ function App() {
       }
     }
   }, [currentScene, currentDungeonId, navigate, location.pathname]);
+=======
+import './App.css';
+
+import { useEffect } from 'react';
+
+function App() {
+  const { currentScene, endCombat, theme, combat } = useGameStore();
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
   // Áp dụng lớp giao diện (Theme Class)
   useEffect(() => {
@@ -135,14 +142,21 @@ function App() {
       [GameScene.DUNGEON]: '/assets/audio/bgm_dungeon.mp3',
       [GameScene.COMBAT]: '/assets/audio/bgm_combat.mp3',
       [GameScene.SHOP]: '/assets/audio/bgm_shop.mp3',
+<<<<<<< HEAD
       [GameScene.ALGO_LAB]: '/assets/audio/bgm_hub.mp3',
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     };
 
     const track = bgmMap[currentScene];
     if (track) {
       import('./game/audio/AudioManager').then(({ audioManager }) => {
         audioManager.playBGM(track);
+<<<<<<< HEAD
       }).catch(e => console.warn('Audio system failed to load:', e));
+=======
+      });
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     }
   }, [currentScene]);
 
@@ -180,12 +194,12 @@ function App() {
       case GameScene.LEADERBOARDS:
         return <Leaderboards />;
 
+<<<<<<< HEAD
       case GameScene.ALGO_LAB:
         return <AlgoLab />;
 
-      case GameScene.STUDY_MATERIALS:
-        return <StudyMaterialsPage />;
-
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
       default:
         return <MainMenu />;
     }
@@ -202,7 +216,10 @@ function App() {
 
       <SparkyGuide />
       <Settings />
+<<<<<<< HEAD
       <Inventory />
+=======
+>>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     </div>
   );
 }
