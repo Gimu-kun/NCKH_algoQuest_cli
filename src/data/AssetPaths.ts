@@ -23,11 +23,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-<<<<<<< HEAD
 const ASSET_BASE = '/assets/Ảnh Assets';
-=======
-const ASSET_BASE = '/src/assets/Ảnh Assets';
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
 export const ASSETS = {
     // ========== LOGOS & BRANDING ==========
@@ -77,10 +73,7 @@ export const ASSETS = {
 
         // HUD
         PLAYER_STATUS_HUD: `${ASSET_BASE}/UI/Player Status HUD.png`,
-<<<<<<< HEAD
-=======
         DIALOGUE_BOX: `${ASSET_BASE}/UI/Dialogue UI Box.png`,
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         CODING_CONSOLE: `${ASSET_BASE}/UI/Coding Console UI.png`,
 
         // Inventory
@@ -91,7 +84,6 @@ export const ASSETS = {
 
     // ========== CHARACTERS (Nhân vật & NPCs) ==========
     CHARACTERS: {
-<<<<<<< HEAD
         SPARKY_NORMAL: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Normal).png`,
         SPARKY_ALERT: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Alert).png`,
         SPARKY_ERROR: `${ASSET_BASE}/Nhân vật/Sparky/Sparky (Synax Error).png`,
@@ -101,17 +93,6 @@ export const ASSETS = {
         LINH: `${ASSET_BASE}/Nhân vật/Linh (The Archivist)/Linh (Idle).png`,
         BORK: `${ASSET_BASE}/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png`,
         GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png`,
-=======
-        SPARKY_NORMAL: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Normal.png`,
-        SPARKY_ALERT: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Alert.png`,
-        SPARKY_ERROR: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Error.png`,
-        SPARKY_SUCCESS: `${ASSET_BASE}/Nhân vật/Sparky/Sparky Success.png`,
-
-        PROFESSOR_ALRIC: `${ASSET_BASE}/Nhân vật/Professor Alric.png`,
-        LINH: `${ASSET_BASE}/Nhân vật/Linh (The Archivist).png`,
-        BORK: `${ASSET_BASE}/Nhân vật/Bork (The Blacksmith).png`,
-        GUILD_LEADER: `${ASSET_BASE}/Nhân vật/Guild Leader.png`,
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     }
 } as const;
 
