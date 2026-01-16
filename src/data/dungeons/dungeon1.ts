@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * CẤU HÌNH HẦM NGỤC 1: ĐỀN THỜ HƯỚNG DẪN (Dungeon 1 Configuration)
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -42,19 +41,6 @@ export interface DungeonRoom {
     explored: boolean; // Đã khám phá (FoV System)
     cleared: boolean;  // Đã hoàn thành (Monster defeated / Treasure looted)
     description?: string; // Mô tả nội dung (Flavor text)
-=======
- * Hầm Ngục 1: Đền Thờ Hướng Dẫn
- * Chương 1 - Tổng Quan Thuật Toán & Độ Phức Tạp
- */
-
-export interface DungeonRoom {
-    x: number;
-    y: number;
-    type: 'empty' | 'monster' | 'treasure' | 'boss' | 'entrance' | 'exit';
-    explored: boolean;
-    cleared: boolean;
-    description?: string;
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 }
 
 export interface DungeonConfig {

@@ -383,10 +383,33 @@ Nếu insert theo thứ tự: 1, 2, 3, 4, 5
 → Tất cả operations trở thành O(n)
 ```
 
-### Giải pháp: Self-balancing BST
-- **AVL Tree**: Cân bằng bằng rotation
-- **Red-Black Tree**: Cân bằng bằng coloring rules
-- **Splay Tree**: Cân bằng bằng splay operation
+### Giải pháp: Các biến thể nâng cao
+
+#### 1. AVL Tree (Self-balanced BST)
+**Đặc điểm**:
+- Là cây BST tự cân bằng đầu tiên.
+- **Balance Factor**: Tại mọi node, `|height(left) - height(right)| ≤ 1`.
+- Balance Factor chỉ nhận giá trị: `{-1, 0, +1}`.
+
+**Cân bằng lại (Rotation)**:
+Khi cây mất cân bằng (Insert/Delete), thực hiện xoay:
+- **LL Case**: Xoay phải đơn.
+- **RR Case**: Xoay trái đơn.
+- **LR Case**: Xoay trái con trái, rồi xoay phải node hiện tại.
+- **RL Case**: Xoay phải con phải, rồi xoay trái node hiện tại.
+
+**Độ phức tạp**: Luôn đảm bảo chiều cao `h = O(log n)`.
+
+#### 2. B-Tree
+**Đặc điểm**:
+- Cây tìm kiếm đa phân (m-ary search tree), không phải nhị phân.
+- Một node có thể chứa **nhiều key** và có **nhiều hơn 2 con**.
+- Tất cả các node lá (leaf) đều ở **cùng một độ sâu**.
+
+**Ứng dụng**:
+- Tối ưu cho hệ thống lưu trữ đĩa (Disk Storage).
+- Database Indexing (MySQL, PostgreSQL).
+- File Systems (NTFS, HFS+).
 
 ---
 

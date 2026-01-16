@@ -174,7 +174,35 @@ bool isValidParentheses(string s) {
 }
 ```
 
-#### 2. Chuyển Infix sang Postfix
+#### 2. Chuyển đổi cơ số (Convert Base)
+
+```cpp
+/**
+ * Chuyển số thập phân sang nhị phân
+ * 
+ * IDEA:
+ * - Chia số cho 2, lấy dư push vào Stack
+ * - Pop ra sẽ được kết quả ngược lại (đúng thứ tự)
+ */
+string decimalToBinary(int n) {
+    if (n == 0) return "0";
+    stack<int> st;
+    string binary = "";
+    
+    while (n > 0) {
+        st.push(n % 2);
+        n /= 2;
+    }
+    
+    while (!st.empty()) {
+        binary += to_string(st.top());
+        st.pop();
+    }
+    return binary;
+}
+```
+
+#### 3. Chuyển Infix sang Postfix
 
 ```cpp
 /**
@@ -410,6 +438,16 @@ class LinkedQueue {
 ```
 
 ### Ứng dụng của Queue
+
+#### 1. Hệ thống bán vé (Ticketing System)
+- **First-Come, First-Served (FCFS)**: Người đến trước mua vé trước.
+- Ứng dụng thực tế: Xếp hàng mua trà sữa, vé xem phim.
+
+#### 2. Pipeline / Buffer
+- **IO Buffer**: Dữ liệu từ bàn phím chờ CPU xử lý.
+- **Pipeline**: Dữ liệu output của process này là input của process kia (Unix/Linux pipes).
+
+#### 3. Các ứng dụng khác
 
 | Ứng dụng | Mô tả |
 |----------|-------|

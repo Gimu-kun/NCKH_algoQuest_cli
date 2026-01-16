@@ -14,7 +14,18 @@
 
 ## 📚 Các Khái Niệm Cơ Bản
 
-### 1. Big O Notation (Ký hiệu O lớn)
+### 1. Đặc tính của Thuật toán (Algorithm Characteristics)
+
+Một thuật toán chuẩn cần đảm bảo các đặc tính sau:
+- **Input**: Có 0 hoặc nhiều đầu vào.
+- **Output**: Có ít nhất 1 đầu ra.
+- **Definiteness (Tính xác định)**: Các bước phải rõ ràng, không gây nhầm lẫn.
+- **Finiteness (Tính hữu hạn)**: Thuật toán phải dừng sau một số bước hữu hạn.
+- **Effectiveness (Tính hiệu quả)**: Các bước phải thực hiện được bằng giấy bút trong thời gian hữu hạn.
+
+---
+
+### 2. Big O Notation (Ký hiệu O lớn)
 
 **Định nghĩa**: Big O mô tả **giới hạn trên** (upper bound) của thời gian chạy thuật toán khi input tăng lên vô cực.
 
@@ -27,7 +38,7 @@ T(n) = O(f(n))
 
 ---
 
-### 2. Các ký hiệu tiệm cận khác
+### 3. Các ký hiệu tiệm cận khác
 
 | Ký hiệu | Tên gọi | Ý nghĩa |
 |---------|---------|---------|
@@ -37,20 +48,19 @@ T(n) = O(f(n))
 
 ---
 
-### 3. Các mức độ phức tạp phổ biến
+### 4. Các mức độ phức tạp phổ biến
 
 Sắp xếp từ **tốt nhất** → **xấu nhất**:
 
 | Độ phức tạp | Tên gọi | Ví dụ | n=1000 (số phép tính) |
 |-------------|---------|-------|----------------------|
-| **O(1)** | Constant | Truy cập mảng a[i] | 1 |
-| **O(log n)** | Logarithmic | Binary Search | ~10 |
-| **O(n)** | Linear | Tìm max trong mảng | 1,000 |
+| **O(1)** | Constant | Hashing, Truy cập mảng | 1 |
+| **O(log n)** | Logarithmic | Binary Search, BST | ~10 |
+| **O(n)** | Linear | Linear Search | 1,000 |
 | **O(n log n)** | Linearithmic | Merge Sort, Quick Sort | ~10,000 |
-| **O(n²)** | Quadratic | Bubble Sort, 2 vòng lặp lồng | 1,000,000 |
-| **O(n³)** | Cubic | 3 vòng lặp lồng nhau | 1,000,000,000 |
-| **O(2ⁿ)** | Exponential | Fibonacci đệ quy naive | ~10³⁰⁰ |
-| **O(n!)** | Factorial | Brute force Traveling Salesman | Không thể tính! |
+| **O(n²)** | Quadratic | Bubble, Selection, Insertion | 1,000,000 |
+| **O(2ⁿ)** | Exponential | Backtracking, Recursive Fib | ~10³⁰⁰ |
+| **O(n!)** | Factorial | Permutations | Không thể tính! |
 
 ---
 

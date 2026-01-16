@@ -30,10 +30,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/gameStore';
-<<<<<<< HEAD
 import { ASSETS } from '../../data/AssetPaths';
-=======
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 import './SparkyGuide.css';
 
 export const SparkyGuide: React.FC = () => {
@@ -52,11 +49,7 @@ export const SparkyGuide: React.FC = () => {
                 >
                     {/* Hình Ảnh Đại Diện Sparky */}
                     <div className="sparky-avatar">
-<<<<<<< HEAD
                         <img src={ASSETS.CHARACTERS.SPARKY_NORMAL} alt="Sparky AI" />
-=======
-                        <img src="/assets/images/characters/Sparky/Sparky Normal.png" alt="Sparky AI" />
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                     </div>
 
                     {/* Bong Bóng Chat */}

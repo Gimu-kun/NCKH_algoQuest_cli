@@ -133,7 +133,24 @@ for i = 0 to n-2:
 
 ---
 
-#### 1.2 Selection Sort (Sắp xếp chọn)
+#### 1.2 Interchange Sort (Đổi chỗ trực tiếp)
+
+**Ý tưởng**: So sánh phần tử đầu dãy với các phần tử phía sau, nếu nhỏ hơn thì đổi chỗ ngay lập tức. Đảm bảo sau mỗi vòng lặp, phần tử đầu tiên là nhỏ nhất.
+
+**Độ phức tạp**: O(n²)
+- Nhược điểm: Swap quá nhiều lần (không hiệu quả bằng Selection Sort).
+
+---
+
+#### 1.3 Shaker Sort (Bubble Sort 2 chiều)
+
+**Ý tưởng**: Giống Bubble Sort nhưng duyệt 2 chiều (đi lên mang phần tử lớn nhất về cuối, đi về mang phần tử nhỏ nhất về đầu).
+
+**Ưu điểm**: Giải quyết vấn đề "rùa" (phần tử nhỏ ở cuối mảng) của Bubble Sort.
+
+---
+
+#### 1.4 Selection Sort (Sắp xếp chọn)
 
 **Ý tưởng**: Tìm phần tử nhỏ nhất, đặt vào vị trí đầu; lặp lại cho phần còn lại.
 
@@ -204,6 +221,20 @@ for i = 1 to n-1:
 - ✅ Mảng nhỏ (n < 50)
 - ✅ Mảng gần như đã sắp xếp
 - ✅ Cần stable sort và in-place
+
+- Stable: ✅ Có
+
+---
+
+#### 1.6 Binary Insertion Sort
+
+**Ý tưởng**:
+- Giống Insertion Sort.
+- Nhưng dùng **Binary Search** để tìm vị trí chèn thay vì Linear Search.
+
+**Độ phức tạp**:
+- Giảm số lần so sánh xuống O(n log n).
+- Vẫn tốn O(n²) lần di chuyển phần tử (shift).
 
 ---
 
@@ -304,6 +335,45 @@ quickSort(arr, low, high):
 - Time: O(n log n) cả 3 cases
 - Space: O(1) - in-place ✅
 - Stable: ❌ Không
+
+- Stable: ❌ Không
+
+---
+
+#### 2.4 Shell Sort (Sắp xếp Shell)
+
+**Ý tưởng**:
+- Cải tiến Insertion Sort.
+- Sắp xếp các phần tử cách nhau một khoảng `gap` (ví dụ n/2, n/4...).
+- Giảm dần `gap` về 1.
+
+**Độ phức tạp**:
+- Phụ thuộc vào dãy gap (Gap sequence).
+- Tốt hơn O(n²), khoảng O(n^1.25) đến O(n^1.5).
+
+---
+
+### 🔹 NHÓM 3: NON-COMPARISON SORTS - O(n + k)
+
+#### 3.1 Counting Sort (Sắp xếp đếm)
+
+**Ý tưởng**:
+- Đếm số lần xuất hiện của mỗi giá trị.
+- Tính vị trí thực của từng phần tử dựa trên bảng đếm.
+
+**Điều kiện**: Dữ liệu phải là số nguyên và trong phạm vi nhỏ (k nhỏ).
+
+**Độ phức tạp**: O(n + k)
+
+---
+
+#### 3.2 Radix Sort (Sắp xếp cơ số)
+
+**Ý tưởng**:
+- Sắp xếp lần lượt theo từng chữ số (hàng đơn vị → hàng chục...).
+- Thường dùng Counting Sort cho từng bước.
+
+**Độ phức tạp**: O(d * (n + k)) với d là số chữ số.
 
 ---
 

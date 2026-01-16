@@ -34,6 +34,35 @@
 
 ---
 
+## 📚 PHẦN 0: POINTER & DATA REPRESENTATION (Con trỏ & Bộ nhớ)
+
+_Kiến thức nền tảng quan trọng cho Linked List_
+
+### 1. Con trỏ (Pointer)
+- **Địa chỉ (&)**: Mỗi biến đều có một địa chỉ trong bộ nhớ (VD: `0x7ffee`).
+- **Con trỏ (*)**: Là biến lưu trữ **địa chỉ** của biến khác.
+
+```cpp
+int a = 10;
+int* p = &a;  // p lưu địa chỉ của a
+*p = 20;      // Thay đổi giá trị tại địa chỉ mà p trỏ tới -> a = 20
+```
+
+### 2. Heap vs Stack Memory
+- **Stack**: Bộ nhớ tĩnh, cấp phát tự động khi khai báo biến. Tốc độ nhanh nhưng kích thước cố định.
+- **Heap**: Bộ nhớ động, cấp phát thủ công (`malloc/new`). Kích thước linh hoạt nhưng quản lý phức tạp.
+
+### 3. Cấp phát động
+- **C**: `malloc()` (cấp phát), `free()` (giải phóng).
+- **C++**: `new` (cấp phát), `delete` (giải phóng).
+
+```cpp
+Node* node = new Node(); // Cấp phát trên Heap
+delete node;             // Giải phóng tránh Memory Leak
+```
+
+---
+
 ## 📚 Cấu Trúc Node
 
 ### Node cơ bản (Singly Linked List)
@@ -154,7 +183,30 @@ void insertAtTail(Node*& head, int value) {
 }
 ```
 
-#### 3. Xóa node (Delete) - O(n)
+#### 3. Chèn sau node Q (Insert After Q) - O(1)
+
+```cpp
+/**
+ * Chèn node mới vào SAU node Q
+ * 
+ * FLOW:
+ * 1. newNode->next = Q->next (nối đuôi)
+ * 2. Q->next = newNode (nối đầu)
+ * 
+ * ĐỘ PHỨC TẠP: O(1) - Nếu đã có pointer đến Q
+ */
+void insertAfter(Node* Q, int value) {
+    if (Q == NULL) return;
+    
+    Node* newNode = new Node();
+    newNode->data = value;
+    
+    newNode->next = Q->next;  // 1.
+    Q->next = newNode;        // 2.
+}
+```
+
+#### 4. Xóa node (Delete) - O(n)
 
 ```cpp
 /**
@@ -195,7 +247,27 @@ void deleteNode(Node*& head, int value) {
 }
 ```
 
-#### 4. Tìm kiếm (Search) - O(n)
+#### 5. Xóa sau node Q (Delete After Q) - O(1)
+
+```cpp
+/**
+ * Xóa node nằm SAU node Q
+ * 
+ * FLOW:
+ * 1. temp = Q->next
+ * 2. Q->next = temp->next
+ * 3. delete temp
+ */
+void deleteAfter(Node* Q) {
+    if (Q == NULL || Q->next == NULL) return;
+    
+    Node* temp = Q->next;
+    Q->next = temp->next;
+    delete temp;
+}
+```
+
+#### 6. Tìm kiếm (Search) - O(n)
 
 ```cpp
 /**
@@ -219,7 +291,7 @@ Node* search(Node* head, int value) {
 }
 ```
 
-#### 5. Đảo ngược (Reverse) - O(n)
+#### 7. Đảo ngược (Reverse) - O(n)
 
 ```cpp
 /**

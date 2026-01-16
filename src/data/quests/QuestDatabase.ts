@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * CƠ SỞ DỮ LIỆU NHIỆM VỤ (Quest Database)
@@ -28,11 +27,6 @@ import type { Quest } from '../models/NPC';
  * Registry chứa tất cả nhiệm vụ có sẵn trong game.
  * Key: QuestID (string) -> Value: Quest Object
  */
-
-=======
-import type { Quest } from '../models/NPC';
-
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 export const QUEST_DATABASE: Record<string, Quest> = {
     'quest_intro_1': {
         id: 'quest_intro_1',
@@ -71,7 +65,6 @@ export const QUEST_DATABASE: Record<string, Quest> = {
             gold: 100,
             oPoints: 20
         }
-<<<<<<< HEAD
     },
     'quest_chapter_2': {
         id: 'quest_chapter_2',
@@ -112,7 +105,5 @@ export const QUEST_DATABASE: Record<string, Quest> = {
         chapter: 5,
         requirements: [{ type: 'COMPLETE_DUNGEON', target: 'dungeon_5', count: 1 }],
         rewards: { dataWood: 200, oPoints: 800, blueprints: ['spell_search_beam'] }
-=======
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     }
 };

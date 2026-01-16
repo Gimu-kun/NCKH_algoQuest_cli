@@ -38,10 +38,7 @@ import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { RESOURCES, ResourceType } from '../../data/models/Item';
 import type { Resource, DecorationItem, CosmeticItem } from '../../data/models/Item';
-<<<<<<< HEAD
 import { SHOP_ITEMS } from '../../data/models/Item';
-=======
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 import './Inventory.css';
 
 // Định nghĩa các tab trong kho đồ
@@ -49,22 +46,15 @@ type InventoryTab = 'RESOURCES' | 'DECORATIONS' | 'COSMETICS';
 
 export const Inventory: React.FC = () => {
     const { inventoryOpen, toggleInventory } = useGameStore();
-<<<<<<< HEAD
     const { resources, decorations: decorationIds, cosmetics: cosmeticIds } = usePlayerStore();
-=======
-    const { resources, decorations, cosmetics } = usePlayerStore();
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
     const [activeTab, setActiveTab] = useState<InventoryTab>('RESOURCES');
     const [selectedItem, setSelectedItem] = useState<Resource | DecorationItem | CosmeticItem | null>(null);
 
-<<<<<<< HEAD
     // Helper to resolve items
     const getDecoration = (id: string) => SHOP_ITEMS.decorations.find(d => d.id === id);
     const getCosmetic = (id: string) => SHOP_ITEMS.cosmetics.find(c => c.id === id);
 
-=======
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     // Nếu kho đồ chưa mở, không render gì cả
     if (!inventoryOpen) return null;
 
@@ -98,7 +88,6 @@ export const Inventory: React.FC = () => {
                 });
 
             case 'DECORATIONS':
-<<<<<<< HEAD
                 // Hiển thị danh sách đồ trang trí
                 if (decorationIds.length === 0) {
                     return <div className="empty-state">Chưa có vật phẩm trang trí nào.</div>;
@@ -131,32 +120,6 @@ export const Inventory: React.FC = () => {
                         </div>
                     );
                 });
-=======
-                // Hiển thị danh sách đồ trang trí (Placeholder)
-                if (decorations.length === 0) {
-                    return <div className="empty-state">Chưa có vật phẩm trang trí nào.</div>;
-                }
-                return decorations.map((item: any, index: number) => (
-                    <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
-                        <div className="item-icon">
-                            <img src={item.sprite || '/src/assets/Ảnh Assets/Vật Phẩm/DefaultBox.png'} alt={item.displayName} />
-                        </div>
-                    </div>
-                ));
-
-            case 'COSMETICS':
-                // Hiển thị danh sách trang phục (Placeholder)
-                if (cosmetics.length === 0) {
-                    return <div className="empty-state">Chưa có trang phục nào.</div>;
-                }
-                return cosmetics.map((item: any, index: number) => (
-                    <div key={index} className="inventory-slot" onClick={() => setSelectedItem(item)}>
-                        <div className="item-icon">
-                            <img src={item.sprite || '/src/assets/Ảnh Assets/Vật Phẩm/DefaultRobe.png'} alt={item.displayName} />
-                        </div>
-                    </div>
-                ));
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
             default:
                 return null;
