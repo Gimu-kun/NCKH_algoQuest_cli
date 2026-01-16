@@ -53,7 +53,8 @@ export const enum GameScene {
     SHOP = 'SHOP',                 // Cửa hàng
     ACHIEVEMENTS = 'ACHIEVEMENTS', // Màn hình thành tựu
     LEADERBOARDS = 'LEADERBOARDS', // Bảng xếp hạng
-    ALGO_LAB = 'ALGO_LAB'          // Phòng thí nghiệm thuật toán
+    ALGO_LAB = 'ALGO_LAB',         // Phòng thí nghiệm thuật toán
+    STUDY_MATERIALS = 'STUDY_MATERIALS' // Tài liệu học tập (Dev Tools)
 }
 
 // State quản lý Session Combat

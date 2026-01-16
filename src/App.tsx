@@ -37,6 +37,7 @@ import './App.css';
 import { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AlgoLab } from './pages/AlgoLab';
+import { StudyMaterialsPage } from './pages/StudyMaterialsPage';
 
 // Định nghĩa Mapping ngoài Component
 const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
@@ -48,6 +49,7 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
   [GameScene.ACHIEVEMENTS]: '/achievements',
   [GameScene.LEADERBOARDS]: '/leaderboards',
   [GameScene.ALGO_LAB]: '/lab',
+  [GameScene.STUDY_MATERIALS]: '/study',
 };
 
 function App() {
@@ -181,6 +183,9 @@ function App() {
 
       case GameScene.ALGO_LAB:
         return <AlgoLab />;
+
+      case GameScene.STUDY_MATERIALS:
+        return <StudyMaterialsPage />;
 
       default:
         return <MainMenu />;
