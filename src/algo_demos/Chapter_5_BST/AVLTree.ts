@@ -30,11 +30,11 @@
  * 4. RL (Right-Left): Right then Left Rotation
  * 
  * SO SÁNH VỚI CÁC BALANCED BST KHÁC:
- * | Cây | Balance | Rotation | Ứng dụng |
- * |-----|---------|----------|----------|
- * | AVL | Strict (|BF|≤1) | Nhiều hơn | Database indexes |
- * | Red-Black | Relaxed | Ít hơn | C++ STL, Java TreeMap |
- * | Splay | Amortized | Access-based | Cache |
+ * |    Cây    |     Balance     |   Rotation   |       Ứng dụng        |
+ * |-----------|-----------------|--------------|-----------------------|
+ * | AVL       | Strict (|BF|≤1) | Nhiều hơn    | Database indexes      |
+ * | Red-Black | Relaxed         | Ít hơn       | C++ STL, Java TreeMap |
+ * | Splay     | Amortized       | Access-based | Cache                 |
  * 
  * ƯU ĐIỂM:
  * ✅ Đảm bảo O(log n) mọi trường hợp

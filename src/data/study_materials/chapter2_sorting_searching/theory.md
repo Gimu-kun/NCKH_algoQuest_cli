@@ -27,11 +27,11 @@ return -1
 ```
 
 **Độ phức tạp**:
-| Case | Time | Giải thích |
-|------|------|------------|
-| Best | O(1) | Target ở vị trí đầu |
-| Average | O(n/2) = O(n) | Target ở giữa |
-| Worst | O(n) | Target ở cuối hoặc không có |
+|   Case  |     Time      |         Giải thích          |
+|---------|---------------|-----------------------------|
+| Best    |     O(1)      | Target ở vị trí đầu         |
+| Average | O(n/2) = O(n) | Target ở giữa               |
+| Worst   |     O(n)      | Target ở cuối hoặc không có |
 
 **Ưu điểm**:
 - ✅ Đơn giản, dễ cài đặt
@@ -62,20 +62,20 @@ return -1
 ```
 
 **Độ phức tạp**:
-| Case | Time | Giải thích |
-|------|------|------------|
-| Best | O(1) | Target ở chính giữa |
-| Average | O(log n) | Chia đôi mỗi bước |
-| Worst | O(log n) | Phải chia đến phần tử cuối |
+|   Case  |   Time   |        Giải thích          |
+|---------|----------|----------------------------|
+| Best    | O(1)     | Target ở chính giữa        |
+| Average | O(log n) | Chia đôi mỗi bước          |
+| Worst   | O(log n) | Phải chia đến phần tử cuối |
 
 **So sánh Linear vs Binary Search**:
 
-| Tiêu chí | Linear Search | Binary Search |
-|----------|---------------|---------------|
-| Time Complexity | O(n) | O(log n) |
-| Yêu cầu sắp xếp | ❌ Không | ✅ Có |
-| n = 1,000,000 | ~1,000,000 bước | ~20 bước |
-| Phù hợp | Dữ liệu nhỏ, không sắp xếp | Dữ liệu lớn, đã sắp xếp |
+|   Tiêu chí      |       Linear Search        |       Binary Search     |
+|-----------------|----------------------------|-------------------------|
+| Time Complexity |            O(n)            |          O(log n)       |
+| Yêu cầu sắp xếp |           Không            |             Có          |
+| n = 1,000,000   | ~1,000,000 bước            |          ~20 bước       |
+| Phù hợp         | Dữ liệu nhỏ, không sắp xếp | Dữ liệu lớn, đã sắp xếp |
 
 ---
 
@@ -90,10 +90,10 @@ return -1
         │                  │                  │
    SIMPLE O(n²)    EFFICIENT O(n log n)   NON-COMPARISON O(n)
         │                  │                  │
-   ┌────┴────┐      ┌──────┴──────┐          │
-   │ Bubble  │      │ Merge Sort │      Counting Sort
-   │Selection│      │ Quick Sort │      Radix Sort
-   │Insertion│      │ Heap Sort  │
+   ┌────┴────┐      ┌──────┴──────┐           │
+   │ Bubble  │      │ Merge Sort  │      Counting Sort
+   │Selection│      │ Quick Sort  │      Radix Sort
+   │Insertion│      │ Heap Sort   │
 ```
 
 ---

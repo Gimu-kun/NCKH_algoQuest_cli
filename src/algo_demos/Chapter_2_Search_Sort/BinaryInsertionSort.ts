@@ -21,14 +21,14 @@
  * 
  * SO SÁNH VỚI INSERTION SORT THƯỜNG:
  * 
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ Tiêu chí | Insertion Sort | Binary Insertion Sort |
- * ├──────────────────────────────────────────────────────────────────────────┤
- * │ Tìm vị trí | Linear O(n) | Binary O(log n) |
- * │ Số so sánh | O(n²) | O(n log n) |
- * │ Số dịch chuyển | O(n²) | O(n²) (vẫn như cũ!) |
- * │ Overall | O(n²) | O(n²) (do dịch chuyển) |
- * └──────────────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │     Tiêu chí      | Insertion Sort | Binary Insertion Sort  |
+ * ├─────────────────────────────────────────────────────────────┤
+ * │ Tìm vị trí        | Linear O(n)    | Binary O(log n)        |
+ * │ Số so sánh        | O(n²)          | O(n log n)             |
+ * │ Số dịch chuyển    | O(n²)          | O(n²) (vẫn như cũ!)    |
+ * │ Overall           | O(n²)          | O(n²) (do dịch chuyển) |
+ * └─────────────────────────────────────────────────────────────┘
  * 
  * [!] CHÚ Ý QUAN TRỌNG:
  * - Số SO SÁNH giảm từ O(n²) xuống O(n log n)

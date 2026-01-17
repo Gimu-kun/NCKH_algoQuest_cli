@@ -30,7 +30,7 @@
  * │ Unsorted Array  | O(1)           | O(n)           | O(n)  |
  * │ Sorted Array    | O(n)           | O(1)           | O(n)  |
  * │ Linked List     | O(1) hoặc O(n) | O(n) hoặc O(1) | O(n)  |
- * │ Binary Heap ⭐  | O(log n)       |O(log n)        |O(n)   |
+ * │ Binary Heap     | O(log n)       | O(log n)       | O(n)  |
  * │ Fibonacci Heap  | O(1) amortized | O(log n)       | O(n)  |
  * └───────────────────────────────────────────────────────────┘
  * 

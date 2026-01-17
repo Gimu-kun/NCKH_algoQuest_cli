@@ -62,12 +62,12 @@
  * ┌─────────────────┬────────────────┬────────────────┐
  * │ Tiêu chí        │ Array          │ Linked List    │
  * ├─────────────────┼────────────────┼────────────────┤
- * │ Access by index │ O(1) ✅        │ O(n) ❌        │
- * │ Insert at start │ O(n) ❌        │ O(1) ✅        │
+ * │ Access by index │ O(1)           │ O(n)          │
+ * │ Insert at start │ O(n)           │ O(1)           │
  * │ Insert at end   │ O(1) amortized │ O(1) with tail │
- * │ Delete at start │ O(n) ❌        │ O(1) ✅        │
+ * │ Delete at start │ O(n)           │ O(1)           │
  * │ Memory usage    │ Contiguous     │ Scattered      │
- * │ Cache locality  │ Good ✅        │ Poor ❌        │
+ * │ Cache locality  │ Good           │ Poor           │
  * └─────────────────┴────────────────┴────────────────┘
  *
  * KHI NÀO DÙNG LINKED LIST:

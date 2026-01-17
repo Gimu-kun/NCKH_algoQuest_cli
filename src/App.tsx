@@ -53,14 +53,13 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
 };
 
 function App() {
-  const { currentScene, currentDungeonId, endCombat, theme, combat } = useGameStore();
+  const { currentScene, currentDungeonId, endCombat, theme, combat, setScene, enterDungeon } = useGameStore();
   const navigate = useNavigate();
   const location = useLocation();
   const isFirstRender = useRef(true);
 
   // Sync URL -> Store (Precedence on Load / Back Button)
-  // Sync URL -> Store (Deep Linking) - DISABLED TEMPORARILY
-  /*
+  // This enables the browser back button to work correctly
   useEffect(() => {
     // 1. Check for specific dungeon path: /dungeon/:id
     if (location.pathname.startsWith('/dungeon/')) {
@@ -83,9 +82,8 @@ function App() {
         }
       }
     }
-  }
-  }, [location.pathname, currentScene, currentDungeonId, enterDungeon, setScene]); 
-  */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   // Sync Store -> URL (Game Logic Navigation)
   // Chỉ chạy khi state thay đổi, nhưng bỏ qua lần đầu (do URL load)
@@ -103,7 +101,7 @@ function App() {
 
       if (currentPath !== targetPath) {
         console.log(`[App] Syncing URL: ${currentPath} -> ${targetPath}`);
-        navigate(targetPath, { replace: true });
+        navigate(targetPath);
       }
     } else {
       const path = SCENE_TO_PATH[currentScene];
@@ -112,7 +110,7 @@ function App() {
         const targetPath = path.replace(/\/+$/, '');
 
         if (currentPath !== targetPath) {
-          navigate(targetPath, { replace: true });
+          navigate(targetPath);
         }
       }
     }

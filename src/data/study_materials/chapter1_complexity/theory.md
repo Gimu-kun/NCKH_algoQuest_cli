@@ -40,10 +40,10 @@ T(n) = O(f(n))
 
 ### 3. Các ký hiệu tiệm cận khác
 
-| Ký hiệu | Tên gọi | Ý nghĩa |
-|---------|---------|---------|
-| **O(n)** | Big O | Giới hạn trên (Upper Bound) - Worst Case |
-| **Ω(n)** | Big Omega | Giới hạn dưới (Lower Bound) - Best Case |
+|  Ký hiệu |  Tên gọi  |                 Ý nghĩa                    |
+|----------|-----------|--------------------------------------------|
+| **O(n)** | Big O     | Giới hạn trên (Upper Bound) - Worst Case   |
+| **Ω(n)** | Big Omega | Giới hạn dưới (Lower Bound) - Best Case    |
 | **Θ(n)** | Big Theta | Giới hạn chặt (Tight Bound) - Average Case |
 
 ---
@@ -52,15 +52,15 @@ T(n) = O(f(n))
 
 Sắp xếp từ **tốt nhất** → **xấu nhất**:
 
-| Độ phức tạp | Tên gọi | Ví dụ | n=1000 (số phép tính) |
-|-------------|---------|-------|----------------------|
-| **O(1)** | Constant | Hashing, Truy cập mảng | 1 |
-| **O(log n)** | Logarithmic | Binary Search, BST | ~10 |
-| **O(n)** | Linear | Linear Search | 1,000 |
-| **O(n log n)** | Linearithmic | Merge Sort, Quick Sort | ~10,000 |
-| **O(n²)** | Quadratic | Bubble, Selection, Insertion | 1,000,000 |
-| **O(2ⁿ)** | Exponential | Backtracking, Recursive Fib | ~10³⁰⁰ |
-| **O(n!)** | Factorial | Permutations | Không thể tính! |
+|   Độ phức tạp  |    Tên gọi   |            Ví dụ             | n=1000 (số phép tính) |
+|----------------|--------------|------------------------------|-----------------------|
+| **O(1)**       | Constant     | Hashing, Truy cập mảng       |             1         |
+| **O(log n)**   | Logarithmic  | Binary Search, BST           |            ~10        |
+| **O(n)**       | Linear       | Linear Search                |           1,000       |
+| **O(n log n)** | Linearithmic | Merge Sort, Quick Sort       |          ~10,000      |
+| **O(n²)**      | Quadratic    | Bubble, Selection, Insertion |         1,000,000     |
+| **O(2ⁿ)**      | Exponential  | Backtracking, Recursive Fib  |           ~10³⁰⁰      |
+| **O(n!)**      | Factorial    | Permutations                 |      Không thể tính!  |
 
 ---
 
@@ -104,12 +104,12 @@ for (int i = 0; i < n; i++) {      // O(n)
 
 **Space Complexity** = Bộ nhớ Input + **Auxiliary Space** (Bộ nhớ phụ)
 
-| Thuật toán | Auxiliary Space | Giải thích |
-|------------|-----------------|------------|
-| Bubble Sort | O(1) | Chỉ dùng vài biến tạm |
-| Merge Sort | O(n) | Cần mảng phụ để merge |
-| Quick Sort | O(log n) | Stack đệ quy |
-| Fibonacci DP | O(n) | Mảng lưu kết quả |
+|  Thuật toán  | Auxiliary Space |      Giải thích       |
+|--------------|-----------------|-----------------------|
+| Bubble Sort  | O(1)            | Chỉ dùng vài biến tạm |
+| Merge Sort   | O(n)            | Cần mảng phụ để merge |
+| Quick Sort   | O(log n)        | Stack đệ quy          |
+| Fibonacci DP | O(n)            | Mảng lưu kết quả      |
 
 ---
 
@@ -117,10 +117,10 @@ for (int i = 0; i < n; i++) {      // O(n)
 
 **Định lý**: Thường phải **đánh đổi** giữa thời gian và bộ nhớ!
 
-| Cách tiếp cận | Time | Space | Ví dụ |
-|---------------|------|-------|-------|
-| **Tốn thời gian, tiết kiệm bộ nhớ** | Chậm hơn | Ít hơn | Fibonacci đệ quy |
-| **Tốn bộ nhớ, nhanh hơn** | Nhanh hơn | Nhiều hơn | Fibonacci với Memoization |
+|           Cách tiếp cận            |    Time   |    Space  |            Ví dụ         |
+|------------------------------------|-----------|-----------|--------------------------|
+| **Tốn thời gian, tiết kiệm bộ nhớ**| Chậm hơn  | Ít hơn    | Fibonacci đệ quy         |
+| **Tốn bộ nhớ, nhanh hơn**          | Nhanh hơn | Nhiều hơn | Fibonacci với Memoization|
 
 ---
 

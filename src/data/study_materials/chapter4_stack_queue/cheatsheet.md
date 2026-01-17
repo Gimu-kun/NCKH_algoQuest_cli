@@ -35,23 +35,23 @@
 
 ### Stack Operations
 
-| Thao tác | Time | Space |
-|----------|------|-------|
-| `push(x)` | O(1) | O(1) |
-| `pop()` | O(1) | O(1) |
-| `top()` / `peek()` | O(1) | O(1) |
-| `isEmpty()` | O(1) | O(1) |
-| `size()` | O(1) | O(1) |
+|      Thao tác      | Time | Space |
+|--------------------|------|-------|
+| `push(x)`          | O(1) |  O(1) |
+| `pop()`            | O(1) |  O(1) |
+| `top()` / `peek()` | O(1) |  O(1) |
+| `isEmpty()`        | O(1) |  O(1) |
+| `size()`           | O(1) |  O(1) |
 
 ### Queue Operations
 
-| Thao tác | Time | Space |
-|----------|------|-------|
-| `enqueue(x)` | O(1) | O(1) |
-| `dequeue()` | O(1) | O(1) |
-| `front()` / `peek()` | O(1) | O(1) |
-| `isEmpty()` | O(1) | O(1) |
-| `size()` | O(1) | O(1) |
+|       Thao tác       | Time | Space |
+|----------------------|------|-------|
+| `enqueue(x)`         | O(1) |  O(1) |
+| `dequeue()`          | O(1) |  O(1) |
+| `front()` / `peek()` | O(1) |  O(1) |
+| `isEmpty()`          | O(1) |  O(1) |
+| `size()`             | O(1) |  O(1) |
 
 ---
 
@@ -136,18 +136,18 @@ int dequeue() {
 ## 🔄 CÁC BIẾN THỂ
 
 ### Stack Variants
-| Loại | Đặc điểm |
-|------|----------|
-| **Min Stack** | getMin() O(1) |
-| **Max Stack** | getMax() O(1) |
+|          Loại           |         Đặc điểm       |
+|-------------------------|------------------------|
+| **Min Stack**           | getMin() O(1)          |
+| **Max Stack**           | getMax() O(1)          |
 | **Two Stacks in Array** | 2 stacks share 1 array |
 
 ### Queue Variants
-| Loại | Đặc điểm |
-|------|----------|
-| **Circular Queue** | Tái sử dụng không gian |
-| **Priority Queue** | Ra theo priority, không FIFO |
-| **Deque** | Thêm/xóa cả 2 đầu |
+|        Loại        |             Đặc điểm            |
+|--------------------|---------------------------------|
+| **Circular Queue** | Tái sử dụng không gian          |
+| **Priority Queue** | Ra theo priority, không FIFO    |
+| **Deque**          | Thêm/xóa cả 2 đầu               |
 | **Blocking Queue** | Thread-safe, wait if full/empty |
 
 ---
@@ -156,24 +156,24 @@ int dequeue() {
 
 ### Stack Applications
 
-| Bài toán | Pattern |
-|----------|---------|
+|        Bài toán          |             Pattern            |
+|--------------------------|--------------------------------|
 | **Balanced Parentheses** | Push mở, pop đóng, check match |
-| **Infix to Postfix** | Dùng stack lưu operators |
-| **Postfix Evaluation** | Push số, pop khi gặp operator |
-| **DFS Graph** | Push neighbors, pop to visit |
-| **Undo/Redo** | 2 stacks: undo và redo |
-| **Browser Back** | Stack of visited pages |
+| **Infix to Postfix**     | Dùng stack lưu operators       |
+| **Postfix Evaluation**   | Push số, pop khi gặp operator  |
+| **DFS Graph**            | Push neighbors, pop to visit   |
+| **Undo/Redo**            | 2 stacks: undo và redo         |
+| **Browser Back**         | Stack of visited pages         |
 
 ### Queue Applications
 
-| Bài toán | Pattern |
-|----------|---------|
-| **BFS Graph** | Enqueue neighbors, dequeue to visit |
-| **Level Order Tree** | Enqueue children at each level |
-| **Sliding Window Max** | Deque giữ max candidates |
-| **CPU Scheduling** | Queue of processes |
-| **Printer Spooler** | Queue of print jobs |
+|         Bài toán       |               Pattern               |
+|------------------------|-------------------------------------|
+| **BFS Graph**          | Enqueue neighbors, dequeue to visit |
+| **Level Order Tree**   | Enqueue children at each level      |
+| **Sliding Window Max** | Deque giữ max candidates            |
+| **CPU Scheduling**     | Queue of processes                  |
+| **Printer Spooler**    | Queue of print jobs                 |
 
 ---
 
@@ -205,11 +205,11 @@ front = (front + 1) % MAX;
 
 ## 🆚 ARRAY vs LINKED LIST
 
-| Cài đặt | Stack | Queue |
-|---------|-------|-------|
-| **Array** | Đơn giản, fast | Cần circular |
-| **Linked List** | Dynamic size | Need front+rear ptr |
-| **Memory** | Array tốt hơn | Depends |
+|     Cài đặt     |     Stack      |         Queue       |
+|-----------------|----------------|---------------------|
+| **Array**       | Đơn giản, fast | Cần circular        |
+| **Linked List** | Dynamic size   | Need front+rear ptr |
+| **Memory**      | Array tốt hơn  | Depends             |
 
 ---
 

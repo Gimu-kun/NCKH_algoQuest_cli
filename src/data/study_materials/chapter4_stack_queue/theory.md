@@ -8,9 +8,9 @@
 
 **Stack** và **Queue** là hai cấu trúc dữ liệu **tuyến tính** với nguyên tắc truy cập khác nhau:
 
-| Cấu trúc | Nguyên tắc | Ví dụ thực tế |
-|----------|------------|---------------|
-| **Stack** | LIFO (Last In, First Out) | Chồng đĩa, Undo/Redo |
+| Cấu trúc  |          Nguyên tắc        |        Ví dụ thực tế           |
+|-----------|----------------------------|--------------------------------|
+| **Stack** | LIFO (Last In, First Out)  | Chồng đĩa, Undo/Redo           |
 | **Queue** | FIFO (First In, First Out) | Hàng đợi mua vé, Printer queue |
 
 ---
@@ -46,13 +46,13 @@
 
 ### Các thao tác cơ bản - O(1)
 
-| Thao tác | Mô tả | Time Complexity |
-|----------|-------|-----------------|
-| **push(x)** | Thêm x vào đỉnh stack | O(1) |
-| **pop()** | Xóa và trả về phần tử đỉnh | O(1) |
-| **top() / peek()** | Xem phần tử đỉnh (không xóa) | O(1) |
-| **isEmpty()** | Kiểm tra stack rỗng | O(1) |
-| **size()** | Số phần tử trong stack | O(1) |
+|      Thao tác      |              Mô tả           | Time Complexity |
+|--------------------|------------------------------|-----------------|
+| **push(x)**        | Thêm x vào đỉnh stack        |       O(1)      |
+| **pop()**          | Xóa và trả về phần tử đỉnh   |       O(1)      |
+| **top() / peek()** | Xem phần tử đỉnh (không xóa) |       O(1)      |
+| **isEmpty()**      | Kiểm tra stack rỗng          |       O(1)      |
+| **size()**         | Số phần tử trong stack       |       O(1)      |
 
 ### Cài đặt Stack
 
@@ -251,13 +251,13 @@ int evaluatePostfix(string expr) {
 
 #### 4. Các ứng dụng khác
 
-| Ứng dụng | Mô tả |
-|----------|-------|
-| **Undo/Redo** | Lưu các action, undo = pop |
-| **Browser Back** | Lưu các trang đã truy cập |
-| **Function Call Stack** | Lưu stack frame khi gọi hàm |
+|            Ứng dụng          |            Mô tả            |
+|------------------------------|-----------------------------|
+| **Undo/Redo**                | Lưu các action, undo = pop  |
+| **Browser Back**             | Lưu các trang đã truy cập   |
+| **Function Call Stack**      | Lưu stack frame khi gọi hàm |
 | **DFS (Depth First Search)** | Duyệt đồ thị theo chiều sâu |
-| **Backtracking** | Quay lui thử các lựa chọn |
+| **Backtracking**             | Quay lui thử các lựa chọn   |
 
 ---
 
@@ -286,13 +286,13 @@ int evaluatePostfix(string expr) {
 
 ### Các thao tác cơ bản - O(1)
 
-| Thao tác | Mô tả | Time Complexity |
-|----------|-------|-----------------|
-| **enqueue(x)** | Thêm x vào cuối queue | O(1) |
-| **dequeue()** | Xóa và trả về phần tử đầu | O(1) |
-| **front() / peek()** | Xem phần tử đầu (không xóa) | O(1) |
-| **isEmpty()** | Kiểm tra queue rỗng | O(1) |
-| **size()** | Số phần tử trong queue | O(1) |
+|      Thao tác        |           Mô tả             | Time Complexity |
+|----------------------|-----------------------------|-----------------|
+| **enqueue(x)**       | Thêm x vào cuối queue       |      O(1)       |
+| **dequeue()**        | Xóa và trả về phần tử đầu   |      O(1)       |
+| **front() / peek()** | Xem phần tử đầu (không xóa) |      O(1)       |
+| **isEmpty()**        | Kiểm tra queue rỗng         |      O(1)       |
+| **size()**           | Số phần tử trong queue      |      O(1)       |
 
 ### Cài đặt Queue
 
@@ -449,26 +449,26 @@ class LinkedQueue {
 
 #### 3. Các ứng dụng khác
 
-| Ứng dụng | Mô tả |
-|----------|-------|
+|             Ứng dụng           |             Mô tả            |
+|--------------------------------|------------------------------|
 | **BFS (Breadth First Search)** | Duyệt đồ thị theo chiều rộng |
-| **Level-order Traversal** | Duyệt cây theo level |
-| **CPU Scheduling** | Round-robin, FCFS |
-| **Printer Queue** | In theo thứ tự gửi |
-| **Message Queue** | Communication giữa processes |
-| **Buffering** | IO buffer, keyboard buffer |
+| **Level-order Traversal**      | Duyệt cây theo level         |
+| **CPU Scheduling**             | Round-robin, FCFS            |
+| **Printer Queue**              | In theo thứ tự gửi           |
+| **Message Queue**              | Communication giữa processes |
+| **Buffering**                  | IO buffer, keyboard buffer   |
 
 ---
 
 ## 🆚 SO SÁNH STACK vs QUEUE
 
-| Tiêu chí | Stack (LIFO) | Queue (FIFO) |
-|----------|--------------|--------------|
-| **Nguyên tắc** | Last In First Out | First In First Out |
-| **Thao tác chính** | push, pop, top | enqueue, dequeue, front |
-| **Điểm truy cập** | Chỉ ở TOP | FRONT (ra) và REAR (vào) |
-| **Traversal** | DFS | BFS |
-| **Ví dụ** | Undo, Call stack | Hàng đợi, Scheduling |
+|      Tiêu chí      |   Stack (LIFO)    |       Queue (FIFO)       |
+|--------------------|-------------------|--------------------------|
+| **Nguyên tắc**     | Last In First Out | First In First Out       |
+| **Thao tác chính** | push, pop, top    | enqueue, dequeue, front  |
+| **Điểm truy cập**  | Chỉ ở TOP         | FRONT (ra) và REAR (vào) |
+| **Traversal**      | DFS               | BFS                      |
+| **Ví dụ**          | Undo, Call stack  | Hàng đợi, Scheduling     |
 
 ---
 

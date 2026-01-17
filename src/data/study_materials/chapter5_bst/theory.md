@@ -291,12 +291,12 @@ SAU:      8
          1   6     14
 ```
 
-| Kiểu | Thứ tự | Kết quả | Ứng dụng |
-|------|--------|---------|----------|
-| **Inorder** | Left → Root → Right | 1, 3, 6, 8, 10, 14 | Output sorted! |
-| **Preorder** | Root → Left → Right | 8, 3, 1, 6, 10, 14 | Copy cây |
-| **Postorder** | Left → Right → Root | 1, 6, 3, 14, 10, 8 | Delete cây |
-| **Level-order** | Theo level | 8, 3, 10, 1, 6, 14 | BFS |
+|       Kiểu      |        Thứ tự       |       Kết quả      |    Ứng dụng    |
+|-----------------|---------------------|--------------------|----------------|
+| **Inorder**     | Left → Root → Right | 1, 3, 6, 8, 10, 14 | Output sorted! |
+| **Preorder**    | Root → Left → Right | 8, 3, 1, 6, 10, 14 | Copy cây       |
+| **Postorder**   | Left → Right → Root | 1, 6, 3, 14, 10, 8 | Delete cây     |
+| **Level-order** | Theo level          | 8, 3, 10, 1, 6, 14 | BFS            |
 
 ### Code các kiểu duyệt:
 
@@ -415,13 +415,13 @@ Khi cây mất cân bằng (Insert/Delete), thực hiện xoay:
 
 ## 📊 ĐỘ PHỨC TẠP
 
-| Thao tác | Average (Balanced) | Worst (Skewed) |
-|----------|-------------------|----------------|
-| Search | O(log n) | O(n) |
-| Insert | O(log n) | O(n) |
-| Delete | O(log n) | O(n) |
-| Traversal | O(n) | O(n) |
-| Space | O(n) | O(n) |
+|  Thao tác | Average (Balanced) | Worst (Skewed) |
+|-----------|--------------------|----------------|
+| Search    | O(log n)           |     O(n)       |
+| Insert    | O(log n)           |     O(n)       |
+| Delete    | O(log n)           |     O(n)       |
+| Traversal | O(n)               |     O(n)       |
+| Space     | O(n)               |     O(n)       |
 
 ---
 
@@ -441,12 +441,12 @@ Khi cây mất cân bằng (Insert/Delete), thực hiện xoay:
 
 ### 🆚 So sánh với cấu trúc khác:
 
-| Cấu trúc | Search | Insert | Delete | Sorted order |
-|----------|--------|--------|--------|--------------|
-| **Array (sorted)** | O(log n) | O(n) | O(n) | ✅ |
-| **Linked List** | O(n) | O(1)* | O(1)* | ❌ |
+|      Cấu trúc      |  Search  |  Insert  |  Delete  | Sorted order |
+|--------------------|----------|----------|----------|--------------|
+| **Array (sorted)** | O(log n) | O(n)     | O(n)     |     ✅       |
+| **Linked List**    | O(n)     | O(1)*    | O(1)*    |     ❌       |
 | **BST (balanced)** | O(log n) | O(log n) | O(log n) | ✅ (inorder) |
-| **Hash Table** | O(1)** | O(1)** | O(1)** | ❌ |
+| **Hash Table**     | O(1)**   | O(1)**   | O(1)**   |     ❌       |
 
 *Nếu có pointer
 **Average case

@@ -42,12 +42,12 @@
  * - k >> n: Tốn bộ nhớ và chậm, dùng sort khác
  * 
  * SO SÁNH VỚI CÁC THUẬT TOÁN KHÁC:
- * | Thuật toán | Type | Time | Space | Stable |
- * |------------|------|------|-------|--------|
- * | Quick Sort | Comparison | O(n log n) | O(log n) | No |
- * | Merge Sort | Comparison | O(n log n) | O(n) | Yes |
- * | Counting Sort | Non-comparison | O(n + k) | O(k) | Yes |
- * | Radix Sort | Non-comparison | O(d(n + k)) | O(n + k) | Yes |
+ * | Thuật toán    | Type           | Time       | Space      | Stable |
+ * |---------------|----------------|------------|------------|--------|
+ * | Quick Sort    | Comparison     | O(n log n) | O(log n)   | No     |
+ * | Merge Sort    | Comparison     | O(n log n) | O(n)       | Yes    |
+ * | Counting Sort | Non-comparison | O(n + k)   | O(k)       | Yes    |
+ * | Radix Sort    | Non-comparison | O(d(n + k))| O(n + k)   | Yes    |
  * 
  * ƯU ĐIỂM:
  * + O(n) khi k = O(n) - nhanh hơn O(n log n)

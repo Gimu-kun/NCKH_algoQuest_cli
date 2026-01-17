@@ -16,27 +16,27 @@
  * 
  * ┌──────────────────────────────────────────────────────────────────────────┐
  * │                                                                          │
- * │   ← addFront / removeFront      addRear / removeRear →                  │
+ * │   ← addFront / removeFront      addRear / removeRear →                   │
  * │                                                                          │
  * │        ↓        ↑                           ↓        ↑                   │
- * │   ┌─────────────────────────────────────────────────────┐               │
- * │   │       │       │       │       │       │       │     │               │
- * │   │   A   │   B   │   C   │   D   │   E   │   F   │     │               │
- * │   │       │       │       │       │       │       │     │               │
- * │   └─────────────────────────────────────────────────────┘               │
+ * │   ┌─────────────────────────────────────────────────────┐                │
+ * │   │       │       │       │       │       │       │     │                │
+ * │   │   A   │   B   │   C   │   D   │   E   │   F   │     │                │
+ * │   │       │       │       │       │       │       │     │                │
+ * │   └─────────────────────────────────────────────────────┘                │
  * │     FRONT                                         REAR                   │
  * │                                                                          │
  * └──────────────────────────────────────────────────────────────────────────┘
  * 
  * SO SÁNH VỚI STACK VÀ QUEUE:
  * 
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ Cấu trúc | Thêm | Xóa | Nguyên tắc |
- * ├──────────────────────────────────────────────────────────────────────────┤
- * │ Stack | Một đầu (top) | Một đầu (top) | LIFO |
- * │ Queue | Một đầu (rear) | Một đầu (front) | FIFO |
- * │ Deque | Cả hai đầu | Cả hai đầu | Flexible |
- * └──────────────────────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────┐
+ * │ Cấu trúc |      Thêm      |       Xóa       | Nguyên tắc |
+ * ├──────────────────────────────────────────────────────────┤
+ * │ Stack    | Một đầu (top)  | Một đầu (top)   | LIFO       |
+ * │ Queue    | Một đầu (rear) | Một đầu (front) | FIFO       |
+ * │ Deque    | Cả hai đầu     | Cả hai đầu      | Flexible   |
+ * └──────────────────────────────────────────────────────────┘
  * 
  * CÀI ĐẶT:
  * 1. Circular Array: O(1) các operations, fixed size
@@ -51,14 +51,14 @@
  * - LRU Cache implementation
  * 
  * ĐỘ PHỨC TẠP:
- * | Operation | Time | Description |
- * |-----------|------|-------------|
- * | addFront | O(1) | Thêm vào đầu |
- * | addRear | O(1) | Thêm vào cuối |
- * | removeFront | O(1) | Xóa từ đầu |
- * | removeRear | O(1) | Xóa từ cuối |
- * | peekFront | O(1) | Xem đầu |
- * | peekRear | O(1) | Xem cuối |
+ * |  Operation  | Time |  Description  |
+ * |-------------|------|---------------|
+ * | addFront    | O(1) | Thêm vào đầu  |
+ * | addRear     | O(1) | Thêm vào cuối |
+ * | removeFront | O(1) | Xóa từ đầu    |
+ * | removeRear  | O(1) | Xóa từ cuối   |
+ * | peekFront   | O(1) | Xem đầu       |
+ * | peekRear    | O(1) | Xem cuối      |
  * 
  * ƯU ĐIỂM:
  * ✅ Linh hoạt: có thể dùng như Stack hoặc Queue

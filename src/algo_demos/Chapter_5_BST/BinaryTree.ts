@@ -10,32 +10,32 @@
  * 
  * CẤU TRÚC NODE:
  * 
- *         ┌─────────┐
- *         │   data  │
- *         ├────┬────┤
+ *         ┌──────────┐
+ *         │   data   │
+ *         ├────┬─────┤
  *         │left│right│
  *         └──↓─┴──↓──┘
  *            ↓    ↓
- *          [L]   [R]
+ *           [L]  [R]
  * 
  * CÁC THUẬT NGỮ QUAN TRỌNG:
  * 
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ Thuật ngữ | Định nghĩa |
- * ├──────────────────────────────────────────────────────────────────────────┤
- * │ Root | Node gốc, không có parent |
- * │ Leaf | Node lá, không có children |
- * │ Internal Node | Node có ít nhất 1 child |
- * │ Parent | Node cha |
- * │ Child | Node con |
- * │ Sibling | Các node cùng parent |
- * │ Ancestor | Tổ tiên (parent, grandparent, ...) |
- * │ Descendant | Con cháu (children, grandchildren, ...) |
- * │ Height | Số cạnh từ node đến leaf xa nhất |
- * │ Depth | Số cạnh từ root đến node |
- * │ Level | Depth + 1 (hoặc bằng Depth, tùy convention) |
- * │ Subtree | Cây con với node làm root |
- * └──────────────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │   Thuật ngữ   |                 Định nghĩa                  |
+ * ├─────────────────────────────────────────────────────────────┤
+ * │ Root          | Node gốc, không có parent                   |
+ * │ Leaf          | Node lá, không có children                  |
+ * │ Internal Node | Node có ít nhất 1 child                     |
+ * │ Parent        | Node cha                                    |
+ * │ Child         | Node con                                    |
+ * │ Sibling       | Các node cùng parent                        |
+ * │ Ancestor      | Tổ tiên (parent, grandparent, ...)          |
+ * │ Descendant    | Con cháu (children, grandchildren, ...)     |
+ * │ Height        | Số cạnh từ node đến leaf xa nhất            |
+ * │ Depth         | Số cạnh từ root đến node                    |
+ * │ Level         | Depth + 1 (hoặc bằng Depth, tùy convention) |
+ * │ Subtree       | Cây con với node làm root                   |
+ * └─────────────────────────────────────────────────────────────┘
  * 
  * CÁC LOẠI BINARY TREE:
  * 
@@ -370,7 +370,7 @@ export class BinaryTree<T> {
         let foundNull = false;
 
         while (queue.length > 0) {
-            const node = queue.shift();
+            const node = queue.shift()!;
 
             if (node === null) {
                 foundNull = true;

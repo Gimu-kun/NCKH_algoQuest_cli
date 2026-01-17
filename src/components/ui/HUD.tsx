@@ -162,7 +162,7 @@ export const HUD: React.FC = () => {
                         </div>
                         <div className="sparky-bubble">
                             <img src="/assets/Ảnh Assets/UI/Alert Icon Lightbulb.png" alt="Hint" className="alert-icon" />
-                            <p>{sparkyMessage}</p>
+                            <p dangerouslySetInnerHTML={{ __html: sparkyMessage.replace(/\n/g, '<br/>') }} />
                         </div>
                     </motion.div>
                 )

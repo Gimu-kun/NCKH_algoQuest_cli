@@ -12,23 +12,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         ARRAY vs LINKED LIST                         │
+│                         ARRAY vs LINKED LIST                        │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ARRAY (Mảng):                                                       │
+│                                                                     │
+│  ARRAY (Mảng):                                                      │
 │  ┌───┬───┬───┬───┬───┐                                              │
-│  │ 5 │ 3 │ 8 │ 1 │ 2 │  ← Các phần tử LIÊN TỤC trong bộ nhớ        │
+│  │ 5 │ 3 │ 8 │ 1 │ 2 │  ← Các phần tử LIÊN TỤC trong bộ nhớ         │
 │  └───┴───┴───┴───┴───┘                                              │
-│  0x100 0x104 0x108 0x10C 0x110                                       │
-│                                                                      │
-│  LINKED LIST:                                                        │
+│  0x100 0x104 0x108 0x10C 0x110                                      │
+│                                                                     │
+│  LINKED LIST:                                                       │
 │  ┌───┬───┐    ┌───┬───┐    ┌───┬───┐    ┌───┬───┐                   │
 │  │ 5 │ ●─┼───►│ 3 │ ●─┼───►│ 8 │ ●─┼───►│ 1 │ / │                   │
 │  └───┴───┘    └───┴───┘    └───┴───┘    └───┴───┘                   │
-│  0x200        0x350        0x128        0x500                        │
-│  ↑                                                                   │
+│  0x200        0x350        0x128        0x500                       │
+│  ↑                                                                  │
 │  HEAD         ← Các node RẢI RÁC, kết nối bằng pointer              │
-│                                                                      │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -400,17 +400,17 @@ Circular Doubly:
 
 ### Array vs Linked List
 
-| Thao tác | Array | Singly LL | Doubly LL |
-|----------|-------|-----------|-----------|
-| **Access by index** | O(1) ✅ | O(n) | O(n) |
-| **Search** | O(n) / O(log n)* | O(n) | O(n) |
-| **Insert at head** | O(n) | O(1) ✅ | O(1) ✅ |
-| **Insert at tail** | O(1)** | O(n) | O(1)*** |
+|      Thao tác        | Array | Singly LL | Doubly LL |
+|----------------------|-------|-----------|-----------|
+| **Access by index**  | O(1) ✅ | O(n) | O(n) |
+| **Search**           | O(n) / O(log n)* | O(n) | O(n) |
+| **Insert at head**   | O(n) | O(1) ✅ | O(1) ✅ |
+| **Insert at tail**   | O(1)** | O(n) | O(1)*** |
 | **Insert at middle** | O(n) | O(n) | O(1)**** |
-| **Delete at head** | O(n) | O(1) ✅ | O(1) ✅ |
-| **Delete at tail** | O(1)** | O(n) | O(1) ✅ |
-| **Memory** | Liên tục | Rải rác | Rải rác |
-| **Extra space** | Không | +pointer | +2 pointers |
+| **Delete at head**   | O(n) | O(1) ✅ | O(1) ✅ |
+| **Delete at tail**   | O(1)** | O(n) | O(1) ✅ |
+| **Memory**           | Liên tục | Rải rác | Rải rác |
+| **Extra space**      | Không | +pointer | +2 pointers |
 
 *Binary Search nếu sorted
 **Nếu có tail pointer

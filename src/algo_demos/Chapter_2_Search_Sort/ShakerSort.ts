@@ -34,13 +34,13 @@
  * - Space: O(1) - in-place
  * 
  * SO SÁNH VỚI BUBBLE SORT:
- * | Tiêu chí | Bubble Sort | Shaker Sort |
- * |----------|-------------|-------------|
- * | Hướng duyệt | 1 chiều | 2 chiều |
- * | Số pass | ~n | ~n/2 |
- * | Với "turtle" | Chậm | Nhanh hơn |
- * | Complexity | O(n²) | O(n²) |
- * | Stable | Yes | Yes |
+ * |   Tiêu chí   | Bubble Sort | Shaker Sort |
+ * |--------------|-------------|-------------|
+ * | Hướng duyệt  | 1 chiều     | 2 chiều     |
+ * | Số pass      | ~n          | ~n/2        |
+ * | Với "turtle" | Chậm        | Nhanh hơn   |
+ * | Complexity   | O(n²)       | O(n²)       |
+ * | Stable       | Yes         | Yes         |
  * 
  * VẤN ĐỀ "TURTLE" VÀ "RABBIT":
  * - Rabbit: Phần tử lớn ở đầu mảng → nhanh chóng về cuối (OK)

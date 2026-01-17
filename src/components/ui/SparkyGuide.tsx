@@ -56,7 +56,7 @@ export const SparkyGuide: React.FC = () => {
                     <div className="sparky-bubble">
                         <div className="sparky-content">
                             <h4>✨ Sparky Mách Nước</h4>
-                            <p>{sparkyMessage}</p>
+                            <p dangerouslySetInnerHTML={{ __html: (sparkyMessage || '').replace(/\n/g, '<br/>') }} />
                         </div>
                         <button className="sparky-close-btn" onClick={hideSparky}>
                             Đã Hiểu 👍

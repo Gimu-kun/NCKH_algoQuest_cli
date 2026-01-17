@@ -17,16 +17,16 @@
  * 
  * SO SÁNH VỚI SINGLY LINKED LIST:
  * 
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ Tiêu chí | Singly LL | Doubly LL |
- * ├──────────────────────────────────────────────────────────────────────────┤
- * │ Pointers/node | 1 (next) | 2 (prev + next) |
- * │ Memory/node | Less | More (+1 pointer) |
- * │ Traverse direction | Forward only | Both directions |
- * │ Delete node (có ptr) | O(n)* | O(1) ✅ |
- * │ Delete tail | O(n) | O(1) ✅ |
- * │ Implementation | Simpler | More complex |
- * └──────────────────────────────────────────────────────────────────────────┘
+ * ┌────────────────────────────────────────────────────────┐
+ * │       Tiêu chí      |   Singly LL  |     Doubly LL     |
+ * ├────────────────────────────────────────────────────────┤
+ * │ Pointers/node       | 1 (next)     | 2 (prev + next)   |
+ * │ Memory/node         | Less         | More (+1 pointer) |
+ * │ Traverse direction  | Forward only | Both directions   |
+ * │ Delete node(có ptr) | O(n)*        | O(1)              |
+ * │ Delete tail         | O(n)         | O(1)              |
+ * │ Implementation      | Simpler      | More complex      |
+ * └────────────────────────────────────────────────────────┘
  * * Cần tìm previous node
  * 
  * ƯU ĐIỂM:

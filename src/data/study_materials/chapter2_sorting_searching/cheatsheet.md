@@ -36,19 +36,19 @@
 
 ### Simple Sorts (O(n²))
 
-| Thuật toán | Best | Average | Worst | Space | Stable | Đặc điểm |
-|------------|------|---------|-------|-------|--------|----------|
-| **Bubble** | O(n) | O(n²) | O(n²) | O(1) | ✅ | Swap cặp liền kề |
-| **Selection** | O(n²) | O(n²) | O(n²) | O(1) | ❌ | Tìm min/max |
-| **Insertion** | O(n) | O(n²) | O(n²) | O(1) | ✅ | Chèn vào vị trí đúng |
+|   Thuật toán  |  Best | Average | Worst | Space | Stable |      Đặc điểm        |
+|---------------|-------|---------|-------|-------|--------|----------------------|
+| **Bubble**    | O(n)  | O(n²)   | O(n²) | O(1)  |   có   | Swap cặp liền kề     |
+| **Selection** | O(n²) | O(n²)   | O(n²) | O(1)  | không  | Tìm min/max          |
+| **Insertion** | O(n)  | O(n²)   | O(n²) | O(1)  |   có   | Chèn vào vị trí đúng |
 
 ### Efficient Sorts (O(n log n))
 
-| Thuật toán | Best | Average | Worst | Space | Stable | Đặc điểm |
-|------------|------|---------|-------|-------|--------|----------|
-| **Merge** | O(n log n) | O(n log n) | O(n log n) | O(n) | ✅ | Divide & Conquer |
-| **Quick** | O(n log n) | O(n log n) | O(n²) | O(log n) | ❌ | Partition |
-| **Heap** | O(n log n) | O(n log n) | O(n log n) | O(1) | ❌ | Dùng Max Heap |
+| Thuật toán |    Best    |   Average  |    Worst   |    Space | Stable |     Đặc điểm     |
+|------------|------------|------------|------------|----------|--------|------------------|
+| **Merge**  | O(n log n) | O(n log n) | O(n log n) | O(n)     |   có   | Divide & Conquer |
+| **Quick**  | O(n log n) | O(n log n) | O(n²)      | O(log n) |  không | Partition        |
+| **Heap**   | O(n log n) | O(n log n) | O(n log n) | O(1)     |  không | Dùng Max Heap    |
 
 ---
 
@@ -155,12 +155,12 @@ quickSort(right_of_pivot)
 
 ## 🔢 SO SÁNH THỰC TẾ
 
-| n | O(n²) | O(n log n) | Nhanh hơn |
-|---|-------|------------|-----------|
-| 10 | 100 | 33 | 3x |
-| 100 | 10,000 | 664 | 15x |
-| 1,000 | 1,000,000 | 9,965 | 100x |
-| 10,000 | 100,000,000 | 132,877 | 752x |
+|    n   |    O(n²)    | O(n log n) | Nhanh hơn |
+|--------|-------------|------------|-----------|
+| 10     | 100         |     33     |    3x     |
+| 100    | 10,000      |     664    |    15x    |
+| 1,000  | 1,000,000   |    9,965   |   100x    |
+| 10,000 | 100,000,000 |   132,877  |   752x    |
 
 ---
 

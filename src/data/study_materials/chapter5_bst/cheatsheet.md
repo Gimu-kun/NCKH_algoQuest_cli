@@ -127,12 +127,12 @@ Node* insert(Node* root, int key) {
 
 ## 🌲 TRAVERSALS
 
-| Traversal | Order | Output | Dùng khi |
-|-----------|-------|--------|----------|
-| **Inorder** | L → Root → R | **SORTED!** | In thứ tự |
-| **Preorder** | Root → L → R | Copy sequence | Clone cây |
-| **Postorder** | L → R → Root | Delete sequence | Xóa cây |
-| **Level-order** | Từng level | BFS order | BFS |
+|    Traversal    |     Order    |      Output     | Dùng khi  |
+|-----------------|--------------|-----------------|-----------|
+| **Inorder**     | L → Root → R | **SORTED!**     | In thứ tự |
+| **Preorder**    | Root → L → R | Copy sequence   | Clone cây |
+| **Postorder**   | L → R → Root | Delete sequence | Xóa cây   |
+| **Level-order** | Từng level   | BFS order       | BFS       |
 
 ```cpp
 // INORDER - Quan trọng nhất cho BST!
@@ -219,12 +219,12 @@ int count(Node* r) {
 
 ## 🆚 SO SÁNH
 
-| Cấu trúc | Search | Insert | Delete | Sorted |
-|----------|:------:|:------:|:------:|:------:|
-| **Sorted Array** | O(log n) | O(n) 😞 | O(n) 😞 | ✅ |
-| **Linked List** | O(n) | O(1)* | O(1)* | ❌ |
-| **BST** | O(log n) | O(log n) | O(log n) | ✅ |
-| **Hash Table** | O(1)** | O(1)** | O(1)** | ❌ |
+|     Cấu trúc     |  Search  |   Insert |  Delete  | Sorted |
+|------------------|:--------:|:--------:|:--------:|:------:|
+| **Sorted Array** | O(log n) | O(n) 😞 | O(n) 😞  |   ✅  |
+| **Linked List**  | O(n)     | O(1)*    | O(1)*    |   ❌  |
+| **BST**          | O(log n) | O(log n) | O(log n) |   ✅  |
+| **Hash Table**   | O(1)**   | O(1)**   | O(1)**   |   ❌  |
 
 *với pointer sẵn
 **average case
@@ -253,11 +253,11 @@ if (root->left == NULL && root->right == NULL) { /* leaf */ }
 
 ## 🎯 BALANCED BST
 
-| Loại | Balance Factor | Rotation |
-|------|---------------|----------|
-| **AVL Tree** | \|h(L) - h(R)\| ≤ 1 | LL, RR, LR, RL |
-| **Red-Black Tree** | Black height | Color + Rotation |
-| **Splay Tree** | Không đảm bảo | Splay to root |
+|        Loại        | Balance Factor |      Rotation        |
+|--------------------|----------------|----------------------|
+| **AVL Tree**       | \|h(L) - h(R)\ | ≤ 1 | LL, RR, LR, RL |
+| **Red-Black Tree** | Black height   | Color + Rotation     |
+| **Splay Tree**     | Không đảm bảo  | Splay to root        |
 
 ```
 AVL Rotations:

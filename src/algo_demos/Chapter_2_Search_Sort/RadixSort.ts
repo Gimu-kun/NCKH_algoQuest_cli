@@ -43,12 +43,12 @@
  * - d × k < n × log(n) thì Radix Sort nhanh hơn O(n log n) sorts
  * 
  * SO SÁNH VỚI CÁC THUẬT TOÁN KHÁC:
- * | Thuật toán | Type | Best | Average | Worst | Stable |
- * |------------|------|------|---------|-------|--------|
- * | Quick Sort | Comparison | O(nlogn) | O(nlogn) | O(n²) | No |
- * | Merge Sort | Comparison | O(nlogn) | O(nlogn) | O(nlogn) | Yes |
- * | Radix Sort | Non-comparison | O(d(n+k)) | O(d(n+k)) | O(d(n+k)) | Yes |
- * | Counting Sort | Non-comparison | O(n+k) | O(n+k) | O(n+k) | Yes |
+ * |   Thuật toán   | Type           | Best       | Average    | Worst      | Stable |
+ * |----------------|----------------|------------|------------|------------|--------|
+ * | Quick Sort     | Comparison     | O(nlogn)   | O(nlogn)   | O(n²)      | No     |
+ * | Merge Sort     | Comparison     | O(nlogn)   | O(nlogn)   | O(nlogn)   | Yes    |
+ * | Radix Sort     | Non-comparison | O(d(n+k))  | O(d(n+k))  | O(d(n+k))  | Yes    |
+ * | Counting Sort  | Non-comparison | O(n+k)     | O(n+k)     | O(n+k)     | Yes    |
  * 
  * ƯU ĐIỂM:
  * + Có thể nhanh hơn O(n log n) với dữ liệu phù hợp

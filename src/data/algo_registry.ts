@@ -105,7 +105,7 @@ export const ALGO_REGISTRY: Chapter[] = [
         algos: [
             {
                 id: 'algo_overview',
-                name: '1. Tổng quan Thuật toán',
+                name: ' Tổng quan Thuật toán',
                 description: 'Định nghĩa, Big-O, và Phân loại',
                 icon: 'fi fi-rr-info',
                 inputType: 'none',
@@ -115,7 +115,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'pointer',
-                name: '2. Pointer (Con trỏ)',
+                name: ' Pointer (Con trỏ)',
                 description: 'Cơ chế quản lý bộ nhớ',
                 icon: 'fi fi-rr-vector-alt',
                 inputType: 'none',
@@ -125,7 +125,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'ds_overview',
-                name: '3. Tổng quan Cấu trúc dữ liệu',
+                name: ' Tổng quan Cấu trúc dữ liệu',
                 description: 'Data Structure & ADT',
                 icon: 'fi fi-rr-structure',
                 inputType: 'none',
@@ -146,7 +146,7 @@ export const ALGO_REGISTRY: Chapter[] = [
         algos: [
             {
                 id: 'arrays_strings',
-                name: '4. Mảng & Chuỗi',
+                name: ' Mảng & Chuỗi',
                 description: 'Cấu trúc dữ liệu cơ bản nhất',
                 icon: 'fi fi-rr-brackets-square',
                 inputType: 'array',
@@ -157,7 +157,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'linkedList',
-                name: '5. Linked List (Đơn)',
+                name: ' Linked List (Đơn)',
                 description: 'Danh sách liên kết đơn',
                 icon: 'fi fi-rr-link-alt',
                 inputType: 'array',
@@ -169,7 +169,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'doublyLinkedList',
-                name: '5b. Doubly Linked List',
+                name: ' Doubly Linked List',
                 description: 'Danh sách liên kết đôi',
                 icon: 'fi fi-rr-exchange',
                 inputType: 'array',
@@ -181,7 +181,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'circularLinkedList',
-                name: '5c. Circular Linked List',
+                name: ' Circular Linked List',
                 description: 'Danh sách liên kết vòng',
                 icon: 'fi fi-rr-rotate-right',
                 inputType: 'array',
@@ -193,7 +193,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'stack',
-                name: '6. Stack',
+                name: ' Stack',
                 description: 'LIFO - Vào sau ra trước',
                 icon: 'fi fi-rr-layers',
                 inputType: 'array',
@@ -205,7 +205,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'queue',
-                name: '7. Queue',
+                name: ' Queue',
                 description: 'FIFO - Vào trước ra trước',
                 icon: 'fi fi-rr-arrow-alt-right',
                 inputType: 'array',
@@ -217,7 +217,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'deque',
-                name: '7b. Deque (Double-Ended Queue)',
+                name: ' Deque (Double-Ended Queue)',
                 description: 'Hàng đợi hai đầu',
                 icon: 'fi fi-rr-arrows-h',
                 inputType: 'array',
@@ -229,7 +229,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'priorityQueue',
-                name: '7c. Priority Queue',
+                name: ' Priority Queue',
                 description: 'Hàng đợi ưu tiên',
                 icon: 'fi fi-rr-sort-amount-up',
                 inputType: 'array',
@@ -252,7 +252,7 @@ export const ALGO_REGISTRY: Chapter[] = [
         algos: [
             {
                 id: 'binaryTree',
-                name: '8. Binary Tree',
+                name: ' Binary Tree',
                 description: 'Cây nhị phân cơ bản',
                 icon: 'fi fi-rr-network',
                 inputType: 'array',
@@ -264,7 +264,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'bst',
-                name: '9. Binary Search Tree (BST)',
+                name: ' Binary Search Tree (BST)',
                 description: 'Cây nhị phân tìm kiếm',
                 icon: 'fi fi-rr-folder-tree',
                 inputType: 'array',
@@ -276,7 +276,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'avlTree',
-                name: '10. AVL Tree',
+                name: ' AVL Tree',
                 description: 'Cây cân bằng tự động',
                 icon: 'fi fi-rr-balance-scale-right',
                 inputType: 'array',
@@ -299,7 +299,7 @@ export const ALGO_REGISTRY: Chapter[] = [
         algos: [
             {
                 id: 'linearSearch',
-                name: '11a. Linear Search',
+                name: ' Linear Search',
                 description: 'Tìm kiếm tuần tự',
                 icon: 'fi fi-rr-search',
                 inputType: 'array_target',
@@ -312,7 +312,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'binarySearch',
-                name: '11b. Binary Search',
+                name: ' Binary Search',
                 description: 'Tìm kiếm nhị phân (mảng đã sắp xếp)',
                 icon: 'fi fi-rr-zoom-in',
                 inputType: 'array_target',
@@ -336,7 +336,7 @@ export const ALGO_REGISTRY: Chapter[] = [
         algos: [
             {
                 id: 'bubbleSort',
-                name: '12a. Bubble Sort',
+                name: ' Bubble Sort',
                 description: 'Sắp xếp nổi bọt',
                 icon: 'fi fi-rr-circle',
                 inputType: 'array',
@@ -349,7 +349,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'selectionSort',
-                name: '12b. Selection Sort',
+                name: ' Selection Sort',
                 description: 'Sắp xếp chọn',
                 icon: 'fi fi-rr-cursor',
                 inputType: 'array',
@@ -362,7 +362,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'insertionSort',
-                name: '12c. Insertion Sort',
+                name: ' Insertion Sort',
                 description: 'Sắp xếp chèn',
                 icon: 'fi fi-rr-arrow-down',
                 inputType: 'array',
@@ -375,7 +375,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'interchangeSort',
-                name: '12d. Interchange Sort',
+                name: ' Interchange Sort',
                 description: 'Sắp xếp đổi chỗ trực tiếp',
                 icon: 'fi fi-rr-exchange-alt',
                 inputType: 'array',
@@ -388,7 +388,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'shakerSort',
-                name: '12e. Shaker Sort (Cocktail)',
+                name: ' Shaker Sort (Cocktail)',
                 description: 'Sắp xếp lắc (Bubble 2 chiều)',
                 icon: 'fi fi-rr-glass-cheers',
                 inputType: 'array',
@@ -401,9 +401,9 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'shellSort',
-                name: '12f. Shell Sort',
+                name: ' Shell Sort',
                 description: 'Cải tiến của Insertion Sort',
-                icon: 'fi fi-rr-shell',
+                icon: 'fi fi-rr-filter',
                 inputType: 'array',
                 defaultArray: [64, 34, 25, 12, 22, 11, 90],
                 visualization: 'sorting',
@@ -414,7 +414,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'binaryInsertionSort',
-                name: '12g. Binary Insertion Sort',
+                name: ' Binary Insertion Sort',
                 description: 'Insertion Sort với Binary Search',
                 icon: 'fi fi-rr-sitemap',
                 inputType: 'array',
@@ -427,7 +427,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'mergeSort',
-                name: '12h. Merge Sort',
+                name: ' Merge Sort',
                 description: 'Sắp xếp trộn (Divide & Conquer)',
                 icon: 'fi fi-rr-clone',
                 inputType: 'array',
@@ -440,7 +440,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'quickSort',
-                name: '12i. Quick Sort',
+                name: ' Quick Sort',
                 description: 'Sắp xếp nhanh (Divide & Conquer)',
                 icon: 'fi fi-rr-bolt',
                 inputType: 'array',
@@ -453,7 +453,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'heapSort',
-                name: '12j. Heap Sort',
+                name: ' Heap Sort',
                 description: 'Sắp xếp vun đống',
                 icon: 'fi fi-rr-chart-pyramid',
                 inputType: 'array',
@@ -466,7 +466,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'countingSort',
-                name: '12k. Counting Sort',
+                name: ' Counting Sort',
                 description: 'Sắp xếp đếm (Non-comparison)',
                 icon: 'fi fi-rr-tally',
                 inputType: 'array',
@@ -479,7 +479,7 @@ export const ALGO_REGISTRY: Chapter[] = [
             },
             {
                 id: 'radixSort',
-                name: '12l. Radix Sort',
+                name: ' Radix Sort',
                 description: 'Sắp xếp theo cơ số',
                 icon: 'fi fi-rr-calculator',
                 inputType: 'array',

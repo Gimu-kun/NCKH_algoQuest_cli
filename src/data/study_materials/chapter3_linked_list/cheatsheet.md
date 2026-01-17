@@ -27,18 +27,18 @@ struct DNode {
 
 ### Singly Linked List
 
-| Thao tác | Time | Điều kiện |
-|----------|------|-----------|
-| **Insert at head** | O(1) ✅ | - |
-| **Insert at tail** | O(n) | Không có tail ptr |
-| **Insert at tail** | O(1) ✅ | Có tail ptr |
-| **Insert after node** | O(1) | Có node ptr |
-| **Delete head** | O(1) ✅ | - |
-| **Delete tail** | O(n) | Phải tìm node trước tail |
-| **Delete by value** | O(n) | Phải tìm node |
-| **Search** | O(n) | Duyệt tuần tự |
-| **Access by index** | O(n) | Không random access |
-| **Reverse** | O(n) | - |
+|       Thao tác        | Time |         Điều kiện        |
+|-----------------------|------|--------------------------|
+| **Insert at head**    | O(1) |             -            |
+| **Insert at tail**    | O(n) | Không có tail ptr        |
+| **Insert at tail**    | O(1) | Có tail ptr              |
+| **Insert after node** | O(1) | Có node ptr              |
+| **Delete head**       | O(1) |             -            |
+| **Delete tail**       | O(n) | Phải tìm node trước tail |
+| **Delete by value**   | O(n) | Phải tìm node            |
+| **Search**            | O(n) | Duyệt tuần tự            |
+| **Access by index**   | O(n) | Không random access      |
+| **Reverse**           | O(n) |             -            |
 
 ### Doubly Linked List
 
@@ -113,7 +113,7 @@ head = prev;
 │                                                            │
 │  ACCESS BY INDEX:  Array = O(1) ✅  |  LL = O(n) ❌       │
 │  INSERT AT HEAD:   Array = O(n) ❌  |  LL = O(1) ✅       │
-│  INSERT AT TAIL:   Array = O(1)*    |  LL = O(n)/O(1)**    │
+│  INSERT AT TAIL:   Array = O(1)*    |   LL = O(n)/O(1)**   │
 │  DELETE AT HEAD:   Array = O(n) ❌  |  LL = O(1) ✅       │
 │  MEMORY:           Contiguous       |  Scattered + overhead│
 │                                                            │
@@ -124,12 +124,12 @@ head = prev;
 
 ### Singly vs Doubly
 
-| Feature | Singly | Doubly |
-|---------|--------|--------|
-| Memory/node | Less | More (+1 ptr) |
-| Traverse backward | ❌ | ✅ |
-| Delete tail | O(n) | O(1) |
-| Delete node (có ptr) | O(n) | O(1) |
+|       Feature        | Singly |    Doubly     |
+|----------------------|--------|---------------|
+| Memory/node          |  Less  | More (+1 ptr) |
+| Traverse backward    |  không |      có       |
+| Delete tail          |  O(n)  |     O(1)      |
+| Delete node (có ptr) |  O(n)  |     O(1)      |
 
 ---
 
@@ -184,38 +184,38 @@ current->next = newNode;
 
 ## 💡 KHI NÀO DÙNG?
 
-┌──────────────────────────────────────┐
-│           LINKED LIST?               │
-├──────────────────────────────────────┤
-│                                      │
-│  ✅ YES:                             │
+┌───────────────────────────────────────┐
+│           LINKED LIST?                │
+├───────────────────────────────────────┤
+│                                       │
+│   YES:                                │
 │  • Insert/Delete đầu/giữa thường xuyên│
-│  • Kích thước không biết trước       │
-│  • Implement Stack/Queue             │
-│  • LRU Cache, Undo/Redo              │
-│                                      │
-│  ❌ NO:                              │
-│  • Cần random access                 │
-│  • Cần Binary Search                 │
-│  • Memory constraint                 │
-│  • Cache locality quan trọng         │
-│                                      │
-└──────────────────────────────────────┘
+│  • Kích thước không biết trước        │
+│  • Implement Stack/Queue              │
+│  • LRU Cache, Undo/Redo               │
+│                                       │
+│   NO:                                 │
+│  • Cần random access                  │
+│  • Cần Binary Search                  │
+│  • Memory constraint                  │
+│  • Cache locality quan trọng          │
+│                                       │
+└───────────────────────────────────────┘
 ```
 
 ---
 
 ## 🔧 ỨNG DỤNG THỰC TẾ
 
-| Ứng dụng | Loại LL | Lý do |
-|----------|---------|-------|
-| **Stack** | Singly | Insert/Delete ở head O(1) |
-| **Queue** | Singly + tail | Enqueue tail, Dequeue head |
-| **Browser history** | Doubly | Back/Forward navigation |
-| **Undo/Redo** | Doubly | 2-way traversal |
-| **Music playlist** | Circular | Loop playback |
-| **Round-robin** | Circular | Cycle through items |
-| **LRU Cache** | Doubly + HashMap | O(1) access + update |
+|      Ứng dụng       |     Loại LL      |            Lý do           |
+|---------------------|------------------|----------------------------|
+| **Stack**           | Singly           | Insert/Delete ở head O(1)  |
+| **Queue**           | Singly + tail    | Enqueue tail, Dequeue head |
+| **Browser history** | Doubly           | Back/Forward navigation    |
+| **Undo/Redo**       | Doubly           | 2-way traversal            |
+| **Music playlist**  | Circular         | Loop playback              |
+| **Round-robin**     | Circular         | Cycle through items        |
+| **LRU Cache**       | Doubly + HashMap | O(1) access + update       |
 
 ---
 
