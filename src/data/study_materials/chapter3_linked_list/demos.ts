@@ -206,45 +206,174 @@ function insertAtTail<T>(head: Node<T> | null, value: T): Node<T> {
         },
 
         /**
-         * DELETE NODE - Xóa node
+         * DELETE NODE - Hủy node (Chi tiết các trường hợp)
          * 
-         * ĐỘ PHỨC TẠP: O(n)
+         * ĐỘ PHỨC TẠP: O(1) đến O(n) tùy vị trí
          * 
-         * FLOW:
-         * 1. Tìm node cần xóa và node TRƯỚC nó
-         * 2. prev.next = current.next (bỏ qua node cần xóa)
-         * 3. Giải phóng bộ nhớ (trong ngôn ngữ low-level)
+         * CÁC TRƯỜNG HỢP XÓA:
+         * 1. Xóa đầu (Delete Head): O(1)
+         * 2. Xóa cuối (Delete Tail): O(n) - cần duyệt tìm node trước cuối
+         * 3. Xóa sau node Q: O(1) - nếu đã có con trỏ đến Q
+         * 4. Xóa theo giá trị X: O(n) - cần tìm kiếm
          * 
-         * EDGE CASES:
-         * - Xóa head: head = head.next
-         * - Node không tồn tại: không làm gì
+         * LƯU Ý QUAN TRỌNG:
+         * - Cần cập nhật cả pHead VÀ pTail (nếu có) khi xóa
+         * - Với Singly LL: Không thể xóa node cuối trong O(1)
          */
         delete: {
-            name: 'Delete Node',
-            complexity: 'O(n)',
-            code: `
-function deleteNode<T>(head: Node<T> | null, value: T): Node<T> | null {
-    if (head === null) return null;
+            name: 'Hủy Node (Delete Node)',
+
+            // Trường hợp 1: Xóa node đầu
+            deleteHead: {
+                name: 'Xóa đầu (Delete Head)',
+                complexity: 'O(1)',
+                description: 'Xóa node đầu tiên của danh sách',
+                code: `
+/**
+ * XÓA NODE ĐẦU
+ * Độ phức tạp: O(1)
+ * 
+ * Quy trình:
+ * 1. Kiểm tra danh sách rỗng
+ * 2. Lưu node đầu cũ (để giải phóng bộ nhớ nếu cần)
+ * 3. pHead = pHead.next
+ * 4. Nếu danh sách trở nên rỗng → pTail = null
+ */
+function deleteHead<T>(pHead: Node<T> | null, pTail: Node<T> | null): 
+    { pHead: Node<T> | null, pTail: Node<T> | null } {
     
-    // Xóa head
-    if (head.data === value) {
-        return head.next;
+    if (pHead === null) return { pHead: null, pTail: null };
+    
+    const nodeToDelete = pHead;
+    pHead = pHead.next;
+    
+    // Nếu danh sách chỉ có 1 phần tử
+    if (pHead === null) {
+        pTail = null;
     }
     
-    // Tìm node cần xóa
-    let current = head;
+    // Giải phóng nodeToDelete (trong ngôn ngữ low-level)
+    return { pHead, pTail };
+}
+`
+            },
+
+            // Trường hợp 2: Xóa node cuối
+            deleteTail: {
+                name: 'Xóa cuối (Delete Tail)',
+                complexity: 'O(n)',
+                description: 'Xóa node cuối - cần duyệt tìm node trước cuối',
+                note: 'Với Singly Linked List phải duyệt từ đầu vì không có prev',
+                code: `
+/**
+ * XÓA NODE CUỐI (Singly Linked List)
+ * Độ phức tạp: O(n) vì phải tìm node trước cuối
+ * 
+ * Quy trình:
+ * 1. Nếu danh sách rỗng hoặc chỉ có 1 phần tử → xử lý riêng
+ * 2. Duyệt tìm node có next = pTail (node trước cuối)
+ * 3. Đặt node trước cuối.next = null
+ * 4. Cập nhật pTail = node trước cuối
+ */
+function deleteTail<T>(pHead: Node<T> | null, pTail: Node<T> | null): 
+    { pHead: Node<T> | null, pTail: Node<T> | null } {
+    
+    if (pHead === null) return { pHead: null, pTail: null };
+    
+    // Chỉ có 1 phần tử
+    if (pHead === pTail) {
+        return { pHead: null, pTail: null };
+    }
+    
+    // Tìm node trước cuối - O(n)
+    let current = pHead;
+    while (current.next !== pTail) {
+        current = current.next!;
+    }
+    
+    // Xóa node cuối
+    current.next = null;
+    pTail = current;
+    
+    return { pHead, pTail };
+}
+`
+            },
+
+            // Trường hợp 3: Xóa sau node Q
+            deleteAfter: {
+                name: 'Xóa sau node Q (Delete After Q)',
+                complexity: 'O(1)',
+                description: 'Xóa node ngay sau node Q đã biết',
+                code: `
+/**
+ * XÓA NODE SAU Q
+ * Độ phức tạp: O(1) - đã có con trỏ đến Q
+ * 
+ * Quy trình:
+ * 1. Kiểm tra Q và Q.next tồn tại
+ * 2. Lưu node cần xóa: nodeToDelete = Q.next
+ * 3. Bỏ qua: Q.next = nodeToDelete.next
+ * 4. Cập nhật pTail nếu xóa node cuối
+ */
+function deleteAfter<T>(Q: Node<T>, pTail: Node<T> | null): Node<T> | null {
+    if (Q === null || Q.next === null) {
+        return pTail; // Không có gì để xóa
+    }
+    
+    const nodeToDelete = Q.next;
+    Q.next = nodeToDelete.next;
+    
+    // Nếu xóa node cuối → cập nhật pTail
+    if (nodeToDelete === pTail) {
+        pTail = Q;
+    }
+    
+    return pTail;
+}
+`
+            },
+
+            // Trường hợp 4: Xóa theo giá trị
+            deleteByValue: {
+                name: 'Xóa theo giá trị X (Delete by Value)',
+                complexity: 'O(n)',
+                description: 'Tìm và xóa node đầu tiên có giá trị X',
+                code: `
+/**
+ * XÓA NODE THEO GIÁ TRỊ
+ * Độ phức tạp: O(n) - phải tìm kiếm
+ * 
+ * Quy trình:
+ * 1. Nếu xóa head → gọi deleteHead
+ * 2. Tìm node P: P.next.data === X
+ * 3. Gọi deleteAfter(P)
+ */
+function deleteByValue<T>(pHead: Node<T> | null, pTail: Node<T> | null, value: T): 
+    { pHead: Node<T> | null, pTail: Node<T> | null } {
+    
+    if (pHead === null) return { pHead: null, pTail: null };
+    
+    // Xóa head
+    if (pHead.data === value) {
+        return deleteHead(pHead, pTail);
+    }
+    
+    // Tìm node trước node cần xóa
+    let current = pHead;
     while (current.next !== null && current.next.data !== value) {
         current = current.next;
     }
     
     // Xóa nếu tìm thấy
     if (current.next !== null) {
-        current.next = current.next.next;
+        pTail = deleteAfter(current, pTail);
     }
     
-    return head;
+    return { pHead, pTail };
 }
 `
+            }
         },
 
         /**

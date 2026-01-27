@@ -148,31 +148,79 @@ export const LINEAR_SEARCH_INFO: AlgorithmComparison = {
     name: 'Linear Search',
     complexity: {
         timeComplexity: {
-            best: 'O(1)',      // Target ở đầu mảng
-            average: 'O(n)',   // Target ở giữa
-            worst: 'O(n)'      // Target ở cuối hoặc không có
+            best: 'O(1)',      // Phần tử cần tìm nằm ở đầu mảng
+            average: 'O(n)',   // Phần tử nằm ở giữa mảng
+            worst: 'O(n)'      // Phần tử ở cuối hoặc không tồn tại
         },
-        spaceComplexity: 'O(1)' // Chỉ dùng biến index
+        spaceComplexity: 'O(1)' // Chỉ dùng biến đếm index
     },
-    isStable: true,  // Không áp dụng cho searching
-    isInPlace: true, // Không dùng bộ nhớ phụ
+    isStable: true,
+    isInPlace: true, // Không cần bộ nhớ phụ
     advantages: [
-        'Đơn giản, dễ cài đặt',
-        'Không yêu cầu mảng sắp xếp',
-        'Hoạt động với mọi loại dữ liệu',
-        'Tốt cho mảng nhỏ'
+        'Đơn giản, dễ cài đặt nhất trong các thuật toán tìm kiếm',
+        'Không yêu cầu mảng phải sắp xếp trước',
+        'Hoạt động với mọi kiểu dữ liệu có thể so sánh',
+        'Hiệu quả với mảng nhỏ (n < 100)'
     ],
     disadvantages: [
-        'Chậm với mảng lớn O(n)',
-        'Không tận dụng được thông tin thứ tự',
-        'Phải duyệt toàn bộ nếu không tìm thấy'
+        'Chậm với mảng lớn - độ phức tạp O(n)',
+        'Không tận dụng được tính chất thứ tự của dữ liệu',
+        'Phải duyệt toàn bộ mảng nếu phần tử không tồn tại'
     ],
     bestUseCases: [
-        'Mảng chưa sắp xếp',
+        'Mảng chưa được sắp xếp',
         'Mảng kích thước nhỏ (n < 100)',
-        'Chỉ tìm kiếm một lần (không đáng sắp xếp)',
-        'Linked List (không thể truy cập ngẫu nhiên)'
+        'Chỉ tìm kiếm một lần (chi phí sắp xếp không đáng)',
+        'Danh sách liên kết (không hỗ trợ truy cập ngẫu nhiên)'
     ]
+};
+
+/**
+ * KỸ THUẬT LÍNH CANH (Sentinel Linear Search)
+ * 
+ * CẢI TIẾN TỪ LINEAR SEARCH:
+ * - Đặt phần tử cần tìm x vào cuối mảng: a[N] = x
+ * - Vòng lặp while không cần kiểm tra điều kiện i < N
+ * - Chỉ cần kiểm tra a[i] != x
+ * - Giảm bớt 1 phép so sánh trong mỗi lần lặp
+ * 
+ * ĐỘ PHỨC TẠP: Vẫn O(n) nhưng hằng số nhỏ hơn
+ */
+export const SENTINEL_SEARCH_INFO = {
+    name: 'Sentinel Linear Search',
+    nameVi: 'Tìm kiếm tuyến tính với Lính canh',
+    description: 'Cải tiến Linear Search bằng cách đặt "lính canh" (sentinel) ở cuối mảng để bỏ điều kiện kiểm tra biên.',
+    technique: `
+/**
+ * Kỹ thuật Lính canh:
+ * 1. Lưu giá trị cuối: backup = a[N-1]
+ * 2. Đặt lính canh: a[N-1] = x (phần tử cần tìm)
+ * 3. Vòng lặp: while(a[i] != x) i++
+ *    → Chắc chắn dừng vì có lính canh ở cuối
+ * 4. Khôi phục: a[N-1] = backup
+ * 5. Kiểm tra kết quả:
+ *    - Nếu i < N-1: Tìm thấy tại vị trí i
+ *    - Nếu i == N-1 và backup == x: Tìm thấy ở vị trí cuối
+ *    - Ngược lại: Không tìm thấy
+ */
+function sentinelSearch(arr: number[], n: number, x: number): number {
+    const backup = arr[n - 1];  // Lưu giá trị cuối
+    arr[n - 1] = x;             // Đặt lính canh
+    
+    let i = 0;
+    while (arr[i] !== x) {      // Không cần kiểm tra i < n
+        i++;
+    }
+    
+    arr[n - 1] = backup;        // Khôi phục
+    
+    if (i < n - 1 || backup === x) {
+        return i;               // Tìm thấy
+    }
+    return -1;                  // Không tìm thấy
+}
+`,
+    benefit: 'Giảm 1 phép so sánh (i < N) trong MỖI lần lặp, tăng tốc độ thực thi trên mảng lớn.'
 };
 
 /**
@@ -248,31 +296,57 @@ export const BUBBLE_SORT_INFO: AlgorithmComparison = {
     name: 'Bubble Sort',
     complexity: {
         timeComplexity: {
-            best: 'O(n)',    // Mảng đã sắp xếp (với tối ưu)
+            best: 'O(n)',    // Mảng đã được sắp xếp (với tối ưu cờ hiệu)
             average: 'O(n²)',
-            worst: 'O(n²)'   // Mảng sắp xếp ngược
+            worst: 'O(n²)'   // Mảng sắp xếp ngược hoàn toàn
         },
-        spaceComplexity: 'O(1)'
+        spaceComplexity: 'O(1)' // Sắp xếp tại chỗ
     },
-    isStable: true,    // Chỉ swap khi arr[j] > arr[j+1], không swap khi bằng
-    isInPlace: true,   // Chỉ dùng biến swap, không cần mảng phụ
+    isStable: true,    // Chỉ hoán vị khi arr[j] > arr[j+1], không hoán vị khi bằng nhau → Ổn định
+    isInPlace: true,   // Sắp xếp tại chỗ - chỉ dùng biến tạm, không cần mảng phụ
     advantages: [
-        'Đơn giản nhất, dễ hiểu và cài đặt',
-        'In-place - không cần bộ nhớ phụ',
-        'Stable - giữ thứ tự các phần tử bằng nhau',
-        'Best case O(n) nếu đã sorted (với tối ưu flag)'
+        'Đơn giản nhất trong các thuật toán sắp xếp, dễ hiểu và cài đặt',
+        'Sắp xếp tại chỗ (In-place) - không cần bộ nhớ phụ O(1)',
+        'Ổn định (Stable) - giữ nguyên thứ tự tương đối của các phần tử bằng nhau',
+        'Trường hợp tốt nhất O(n) nếu mảng đã sắp xếp (với tối ưu cờ hiệu)'
     ],
     disadvantages: [
-        'Chậm nhất trong các thuật toán O(n²)',
-        'Số lần swap nhiều (mỗi cặp so sánh có thể swap)',
+        'Chậm nhất trong các thuật toán O(n²) - nhiều hoán vị không cần thiết',
+        'Số lần hoán vị nhiều (mỗi cặp so sánh đều có thể hoán vị)',
         'Không phù hợp cho dữ liệu lớn',
-        'Không thực tế cho production'
+        'Không thực tế cho ứng dụng thực tế (production)'
     ],
     bestUseCases: [
-        'Học và demo cơ bản về sorting',
+        'Học tập và demo cơ bản về thuật toán sắp xếp',
         'Mảng rất nhỏ (n < 20)',
-        'Kiểm tra mảng đã gần sorted chưa'
+        'Kiểm tra xem mảng đã gần được sắp xếp chưa'
     ]
+};
+
+/**
+ * VẤN ĐỀ "RÙA VÀ THỎ" TRONG BUBBLE SORT
+ * 
+ * GIẢI THÍCH:
+ * - "Thỏ" (Rabbits): Các phần tử LỚN ở đầu mảng → Di chuyển về cuối RẤT NHANH
+ *   (Vì mỗi pass đều đẩy phần tử lớn về cuối)
+ * 
+ * - "Rùa" (Turtles): Các phần tử NHỎ ở cuối mảng → Di chuyển về đầu RẤT CHẬM
+ *   (Vì mỗi pass chỉ dịch 1 vị trí về đầu)
+ * 
+ * VÍ DỤ:
+ * Mảng: [1, 2, 3, 4, 5, 0]
+ * - Số 0 (rùa) ở cuối cần 5 passes để về đúng vị trí đầu!
+ * 
+ * GIẢI PHÁP:
+ * → Shaker Sort (Sắp xếp rung) - duyệt 2 chiều để giải quyết vấn đề này
+ */
+export const TURTLE_RABBIT_PROBLEM = {
+    name: 'Vấn đề Rùa và Thỏ',
+    nameEn: 'Turtle and Rabbit Problem',
+    description: 'Nhược điểm của Bubble Sort: Phần tử nhỏ ở cuối mảng di chuyển về đầu rất chậm.',
+    rabbit: 'Phần tử LỚN ở đầu → Về cuối nhanh (mỗi pass đẩy 1 phần tử lớn nhất về cuối)',
+    turtle: 'Phần tử NHỎ ở cuối → Về đầu chậm (mỗi pass chỉ dịch 1 vị trí)',
+    solution: 'Shaker Sort (Cocktail Sort) - duyệt 2 chiều để cả rùa và thỏ đều di chuyển nhanh'
 };
 
 /**
@@ -539,28 +613,72 @@ export const SHELL_SORT_INFO: AlgorithmComparison = {
     complexity: {
         timeComplexity: {
             best: 'O(n log n)',
-            average: 'O(n^1.3)',  // Phụ thuộc gap sequence
-            worst: 'O(n²)'        // Shell's original sequence
+            average: 'O(n^1.3)',  // Phụ thuộc dãy khoảng cách gap
+            worst: 'O(n²)'        // Với dãy gap của Shell gốc
         },
-        spaceComplexity: 'O(1)'
+        spaceComplexity: 'O(1)' // Sắp xếp tại chỗ
     },
-    isStable: false,
-    isInPlace: true,
+    isStable: false, // Không ổn định - các phần tử bằng nhau có thể bị đảo thứ tự
+    isInPlace: true, // Sắp xếp tại chỗ
     advantages: [
-        'Nhanh hơn Insertion Sort đáng kể',
-        'In-place O(1) space',
-        'Đơn giản hơn Quick/Merge',
-        'Tốt cho medium-sized arrays'
+        'Nhanh hơn Insertion Sort đáng kể nhờ cơ chế bước nhảy',
+        'Sắp xếp tại chỗ O(1) bộ nhớ phụ',
+        'Đơn giản hơn Quick Sort và Merge Sort',
+        'Phù hợp cho mảng kích thước vừa phải'
     ],
     disadvantages: [
-        'Không Stable',
-        'Độ phức tạp phụ thuộc gap sequence',
-        'Chậm hơn O(n log n) sorts'
+        'Không ổn định (Unstable)',
+        'Độ phức tạp phụ thuộc vào dãy khoảng cách (gap sequence)',
+        'Chậm hơn các thuật toán O(n log n) trong trường hợp trung bình'
     ],
     bestUseCases: [
         'Mảng vừa (100-10000 phần tử)',
-        'Embedded systems',
-        'Khi cần cải tiến Insertion Sort'
+        'Hệ thống nhúng (Embedded systems) với bộ nhớ hạn chế',
+        'Khi cần cải tiến Insertion Sort mà không muốn phức tạp hóa'
+    ]
+};
+
+/**
+ * DÃY KHOẢNG CÁCH (GAP SEQUENCE) TRONG SHELL SORT
+ * 
+ * Ý TƯỞNG:
+ * - Thay vì so sánh các phần tử kề nhau như Insertion Sort
+ * - Shell Sort so sánh các phần tử cách nhau một khoảng h (gap/bước nhảy)
+ * - Chia mảng thành các dãy con cách nhau h phần tử
+ * - Sắp xếp từng dãy con bằng Insertion Sort
+ * - Giảm h dần xuống 1 để hoàn thành
+ * 
+ * VÍ DỤ VỚI GAP = 5, 3, 1:
+ * Bước 1 (h=5): [a0, a5, a10...], [a1, a6, a11...], ...
+ * Bước 2 (h=3): [a0, a3, a6...], [a1, a4, a7...], ...
+ * Bước 3 (h=1): Insertion Sort bình thường → đảm bảo hoàn thành
+ * 
+ * LỢI ÍCH:
+ * Các phần tử có thể "nhảy xa" về vị trí đúng nhanh hơn
+ */
+export const SHELL_SORT_GAP_SEQUENCES = {
+    name: 'Dãy khoảng cách Shell Sort',
+    nameEn: 'Gap Sequences',
+    description: 'Shell Sort hiệu quả phụ thuộc vào cách chọn dãy khoảng cách (gap sequence)',
+    sequences: [
+        {
+            name: 'Shell (1959)',
+            formula: 'N/2, N/4, ..., 1',
+            complexity: 'O(n²) worst case',
+            note: 'Dãy gốc, đơn giản nhưng không tối ưu'
+        },
+        {
+            name: 'Hibbard (1963)',
+            formula: '2^k - 1: 1, 3, 7, 15, 31...',
+            complexity: 'O(n^1.5)',
+            note: 'Cải thiện đáng kể so với dãy Shell'
+        },
+        {
+            name: 'Knuth (1973)',
+            formula: '(3^k - 1)/2: 1, 4, 13, 40, 121...',
+            complexity: 'O(n^1.25)',
+            note: 'Được sử dụng phổ biến'
+        }
     ]
 };
 
@@ -576,27 +694,52 @@ export const SHAKER_SORT_INFO: AlgorithmComparison = {
     name: 'Shaker Sort',
     complexity: {
         timeComplexity: {
-            best: 'O(n)',
+            best: 'O(n)',    // Mảng đã sắp xếp
             average: 'O(n²)',
-            worst: 'O(n²)'
+            worst: 'O(n²)'   // Mảng sắp xếp ngược
         },
-        spaceComplexity: 'O(1)'
+        spaceComplexity: 'O(1)' // Sắp xếp tại chỗ
     },
-    isStable: true,
-    isInPlace: true,
+    isStable: true,  // Ổn định
+    isInPlace: true, // Sắp xếp tại chỗ
     advantages: [
-        'Giải quyết turtle problem của Bubble Sort',
-        'Stable và In-place',
-        'Adaptive (dừng sớm nếu đã sorted)'
+        'Giải quyết vấn đề "Rùa" trong Bubble Sort - phần tử nhỏ ở cuối di chuyển nhanh hơn',
+        'Ổn định (Stable) và Sắp xếp tại chỗ (In-place)',
+        'Thích ứng (Adaptive) - dừng sớm nếu mảng đã sắp xếp'
     ],
     disadvantages: [
-        'Vẫn O(n²)',
-        'Không thực tế cho production'
+        'Vẫn có độ phức tạp O(n²) - không cải thiện về mặt tiệm cận',
+        'Không thực tế cho ứng dụng thực tế'
     ],
     bestUseCases: [
-        'Học thuật, demo sorting',
-        'Mảng có turtle/rabbit elements'
+        'Học thuật, minh họa thuật toán sắp xếp',
+        'Mảng có các phần tử "rùa" (nhỏ ở cuối) và "thỏ" (lớn ở đầu)'
     ]
+};
+
+/**
+ * CƠ CHẾ HOẠT ĐỘNG CỦA SHAKER SORT (SẮP XẾP RUNG)
+ * 
+ * NGUYÊN LÝ: Duyệt 2 chiều thay vì 1 chiều như Bubble Sort
+ * 
+ * 1. CHIỀU ĐI (Trái → Phải):
+ *    - So sánh các cặp kề nhau
+ *    - Đẩy phần tử LỚN NHẤT về cuối
+ *    - Thu hẹp biên phải (right--)
+ * 
+ * 2. CHIỀU VỀ (Phải → Trái):
+ *    - So sánh các cặp kề nhau
+ *    - Đẩy phần tử NHỎ NHẤT về đầu
+ *    - Thu hẹp biên trái (left++)
+ * 
+ * 3. Lặp lại cho đến khi left >= right
+ */
+export const SHAKER_SORT_MECHANISM = {
+    name: 'Cơ chế Shaker Sort',
+    nameVi: 'Sắp xếp rung (Cocktail Sort)',
+    forwardPass: 'Chiều đi (→): Đưa phần tử MAX về cuối, thu hẹp biên phải',
+    backwardPass: 'Chiều về (←): Đưa phần tử MIN về đầu, thu hẹp biên trái',
+    stopCondition: 'Dừng khi left >= right hoặc không có hoán vị nào trong 1 vòng'
 };
 
 /**

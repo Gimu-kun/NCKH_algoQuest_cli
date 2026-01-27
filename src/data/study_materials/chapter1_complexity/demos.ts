@@ -29,6 +29,7 @@ import { ChapterNumber, TimeComplexity } from '../types';
  * Thông tin chi tiết về Chương 1: Algorithm Complexity
  * 
  * KIẾN THỨC CHÍNH:
+ * - Khái niệm nền tảng về Giải thuật và Cấu trúc dữ liệu
  * - Big O Notation (Ký hiệu O lớn)
  * - Time Complexity Analysis (Phân tích độ phức tạp thời gian)
  * - Space Complexity Analysis (Phân tích độ phức tạp không gian)
@@ -40,11 +41,14 @@ export const CHAPTER_1_INFO: ChapterInfo = {
     titleEn: 'Algorithm Complexity Analysis',
     description: 'Học cách đánh giá hiệu quả thuật toán thông qua Big O notation, phân tích thời gian và không gian.',
     topics: [
+        'Khái niệm Giải thuật và 5 tiêu chuẩn',
+        'Kiểu dữ liệu trừu tượng (ADT)',
         'Big O, Big Omega, Big Theta',
         'Time Complexity Analysis',
         'Space Complexity Analysis',
         'Best Case, Average Case, Worst Case',
         'Quy tắc cộng và nhân trong phân tích',
+        'Phân tích đệ quy (Recursion Analysis)',
         'Time-Space Tradeoff'
     ],
     demos: [
@@ -55,6 +59,105 @@ export const CHAPTER_1_INFO: ChapterInfo = {
         }
     ],
     prerequisites: [] // Chương 1 không cần điều kiện tiên quyết
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KHÁI NIỆM NỀN TẢNG
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * KHÁI NIỆM GIẢI THUẬT VÀ CẤU TRÚC DỮ LIỆU
+ * 
+ * Công thức cơ bản: Chương trình = Cấu trúc dữ liệu + Giải thuật
+ */
+export const FOUNDATIONAL_CONCEPTS = {
+    /**
+     * ĐỊNH NGHĨA GIẢI THUẬT
+     */
+    algorithm: {
+        name: 'Giải thuật (Algorithm)',
+        nameEn: 'Algorithm',
+        definition: 'Là phương pháp, cách thức giải quyết vấn đề với đầu vào (Input) và đầu ra (Output) xác định.',
+
+        /**
+         * 5 TIÊU CHUẨN CỦA GIẢI THUẬT
+         * Một giải thuật đúng phải thỏa mãn cả 5 tiêu chuẩn sau:
+         */
+        fiveCriteria: [
+            {
+                name: 'Tính đúng đắn (Correctness)',
+                description: 'Kết quả phải đúng với MỌI bộ dữ liệu đầu vào hợp lệ',
+                example: 'Thuật toán sắp xếp phải cho kết quả đúng với mọi mảng đầu vào'
+            },
+            {
+                name: 'Tính xác định (Definiteness)',
+                description: 'Mỗi bước phải rõ ràng, không gây nhầm lẫn hay mơ hồ',
+                example: 'Không được viết "so sánh với một số nào đó" mà phải cụ thể'
+            },
+            {
+                name: 'Tính hữu hạn (Finiteness)',
+                description: 'Phải dừng lại sau một số bước hữu hạn, không chạy vô hạn',
+                example: 'Vòng lặp phải có điều kiện dừng, đệ quy phải có base case'
+            },
+            {
+                name: 'Tính hiệu quả (Efficiency)',
+                description: 'Sử dụng tài nguyên (thời gian, bộ nhớ) một cách tối ưu',
+                example: 'Binary Search O(log n) hiệu quả hơn Linear Search O(n)'
+            },
+            {
+                name: 'Tính tổng quát (Generality)',
+                description: 'Giải quyết được lớp bài toán chung, không chỉ một trường hợp cụ thể',
+                example: 'Thuật toán tìm max phải hoạt động với mảng có kích thước bất kỳ'
+            }
+        ]
+    },
+
+    /**
+     * KIỂU DỮ LIỆU TRỪU TƯỢNG (ADT)
+     */
+    adt: {
+        name: 'Kiểu dữ liệu trừu tượng (ADT)',
+        nameEn: 'Abstract Data Type',
+        definition: 'Mô hình dữ liệu định nghĩa CÁC THAO TÁC (như thêm, xóa, tìm kiếm) mà KHÔNG quan tâm đến cài đặt chi tiết bên dưới.',
+        examples: [
+            {
+                adt: 'Stack',
+                operations: ['push()', 'pop()', 'top()', 'isEmpty()'],
+                implementations: ['Mảng (Array)', 'Danh sách liên kết (Linked List)']
+            },
+            {
+                adt: 'Queue',
+                operations: ['enqueue()', 'dequeue()', 'front()', 'isEmpty()'],
+                implementations: ['Mảng vòng (Circular Array)', 'Danh sách liên kết']
+            },
+            {
+                adt: 'List',
+                operations: ['insert()', 'delete()', 'get()', 'find()'],
+                implementations: ['ArrayList', 'LinkedList']
+            }
+        ],
+        benefit: 'Tách biệt giao diện (interface) và triển khai (implementation) → dễ thay đổi, bảo trì'
+    },
+
+    /**
+     * MỐI QUAN HỆ GIỮA DỮ LIỆU VÀ GIẢI THUẬT
+     */
+    relationship: {
+        formula: 'Chương trình = Cấu trúc dữ liệu + Giải thuật',
+        explanation: 'Chọn cấu trúc dữ liệu phù hợp sẽ quyết định hiệu quả của giải thuật',
+        example: `
+VÍ DỤ: Tìm kiếm một phần tử
+
+| Cấu trúc dữ liệu | Thuật toán | Độ phức tạp |
+|-----------------|------------|-------------|
+| Mảng chưa sắp xếp | Linear Search | O(n) |
+| Mảng đã sắp xếp | Binary Search | O(log n) |
+| Hash Table | Hash Lookup | O(1) |
+| BST | Tree Search | O(log n) |
+
+→ Cùng bài toán, chọn CTDL khác → Hiệu quả khác!
+`
+    }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -435,6 +538,98 @@ function bubbleSort(arr: number[]): number[] {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// PHÂN TÍCH ĐỘ PHỨC TẠP ĐỆ QUY
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * PHÂN TÍCH ĐỆ QUY
+ * 
+ * Đệ quy thường tạo ra phương trình truy hồi (Recurrence Relation)
+ * Cần giải phương trình này để tìm độ phức tạp.
+ */
+export const RECURSION_ANALYSIS = {
+    name: 'Phân tích độ phức tạp đệ quy',
+    nameEn: 'Recursion Complexity Analysis',
+
+    methods: [
+        {
+            name: 'Phương pháp thay thế (Back Substitution)',
+            nameEn: 'Substitution Method',
+            description: 'Thay thế lần lượt T(n-1), T(n-2)... để tìm công thức tổng quát',
+            example: `
+T(n) = n + T(n-1)     (Ví dụ: Tính tổng 1+2+...+n bằng đệ quy)
+
+Thay thế:
+T(n) = n + T(n-1)
+     = n + (n-1) + T(n-2)
+     = n + (n-1) + (n-2) + T(n-3)
+     ...
+     = n + (n-1) + (n-2) + ... + 1 + T(0)
+     = n(n+1)/2 + T(0)
+     = O(n²)
+`
+        },
+        {
+            name: 'Cây đệ quy (Recursion Tree)',
+            nameEn: 'Recursion Tree',
+            description: 'Vẽ cây gọi đệ quy, tính tổng công việc ở mỗi mức',
+            example: `
+Ví dụ: Merge Sort - T(n) = 2T(n/2) + n
+
+Level 0:           n           → n công việc
+Level 1:     n/2      n/2      → n công việc  
+Level 2:   n/4 n/4  n/4 n/4    → n công việc
+...
+Level k:   1  1  ... 1  1      → n công việc
+
+Số mức: log₂(n)
+Tổng: n × log₂(n) = O(n log n)
+`
+        },
+        {
+            name: 'Định lý Master (Master Theorem)',
+            nameEn: 'Master Theorem',
+            description: 'Công thức sẵn cho dạng T(n) = aT(n/b) + f(n)',
+            formula: `
+T(n) = aT(n/b) + f(n)
+
+So sánh f(n) với n^(log_b(a)):
+• Case 1: f(n) = O(n^(log_b(a) - ε)) → T(n) = Θ(n^log_b(a))
+• Case 2: f(n) = Θ(n^log_b(a)) → T(n) = Θ(n^log_b(a) × log n)
+• Case 3: f(n) = Ω(n^(log_b(a) + ε)) → T(n) = Θ(f(n))
+`,
+            examples: [
+                {
+                    algorithm: 'Binary Search',
+                    recurrence: 'T(n) = T(n/2) + O(1)',
+                    result: 'O(log n)'
+                },
+                {
+                    algorithm: 'Merge Sort',
+                    recurrence: 'T(n) = 2T(n/2) + O(n)',
+                    result: 'O(n log n)'
+                },
+                {
+                    algorithm: 'Fibonacci Naive',
+                    recurrence: 'T(n) = T(n-1) + T(n-2) + O(1)',
+                    result: 'O(2^n)'
+                }
+            ]
+        }
+    ],
+
+    commonPatterns: [
+        { pattern: 'T(n) = T(n-1) + O(1)', result: 'O(n)', example: 'Factorial' },
+        { pattern: 'T(n) = T(n-1) + O(n)', result: 'O(n²)', example: 'Selection Sort recursive' },
+        { pattern: 'T(n) = T(n/2) + O(1)', result: 'O(log n)', example: 'Binary Search' },
+        { pattern: 'T(n) = T(n/2) + O(n)', result: 'O(n)', example: 'Finding median' },
+        { pattern: 'T(n) = 2T(n/2) + O(1)', result: 'O(n)', example: 'Tree traversal' },
+        { pattern: 'T(n) = 2T(n/2) + O(n)', result: 'O(n log n)', example: 'Merge Sort' },
+        { pattern: 'T(n) = 2T(n-1) + O(1)', result: 'O(2^n)', example: 'Tower of Hanoi' }
+    ]
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // EXPORT DEMOS
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -449,6 +644,8 @@ export const CHAPTER_1_DEMOS: DemoReference[] = CHAPTER_1_INFO.demos;
 export default {
     info: CHAPTER_1_INFO,
     demos: CHAPTER_1_DEMOS,
+    foundationalConcepts: FOUNDATIONAL_CONCEPTS,
     complexityLevels: COMPLEXITY_LEVELS,
-    codeExamples: CODE_EXAMPLES
+    codeExamples: CODE_EXAMPLES,
+    recursionAnalysis: RECURSION_ANALYSIS
 };

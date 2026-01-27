@@ -493,14 +493,14 @@ function levelOrder(root: BSTNode | null): void {
  */
 export const SKEWED_TREE_PROBLEM = {
     problem: {
-        description: 'Khi chèn dữ liệu theo thứ tự tăng/giảm, BST biến thành Linked List',
-        example: 'Insert: 1, 2, 3, 4, 5 → cây nghiêng phải',
-        impact: 'Tất cả operations trở thành O(n) thay vì O(log n)'
+        description: 'Khi chèn dữ liệu theo thứ tự tăng/giảm, BST biến thành Danh sách liên kết',
+        example: 'Chèn: 1, 2, 3, 4, 5 → cây nghiêng phải (Right-skewed)',
+        impact: 'Tất cả thao tác trở thành O(n) thay vì O(log n)'
     },
     visualization: `
 Chèn: 1, 2, 3, 4, 5 theo thứ tự
 
-Balanced BST:           Skewed BST:
+Cây BST cân bằng:         Cây BST lệch (Skewed):
        3                    1
       / \\                    \\
      2   4                    2
@@ -515,25 +515,286 @@ O(log n)                O(n) ← Vấn đề!
 `,
     solutions: [
         {
-            name: 'AVL Tree',
-            description: 'Self-balancing BST với balance factor ≤ 1',
-            technique: 'Xoay cây (LL, RR, LR, RL rotation)',
-            guarantee: 'Height ≤ 1.44 log n'
+            name: 'Cây AVL',
+            nameEn: 'AVL Tree',
+            description: 'Cây BST tự cân bằng với hệ số cân bằng (balance factor) ≤ 1',
+            technique: 'Xoay cây (Rotation): LL, RR, LR, RL',
+            guarantee: 'Chiều cao ≤ 1.44 log n'
         },
         {
-            name: 'Red-Black Tree',
-            description: 'Self-balancing với coloring rules',
-            technique: 'Recoloring + Rotation',
-            guarantee: 'Height ≤ 2 log n',
-            note: 'Dùng trong C++ STL map/set'
+            name: 'Cây Đỏ-Đen',
+            nameEn: 'Red-Black Tree',
+            description: 'Cây tự cân bằng với quy tắc tô màu',
+            technique: 'Đổi màu (Recoloring) + Xoay (Rotation)',
+            guarantee: 'Chiều cao ≤ 2 log n',
+            note: 'Được dùng trong C++ STL map/set, Java TreeMap'
         },
         {
-            name: 'Randomized Insertion',
-            description: 'Shuffle data trước khi insert',
-            technique: 'Random order insertion',
-            guarantee: 'Expected O(log n)'
+            name: 'Chèn ngẫu nhiên',
+            nameEn: 'Randomized Insertion',
+            description: 'Xáo trộn dữ liệu trước khi chèn vào cây',
+            technique: 'Chèn theo thứ tự ngẫu nhiên',
+            guarantee: 'Kỳ vọng O(log n)'
         }
     ]
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CÂY AVL - CHI TIẾT CÁC PHÉP XOAY
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * CÂY AVL VÀ CÁC PHÉP XOAY
+ * 
+ * Cây AVL (Adelson-Velsky và Landis) là cây BST tự cân bằng:
+ * - Balance Factor (BF) = Height(Left) - Height(Right)
+ * - Mọi node phải có |BF| ≤ 1
+ * - Khi |BF| > 1 → thực hiện phép xoay để cân bằng lại
+ */
+export const AVL_ROTATIONS = {
+    name: 'Các phép xoay trong cây AVL',
+    nameEn: 'AVL Tree Rotations',
+
+    balanceFactor: {
+        formula: 'BF = Chiều cao cây con trái - Chiều cao cây con phải',
+        balanced: '|BF| ≤ 1 → Cây cân bằng',
+        unbalanced: '|BF| > 1 → Cần xoay để cân bằng'
+    },
+
+    rotations: [
+        {
+            name: 'LL Rotation (Xoay phải)',
+            nameEn: 'Left-Left / Right Rotation',
+            when: 'Node lệch trái (BF > 1) VÀ con trái cũng lệch trái (BF ≥ 0)',
+            visualization: `
+TRƯỚC khi xoay:           SAU khi xoay phải:
+       z (BF=2)                 y
+      /                        / \\
+     y (BF≥0)      →          x   z
+    /
+   x
+
+// Xoay phải quanh z: y lên làm gốc, z thành con phải của y
+`,
+            code: `
+function rotateRight(z: AVLNode): AVLNode {
+    const y = z.left!;
+    const T2 = y.right;
+    
+    // Thực hiện xoay
+    y.right = z;
+    z.left = T2;
+    
+    // Cập nhật chiều cao
+    z.height = 1 + Math.max(height(z.left), height(z.right));
+    y.height = 1 + Math.max(height(y.left), height(y.right));
+    
+    return y; // y là gốc mới
+}
+`
+        },
+        {
+            name: 'RR Rotation (Xoay trái)',
+            nameEn: 'Right-Right / Left Rotation',
+            when: 'Node lệch phải (BF < -1) VÀ con phải cũng lệch phải (BF ≤ 0)',
+            visualization: `
+TRƯỚC khi xoay:           SAU khi xoay trái:
+   z (BF=-2)                    y
+    \\                          / \\
+     y (BF≤0)       →         z   x
+      \\
+       x
+
+// Xoay trái quanh z: y lên làm gốc, z thành con trái của y
+`,
+            code: `
+function rotateLeft(z: AVLNode): AVLNode {
+    const y = z.right!;
+    const T2 = y.left;
+    
+    // Thực hiện xoay
+    y.left = z;
+    z.right = T2;
+    
+    // Cập nhật chiều cao
+    z.height = 1 + Math.max(height(z.left), height(z.right));
+    y.height = 1 + Math.max(height(y.left), height(y.right));
+    
+    return y; // y là gốc mới
+}
+`
+        },
+        {
+            name: 'LR Rotation (Xoay trái-phải)',
+            nameEn: 'Left-Right Rotation',
+            when: 'Node lệch trái (BF > 1) VÀ con trái lệch phải (BF < 0)',
+            visualization: `
+TRƯỚC:           SAU xoay trái y:      SAU xoay phải z:
+    z                  z                     x
+   /                  /                     / \\
+  y        →         x           →         y   z
+   \\                /
+    x              y
+
+// Bước 1: Xoay trái quanh y
+// Bước 2: Xoay phải quanh z
+`,
+            steps: ['Xoay trái (Left Rotate) quanh con trái', 'Xoay phải (Right Rotate) quanh node gốc']
+        },
+        {
+            name: 'RL Rotation (Xoay phải-trái)',
+            nameEn: 'Right-Left Rotation',
+            when: 'Node lệch phải (BF < -1) VÀ con phải lệch trái (BF > 0)',
+            visualization: `
+TRƯỚC:           SAU xoay phải y:      SAU xoay trái z:
+  z                  z                       x
+   \\                  \\                     / \\
+    y       →          x         →         z   y
+   /                    \\
+  x                      y
+
+// Bước 1: Xoay phải (Right Rotate) quanh con phải
+// Bước 2: Xoay trái (Left Rotate) quanh node gốc
+`,
+            steps: ['Xoay phải (Right Rotate) quanh con phải', 'Xoay trái (Left Rotate) quanh node gốc']
+        }
+    ],
+
+    summary: `
+BẢNG TÓM TẮT CHỌN PHÉP XOAY:
+
+| Balance Factor node | Balance Factor con | Phép xoay |
+|---------------------|-------------------|-----------|
+| > 1 (lệch trái)     | ≥ 0               | LL (Xoay phải) |
+| > 1 (lệch trái)     | < 0               | LR (Xoay trái-phải) |
+| < -1 (lệch phải)    | ≤ 0               | RR (Xoay trái) |
+| < -1 (lệch phải)    | > 0               | RL (Xoay phải-trái) |
+`
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PHẦN TỬ THẾ MẠNG (INORDER SUCCESSOR/PREDECESSOR)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * PHẦN TỬ THẾ MẠNG KHI XÓA NODE CÓ 2 CON
+ */
+export const INORDER_SUCCESSOR_PREDECESSOR = {
+    name: 'Phần tử thế mạng',
+    nameEn: 'Inorder Successor / Predecessor',
+    description: 'Khi xóa node có 2 con trong BST, cần tìm node thay thế để giữ tính chất BST',
+
+    inorderSuccessor: {
+        name: 'Phần tử kế tiếp theo thứ tự trung (Inorder Successor)',
+        definition: 'Node NHỎ NHẤT trong cây con bên PHẢI',
+        findMethod: 'Đi sang phải 1 lần, rồi đi trái đến hết',
+        code: `
+function findInorderSuccessor(node: BSTNode): BSTNode {
+    let current = node.right!;  // Đi sang phải 1 lần
+    while (current.left) {      // Đi trái đến hết
+        current = current.left;
+    }
+    return current;             // Node cực trái = nhỏ nhất
+}
+`
+    },
+
+    inorderPredecessor: {
+        name: 'Phần tử liền trước theo thứ tự trung (Inorder Predecessor)',
+        definition: 'Node LỚN NHẤT trong cây con bên TRÁI',
+        findMethod: 'Đi sang trái 1 lần, rồi đi phải đến hết',
+        code: `
+function findInorderPredecessor(node: BSTNode): BSTNode {
+    let current = node.left!;   // Đi sang trái 1 lần
+    while (current.right) {     // Đi phải đến hết
+        current = current.right;
+    }
+    return current;             // Node cực phải = lớn nhất
+}
+`
+    },
+
+    deleteWithTwoChildren: `
+/**
+ * XÓA NODE CÓ 2 CON TRONG BST
+ * 
+ * Quy trình:
+ * 1. Tìm phần tử thế mạng (Successor hoặc Predecessor)
+ * 2. Sao chép giá trị của thế mạng vào node cần xóa
+ * 3. Xóa node thế mạng (node này chỉ có tối đa 1 con)
+ */
+function deleteNode(root: BSTNode | null, key: number): BSTNode | null {
+    if (root === null) return null;
+    
+    if (key < root.data) {
+        root.left = deleteNode(root.left, key);
+    } else if (key > root.data) {
+        root.right = deleteNode(root.right, key);
+    } else {
+        // Tìm thấy node cần xóa
+        
+        // Trường hợp 1 & 2: Node có 0 hoặc 1 con
+        if (root.left === null) return root.right;
+        if (root.right === null) return root.left;
+        
+        // Trường hợp 3: Node có 2 con
+        // Tìm Inorder Successor (nhỏ nhất bên phải)
+        const successor = findInorderSuccessor(root);
+        root.data = successor.data;  // Sao chép giá trị
+        root.right = deleteNode(root.right, successor.data); // Xóa successor
+    }
+    return root;
+}
+`
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GIỚI THIỆU B-TREE
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * GIỚI THIỆU B-TREE
+ * 
+ * B-Tree là cây đa nhánh tự cân bằng, được sử dụng rộng rãi trong
+ * các hệ thống lưu trữ và cơ sở dữ liệu.
+ */
+export const BTREE_INTRODUCTION = {
+    name: 'B-Tree',
+    nameVi: 'Cây B',
+    description: 'Cây tìm kiếm đa nhánh tự cân bằng, tối ưu cho đọc/ghi đĩa',
+
+    characteristics: [
+        'Mỗi node có thể chứa NHIỀU khóa (keys)',
+        'Mỗi node có thể có NHIỀU con (không chỉ 2 như BST)',
+        'Tất cả lá đều ở cùng một mức (perfectly balanced)',
+        'Tối ưu cho việc đọc/ghi từ đĩa (tối thiểu hóa I/O)'
+    ],
+
+    params: {
+        order: 'Bậc m của B-Tree: Mỗi node có tối đa m con',
+        keys: 'Mỗi node (trừ gốc) có ít nhất ⌈m/2⌉ - 1 khóa',
+        children: 'Số con = Số khóa + 1'
+    },
+
+    comparison: `
+So sánh với BST:
+
+| Tiêu chí | BST | B-Tree |
+|----------|-----|--------|
+| Số con mỗi node | Tối đa 2 | Tối đa m |
+| Khóa mỗi node | 1 | 1 đến m-1 |
+| Cân bằng | Có thể lệch | Luôn cân bằng hoàn hảo |
+| Ứng dụng | Bộ nhớ RAM | Lưu trữ đĩa, Database |
+`,
+
+    applications: [
+        'Hệ thống file (NTFS, ext4)',
+        'Cơ sở dữ liệu (MySQL, PostgreSQL, MongoDB)',
+        'Index trong các hệ quản trị CSDL',
+        'Các hệ thống lưu trữ phân tán'
+    ],
+
+    note: 'B-Tree nằm ngoài phạm vi cơ bản của DSA, nhưng là kiến thức quan trọng cho Backend/Database.'
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -548,5 +809,8 @@ export default {
     concepts: TREE_CONCEPTS,
     operations: BST_OPERATIONS,
     traversals: TREE_TRAVERSALS,
-    skewedProblem: SKEWED_TREE_PROBLEM
+    skewedProblem: SKEWED_TREE_PROBLEM,
+    avlRotations: AVL_ROTATIONS,
+    inorderSuccessorPredecessor: INORDER_SUCCESSOR_PREDECESSOR,
+    btreeIntro: BTREE_INTRODUCTION
 };

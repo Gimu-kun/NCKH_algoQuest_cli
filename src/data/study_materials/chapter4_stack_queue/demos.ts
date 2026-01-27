@@ -245,16 +245,17 @@ function peek(): T {
      */
     applications: [
         {
-            name: 'Balanced Parentheses',
-            description: 'Kiểm tra ngoặc hợp lệ: (), [], {}',
-            algorithm: 'Push ngoặc mở, Pop khi gặp ngoặc đóng, check match',
+            name: 'Kiểm tra ngoặc hợp lệ (Balanced Parentheses)',
+            nameVi: 'Kiểm tra cặp ngoặc',
+            description: 'Kiểm tra các cặp ngoặc (), [], {} có hợp lệ không',
+            algorithm: 'Đẩy (Push) ngoặc mở vào Stack, Lấy (Pop) khi gặp ngoặc đóng và kiểm tra khớp',
             code: `
 /**
  * Kiểm tra ngoặc hợp lệ
  * 
  * VÍ DỤ:
- * - "(())" → true
- * - "([)]" → false
+ * - "(())" → true (hợp lệ)
+ * - "([)]" → false (không hợp lệ)
  */
 function isValid(s: string): boolean {
     const stack: string[] = [];
@@ -262,52 +263,142 @@ function isValid(s: string): boolean {
     
     for (const c of s) {
         if (c === '(' || c === '[' || c === '{') {
-            stack.push(c);
+            stack.push(c);  // Đẩy ngoặc mở vào Stack
         } else {
-            if (stack.pop() !== pairs[c]) return false;
+            if (stack.pop() !== pairs[c]) return false;  // Pop và kiểm tra khớp
         }
     }
-    return stack.length === 0;
+    return stack.length === 0;  // Stack phải rỗng nếu tất cả ngoặc khớp
 }
 `
         },
         {
-            name: 'Postfix Evaluation',
-            description: 'Tính giá trị biểu thức Postfix',
-            algorithm: 'Push số, Pop 2 số khi gặp operator, tính và push kết quả',
+            name: 'Đổi cơ số (Base Conversion)',
+            nameVi: 'Chuyển đổi thập phân sang nhị phân/bát phân/thập lục phân',
+            description: 'Sử dụng Stack để đổi số thập phân sang các hệ cơ số khác',
+            algorithm: 'Chia liên tục cho cơ số, Push dư vào Stack, Pop ra để lấy kết quả ngược',
             code: `
 /**
- * Evaluate Postfix: "3 4 + 2 *" = (3+4)*2 = 14
+ * Đổi số thập phân sang nhị phân bằng Stack
+ * 
+ * VÍ DỤ: 13 (thập phân) → 1101 (nhị phân)
+ * 
+ * QUY TRÌNH:
+ * 13 ÷ 2 = 6 dư 1 → Push(1)
+ * 6 ÷ 2 = 3 dư 0  → Push(0)
+ * 3 ÷ 2 = 1 dư 1  → Push(1)
+ * 1 ÷ 2 = 0 dư 1  → Push(1)
+ * Pop ngược: 1-1-0-1 → "1101"
+ */
+function decimalToBinary(n: number): string {
+    const stack: number[] = [];
+    
+    while (n > 0) {
+        stack.push(n % 2);  // Push phần dư
+        n = Math.floor(n / 2);
+    }
+    
+    let result = '';
+    while (stack.length > 0) {
+        result += stack.pop();  // Pop ngược lại
+    }
+    return result || '0';
+}
+`
+        },
+        {
+            name: 'Ký pháp nghịch đảo Ba Lan (Infix → Postfix)',
+            nameVi: 'Chuyển đổi biểu thức Trung tố sang Hậu tố',
+            description: 'Chuyển biểu thức dạng a+b sang ab+ để tính toán dễ dàng hơn',
+            algorithm: `
+1. Duyệt từng ký tự trong biểu thức Infix
+2. Nếu là toán hạng (số/biến): Đưa thẳng vào Output
+3. Nếu là ngoặc mở '(': Push vào Stack
+4. Nếu là ngoặc đóng ')': Pop liên tục đến khi gặp '(' rồi bỏ '('
+5. Nếu là toán tử (+,-,*,/):
+   - Pop các toán tử có độ ưu tiên >= toán tử hiện tại
+   - Push toán tử hiện tại vào Stack
+6. Cuối cùng: Pop hết Stack vào Output`,
+            code: `
+/**
+ * Chuyển Infix sang Postfix
+ * 
+ * VÍ DỤ: "A+B*C" → "ABC*+"
+ * VÍ DỤ: "(A+B)*C" → "AB+C*"
+ */
+function infixToPostfix(infix: string): string {
+    const priority: Record<string, number> = { '+': 1, '-': 1, '*': 2, '/': 2, '^': 3 };
+    const stack: string[] = [];
+    let output = '';
+    
+    for (const ch of infix) {
+        if (isAlphaNumeric(ch)) {
+            output += ch;  // Toán hạng → Output
+        } else if (ch === '(') {
+            stack.push(ch);
+        } else if (ch === ')') {
+            while (stack.length > 0 && stack[stack.length-1] !== '(') {
+                output += stack.pop();
+            }
+            stack.pop();  // Bỏ '('
+        } else {
+            // Toán tử
+            while (stack.length > 0 && 
+                   priority[stack[stack.length-1]] >= priority[ch]) {
+                output += stack.pop();
+            }
+            stack.push(ch);
+        }
+    }
+    
+    while (stack.length > 0) {
+        output += stack.pop();
+    }
+    return output;
+}
+`
+        },
+        {
+            name: 'Tính giá trị biểu thức Hậu tố (Postfix Evaluation)',
+            nameVi: 'Tính toán biểu thức dạng Postfix',
+            description: 'Tính giá trị biểu thức đã chuyển sang dạng Hậu tố',
+            algorithm: 'Đẩy số vào Stack, khi gặp toán tử thì Pop 2 số, tính toán và Push kết quả',
+            code: `
+/**
+ * Tính giá trị Postfix: "3 4 + 2 *" = (3+4)*2 = 14
  */
 function evalPostfix(expr: string[]): number {
     const stack: number[] = [];
     for (const token of expr) {
         if (isNumber(token)) {
-            stack.push(parseInt(token));
+            stack.push(parseInt(token));  // Push số
         } else {
-            const b = stack.pop()!;
-            const a = stack.pop()!;
-            stack.push(operate(a, b, token));
+            const b = stack.pop()!;  // Lấy toán hạng phải
+            const a = stack.pop()!;  // Lấy toán hạng trái
+            stack.push(operate(a, b, token));  // Push kết quả
         }
     }
-    return stack.pop()!;
+    return stack.pop()!;  // Kết quả cuối cùng
 }
 `
         },
         {
+            name: 'Khử đệ quy (Eliminating Recursion)',
+            nameVi: 'Chuyển đổi thuật toán đệ quy sang vòng lặp',
+            description: 'Dùng Stack để mô phỏng Call Stack của đệ quy',
+            examples: ['Tháp Hà Nội', 'Tính giai thừa', 'Duyệt cây']
+        },
+        {
             name: 'DFS (Depth-First Search)',
-            description: 'Duyệt đồ thị theo chiều sâu',
-            algorithm: 'Push start, Pop để visit, Push neighbors chưa thăm'
+            nameVi: 'Duyệt đồ thị theo chiều sâu',
+            description: 'Duyệt đồ thị bằng cách đi sâu nhất có thể trước khi quay lui',
+            algorithm: 'Push đỉnh xuất phát, Pop để thăm, Push các đỉnh kề chưa thăm'
         },
         {
             name: 'Undo/Redo',
-            description: 'Chức năng hoàn tác/làm lại',
-            algorithm: '2 stacks: undo stack và redo stack'
-        },
-        {
-            name: 'Function Call Stack',
-            description: 'Lưu stack frame khi gọi hàm',
-            algorithm: 'Push frame khi gọi, Pop frame khi return'
+            nameVi: 'Hoàn tác / Làm lại',
+            description: 'Chức năng hoàn tác và làm lại trong các ứng dụng',
+            algorithm: 'Dùng 2 Stack: Undo Stack và Redo Stack'
         }
     ]
 };
@@ -449,19 +540,65 @@ function bfs(graph: Graph, start: number): void {
 `
         },
         {
-            name: 'Level Order Traversal',
-            description: 'Duyệt cây theo từng level',
-            algorithm: 'Enqueue root, mỗi bước dequeue node và enqueue children'
+            name: 'Duyệt cây theo mức (Level Order Traversal)',
+            nameVi: 'Duyệt cây theo từng tầng',
+            description: 'Duyệt cây nhị phân theo từng level từ trên xuống',
+            algorithm: 'Enqueue gốc cây, mỗi bước dequeue node và enqueue các con của nó'
         },
         {
-            name: 'CPU Scheduling',
-            description: 'Round-robin, First Come First Served',
-            algorithm: 'Queue các process, dequeue để chạy, enqueue lại nếu chưa xong'
+            name: 'Lập lịch CPU (CPU Scheduling)',
+            nameVi: 'Điều phối tiến trình',
+            description: 'Round-robin, First Come First Served (FCFS)',
+            algorithm: 'Queue các tiến trình, dequeue để thực thi, enqueue lại nếu chưa hoàn thành'
         },
         {
-            name: 'Buffer',
-            description: 'IO buffer, keyboard buffer',
-            algorithm: 'Producer enqueue, Consumer dequeue'
+            name: 'Bộ đệm (Buffer)',
+            nameVi: 'Bộ nhớ đệm',
+            description: 'IO buffer, keyboard buffer, network buffer',
+            algorithm: 'Producer enqueue dữ liệu, Consumer dequeue để xử lý'
+        },
+        {
+            name: 'Kiểm tra chuỗi Palindrome',
+            nameVi: 'Kiểm tra chuỗi đối xứng',
+            description: 'Kiểm tra xem một chuỗi đọc xuôi ngược giống nhau không',
+            algorithm: 'Dùng Queue và Stack: Enqueue VÀ Push từng ký tự, Dequeue và Pop so sánh'
+        },
+        {
+            name: 'Demerging (Tách và gộp dữ liệu)',
+            nameVi: 'Tổ chức lại dữ liệu giữ thứ tự',
+            description: 'Tách một danh sách thành nhiều danh sách con theo tiêu chí, vẫn giữ nguyên thứ tự ban đầu',
+            example: `
+/**
+ * DEMERGING - Ứng dụng Queue để tách và gộp danh sách
+ * 
+ * BÀI TOÁN: Có file dữ liệu nhân sự, cần tách thành 2 file:
+ * - File Nam: Chứa các nhân viên Nam
+ * - File Nữ: Chứa các nhân viên Nữ
+ * Yêu cầu: Giữ nguyên thứ tự thời gian nhập liệu ban đầu
+ * 
+ * GIẢI PHÁP:
+ * - Dùng 2 Queue: QueueNam và QueueNu
+ * - Duyệt file gốc: Nếu là Nam → Enqueue(QueueNam), ngược lại Enqueue(QueueNu)
+ * - FIFO đảm bảo giữ nguyên thứ tự thời gian!
+ */
+interface Employee { name: string; gender: 'M' | 'F'; joinDate: Date; }
+
+function demergeByGender(employees: Employee[]): { males: Queue<Employee>, females: Queue<Employee> } {
+    const males = new Queue<Employee>();
+    const females = new Queue<Employee>();
+    
+    for (const emp of employees) {
+        if (emp.gender === 'M') {
+            males.enqueue(emp);  // Giữ nguyên thứ tự
+        } else {
+            females.enqueue(emp);  // Giữ nguyên thứ tự
+        }
+    }
+    
+    return { males, females };
+}
+`,
+            benefit: 'Queue đảm bảo FIFO nên thứ tự thời gian (chronological order) được giữ nguyên'
         }
     ]
 };
