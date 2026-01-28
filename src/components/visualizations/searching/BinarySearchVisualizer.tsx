@@ -664,7 +664,7 @@ const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({
                 </div>
             </div>
 
-            {/* Step Description */}
+            {/* Step Description & Code */}
             <motion.div
                 className="viz-step-description"
                 key={currentStep}
@@ -672,7 +672,12 @@ const BinarySearchVisualizer: React.FC<BinarySearchVisualizerProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                {currentStepData.description}
+                <div className="step-text">{currentStepData.description}</div>
+                {currentStepData.codeSnippet && (
+                    <div className="step-code-block">
+                        <pre><code>{currentStepData.codeSnippet}</code></pre>
+                    </div>
+                )}
             </motion.div>
 
             {/* Controls */}

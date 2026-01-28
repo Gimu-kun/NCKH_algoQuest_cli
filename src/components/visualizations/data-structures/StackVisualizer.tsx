@@ -60,14 +60,14 @@
  * 2. Linked List-based: Dùng linked list. Flexible size, overhead pointer.
  *
  * SO SÁNH VỚI QUEUE:
- * ┌─────────────┬──────────────┬──────────────┐
- * │ Tiêu chí    │ Stack        │ Queue        │
- * ├─────────────┼──────────────┼──────────────┤
- * │ Principle   │ LIFO         │ FIFO         │
- * │ Add         │ Push (top)   │ Enqueue (rear)│
+ * ┌─────────────┬──────────────┬────────────────┐
+ * │ Tiêu chí    │ Stack        │     Queue      │
+ * ├─────────────┼──────────────┼────────────────┤
+ * │ Principle   │ LIFO         │ FIFO           │
+ * │ Add         │ Push (top)   │ Enqueue (rear) │
  * │ Remove      │ Pop (top)    │ Dequeue (front)│
- * │ Real-world  │ Plates stack │ Checkout line │
- * └─────────────┴──────────────┴──────────────┘
+ * │ Real-world  │ Plates stack │ Checkout line  │
+ * └─────────────┴──────────────┴────────────────┘
  *
  * =============================================================================
  */

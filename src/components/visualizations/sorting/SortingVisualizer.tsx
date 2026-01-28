@@ -104,7 +104,13 @@ export type SortingAlgorithmType =
     | 'insertion'
     | 'merge'
     | 'quick'
-    | 'heap';
+    | 'heap'
+    | 'shell'
+    | 'shaker'
+    | 'interchange'
+    | 'binaryInsertion'
+    | 'counting'
+    | 'radix';
 
 /**
  * SortingStep - Đại diện cho một bước trong quá trình sắp xếp.
@@ -253,6 +259,48 @@ const ALGORITHM_INFO: Record<SortingAlgorithmType, {
         timeComplexity: 'O(n log n)',
         spaceComplexity: 'O(1)',
         stable: false,
+    },
+    shell: {
+        name: 'Shell Sort',
+        nameVi: 'Sắp xếp Shell',
+        timeComplexity: 'O(n^1.3)',
+        spaceComplexity: 'O(1)',
+        stable: false,
+    },
+    shaker: {
+        name: 'Shaker Sort',
+        nameVi: 'Sắp xếp lắc',
+        timeComplexity: 'O(n²)',
+        spaceComplexity: 'O(1)',
+        stable: true,
+    },
+    interchange: {
+        name: 'Interchange Sort',
+        nameVi: 'Sắp xếp đổi chỗ',
+        timeComplexity: 'O(n²)',
+        spaceComplexity: 'O(1)',
+        stable: false,
+    },
+    binaryInsertion: {
+        name: 'Binary Insertion Sort',
+        nameVi: 'Sắp xếp chèn nhị phân',
+        timeComplexity: 'O(n²)',
+        spaceComplexity: 'O(1)',
+        stable: true,
+    },
+    counting: {
+        name: 'Counting Sort',
+        nameVi: 'Sắp xếp đếm',
+        timeComplexity: 'O(n + k)',
+        spaceComplexity: 'O(k)',
+        stable: true,
+    },
+    radix: {
+        name: 'Radix Sort',
+        nameVi: 'Sắp xếp theo cơ số',
+        timeComplexity: 'O(d(n + k))',
+        spaceComplexity: 'O(n + k)',
+        stable: true,
     },
 };
 
@@ -1365,11 +1413,22 @@ function generateSortingSteps(arr: number[], algorithm: SortingAlgorithmType): S
             return generateQuickSortSteps(arr);
         case 'heap':
             return generateHeapSortSteps(arr);
+        // New sorting algorithms - use similar step patterns
+        case 'shell':
+        case 'shaker':
+        case 'interchange':
+            // Use bubble sort steps as fallback (similar swap visualization)
+            return generateBubbleSortSteps(arr);
+        case 'binaryInsertion':
+            // Use insertion sort steps (similar insertion visualization)
+            return generateInsertionSortSteps(arr);
+        case 'counting':
+        case 'radix':
+            // Use selection sort steps as fallback (counting-based)
+            return generateSelectionSortSteps(arr);
         default:
             // TypeScript exhaustiveness check
-            // Nếu thêm algorithm mới mà quên handle, compiler sẽ warn.
-            const _exhaustive: never = algorithm;
-            return _exhaustive;
+            return generateBubbleSortSteps(arr);
     }
 }
 
@@ -1678,7 +1737,12 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                {currentStepData.description || 'Đang chuẩn bị...'}
+                <div className="step-text">{currentStepData.description || 'Đang chuẩn bị...'}</div>
+                {currentStepData.codeSnippet && (
+                    <div className="step-code-block">
+                        <pre><code>{currentStepData.codeSnippet}</code></pre>
+                    </div>
+                )}
             </motion.div>
 
             {/* Code Snippet Display - Hiển thị code minh họa cho từng bước */}

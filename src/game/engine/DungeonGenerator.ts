@@ -105,11 +105,7 @@ export class DungeonGenerator {
                     rooms.push({
                         x,
                         y,
-<<<<<<< HEAD
                         type: type as DungeonRoom['type'],
-=======
-                        type: type as any,
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
                         explored: type === 'entrance', // Entrance luôn Explored từ đầu
                         // Entrance, Empty và Treasure coi như Cleared ngay (hoặc sau khi nhặt)
                         // Monster/Boss cần đánh bại mới Cleared
@@ -146,11 +142,7 @@ export class DungeonGenerator {
         start: Point,
         end: Point
     ) {
-<<<<<<< HEAD
         const current = { ...start };
-=======
-        let current = { ...start };
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
         // Di chuyển cho đến khi trùng tọa độ đích
         while (current.x !== end.x || current.y !== end.y) {

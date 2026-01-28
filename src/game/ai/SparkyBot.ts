@@ -29,11 +29,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-<<<<<<< HEAD
 import { type Question, BloomLevel, QuestionType } from '../../data/models/Question';
-=======
-import { BloomLevel, QuestionType } from '../../data/models/Question';
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
 export interface SparkyHint {
     type: 'SYNTAX' | 'MEMORY' | 'LOGIC' | 'GENERAL';
@@ -65,13 +61,7 @@ export class SparkyBot {
      */
     provideHint(
         questionType: QuestionType,
-<<<<<<< HEAD
         topic: string
-=======
-        topic: string,
-        wrongAnswer: any,
-        correctAnswer: any
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
     ): SparkyHint {
         // Cập nhật điểm yếu
         const current = this.weaknesses.get(topic) || 0;
@@ -80,7 +70,6 @@ export class SparkyBot {
         // Routing theo loại câu hỏi
         switch (questionType) {
             case QuestionType.MULTIPLE_CHOICE:
-<<<<<<< HEAD
                 return this.getMCQHint(topic);
 
             case QuestionType.FILL_BLANK:
@@ -88,15 +77,6 @@ export class SparkyBot {
 
             case QuestionType.MATCHING:
                 return this.getMatchingHint();
-=======
-                return this.getMCQHint(topic, wrongAnswer, correctAnswer);
-
-            case QuestionType.FILL_BLANK:
-                return this.getFillBlankHint(topic);
-
-            case QuestionType.MATCHING:
-                return this.getMatchingHint(topic);
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
             default:
                 return {
@@ -111,11 +91,7 @@ export class SparkyBot {
      * Gợi ý cho Trắc nghiệm (MCQ)
      * Dựa trên Hardcoded Rules cho các topic phổ biến.
      */
-<<<<<<< HEAD
     private getMCQHint(topic: string): SparkyHint {
-=======
-    private getMCQHint(topic: string, _wrong: any, _correct: any): SparkyHint {
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         const hints: Record<string, string> = {
             'Stack': '💡 Gợi ý: Stack hoạt động theo LIFO (Vào sau, Ra trước), giống như xếp chồng đĩa!',
             'Queue': '💡 Gợi ý: Queue hoạt động theo FIFO (Vào trước, Ra trước), giống như xếp hàng mua vé!',
@@ -134,11 +110,7 @@ export class SparkyBot {
     /**
      * Gợi ý cho Điền khuyết (Coding Syntax)
      */
-<<<<<<< HEAD
     private getFillBlankHint(): SparkyHint {
-=======
-    private getFillBlankHint(_topic: string): SparkyHint {
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         return {
             type: 'SYNTAX',
             message: '💡 Kiểm tra kỹ cú pháp! Đừng quên dấu chấm phẩy ; hoặc ngoặc {} nhé.',
@@ -149,11 +121,7 @@ export class SparkyBot {
     /**
      * Gợi ý cho câu hỏi Nối (Matching)
      */
-<<<<<<< HEAD
     private getMatchingHint(): SparkyHint {
-=======
-    private getMatchingHint(_topic: string): SparkyHint {
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         return {
             type: 'GENERAL',
             message: '💡 Hãy suy nghĩ về mối quan hệ logic giữa các khái niệm!',
@@ -332,11 +300,7 @@ export class SparkyBot {
      * Trong phiên bản Production, hàm này sẽ gọi tới LLM (Gemini/GPT) để sinh câu hỏi mới.
      * Hiện tại return dummy data để demo Flow.
      */
-<<<<<<< HEAD
     generateQuestion(chapter: number, topic: string, bloomLevel: BloomLevel): Question {
-=======
-    generateQuestion(chapter: number, topic: string, bloomLevel: BloomLevel): any {
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         console.log(`[Sparky ML] Generating ${bloomLevel} question for ${topic} (Chapter ${chapter})`);
 
         return {
@@ -347,12 +311,8 @@ export class SparkyBot {
             correctAnswer: 0,
             chapter,
             bloomLevel,
-<<<<<<< HEAD
             topic,
             points: 10
-=======
-            topic
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         };
     }
 

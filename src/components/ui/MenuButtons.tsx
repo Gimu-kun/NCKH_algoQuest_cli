@@ -118,7 +118,7 @@ export const SparkyAssistant: React.FC<SparkyProps> = ({
             </div>
             {displayMessage && (
                 <div className="sparky-message-box">
-                    <p className="sparky-message">{displayMessage}</p>
+                    <p className="sparky-message" dangerouslySetInnerHTML={{ __html: (displayMessage || '').replace(/\n/g, '<br/>') }} />
                     <button
                         className="sparky-close"
                         onClick={hideSparky}

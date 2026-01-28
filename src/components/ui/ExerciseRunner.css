@@ -1,0 +1,303 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * EXERCISE RUNNER - CSS STYLES
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+.exercise-runner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(90deg, #0f3460 0%, #1a1a2e 100%);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.exercise-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exercise-info h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.3rem;
+}
+
+.exercise-id {
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.difficulty-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #000;
+}
+
+/* Description */
+.exercise-description {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.exercise-description p {
+    margin: 0;
+    color: #c0c0c0;
+    line-height: 1.6;
+}
+
+/* Code Editor */
+.code-editor-container {
+    margin: 20px 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.editor-header span {
+    color: #00d4ff;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.reset-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #a0a0a0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 100, 100, 0.2);
+    color: #f87171;
+}
+
+.code-editor {
+    width: 100%;
+    min-height: 300px;
+    padding: 16px;
+    background: transparent;
+    border: none;
+    color: #e6edf3;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.code-editor::placeholder {
+    color: #6e7681;
+}
+
+/* Actions */
+.exercise-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px 20px;
+}
+
+.action-group {
+    display: flex;
+    gap: 12px;
+}
+
+.hint-btn,
+.solution-btn {
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #a0a0a0;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hint-btn:hover {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
+}
+
+.solution-btn:hover {
+    background: rgba(74, 222, 128, 0.1);
+    border-color: rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+}
+
+.submit-btn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+/* Hints Panel */
+.hints-panel {
+    margin: 0 24px 20px;
+    padding: 16px 20px;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+}
+
+.hints-panel h4 {
+    margin: 0 0 12px 0;
+    color: #fbbf24;
+    font-size: 0.95rem;
+}
+
+.hints-panel ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.hints-panel li {
+    margin-bottom: 8px;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.more-hints-btn {
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: rgba(251, 191, 36, 0.2);
+    border: none;
+    color: #fbbf24;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.more-hints-btn:hover {
+    background: rgba(251, 191, 36, 0.3);
+}
+
+/* Solution Panel */
+.solution-panel {
+    margin: 0 24px 20px;
+    padding: 16px;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 12px;
+}
+
+.solution-panel h4 {
+    margin: 0 0 12px 0;
+    color: #4ade80;
+    font-size: 0.95rem;
+}
+
+.solution-panel pre {
+    margin: 0;
+    padding: 16px;
+    background: #0d1117;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.solution-panel code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+/* Navigation */
+.exercise-navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn {
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #a0a0a0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+}
+
+.nav-btn.next {
+    margin-left: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .exercise-actions {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .action-group {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .submit-btn {
+        width: 100%;
+    }
+}

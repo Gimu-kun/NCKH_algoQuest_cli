@@ -24,11 +24,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
-<<<<<<< HEAD
 import { SHOP_ITEMS, ResourceType, type DecorationItem, type CosmeticItem } from '../../data/models/Item';
-=======
-import { SHOP_ITEMS, ResourceType } from '../../data/models/Item';
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 import './ShopInterface.css';
 
 export const ShopInterface: React.FC = () => {
@@ -40,7 +36,6 @@ export const ShopInterface: React.FC = () => {
         setScene(GameScene.HUB_WORLD);
     };
 
-<<<<<<< HEAD
     const handleBuy = (item: DecorationItem | CosmeticItem, category: 'DECORATIONS' | 'COSMETICS') => {
         // Kiểm tra đủ tiền không
         let canAfford = true;
@@ -49,15 +44,6 @@ export const ShopInterface: React.FC = () => {
         if (cost.gold && resources[ResourceType.GOLD] < cost.gold) canAfford = false;
         if (cost.dataWood && resources[ResourceType.DATA_WOOD] < cost.dataWood) canAfford = false;
         if (cost.logicStone && resources[ResourceType.LOGIC_STONE] < cost.logicStone) canAfford = false;
-=======
-    const handleBuy = (item: any, category: 'DECORATIONS' | 'COSMETICS') => {
-        // Kiểm tra đủ tiền không
-        let canAfford = true;
-
-        if (item.cost.gold && resources[ResourceType.GOLD] < item.cost.gold) canAfford = false;
-        if (item.cost.dataWood && resources[ResourceType.DATA_WOOD] < item.cost.dataWood) canAfford = false;
-        if (item.cost.logicStone && resources[ResourceType.LOGIC_STONE] < item.cost.logicStone) canAfford = false;
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
 
         if (!canAfford) {
             addToast('error', 'Không đủ tài nguyên!', 2000);
@@ -65,7 +51,6 @@ export const ShopInterface: React.FC = () => {
         }
 
         // Trừ tiền
-<<<<<<< HEAD
         if (cost.gold) removeResource(ResourceType.GOLD, cost.gold);
         if (cost.dataWood) removeResource(ResourceType.DATA_WOOD, cost.dataWood);
         if (cost.logicStone) removeResource(ResourceType.LOGIC_STONE, cost.logicStone);
@@ -75,27 +60,12 @@ export const ShopInterface: React.FC = () => {
             addDecoration(item.id);
         } else {
             addCosmetic(item.id);
-=======
-        if (item.cost.gold) removeResource(ResourceType.GOLD, item.cost.gold);
-        if (item.cost.dataWood) removeResource(ResourceType.DATA_WOOD, item.cost.dataWood);
-        if (item.cost.logicStone) removeResource(ResourceType.LOGIC_STONE, item.cost.logicStone);
-
-        // Thêm item vào kho
-        if (category === 'DECORATIONS') {
-            addDecoration(item);
-        } else {
-            addCosmetic(item);
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         }
 
         addToast('success', `Đã mua ${item.displayName}!`, 2000);
     };
 
-<<<<<<< HEAD
     const renderPrice = (cost: DecorationItem['cost']) => {
-=======
-    const renderPrice = (cost: any) => {
->>>>>>> ac59ce48f7195ff8f7319183ac018758e482cd4b
         const prices = [];
         if (cost.gold) prices.push(`${cost.gold} Vàng`);
         if (cost.dataWood) prices.push(`${cost.dataWood} Gỗ`);

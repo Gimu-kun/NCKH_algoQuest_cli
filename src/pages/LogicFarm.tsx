@@ -89,7 +89,7 @@ export const LogicFarm: React.FC = () => {
             <HUD />
 
             <div className="farm-header">
-                <h1>🏡 Trang Trại Logic</h1>
+                <h1><i className="fi fi-rr-home"></i> Trang Trại Logic</h1>
 
                 <div className="farm-tabs">
                     <button
@@ -124,7 +124,7 @@ export const LogicFarm: React.FC = () => {
                                 onClick={() => handleBuild(altar.id)}
                             >
                                 <div className="altar-icon">
-                                    {altar.unlocked ? '✨' : '🔒'}
+                                    {altar.unlocked ? <i className="fi fi-rr-sparkles"></i> : <i className="fi fi-rr-lock"></i>}
                                 </div>
                                 <span className="altar-name">{altar.name}</span>
                                 {!altar.unlocked && <span className="build-hint">Nhấn để Xây</span>}
@@ -182,7 +182,7 @@ export const LogicFarm: React.FC = () => {
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            🛍️ Ghé Cửa Hàng Ngay
+                                            <i className="fi fi-rr-shopping-bag"></i> Ghé Cửa Hàng Ngay
                                         </button>
                                     </div>
                                 )}
