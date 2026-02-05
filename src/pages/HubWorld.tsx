@@ -21,15 +21,51 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { HUD } from '../components/ui/HUD';
 import './HubWorld.css';
+import Cookies from 'js-cookie'
+import { verifyToken } from '../services/authApiService';
+import type { UserGeneralDto } from '../types/authType';
+import { usePlayerStore } from '../store/playerStore';
 
 export const HubWorld: React.FC = () => {
     // Truy cập Global State để điều khiển chuyển cảnh và hội thoại
     const { setScene, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
+    const [isVerifying, setIsVerifying] = useState(true);
+    const { hydrateFromServer } = usePlayerStore();
+    
+    useEffect(() => {
+        const checkAuth = async () => {
+          const token = Cookies.get('auth_token');
+    
+          if (!token) {
+            setScene(GameScene.MAIN_MENU);
+            return;
+          }
+    
+          const response:{
+            success:boolean,
+            message?:string,
+            data?:UserGeneralDto} 
+            = await verifyToken(token);
+    
+          if (!response.success) {
+            Cookies.remove('auth_token');
+            setScene(GameScene.MAIN_MENU);
+          }
+          const userData = response.data
+          
+          if(userData){
+            hydrateFromServer(userData)
+          }
+          setIsVerifying(false);
+        };
+    
+        checkAuth();
+      }, [setScene]);
 
     // Handler Actions
 
@@ -37,6 +73,17 @@ export const HubWorld: React.FC = () => {
         // Mở Bảng Cổ Ngữ với một phép thuật thử nghiệm (Blueprint ID)
         openRunicConsole('spell_is_increasing');
     };
+
+    if (isVerifying) {
+        return (
+          <div className="verify-loading-overlay">
+            <div className="spinner-container">
+              <div className="magic-spinner"></div>
+              <p className="loading-text">Đang xác thực phép thuật...</p>
+            </div>
+          </div>
+        );
+      }
 
     return (
         <div className="hub-world">
@@ -60,8 +107,9 @@ export const HubWorld: React.FC = () => {
                     initial={{ y: -50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                 >
-                    <h1><i className="fi fi-rr-landmark"></i> Thế Giới Trung Tâm - Thánh Địa Dòng Chảy</h1>
+                    <h1> Thế Giới Trung Tâm - Thánh Địa Dòng Chảy</h1>
                     <p>Chào mừng bạn trở lại! Hãy gặp gỡ các NPC để nhận nhiệm vụ.</p>
+                    <button className="start-btn" onClick={()=>{setScene(GameScene.STUDY_MATERIALS)}}>Bắt đầu hành trình</button>
                 </motion.div>
 
                 {/* === KHU VỰC NPC (NPC INTERACTION ZONES) === */}

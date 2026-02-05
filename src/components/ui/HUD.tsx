@@ -32,7 +32,8 @@ import './HUD.css';
 
 export const HUD: React.FC = () => {
     // Hooks lấy dữ liệu từ Store
-    const { resources, level, name, unlockedSpells } = usePlayerStore();
+    const { resources, level, firstname, lastname, unlockedSpells } = usePlayerStore();
+    
     const {
         toggleInventory,
         toggleMenu,
@@ -48,11 +49,11 @@ export const HUD: React.FC = () => {
                 <div className="player-avatar">
                     <img
                         src="/assets/Ảnh Assets/Nhân vật/The Apprentice(Main Character)/The Apprentice Idle.png"
-                        alt={name}
+                        alt={firstname+" "+lastname}
                     />
                 </div>
                 <div className="player-details">
-                    <h3>{name}</h3>
+                    <h3>{firstname+" "+lastname}</h3>
                     <div className="level-badge">{level}</div>
                 </div>
             </div>
