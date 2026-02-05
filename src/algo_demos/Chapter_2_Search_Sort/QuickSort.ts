@@ -40,6 +40,158 @@
  *    - So với **Merge Sort**: Quick Sort thường nhanh hơn nhưng không ổn định. Merge Sort an toàn hơn về time complexity O(n log n) nhưng tốn ram.
  */
 
+import type { SortingStep } from '../../components/visualizations/types';
+
+/**
+ * generateQuickSortSteps - Tạo các bước cho Quick Sort (In-place).
+ *
+ * THUẬT TOÁN QUICKSORT (In-place):
+ * 1. Chọn pivot (ví dụ: phần tử cuối).
+ * 2. Partition: Đưa các phần tử nhỏ hơn pivot sang trái, lớn hơn sang phải.
+ * 3. Pivot về vị trí đúng (sorted).
+ * 4. Đệ quy cho left part và right part.
+ */
+export function generateQuickSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Quick Sort. Chia để trị (Divide & Conquer).',
+        codeSnippet: `// QUICK SORT - O(n log n)
+// Ý tưởng: Chọn Pivot, phân chia mảng
+function quickSort(arr, low, high) {
+    if (low < high) {
+        pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}`,
+    });
+
+    quickSortRecursive(array, 0, n - 1, steps);
+
+    // Final sorted state
+    const allSorted = Array.from({ length: n }, (_, i) => i);
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: allSorted,
+        description: '[Hoàn thành] Quick Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH QUICKSORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Rất nhanh (O(n log n))
+// - In-place (bản cải tiến)
+//
+// NHƯỢC ĐIỂM:
+// - Unstable
+// - Worst case O(n²) nếu pivot tệ`,
+    });
+
+    return steps;
+}
+
+function quickSortRecursive(array: number[], low: number, high: number, steps: SortingStep[]) {
+    if (low < high) {
+        const pi = partition(array, low, high, steps);
+
+        // Recursive calls
+        quickSortRecursive(array, low, pi - 1, steps);
+        quickSortRecursive(array, pi + 1, high, steps);
+    } else if (low === high) {
+        // Single element is sorted
+        // We can optionally visualize this
+    }
+}
+
+function partition(array: number[], low: number, high: number, steps: SortingStep[]): number {
+    const pivot = array[high];
+    let i = low - 1; // Index of smaller element
+
+    steps.push({
+        array: [...array],
+        comparing: [high],
+        swapping: [],
+        sorted: [],
+        pivot: high,
+        description: `Chọn Pivot: arr[${high}] = ${pivot}`,
+        codeSnippet: `// Chọn Pivot là phần tử cuối
+pivot = arr[${high}];  // ${pivot}
+i = ${low} - 1;  // Index cho phần tử nhỏ hơn`,
+    });
+
+    for (let j = low; j < high; j++) {
+        steps.push({
+            array: [...array],
+            comparing: [j, high],
+            swapping: [],
+            sorted: [],
+            pivot: high,
+            description: `So sánh arr[${j}]=${array[j]} với Pivot ${pivot}`,
+            codeSnippet: `// Duyệt và so sánh với Pivot
+if (arr[${j}] < pivot) {
+    i++;
+    swap(arr[i], arr[j]);
+}`,
+        });
+
+        if (array[j] < pivot) {
+            i++;
+
+            if (i !== j) {
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [i, j],
+                    sorted: [],
+                    pivot: high,
+                    description: `${array[j]} < ${pivot} → Swap vào vùng nhỏ hơn (arr[${i}])`,
+                    codeSnippet: `// Swap arr[${i}] và arr[${j}]
+[arr[${i}], arr[${j}]] = [arr[${j}], arr[${i}]];`,
+                });
+
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    }
+
+    // Swap pivot to correct position usually (i + 1)
+    if (i + 1 !== high) {
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [i + 1, high],
+            sorted: [],
+            pivot: high,
+            description: `Đưa Pivot ${pivot} về vị trí đúng ở giữa (arr[${i + 1}])`,
+            codeSnippet: `// Đặt Pivot vào đúng vị trí sau khi phân chia
+swap(arr[${i + 1}], arr[${high}]);`,
+        });
+
+        [array[i + 1], array[high]] = [array[high], array[i + 1]];
+    }
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [i + 1], // Pivot is strictly sorted now
+        description: `Pivot ${pivot} đã ở đúng vị trí ${i + 1}.`,
+        codeSnippet: `// Phân hoạch hoàn tất tại index ${i + 1}
+// Trả về pivot index`,
+    });
+
+    return i + 1;
+}
+
+// Keep generic implementation (simple recursive array copy version)
 export function quickSort(arr: number[]): number[] {
     // 1. Base Case: Điều kiện dừng đệ quy (Mảng rỗng hoặc 1 phần tử)
     if (arr.length <= 1) {

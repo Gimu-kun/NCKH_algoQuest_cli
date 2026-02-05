@@ -37,6 +37,178 @@
  *    - So với **Interpolation Search**: Binary Search ổn định hơn, Interpolation Search (O(log(log n))) chỉ nhanh hơn nếu dữ liệu phân bố đều (uniform distribution).
  */
 
+import type { BinarySearchStep } from '../../components/visualizations/types';
+
+/**
+ * generateBinarySearchSteps - Tạo các bước cho Binary Search.
+ *
+ * @param arr - Mảng đã sorted
+ * @param target - Giá trị cần tìm
+ * @returns Mảng các BinarySearchStep
+ */
+export function generateBinarySearchSteps(arr: number[], target: number): BinarySearchStep[] {
+    const steps: BinarySearchStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const eliminated: number[] = [];
+
+    let left = 0;
+    let right = n - 1;
+
+    // Initial step
+    steps.push({
+        array,
+        left,
+        right,
+        mid: -1,
+        target,
+        foundIndex: -1,
+        eliminated: [],
+        description: `Bắt đầu Binary Search. Tìm target = ${target}. Search space: [${left}, ${right}]`,
+        isComplete: false,
+        codeSnippet: `// BINARY SEARCH - O(log n) time, O(1) space
+// ĐIỀU KIỆN: Mảng PHẢI được sắp xếp!
+
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor(left + (right - left) / 2);
+        if (arr[mid] === target) return mid;
+        if (arr[mid] < target) left = mid + 1;  // Tìm bên PHẢI
+        else right = mid - 1;                   // Tìm bên TRÁI
+    }
+    return -1;
+}`,
+    });
+
+    while (left <= right) {
+        // Calculate mid
+        const mid = Math.floor(left + (right - left) / 2);
+        const midValue = array[mid];
+
+        // Step: Show mid calculation
+        steps.push({
+            array,
+            left,
+            right,
+            mid,
+            target,
+            foundIndex: -1,
+            eliminated: [...eliminated],
+            description: `mid = ${left} + (${right} - ${left}) / 2 = ${mid}. arr[${mid}] = ${midValue}`,
+            isComplete: false,
+            codeSnippet: `// Tính mid - QUAN TRỌNG: Tránh overflow!
+// SAI: mid = (left + right) / 2  // Có thể overflow
+// ĐÚNg: mid = left + (right - left) / 2
+
+let mid = ${left} + (${right} - ${left}) / 2 = ${mid}
+// arr[${mid}] = ${midValue}
+// So sánh với target = ${target}`,
+        });
+
+        if (midValue === target) {
+            // Found!
+            steps.push({
+                array,
+                left,
+                right,
+                mid,
+                target,
+                foundIndex: mid,
+                eliminated: [...eliminated],
+                description: `[TÌM THẤY] arr[${mid}] = ${midValue} = target. Index = ${mid}`,
+                isComplete: true,
+                codeSnippet: `// ✓ TÌM THẤY!
+if (arr[${mid}] === ${target}) {
+    return ${mid};  // Trả về index
+}
+
+// KếT QUẢ: target ${target} ở index ${mid}
+// Số bước: ${steps.length + 1} (O(log n) = ~${Math.ceil(Math.log2(n))})`,
+            });
+            return steps;
+        }
+
+        if (midValue < target) {
+            // Target is on the right side
+            // Eliminate left half including mid
+            for (let i = left; i <= mid; i++) {
+                if (!eliminated.includes(i)) {
+                    eliminated.push(i);
+                }
+            }
+
+            steps.push({
+                array,
+                left,
+                right,
+                mid,
+                target,
+                foundIndex: -1,
+                eliminated: [...eliminated],
+                description: `${midValue} < ${target} → Target ở bên PHẢI. Loại bỏ [${left}..${mid}]`,
+                isComplete: false,
+            });
+
+            left = mid + 1;
+        } else {
+            // Target is on the left side
+            // Eliminate right half including mid
+            for (let i = mid; i <= right; i++) {
+                if (!eliminated.includes(i)) {
+                    eliminated.push(i);
+                }
+            }
+
+            steps.push({
+                array,
+                left,
+                right,
+                mid,
+                target,
+                foundIndex: -1,
+                eliminated: [...eliminated],
+                description: `${midValue} > ${target} → Target ở bên TRÁI. Loại bỏ [${mid}..${right}]`,
+                isComplete: false,
+            });
+
+            right = mid - 1;
+        }
+
+        // Show new search space
+        if (left <= right) {
+            steps.push({
+                array,
+                left,
+                right,
+                mid: -1,
+                target,
+                foundIndex: -1,
+                eliminated: [...eliminated],
+                description: `Search space mới: [${left}, ${right}]. Còn ${right - left + 1} phần tử.`,
+                isComplete: false,
+            });
+        }
+    }
+
+    // Not found
+    steps.push({
+        array,
+        left,
+        right,
+        mid: -1,
+        target,
+        foundIndex: -1,
+        eliminated: [...eliminated],
+        description: `[KHÔNG TÌM THẤY] Target ${target} không tồn tại trong mảng.`,
+        isComplete: true,
+    });
+
+    return steps;
+}
+
 export function binarySearch(arr: number[], target: number): number {
     console.log(`\n--- BẮT ĐẦU BINARY SEARCH (Tìm kiếm nhị phân) ---`);
     console.log(`Target: ${target}`);
@@ -73,7 +245,7 @@ export function binarySearch(arr: number[], target: number): number {
             console.log(`   -> Cập nhật Left: ${mid} + 1 = ${mid + 1}`);
             // Thu hẹp phạm vi: Dời left lên một vị trí sau mid
             left = mid + 1;
-        } 
+        }
         // Case 3: Giá trị giữa > Target -> Target nằm ở nửa bên TRÁI (Left Half)
         // Nghĩa là tất cả phần tử từ mid -> right đều lớn hơn target -> Bỏ qua chúng.
         else {
@@ -88,3 +260,8 @@ export function binarySearch(arr: number[], target: number): number {
     console.log(`\n--- KẾT THÚC (Không tìm thấy - Trả về -1) ---`);
     return -1;
 }
+
+export default {
+    binarySearch,
+    generateBinarySearchSteps
+};

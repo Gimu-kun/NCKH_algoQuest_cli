@@ -86,10 +86,160 @@ export interface PriorityItem<T> {
  * Interface cho visualization step
  */
 export interface PQStep {
-    action: 'insert' | 'extract' | 'heapify';
-    value: number;
+    action: 'insert' | 'extract' | 'heapify' | 'swap';
+    value?: number;
     heap: number[];
     message: string;
+    highlights?: number[]; // Indices involved in the action
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VISUALIZATION GENERATORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function generateMaxHeapInsertSteps(currentHeap: number[], newValue: number): PQStep[] {
+    const steps: PQStep[] = [];
+    const heap = [...currentHeap];
+
+    // Step 1: Add to end
+    heap.push(newValue);
+    let index = heap.length - 1;
+
+    steps.push({
+        action: 'insert',
+        value: newValue,
+        heap: [...heap],
+        message: `Thêm [${newValue}] vào cuối Heap (Vị trí ${index}).`,
+        highlights: [index]
+    });
+
+    // Step 2: Heapify Up
+    while (index > 0) {
+        const parentIndex = Math.floor((index - 1) / 2);
+
+        steps.push({
+            action: 'heapify',
+            value: newValue,
+            heap: [...heap],
+            message: `So sánh [${heap[index]}] với Parent [${heap[parentIndex]}].`,
+            highlights: [index, parentIndex]
+        });
+
+        if (heap[index] > heap[parentIndex]) {
+            // Swap
+            [heap[index], heap[parentIndex]] = [heap[parentIndex], heap[index]];
+
+            steps.push({
+                action: 'swap',
+                value: newValue,
+                heap: [...heap],
+                message: `Swap [${heap[index]}] và [${heap[parentIndex]}] vì ${heap[parentIndex]} > ${heap[index]} (Child > Parent).`,
+                highlights: [index, parentIndex]
+            });
+
+            index = parentIndex;
+        } else {
+            steps.push({
+                action: 'heapify',
+                value: newValue,
+                heap: [...heap],
+                message: `Thỏa mãn tính chất Max Heap (Child <= Parent). Dừng.`,
+                highlights: [index, parentIndex]
+            });
+            break;
+        }
+    }
+
+    return steps;
+}
+
+export function generateMaxHeapExtractSteps(currentHeap: number[]): PQStep[] {
+    const steps: PQStep[] = [];
+
+    if (currentHeap.length === 0) {
+        steps.push({
+            action: 'extract',
+            heap: [],
+            message: 'Heap rỗng! Không thể extract.',
+        });
+        return steps;
+    }
+
+    const heap = [...currentHeap];
+    const max = heap[0];
+
+    // Step 1: Remove Root
+    const last = heap.pop()!;
+
+    if (heap.length === 0) {
+        steps.push({
+            action: 'extract',
+            value: max,
+            heap: [],
+            message: `Lấy Max [${max}] ra khỏi Root. Heap rỗng.`,
+            highlights: []
+        });
+        return steps;
+    }
+
+    // Move last to root
+    heap[0] = last;
+    let index = 0;
+
+    steps.push({
+        action: 'extract',
+        value: max,
+        heap: [...heap],
+        message: `Lấy Max [${max}]. Đưa phần tử cuối [${last}] lên Root.`,
+        highlights: [0]
+    });
+
+    // Step 2: Heapify Down
+    const length = heap.length;
+    while (true) {
+        let left = 2 * index + 1;
+        let right = 2 * index + 2;
+        let largest = index;
+
+        if (left < length && heap[left] > heap[largest]) {
+            largest = left;
+        }
+
+        if (right < length && heap[right] > heap[largest]) {
+            largest = right;
+        }
+
+        if (largest !== index) {
+            steps.push({
+                action: 'heapify',
+                heap: [...heap],
+                message: `So sánh Root [${heap[index]}] với con lớn nhất [${heap[largest]}].`,
+                highlights: [index, largest]
+            });
+
+            // Swap
+            [heap[index], heap[largest]] = [heap[largest], heap[index]];
+
+            steps.push({
+                action: 'swap',
+                heap: [...heap],
+                message: `Swap [${heap[largest]}] và [${heap[index]}].`,
+                highlights: [index, largest]
+            });
+
+            index = largest;
+        } else {
+            steps.push({
+                action: 'heapify',
+                heap: [...heap],
+                message: `Vị trí hợp lệ (Root >= Children). Hoàn tất.`,
+                highlights: [index]
+            });
+            break;
+        }
+    }
+
+    return steps;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

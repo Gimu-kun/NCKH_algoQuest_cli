@@ -67,20 +67,7 @@
  */
 
 // ═══════════════════════════════════════════════════════════════════════════
-// TYPES & INTERFACES
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Interface cho mỗi bước của Counting Sort
- */
-export interface CountingSortStep {
-    phase: 'count' | 'cumulative' | 'output';
-    countArray: number[];
-    outputArray: number[];
-    currentIndex?: number;
-    currentValue?: number;
-    message: string;
-}
+// COUNTING SORT - MAIN ALGORITHM
 
 // ═══════════════════════════════════════════════════════════════════════════
 // COUNTING SORT - MAIN ALGORITHM
@@ -137,6 +124,7 @@ export function countingSort(arr: number[]): number[] {
     }
 
     // BƯỚC 4: Xây dựng output
+    // PHASE 1: Đếm
     const output: number[] = new Array(arr.length);
 
     // [IMPORTANT] QUAN TRỌNG: Duyệt từ CUỐI → ĐẦU để giữ STABLE
@@ -167,74 +155,140 @@ export function countingSortInPlace(arr: number[]): void {
 /**
  * Counting Sort với từng bước visualization
  */
-export function countingSortWithSteps(arr: number[]): CountingSortStep[] {
-    const steps: CountingSortStep[] = [];
+import type { SortingStep } from '../../components/visualizations/types';
 
-    if (arr.length <= 1) return steps;
+/**
+ * generateCountingSortSteps - Tạo các bước cho Counting Sort.
+ * 
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
+ */
+export function generateCountingSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const n = arr.length;
+    if (n === 0) return steps;
 
-    // Tìm min và max
+    // Phase 1: Find Min/Max
     let min = arr[0];
     let max = arr[0];
     for (const num of arr) {
         if (num < min) min = num;
         if (num > max) max = num;
     }
+    const range = max - min + 1;
 
-    const k = max - min + 1;
-    const count: number[] = new Array(k).fill(0);
-    const output: number[] = new Array(arr.length);
+    steps.push({
+        array: [...arr],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: `Bắt đầu Counting Sort. Range: [${min}, ${max}] (k=${range}).`,
+        codeSnippet: `// COUNTING SORT
+// 1. Đếm tần suất
+// 2. Tính vị trí
+// 3. Xây dựng mảng kết quả`,
+    });
 
-    // PHASE 1: Đếm
-    for (let i = 0; i < arr.length; i++) {
+    // Phase 2: Count
+    const count: number[] = new Array(range).fill(0);
+
+    // Visualize variable-speed counting? Just do it in chunks or one pass.
+    for (let i = 0; i < n; i++) {
         const num = arr[i];
         count[num - min]++;
 
+        // Visualize scanning? Might be too slow for large arrays, but okay for demo.
         steps.push({
-            phase: 'count',
-            countArray: [...count],
-            outputArray: [],
-            currentIndex: i,
-            currentValue: num,
-            message: `Đếm: arr[${i}]=${num} → count[${num - min}]=${count[num - min]}`
+            array: [...arr],
+            comparing: [i],
+            swapping: [],
+            sorted: [],
+            description: `Đếm: arr[${i}]=${num}. count[${num - min}] = ${count[num - min]}`,
+            codeSnippet: `count[arr[${i}] - min]++;`,
         });
+    }
+
+    // Phase 3: Cumulative
+    for (let i = 1; i < range; i++) {
+        count[i] += count[i - 1];
     }
 
     steps.push({
-        phase: 'count',
-        countArray: [...count],
-        outputArray: [],
-        message: `[Done] Hoàn thành đếm: count = [${count.join(', ')}] (indices ${min} đến ${max})`
+        array: [...arr],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Đã tính toán mảng cộng dồn (Cumulative Count). Bắt đầu xây dựng mảng kết quả.',
+        codeSnippet: `// Cumulative Count Calculated`,
     });
 
-    // PHASE 2: Cumulative
-    for (let i = 1; i < k; i++) {
-        count[i] += count[i - 1];
+    // Phase 4: Build Output
+    // Since we can't show a 2nd array, we will visualize the "sorted array" being built locally 
+    // and then assume we copy it back?
+    // Or we can simulate the stable placement into a NEW array, but we can only show ONE array.
+    // Hack: We will show the "Output" array overwriting the "Input" array step-by-step?
+    // Be careful: Overwriting input destroys info needed for later steps IF we were doing it in-place without aux.
+    // But here we have real `output` array. We can make the visualization show the `output` array state 
+    // assuming un-filled spots are 0 or original?
 
-        steps.push({
-            phase: 'cumulative',
-            countArray: [...count],
-            outputArray: [],
-            currentIndex: i,
-            message: `Cumulative: count[${i + min}] = ${count[i]} (số phần tử ≤ ${i + min})`
-        });
-    }
+    // Better visualization for single-array view:
+    // Just show the final sorted inputs appearing in the correct positions.
+    // BUT Counting Sort (Stable) builds from back to front.
 
-    // PHASE 3: Xây output
-    for (let i = arr.length - 1; i >= 0; i--) {
+    // Let's perform the valid sort logic first to get the output, capturing steps.
+    // Wait, if I show `output` array, it will be mostly empty initially.
+    // If I show `arr`, it's full.
+    // Transition: "Switching view to Output Array"
+
+    // To minimize confusion, let's keep showing `arr` but assume we are constructing `output` separately,
+    // and then at the end we show the full swap.
+    // OR: We visualize the "Copy Back" phase which is common.
+    // Let's do the "Build Output" into a temp array, then "Copy Back" frame by frame.
+
+    const outputArr: number[] = new Array(n).fill(0);
+    // Use a copy of count for logic
+    const countCopy = [...count];
+
+    // Standard Stable construction
+    for (let i = n - 1; i >= 0; i--) {
         const num = arr[i];
-        const index = count[num - min] - 1;
-        output[index] = num;
-        count[num - min]--;
+        const index = countCopy[num - min] - 1;
+        outputArr[index] = num;
+        countCopy[num - min]--;
+    }
 
+    // Now visualize copying back to `arr`
+    steps.push({
+        array: [...arr], // Still showing input
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Đã xây dựng xong mảng kết quả (trong bộ nhớ phụ). Sao chép ngược lại vào mảng chính.',
+        codeSnippet: `// Copy output -> arr`,
+    });
+
+    const finalArr = [...arr];
+    for (let i = 0; i < n; i++) {
+        finalArr[i] = outputArr[i];
         steps.push({
-            phase: 'output',
-            countArray: [...count],
-            outputArray: [...output],
-            currentIndex: i,
-            currentValue: num,
-            message: `Output: arr[${i}]=${num} → output[${index}]=${num}, count[${num - min}]=${count[num - min]}`
+            array: [...finalArr],
+            comparing: [],
+            swapping: [i], // Highlight the write
+            sorted: Array.from({ length: i + 1 }, (_, k) => k),
+            description: `Sao chép: arr[${i}] = ${finalArr[i]}`,
+            codeSnippet: `arr[${i}] = output[${i}];`,
         });
     }
+
+    // Final
+    steps.push({
+        array: [...finalArr],
+        comparing: [],
+        swapping: [],
+        sorted: Array.from({ length: n }, (_, i) => i),
+        description: '[Hoàn thành] Mảng đã được sắp xếp!',
+        codeSnippet: `// ✓ HOÀN THÀNH`,
+    });
 
     return steps;
 }
@@ -295,21 +349,11 @@ export function demonstrateCountingSort(): void {
     console.log('Range k:', Math.max(...arr) - Math.min(...arr) + 1);
 
     // Chi tiết từng bước
-    const steps = countingSortWithSteps([...arr]);
+    const steps = generateCountingSortSteps([...arr]);
 
-    console.log('\n--- Phase 1: Đếm số lần xuất hiện ---\n');
-    for (const step of steps.filter(s => s.phase === 'count')) {
-        console.log(step.message);
-    }
-
-    console.log('\n--- Phase 2: Tính Cumulative Count ---\n');
-    for (const step of steps.filter(s => s.phase === 'cumulative')) {
-        console.log(step.message);
-    }
-
-    console.log('\n--- Phase 3: Xây dựng Output Array ---\n');
-    for (const step of steps.filter(s => s.phase === 'output')) {
-        console.log(step.message);
+    console.log('\n--- Chi tiết từng bước ---\n');
+    for (const step of steps) {
+        console.log(step.description);
     }
 
     const sorted = countingSort(arr);
@@ -344,7 +388,7 @@ export function demonstrateCountingSort(): void {
 export default {
     countingSort,
     countingSortInPlace,
-    countingSortWithSteps,
+    generateCountingSortSteps,
     countingSortByKey,
     demonstrateCountingSort
 };

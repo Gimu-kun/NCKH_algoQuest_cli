@@ -88,6 +88,134 @@ interface DequeNode<T> {
     next: DequeNode<T> | null;
 }
 
+/**
+ * Interface cho visualization step
+ */
+export interface DequeStep {
+    action: 'addFront' | 'addRear' | 'removeFront' | 'removeRear';
+    value?: number;
+    dequeState: number[];
+    message: string;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VISUALIZATION GENERATORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function generateAddFrontSteps(currentDeque: number[], newValue: number): DequeStep[] {
+    const steps: DequeStep[] = [];
+
+    // Step 1: Create/Prep
+    steps.push({
+        action: 'addFront',
+        value: newValue,
+        dequeState: [...currentDeque],
+        message: `Chuẩn bị thêm [${newValue}] vào đầu (FRONT).`
+    });
+
+    // Step 2: Add
+    const newDeque = [newValue, ...currentDeque];
+    steps.push({
+        action: 'addFront',
+        value: newValue,
+        dequeState: newDeque,
+        message: `Thêm [${newValue}] vào FRONT. Cập nhật pointers.`
+    });
+
+    return steps;
+}
+
+export function generateAddRearSteps(currentDeque: number[], newValue: number): DequeStep[] {
+    const steps: DequeStep[] = [];
+
+    // Step 1: Create/Prep
+    steps.push({
+        action: 'addRear',
+        value: newValue,
+        dequeState: [...currentDeque],
+        message: `Chuẩn bị thêm [${newValue}] vào cuối (REAR).`
+    });
+
+    // Step 2: Add
+    const newDeque = [...currentDeque, newValue];
+    steps.push({
+        action: 'addRear',
+        value: newValue,
+        dequeState: newDeque,
+        message: `Thêm [${newValue}] vào REAR. Cập nhật pointers.`
+    });
+
+    return steps;
+}
+
+export function generateRemoveFrontSteps(currentDeque: number[]): DequeStep[] {
+    const steps: DequeStep[] = [];
+
+    if (currentDeque.length === 0) {
+        steps.push({
+            action: 'removeFront',
+            dequeState: [],
+            message: 'Deque rỗng! Không thể xóa.'
+        });
+        return steps;
+    }
+
+    const removedValue = currentDeque[0];
+
+    // Step 1: Identify
+    steps.push({
+        action: 'removeFront',
+        value: removedValue,
+        dequeState: [...currentDeque],
+        message: `Xác định FRONT: [${removedValue}].`
+    });
+
+    // Step 2: Remove
+    const newDeque = currentDeque.slice(1);
+    steps.push({
+        action: 'removeFront',
+        value: removedValue,
+        dequeState: newDeque,
+        message: `Xóa [${removedValue}] khỏi FRONT.`
+    });
+
+    return steps;
+}
+
+export function generateRemoveRearSteps(currentDeque: number[]): DequeStep[] {
+    const steps: DequeStep[] = [];
+
+    if (currentDeque.length === 0) {
+        steps.push({
+            action: 'removeRear',
+            dequeState: [],
+            message: 'Deque rỗng! Không thể xóa.'
+        });
+        return steps;
+    }
+
+    const removedValue = currentDeque[currentDeque.length - 1];
+
+    // Step 1: Identify
+    steps.push({
+        action: 'removeRear',
+        value: removedValue,
+        dequeState: [...currentDeque],
+        message: `Xác định REAR: [${removedValue}].`
+    });
+
+    // Step 2: Remove
+    const newDeque = currentDeque.slice(0, -1);
+    steps.push({
+        action: 'removeRear',
+        value: removedValue,
+        dequeState: newDeque,
+        message: `Xóa [${removedValue}] khỏi REAR.`
+    });
+
+    return steps;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // DEQUE - DOUBLY LINKED LIST IMPLEMENTATION
 // ═══════════════════════════════════════════════════════════════════════════

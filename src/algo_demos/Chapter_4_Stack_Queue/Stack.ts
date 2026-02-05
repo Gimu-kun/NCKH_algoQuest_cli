@@ -94,3 +94,91 @@ export class Stack<T> {
         console.log("Stack State (Trạng thái Stack):", this.items);
     }
 }
+
+// =============================================================================
+// VISUALIZATION UTILS
+// =============================================================================
+
+export interface StackStep {
+    type: 'push' | 'pop' | 'peek' | 'error' | 'complete';
+    index?: number; // Index affected
+    value?: number;
+    description: string;
+    stackState: number[]; // Snapshot of stack values
+}
+
+export function generatePushSteps(currentStack: number[], newValue: number): StackStep[] {
+    const steps: StackStep[] = [];
+
+    // Step 1: Prepare
+    steps.push({
+        type: 'push',
+        value: newValue,
+        description: `Chuẩn bị Push ${newValue} vào đỉnh Stack...`,
+        stackState: [...currentStack]
+    });
+
+    // Step 2: Push
+    const newStack = [...currentStack, newValue];
+    steps.push({
+        type: 'push',
+        index: newStack.length - 1,
+        value: newValue,
+        description: `Push(${newValue}): Thêm vào cuối mảng (index ${newStack.length - 1})`,
+        stackState: newStack
+    });
+
+    // Step 3: Complete
+    steps.push({
+        type: 'complete',
+        index: newStack.length - 1,
+        description: `Hoàn tất Push. TOP hiện tại là ${newValue}`,
+        stackState: newStack
+    });
+
+    return steps;
+}
+
+export function generatePopSteps(currentStack: number[]): StackStep[] {
+    const steps: StackStep[] = [];
+
+    if (currentStack.length === 0) {
+        steps.push({
+            type: 'error',
+            description: 'Stack Underflow! Không thể Pop từ stack rỗng.',
+            stackState: []
+        });
+        return steps;
+    }
+
+    const topIndex = currentStack.length - 1;
+    const topValue = currentStack[topIndex];
+
+    // Step 1: Identify Top
+    steps.push({
+        type: 'pop',
+        index: topIndex,
+        value: topValue,
+        description: `Xác định đỉnh Stack: ${topValue} tại index ${topIndex}`,
+        stackState: [...currentStack]
+    });
+
+    // Step 2: Remove
+    const newStack = currentStack.slice(0, -1);
+    steps.push({
+        type: 'pop',
+        index: topIndex,
+        value: topValue,
+        description: `Pop(): Lấy ${topValue} ra khỏi stack`,
+        stackState: newStack
+    });
+
+    // Step 3: Complete
+    steps.push({
+        type: 'complete',
+        description: `Hoàn tất Pop. Stack size giảm còn ${newStack.length}`,
+        stackState: newStack
+    });
+
+    return steps;
+}

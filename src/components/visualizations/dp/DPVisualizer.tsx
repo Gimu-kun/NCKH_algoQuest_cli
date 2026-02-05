@@ -134,7 +134,7 @@ const DPVisualizer: React.FC<DPVisualizerProps> = ({ algorithm, target, autoStar
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [speed, setSpeed] = useState(1);
-    const timerRef = useRef<any>(null);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Limit target size for visualization
     const safeTarget = Math.min(Math.max(target || 5, 2), 20);
@@ -154,7 +154,9 @@ const DPVisualizer: React.FC<DPVisualizerProps> = ({ algorithm, target, autoStar
         } else {
             setIsPlaying(false);
         }
-        return () => clearTimeout(timerRef.current);
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
     }, [isPlaying, currentStepIndex, steps.length, speed]);
 
     const handlePlayPause = () => setIsPlaying(!isPlaying);

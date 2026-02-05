@@ -52,6 +52,163 @@ class TreeNode<T> {
     }
 }
 
+/**
+ * Interface cho visualization step
+ */
+export interface BSTStep {
+    action: 'insert' | 'search' | 'traverse' | 'found' | 'not_found';
+    value?: number; // Value being operated on
+    nodeValue?: number | null; // Current node value
+    message: string;
+    highlights?: number[]; // Values to highlight
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VISUALIZATION GENERATORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function generateBSTInsertSteps(root: TreeNode<number> | null, value: number): BSTStep[] {
+    const steps: BSTStep[] = [];
+
+    // Step 1: Start
+    steps.push({
+        action: 'insert',
+        value: value,
+        nodeValue: root ? root.value : null,
+        message: `Chuẩn bị chèn [${value}] vào cây.`,
+        highlights: []
+    });
+
+    if (!root) {
+        steps.push({
+            action: 'insert',
+            value: value,
+            message: `Cây rỗng. [${value}] trở thành Root.`,
+            highlights: [value]
+        });
+        return steps;
+    }
+
+    let current: TreeNode<number> | null = root;
+
+    while (current) {
+        steps.push({
+            action: 'insert',
+            value: value,
+            nodeValue: current.value,
+            message: `So sánh [${value}] với Node [${current.value}].`,
+            highlights: [current.value]
+        });
+
+        if (value < current.value) {
+            steps.push({
+                action: 'insert',
+                value: value,
+                nodeValue: current.value,
+                message: `${value} < ${current.value} → Đi sang trái.`,
+                highlights: [current.value]
+            });
+
+            if (!current.left) {
+                steps.push({
+                    action: 'insert',
+                    value: value,
+                    message: `Vị trí bên trái của [${current.value}] trống. Chèn [${value}] vào đây.`,
+                    highlights: [value]
+                });
+                return steps;
+            }
+            current = current.left;
+        } else {
+            steps.push({
+                action: 'insert',
+                value: value,
+                nodeValue: current.value,
+                message: `${value} >= ${current.value} → Đi sang phải.`,
+                highlights: [current.value]
+            });
+
+            if (!current.right) {
+                steps.push({
+                    action: 'insert',
+                    value: value,
+                    message: `Vị trí bên phải của [${current.value}] trống. Chèn [${value}] vào đây.`,
+                    highlights: [value]
+                });
+                return steps;
+            }
+            current = current.right;
+        }
+    }
+
+    return steps;
+}
+
+export function generateBSTSearchSteps(root: TreeNode<number> | null, value: number): BSTStep[] {
+    const steps: BSTStep[] = [];
+
+    if (!root) {
+        steps.push({
+            action: 'not_found',
+            value: value,
+            message: `Cây rỗng. Không tìm thấy [${value}].`,
+        });
+        return steps;
+    }
+
+    let current: TreeNode<number> | null = root;
+
+    while (current) {
+        steps.push({
+            action: 'search',
+            value: value,
+            nodeValue: current.value,
+            message: `So sánh [${value}] với Node [${current.value}].`,
+            highlights: [current.value]
+        });
+
+        if (value === current.value) {
+            steps.push({
+                action: 'found',
+                value: value,
+                nodeValue: current.value,
+                message: `Tìm thấy [${value}]!`,
+                highlights: [current.value]
+            });
+            return steps;
+        }
+
+        if (value < current.value) {
+            steps.push({
+                action: 'search',
+                value: value,
+                nodeValue: current.value,
+                message: `${value} < ${current.value} → Đi sang trái.`,
+                highlights: [current.value]
+            });
+            current = current.left;
+        } else {
+            steps.push({
+                action: 'search',
+                value: value,
+                nodeValue: current.value,
+                message: `${value} > ${current.value} → Đi sang phải.`,
+                highlights: [current.value]
+            });
+            current = current.right;
+        }
+    }
+
+    steps.push({
+        action: 'not_found',
+        value: value,
+        message: `Đã đi đến lá (Null). Không tìm thấy [${value}].`,
+    });
+
+    return steps;
+}
+
+
 // Class BinarySearchTree
 export class BinarySearchTree<T> {
     root: TreeNode<T> | null; // Nút gốc của cây

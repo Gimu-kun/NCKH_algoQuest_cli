@@ -41,6 +41,161 @@
  *    - So với **Heap Sort**: Merge Sort nhanh hơn nhưng tốn bộ nhớ hơn (Heap Sort là In-place O(1)).
  */
 
+import type { SortingStep } from '../../components/visualizations/types';
+
+/**
+ * generateMergeSortSteps - Tạo các bước cho Merge Sort.
+ */
+export function generateMergeSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Merge Sort. Chia để trị (Divide & Conquer).',
+        codeSnippet: `// MERGE SORT - O(n log n)
+// Chia đôi mảng, sort đệ quy, rồi trộn lại
+function mergeSort(arr, left, right) {
+    if (left < right) {
+        mid = (left + right) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}`,
+    });
+
+    mergeSortRecursive(array, 0, n - 1, steps);
+
+    const allSorted = Array.from({ length: n }, (_, i) => i);
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: allSorted,
+        description: '[Hoàn thành] Merge Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH MERGE SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Luôn O(n log n)
+// - Stable sort
+//
+// NHƯỢC ĐIỂM:
+// - Space O(n)`,
+    });
+
+    return steps;
+}
+
+function mergeSortRecursive(array: number[], left: number, right: number, steps: SortingStep[]) {
+    if (left < right) {
+        const mid = Math.floor((left + right) / 2);
+
+        mergeSortRecursive(array, left, mid, steps);
+        mergeSortRecursive(array, mid + 1, right, steps);
+
+        mergeVisualize(array, left, mid, right, steps);
+    }
+}
+
+function mergeVisualize(array: number[], left: number, mid: number, right: number, steps: SortingStep[]) {
+    // Kỹ thuật merge thông thường dùng mảng phụ, nhưng để visualize ta sẽ overwrite lại mảng chính
+    // và capture state mỗi khi overwrite.
+
+    steps.push({
+        array: [...array],
+        comparing: [left, right], // Highlight range being merged
+        swapping: [],
+        sorted: [],
+        description: `Merge 2 sorted parts: [${left}...${mid}] và [${mid + 1}...${right}]`,
+        codeSnippet: `// Merge [${left}..${mid}] và [${mid + 1}..${right}]`,
+    });
+
+    const n1 = mid - left + 1;
+    const n2 = right - mid;
+
+    // Create temp arrays
+    const L = new Array(n1);
+    const R = new Array(n2);
+
+    for (let i = 0; i < n1; i++) L[i] = array[left + i];
+    for (let j = 0; j < n2; j++) R[j] = array[mid + 1 + j];
+
+    let i = 0, j = 0;
+    let k = left;
+
+    while (i < n1 && j < n2) {
+        steps.push({
+            array: [...array],
+            comparing: [left + i, mid + 1 + j],
+            swapping: [],
+            sorted: [],
+            description: `So sánh left: ${L[i]} vs right: ${R[j]}`,
+            codeSnippet: `if (L[i] <= R[j]) arr[k] = L[i];
+else arr[k] = R[j];`,
+        });
+
+        if (L[i] <= R[j]) {
+            array[k] = L[i];
+            steps.push({
+                array: [...array],
+                comparing: [k],
+                swapping: [],
+                sorted: [],
+                description: `Chọn ${L[i]} đặt vào vị trí ${k}`,
+                codeSnippet: `arr[${k}] = ${L[i]}; i++; k++;`,
+            });
+            i++;
+        } else {
+            array[k] = R[j];
+            steps.push({
+                array: [...array],
+                comparing: [k],
+                swapping: [],
+                sorted: [],
+                description: `Chọn ${R[j]} đặt vào vị trí ${k}`,
+                codeSnippet: `arr[${k}] = ${R[j]}; j++; k++;`,
+            });
+            j++;
+        }
+        k++;
+    }
+
+    // Use while loops to flush remaining elements
+    while (i < n1) {
+        array[k] = L[i];
+        steps.push({
+            array: [...array],
+            comparing: [k],
+            swapping: [],
+            sorted: [],
+            description: `Copy phần còn lại của Left (${L[i]}) vào ${k}`,
+            codeSnippet: `arr[${k}] = L[i]; i++; k++;`,
+        });
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        array[k] = R[j];
+        steps.push({
+            array: [...array],
+            comparing: [k],
+            swapping: [],
+            sorted: [],
+            description: `Copy phần còn lại của Right (${R[j]}) vào ${k}`,
+            codeSnippet: `arr[${k}] = R[j]; j++; k++;`,
+        });
+        j++;
+        k++;
+    }
+}
+
 export function mergeSort(arr: number[]): number[] {
     // Base Case: Nếu mảng có 0 hoặc 1 phần tử thì coi như đã sort -> Trả về ngay.
     if (arr.length <= 1) return arr;

@@ -70,16 +70,8 @@
 // TYPES & INTERFACES
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Interface cho mỗi bước của Radix Sort visualization
- */
-export interface RadixSortStep {
-    digit: number;           // Chữ số đang xét (1 = hàng đơn vị, 10 = hàng chục, ...)
-    digitPosition: number;   // Vị trí chữ số (0, 1, 2, ...)
-    buckets: number[][];     // 10 buckets cho mỗi digit (0-9)
-    arrayState: number[];    // Trạng thái mảng sau vòng này
-    message: string;
-}
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS
@@ -210,40 +202,98 @@ export function radixSort(arr: number[]): void {
  * 
  * Hiển thị buckets và trạng thái mảng sau mỗi vòng
  */
-export function radixSortWithSteps(arr: number[]): RadixSortStep[] {
-    const steps: RadixSortStep[] = [];
-    const workArr = [...arr];  // Copy để không modify original
+import type { SortingStep } from '../../components/visualizations/types';
 
-    if (workArr.length <= 1) {
-        return steps;
-    }
+/**
+ * generateRadixSortSteps - Tạo các bước cho Radix Sort.
+ * 
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
+ */
+export function generateRadixSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const workArr = [...arr]; // Copy to work on
+    const n = workArr.length;
+
+    if (n <= 1) return steps;
 
     const max = getMax(workArr);
-    let digitPosition = 0;
+
+    steps.push({
+        array: [...workArr],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: `Bắt đầu Radix Sort. Max=${max}. Sắp xếp từ hàng đơn vị lên hàng cao nhất.`,
+        codeSnippet: `// RADIX SORT (LSD)
+// for (exp = 1; max/exp > 0; exp *= 10)
+//    countingSortByDigit(arr, exp);`,
+    });
 
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        // Tạo buckets để visualization
-        const buckets: number[][] = Array.from({ length: 10 }, () => []);
 
-        // Phân phối phần tử vào buckets
-        for (const num of workArr) {
-            const digit = getDigit(num, exp);
-            buckets[digit].push(num);
-        }
-
-        // Thực hiện counting sort
-        countingSortByDigit(workArr, exp);
-
+        // Visualize the start of this digit pass
         steps.push({
-            digit: exp,
-            digitPosition,
-            buckets: buckets.map(b => [...b]),
-            arrayState: [...workArr],
-            message: `Vòng ${digitPosition + 1}: Sắp xếp theo hàng ${exp === 1 ? 'đơn vị' : exp === 10 ? 'chục' : exp === 100 ? 'trăm' : exp.toString()}`
+            array: [...workArr],
+            comparing: [],
+            swapping: [],
+            sorted: [],
+            description: `Bắt đầu sắp xếp theo hàng ${exp === 1 ? 'đơn vị' : exp === 10 ? 'chục' : exp === 100 ? 'trăm' : exp}`,
+            codeSnippet: `exp = ${exp}; // Digit position`,
         });
 
-        digitPosition++;
+        // Use Counting Sort approach for this digit
+        // We need to capture the state change.
+        // Since we can't show buckets, we just show the result of this stable sort phase.
+
+        // 1. Count
+        const output: number[] = new Array(n).fill(0);
+        const count: number[] = new Array(10).fill(0);
+
+        for (let i = 0; i < n; i++) {
+            const index = getDigit(workArr[i], exp);
+            count[index]++;
+        }
+
+        for (let i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        // 2. Build output (stable back-to-front)
+        for (let i = n - 1; i >= 0; i--) {
+            const index = getDigit(workArr[i], exp);
+            output[count[index] - 1] = workArr[i];
+            count[index]--;
+        }
+
+        // 3. Copy to workArr
+        // Visualize the update
+        for (let i = 0; i < n; i++) {
+            workArr[i] = output[i];
+
+            // Optional: highlihght the update?
+            // Since we update the whole array, maybe just show the final result of this pass is cleaner
+        }
+
+        steps.push({
+            array: [...workArr],
+            comparing: [],
+            swapping: [],
+            sorted: [], // We don't really know "sorted" region until the end
+            description: `Hoàn thành sắp xếp theo hàng ${exp}. Mảng đã ổn định theo ${exp}.`,
+            codeSnippet: `countingSortByDigit(arr, ${exp});`,
+        });
     }
+
+    // Final
+    steps.push({
+        array: [...workArr],
+        comparing: [],
+        swapping: [],
+        sorted: Array.from({ length: n }, (_, i) => i),
+        description: '[Hoàn thành] Mảng đã được sắp xếp!',
+        codeSnippet: `// ✓ HOÀN THÀNH`,
+    });
 
     return steps;
 }
@@ -263,17 +313,11 @@ export function demonstrateRadixSort(): void {
     const arr = [170, 45, 75, 90, 802, 24, 2, 66];
     console.log('Mảng ban đầu:', arr);
 
-    const steps = radixSortWithSteps(arr);
+    const steps = generateRadixSortSteps(arr);
 
     for (const step of steps) {
-        console.log(`\n${step.message}`);
-        console.log('Buckets:');
-        step.buckets.forEach((bucket, i) => {
-            if (bucket.length > 0) {
-                console.log(`  Bucket ${i}: [${bucket.join(', ')}]`);
-            }
-        });
-        console.log('Mảng sau vòng này:', step.arrayState);
+        console.log(`\n${step.description}`);
+        console.log('Mảng sau vòng này:', step.array);
     }
 
     radixSort(arr);
@@ -285,6 +329,6 @@ export function demonstrateRadixSort(): void {
  */
 export default {
     radixSort,
-    radixSortWithSteps,
+    generateRadixSortSteps,
     demonstrateRadixSort
 };

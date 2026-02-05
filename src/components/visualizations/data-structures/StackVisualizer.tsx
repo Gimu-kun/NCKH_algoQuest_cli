@@ -76,55 +76,23 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
+
+import { generatePushSteps, generatePopSteps } from '../../../algo_demos/Chapter_4_Stack_Queue/Stack';
+
 // =============================================================================
 // TYPES & INTERFACES
 // =============================================================================
 
-/**
- * StackItem - Đại diện cho một phần tử trong stack.
- */
 interface StackItem {
-    /**
-     * id: Unique identifier cho mỗi item.
-     * Dùng làm key cho AnimatePresence.
-     */
     id: string;
-
-    /**
-     * value: Giá trị của item.
-     */
     value: number;
 }
-
-/**
- * StackAction - Các action có thể thực hiện trên stack.
- */
 type StackAction = 'push' | 'pop' | 'peek' | 'idle';
 
-/**
- * StackVisualizerProps - Props cho component.
- */
 interface StackVisualizerProps {
-    /**
-     * initialItems: Mảng các giá trị ban đầu cho stack.
-     * Optional, default = mảng rỗng.
-     */
     initialItems?: number[];
-
-    /**
-     * maxSize: Giới hạn số phần tử tối đa.
-     * Optional, default = 10.
-     */
     maxSize?: number;
-
-    /**
-     * title: Tiêu đề tùy chọn.
-     */
     title?: string;
-
-    /**
-     * showInfo: Hiển thị thông tin về complexity.
-     */
     showInfo?: boolean;
     onRegenerate?: () => void;
 }
@@ -133,10 +101,6 @@ interface StackVisualizerProps {
 // HELPER FUNCTIONS
 // =============================================================================
 
-/**
- * generateId - Tạo unique ID cho stack item.
- * Dùng timestamp + random để đảm bảo unique.
- */
 function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
@@ -156,10 +120,6 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
     // STATE
     // =========================================================================
 
-    /**
-     * stack: Mảng các StackItem.
-     * Item cuối cùng trong mảng = đỉnh stack (top).
-     */
     const [stack, setStack] = useState<StackItem[]>(
         initialItems.map(value => ({ id: generateId(), value }))
     );
@@ -168,30 +128,10 @@ const StackVisualizer: React.FC<StackVisualizerProps> = ({
         setStack(initialItems.map(value => ({ id: generateId(), value })));
     }, [initialItems]);
 
-    /**
-     * inputValue: Giá trị trong input field để push.
-     */
     const [inputValue, setInputValue] = useState<string>('');
-
-    /**
-     * currentAction: Action hiện tại đang thực hiện.
-     * Dùng để highlight và animate.
-     */
     const [currentAction, setCurrentAction] = useState<StackAction>('idle');
-
-    /**
-     * message: Thông báo kết quả của action gần nhất.
-     */
     const [message, setMessage] = useState<string>('Sẵn sàng. Hãy thử các thao tác!');
-
-    /**
-     * peekHighlight: Có đang highlight top item để peek không.
-     */
     const [peekHighlight, setPeekHighlight] = useState(false);
-
-    /**
-     * codeDisplay: Code minh họa cho action hiện tại.
-     */
     const [codeDisplay, setCodeDisplay] = useState<string>(`// STACK - LIFO (Last In, First Out)
 // Các thao tác cơ bản: O(1) time complexity
 
@@ -218,20 +158,9 @@ class Stack {
     // ACTION HANDLERS
     // =========================================================================
 
-    /**
-     * handlePush - Thêm phần tử mới vào đỉnh stack.
-     *
-     * Flow:
-     * 1. Validate input.
-     * 2. Check stack not full.
-     * 3. Create new StackItem.
-     * 4. Add to end of array (top of stack).
-     * 5. Animate with Framer Motion.
-     */
-    const handlePush = useCallback(() => {
+    const handlePush = useCallback(async () => {
         const value = parseInt(inputValue, 10);
 
-        // Validation
         if (isNaN(value)) {
             setMessage('[Lỗi] Vui lòng nhập một số hợp lệ!');
             return;
@@ -242,81 +171,80 @@ class Stack {
             return;
         }
 
-        // Create new item
+        // 1. Generate Steps
+        const currentValues = stack.map(s => s.value);
+        const steps = generatePushSteps(currentValues, value);
+
+        // Step 1: Prepare
+        setMessage(steps[0].description);
+        await new Promise(r => setTimeout(r, 400));
+
+        // Step 2: Push
         const newItem: StackItem = {
             id: generateId(),
             value,
         };
 
-        // Update state
         setCurrentAction('push');
         setStack(prev => [...prev, newItem]);
         setInputValue('');
-        setMessage(`[PUSH] Thêm ${value} vào đỉnh stack.`);
+
+        if (steps[1]) setMessage(steps[1].description);
+
         setCodeDisplay(`// PUSH - Thêm phần tử vào đỉnh stack
 // Time Complexity: O(1)
 
 function push(value) {
-    // Thêm vào cuối mảng = đỉnh stack
     this.items.push(${value});
-    // Stack size: ${stack.length} -> ${stack.length + 1}
-}
+    // Stack items: [${[...currentValues, value].join(', ')}]
+}`);
 
-// Kết quả: [${[...stack.map(s => s.value), value].join(', ')}]
-// TOP = ${value}`);
+        await new Promise(r => setTimeout(r, 600));
 
-        // Reset action sau animation
+        // Step 3: Complete
+        if (steps[2]) setMessage(steps[2].description);
+
         setTimeout(() => setCurrentAction('idle'), 500);
     }, [inputValue, isFull, maxSize, stack]);
 
-    /**
-     * handlePop - Lấy và xóa phần tử từ đỉnh stack.
-     *
-     * Flow:
-     * 1. Check stack not empty.
-     * 2. Get top item (last in array).
-     * 3. Remove from array.
-     * 4. Animate exit with Framer Motion.
-     * 5. Return/display value.
-     */
-    const handlePop = useCallback(() => {
+    const handlePop = useCallback(async () => {
         if (isEmpty) {
             setMessage('[Lỗi] Stack rỗng! Không thể POP.');
             return;
         }
 
-        const poppedItem = stack[stack.length - 1];
+        const currentValues = stack.map(s => s.value);
+        const steps = generatePopSteps(currentValues);
 
+        // Step 1: Identify Top
+        setMessage(steps[0].description);
+        setPeekHighlight(true);
+        await new Promise(r => setTimeout(r, 500));
+
+        // Step 2: Remove
+        const poppedItem = stack[stack.length - 1];
+        setPeekHighlight(false);
         setCurrentAction('pop');
         setStack(prev => prev.slice(0, -1));
-        setMessage(`[POP] Lấy ${poppedItem.value} ra khỏi stack.`);
+
+        if (steps[1]) setMessage(steps[1].description);
+
         setCodeDisplay(`// POP - Lấy và xóa phần tử đỉnh
 // Time Complexity: O(1)
-// LIFO: Last In, First Out
 
 function pop() {
-    if (this.items.length === 0) {
-        throw new Error("Stack underflow");
-    }
-    // Lấy và xóa phần tử cuối (top)
-    return this.items.pop();  // => ${poppedItem.value}
-}
+    if (this.items.length === 0) throw new Error("Underflow");
+    return this.items.pop(); // Returns ${poppedItem.value}
+}`);
 
-// Stack sau POP: [${stack.slice(0, -1).map(s => s.value).join(', ')}]
-// TOP mới = ${stack.length > 1 ? stack[stack.length - 2].value : '(rỗng)'}`);
+        await new Promise(r => setTimeout(r, 600));
+
+        // Step 3: Complete
+        if (steps[2]) setMessage(steps[2].description);
 
         setTimeout(() => setCurrentAction('idle'), 500);
     }, [isEmpty, stack]);
 
-    /**
-     * handlePeek - Xem phần tử đỉnh mà không xóa.
-     *
-     * Flow:
-     * 1. Check stack not empty.
-     * 2. Highlight top item.
-     * 3. Display value.
-     * 4. Remove highlight sau 1 giây.
-     */
     const handlePeek = useCallback(() => {
         if (isEmpty) {
             setMessage('[Lỗi] Stack rỗng! Không có gì để PEEK.');
@@ -337,8 +265,7 @@ function peek() {
     return this.items[this.items.length - 1];
 }
 
-// Kết quả: peek() = ${topItem.value}
-// Stack vẫn còn nguyên: [${stack.map(s => s.value).join(', ')}]`);
+// Kết quả: peek() = ${topItem.value}`);
 
         setTimeout(() => {
             setCurrentAction('idle');
@@ -346,24 +273,17 @@ function peek() {
         }, 1500);
     }, [isEmpty, topItem, stack]);
 
-    /**
-     * handleClear - Xóa toàn bộ stack.
-     */
     const handleClear = useCallback(() => {
         setStack([]);
         setMessage('[Xóa] Đã xóa toàn bộ stack.');
     }, []);
 
-    /**
-     * handleKeyPress - Xử lý Enter key để push.
-     */
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handlePush();
         }
     };
 
-    // =========================================================================
     // ANIMATION VARIANTS
     // =========================================================================
 

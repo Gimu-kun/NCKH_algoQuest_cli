@@ -83,264 +83,125 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-// ═══════════════════════════════════════════════════════════════════════════
-// TYPES & INTERFACES
-// ═══════════════════════════════════════════════════════════════════════════
+import type { SortingStep } from '../../components/visualizations/types';
 
 /**
- * Interface cho mỗi bước của Interchange Sort
+ * generateInterchangeSortSteps - Tạo các bước cho Interchange Sort.
+ * 
+ * THUẬT TOÁN:
+ * Interchange Sort (Đổi chỗ trực tiếp) là thuật toán đơn giản nhất:
+ * - So sánh cặp (i, j) với j chạy từ i+1 đến n-1.
+ * - Nếu arr[i] > arr[j], đổi chỗ NGAY LẬP TỨC.
+ * - Khác với Selection Sort (chỉ đổi chỗ sau khi tìm min).
+ * 
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
  */
-export interface InterchangeSortStep {
-    i: number;                    // Index phần tử đang xét
-    j: number;                    // Index phần tử so sánh
-    comparing: [number, number];  // Values đang so sánh
-    arrayState: number[];
-    swapped: boolean;
-    totalSwaps: number;
-    totalComparisons: number;
-    message: string;
-}
+export function generateInterchangeSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const sorted: number[] = [];
 
-// ═══════════════════════════════════════════════════════════════════════════
-// INTERCHANGE SORT - MAIN ALGORITHM
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Interchange Sort
- * 
- * THUẬT TOÁN CHI TIẾT:
- * 
- * 1. Duyệt i từ 0 đến n-2 (phần tử đang xét)
- * 2. Với mỗi i, duyệt j từ i+1 đến n-1 (các phần tử sau i)
- * 3. Nếu arr[i] > arr[j]:
- *    - Swap ngay lập tức
- *    - Sau swap, arr[i] mới sẽ tiếp tục được so sánh
- * 4. Sau khi xong vòng j, arr[i] là phần tử nhỏ nhất cần đặt ở i
- * 
- * MINH HỌA:
- * 
- * arr = [5, 3, 2, 4, 1]
- * 
- * i=0: │ 5│ 3  2  4  1  → 5>3 swap
- *      │ 3│ 5  2  4  1  → 3>5 no
- *      │ 3│ 5  2  4  1  → 3>2 swap
- *      │ 2│ 5  3  4  1  → 2>4 no
- *      │ 2│ 5  3  4  1  → 2>1 swap
- *      │ 1│ 5  3  4  2  ← i=0 done, min (1) at position 0
- * 
- * i=1:   1 │ 5│ 3  4  2  → 5>3 swap
- *        1 │ 3│ 5  4  2  → 3>4 no
- *        1 │ 3│ 5  4  2  → 3>2 swap
- *        1 │ 2│ 5  4  3  ← i=1 done, second min (2) at position 1
- * 
- * ... tiếp tục
- * 
- * @param arr - Mảng cần sắp xếp (in-place)
- */
-export function interchangeSort(arr: number[]): void {
-    const n = arr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        // So sánh arr[i] với TẤT CẢ phần tử phía sau
-        for (let j = i + 1; j < n; j++) {
-            // Nếu arr[i] > arr[j], swap NGAY LẬP TỨC
-            if (arr[i] > arr[j]) {
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Interchange Sort. So sánh từng cặp và đổi chỗ ngay nếu sai thứ tự.',
+        codeSnippet: `// INTERCHANGE SORT
+// So sánh trực tiếp và đổi chỗ ngay
+for (i = 0; i < n - 1; i++) {
+    for (j = i + 1; j < n; j++) {
+        if (arr[j] < arr[i]) {
+            swap(arr[i], arr[j]);
         }
-        // Sau vòng j, arr[i] là phần tử nhỏ nhất từ vị trí i trở đi
     }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// INTERCHANGE SORT WITH VISUALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Interchange Sort với từng bước visualization
- */
-export function interchangeSortWithSteps(arr: number[]): InterchangeSortStep[] {
-    const steps: InterchangeSortStep[] = [];
-    const workArr = [...arr];
-    const n = workArr.length;
-
-    let totalSwaps = 0;
-    let totalComparisons = 0;
+}`,
+    });
 
     for (let i = 0; i < n - 1; i++) {
-        for (let j = i + 1; j < n; j++) {
-            const shouldSwap = workArr[i] > workArr[j];
-            totalComparisons++;
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Bắt đầu vòng lặp i=${i}. Tìm phần tử nhỏ nhất cho vị trí này.`,
+            codeSnippet: `// Xét vị trí i = ${i}
+// Duyệt j từ ${i + 1} -> ${n - 1}`,
+        });
 
+        for (let j = i + 1; j < n; j++) {
             steps.push({
-                i,
-                j,
-                comparing: [workArr[i], workArr[j]],
-                arrayState: [...workArr],
-                swapped: shouldSwap,
-                totalSwaps,
-                totalComparisons,
-                message: `Compare arr[${i}]=${workArr[i]} với arr[${j}]=${workArr[j]}: ${shouldSwap ? 'SWAP' : 'no swap'}`
+                array: [...array],
+                comparing: [i, j],
+                swapping: [],
+                sorted: [...sorted],
+                description: `So sánh arr[${i}]=${array[i]} với arr[${j}]=${array[j]}`,
+                codeSnippet: `if (arr[${j}] < arr[${i}]) {
+    // ${array[j]} < ${array[i]} ?
+    swap(arr[${i}], arr[${j}]);
+}`,
             });
 
-            if (shouldSwap) {
-                [workArr[i], workArr[j]] = [workArr[j], workArr[i]];
-                totalSwaps++;
+            if (array[j] < array[i]) {
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [i, j],
+                    sorted: [...sorted],
+                    description: `${array[j]} < ${array[i]} → Đổi chỗ ngay lập tức`,
+                    codeSnippet: `// Phát hiện nghịch thế -> Swap ngay
+[arr[${i}], arr[${j}]] = [arr[${j}], arr[${i}]];`,
+                });
+
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-        // Đánh dấu hoàn thành vòng i
+        sorted.push(i);
         steps.push({
-            i,
-            j: -1,
-            comparing: [workArr[i], -1],
-            arrayState: [...workArr],
-            swapped: false,
-            totalSwaps,
-            totalComparisons,
-            message: `[Done] Vòng i=${i} hoàn thành: arr[${i}]=${workArr[i]} là phần tử nhỏ nhất từ [${i}..${n - 1}]`
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Hoàn thành vị trí ${i}. Giá trị ${array[i]} đã đúng thứ tự.`,
+            codeSnippet: `// Xong vị trí ${i}`,
         });
     }
+
+    // Last element is sorted
+    sorted.push(n - 1);
+    const allSorted = Array.from({ length: n }, (_, i) => i);
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: allSorted,
+        description: '[Hoàn thành] Mảng đã được sắp xếp!',
+        codeSnippet: `// ✓ SẮP XẾP HOÀN TẤT
+// Kết quả: [${array.join(', ')}]`,
+    });
 
     return steps;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// COMPARISON FUNCTIONS
-// ═══════════════════════════════════════════════════════════════════════════
-
 /**
- * So sánh với Selection Sort
+ * Interchange Sort implementation (Main algorithm)
  */
-function selectionSortWithCount(arr: number[]): { swaps: number; comparisons: number } {
-    const workArr = [...arr];
-    const n = workArr.length;
-    let swaps = 0;
-    let comparisons = 0;
-
-    for (let i = 0; i < n - 1; i++) {
-        let minIdx = i;
-        for (let j = i + 1; j < n; j++) {
-            comparisons++;
-            if (workArr[j] < workArr[minIdx]) {
-                minIdx = j;
-            }
-        }
-        if (minIdx !== i) {
-            [workArr[i], workArr[minIdx]] = [workArr[minIdx], workArr[i]];
-            swaps++;
-        }
-    }
-
-    return { swaps, comparisons };
-}
-
-/**
- * So sánh với Bubble Sort
- */
-function bubbleSortWithCount(arr: number[]): { swaps: number; comparisons: number } {
-    const workArr = [...arr];
-    const n = workArr.length;
-    let swaps = 0;
-    let comparisons = 0;
-
-    for (let i = 0; i < n - 1; i++) {
-        let swapped = false;
-        for (let j = 0; j < n - 1 - i; j++) {
-            comparisons++;
-            if (workArr[j] > workArr[j + 1]) {
-                [workArr[j], workArr[j + 1]] = [workArr[j + 1], workArr[j]];
-                swaps++;
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
-
-    return { swaps, comparisons };
-}
-
-/**
- * Interchange Sort với count
- */
-function interchangeSortWithCount(arr: number[]): { swaps: number; comparisons: number } {
-    const workArr = [...arr];
-    const n = workArr.length;
-    let swaps = 0;
-    let comparisons = 0;
-
+export function interchangeSort(arr: number[]): void {
+    const n = arr.length;
     for (let i = 0; i < n - 1; i++) {
         for (let j = i + 1; j < n; j++) {
-            comparisons++;
-            if (workArr[i] > workArr[j]) {
-                [workArr[i], workArr[j]] = [workArr[j], workArr[i]];
-                swaps++;
+            if (arr[i] > arr[j]) {
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
         }
     }
-
-    return { swaps, comparisons };
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DEMO FUNCTION
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Demo Interchange Sort với so sánh các thuật toán
- */
-export function demonstrateInterchangeSort(): void {
-    console.log('══════════════════════════════════════════════════════');
-    console.log('           INTERCHANGE SORT DEMONSTRATION');
-    console.log('══════════════════════════════════════════════════════\n');
-
-    const arr = [5, 3, 8, 1, 2];
-    console.log('Mảng ban đầu:', arr);
-
-    // Chi tiết từng bước
-    const steps = interchangeSortWithSteps([...arr]);
-
-    console.log('\n--- Chi tiết từng bước ---\n');
-    let currentI = -1;
-    for (const step of steps) {
-        if (step.i !== currentI) {
-            console.log(`\n=== Vòng i = ${step.i} (xét arr[${step.i}]) ===`);
-            currentI = step.i;
-        }
-        console.log(step.message);
-    }
-
-    // So sánh với các thuật toán khác
-    console.log('\n\n--- So sánh với Selection Sort và Bubble Sort ---\n');
-
-    const testCases = [
-        { name: 'Random', arr: [5, 3, 8, 1, 2, 9, 4, 7, 6] },
-        { name: 'Nearly Sorted', arr: [1, 2, 3, 5, 4, 6, 7, 8, 9] },
-        { name: 'Reversed', arr: [9, 8, 7, 6, 5, 4, 3, 2, 1] }
-    ];
-
-    for (const tc of testCases) {
-        console.log(`\n[${tc.name}]: ${tc.arr.join(', ')}`);
-
-        const interchange = interchangeSortWithCount([...tc.arr]);
-        const selection = selectionSortWithCount([...tc.arr]);
-        const bubble = bubbleSortWithCount([...tc.arr]);
-
-        console.log(`  Interchange: ${interchange.comparisons} comparisons, ${interchange.swaps} swaps`);
-        console.log(`  Selection:   ${selection.comparisons} comparisons, ${selection.swaps} swaps`);
-        console.log(`  Bubble:      ${bubble.comparisons} comparisons, ${bubble.swaps} swaps`);
-    }
-
-    const sorted = [...arr];
-    interchangeSort(sorted);
-    console.log('\n[OK] Kết quả cuối cùng:', sorted);
-}
-
-/**
- * Export default
- */
 export default {
     interchangeSort,
-    interchangeSortWithSteps,
-    demonstrateInterchangeSort
+    generateInterchangeSortSteps
 };

@@ -68,305 +68,195 @@
 // TYPES & INTERFACES
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Interface cho mỗi bước của Shaker Sort
- */
-export interface ShakerSortStep {
-    pass: number;
-    direction: 'forward' | 'backward';
-    comparing: [number, number];
-    arrayState: number[];
-    swapped: boolean;
-    left: number;   // Boundary trái
-    right: number;  // Boundary phải
-    message: string;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SHAKER SORT - MAIN ALGORITHM
-// ═══════════════════════════════════════════════════════════════════════════
+import type { SortingStep } from '../../components/visualizations/types';
 
 /**
- * Shaker Sort (Cocktail Sort)
+ * generateShakerSortSteps - Tạo các bước cho Shaker Sort.
  * 
- * THUẬT TOÁN CHI TIẾT:
+ * THUẬT TOÁN:
+ * Shaker Sort (Cocktail Sort) là cải tiến của Bubble Sort:
+ * - Duyệt 2 chiều: Trái -> Phải (đưa max về cuối) rồi Phải -> Trái (đưa min về đầu).
+ * - Giúp giải quyết vấn đề "rùa" (giá trị nhỏ ở cuối mảng).
  * 
- * 1. Khởi tạo left = 0, right = n-1
- * 2. Lặp cho đến khi left >= right:
- *    a. FORWARD PASS (trái → phải):
- *       - Duyệt từ left đến right-1
- *       - So sánh arr[i] với arr[i+1]
- *       - Swap nếu arr[i] > arr[i+1]
- *       - Phần tử LỚN NHẤT "nổi" lên vị trí right
- *       - Giảm right (right--)
- * 
- *    b. BACKWARD PASS (phải → trái):
- *       - Duyệt từ right-1 xuống left
- *       - So sánh arr[i] với arr[i-1]
- *       - Swap nếu arr[i] < arr[i-1]
- *       - Phần tử NHỎ NHẤT "chìm" xuống vị trí left
- *       - Tăng left (left++)
- * 
- *    c. Nếu không có swap trong cả 2 pass → mảng đã sorted → dừng
- * 
- * @param arr - Mảng cần sắp xếp (in-place)
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
  */
-export function shakerSort(arr: number[]): void {
-    let left = 0;
-    let right = arr.length - 1;
-    let swapped = true;
-
-    while (swapped && left < right) {
-        swapped = false;
-
-        // FORWARD PASS: Đưa phần tử lớn nhất về cuối
-        for (let i = left; i < right; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
-        }
-
-        // Sau forward pass, phần tử lớn nhất đã ở vị trí right
-        right--;
-
-        // Nếu không có swap, mảng đã sorted
-        if (!swapped) break;
-
-        swapped = false;
-
-        // BACKWARD PASS: Đưa phần tử nhỏ nhất về đầu
-        for (let i = right; i > left; i--) {
-            if (arr[i] < arr[i - 1]) {
-                // Swap
-                [arr[i], arr[i - 1]] = [arr[i - 1], arr[i]];
-                swapped = true;
-            }
-        }
-
-        // Sau backward pass, phần tử nhỏ nhất đã ở vị trí left
-        left++;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SHAKER SORT WITH VISUALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Shaker Sort với từng bước visualization
- */
-export function shakerSortWithSteps(arr: number[]): ShakerSortStep[] {
-    const steps: ShakerSortStep[] = [];
-    const workArr = [...arr];
+export function generateShakerSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const sorted: number[] = [];
 
     let left = 0;
-    let right = workArr.length - 1;
+    let right = n - 1;
     let swapped = true;
     let pass = 1;
 
-    while (swapped && left < right) {
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Shaker Sort (Cocktail Sort). Duyệt 2 chiều để đẩy min/max về 2 đầu.',
+        codeSnippet: `// SHAKER SORT
+// Pass 1: Trái -> Phải (Bubble Up Max)
+// Pass 2: Phải -> Trái (Bubble Down Min)
+while (left < right && swapped) {
+    // ... forward pass ...
+    // ... backward pass ...
+}`,
+    });
+
+    while (left < right && swapped) {
         swapped = false;
 
-        // FORWARD PASS
-        for (let i = left; i < right; i++) {
-            const shouldSwap = workArr[i] > workArr[i + 1];
+        // --- Forward Pass (Left -> Right) ---
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Pass ${pass} (Forward): Duyệt từ ${left} đến ${right}. Đẩy phần tử lớn nhất về cuối.`,
+            codeSnippet: `// Forward Pass: Tìm Max
+for (i = left; i < right; i++) {
+    if (arr[i] > arr[i+1]) swap...
+}
+right--;`,
+        });
 
+        for (let i = left; i < right; i++) {
             steps.push({
-                pass,
-                direction: 'forward',
+                array: [...array],
                 comparing: [i, i + 1],
-                arrayState: [...workArr],
-                swapped: shouldSwap,
-                left,
-                right,
-                message: `Pass ${pass} →: So sánh arr[${i}]=${workArr[i]} với arr[${i + 1}]=${workArr[i + 1]}${shouldSwap ? ' → Swap' : ''}`
+                swapping: [],
+                sorted: [...sorted],
+                description: `So sánh arr[${i}]=${array[i]} và arr[${i + 1}]=${array[i + 1]}`,
+                codeSnippet: `if (arr[${i}] > arr[${i + 1}])`,
             });
 
-            if (shouldSwap) {
-                [workArr[i], workArr[i + 1]] = [workArr[i + 1], workArr[i]];
+            if (array[i] > array[i + 1]) {
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [i, i + 1],
+                    sorted: [...sorted],
+                    description: `${array[i]} > ${array[i + 1]} → Swap`,
+                    codeSnippet: `swap(arr[${i}], arr[${i + 1}]);
+swapped = true;`,
+                });
+                [array[i], array[i + 1]] = [array[i + 1], array[i]];
                 swapped = true;
             }
         }
 
+        // Element at `right` is now sorted (Max)
+        sorted.unshift(right); // Add to beginning to keep logic simple, or just manage `sorted` list
         right--;
 
         if (!swapped) {
             steps.push({
-                pass,
-                direction: 'forward',
-                comparing: [-1, -1],
-                arrayState: [...workArr],
-                swapped: false,
-                left,
-                right,
-                message: `[Sorted] Không có swap trong forward pass → Mảng đã sorted!`
+                array: [...array],
+                comparing: [],
+                swapping: [],
+                sorted: [...sorted, ...Array.from({ length: n }, (_, k) => k).filter(k => !sorted.includes(k))], // Valid visualization of full sort
+                description: 'Không có swap nào trong lượt đi -> Mảng đã sắp xếp.',
+                codeSnippet: `if (!swapped) break;`,
             });
             break;
         }
 
         swapped = false;
 
-        // BACKWARD PASS
-        for (let i = right; i > left; i--) {
-            const shouldSwap = workArr[i] < workArr[i - 1];
+        // --- Backward Pass (Right -> Left) ---
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Pass ${pass} (Backward): Duyệt từ ${right} về ${left}. Đẩy phần tử nhỏ nhất về đầu.`,
+            codeSnippet: `// Backward Pass: Tìm Min
+for (i = right; i > left; i--) {
+    if (arr[i] < arr[i-1]) swap...
+}
+left++;`,
+        });
 
+        for (let i = right; i > left; i--) {
             steps.push({
-                pass,
-                direction: 'backward',
+                array: [...array],
                 comparing: [i - 1, i],
-                arrayState: [...workArr],
-                swapped: shouldSwap,
-                left,
-                right,
-                message: `Pass ${pass} ←: So sánh arr[${i - 1}]=${workArr[i - 1]} với arr[${i}]=${workArr[i]}${shouldSwap ? ' → Swap' : ''}`
+                swapping: [],
+                sorted: [...sorted],
+                description: `So sánh arr[${i}]=${array[i]} và arr[${i - 1}]=${array[i - 1]}`,
+                codeSnippet: `if (arr[${i}] < arr[${i - 1}])`,
             });
 
-            if (shouldSwap) {
-                [workArr[i], workArr[i - 1]] = [workArr[i - 1], workArr[i]];
+            if (array[i] < array[i - 1]) {
+                steps.push({
+                    array: [...array],
+                    comparing: [],
+                    swapping: [i - 1, i],
+                    sorted: [...sorted],
+                    description: `${array[i]} < ${array[i - 1]} → Swap`,
+                    codeSnippet: `swap(arr[${i}], arr[${i - 1}]);
+swapped = true;`,
+                });
+                [array[i], array[i - 1]] = [array[i - 1], array[i]];
                 swapped = true;
             }
         }
 
+        // Element at `left` is now sorted (Min)
+        sorted.push(left);
         left++;
         pass++;
-
-        // Ghi lại trạng thái sau mỗi pass đầy đủ
-        steps.push({
-            pass: pass - 1,
-            direction: 'backward',
-            comparing: [-1, -1],
-            arrayState: [...workArr],
-            swapped: false,
-            left,
-            right,
-            message: `[Done] Hoàn thành Pass ${pass - 1}: Range [${left}, ${right}], Array: [${workArr.join(', ')}]`
-        });
     }
+
+    // Final sorted state update
+    // Recalculate all sorted indices just to be sure
+    const allSorted = Array.from({ length: n }, (_, i) => i);
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: allSorted,
+        description: '[Hoàn thành] Shaker Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH
+// Kết quả: [${array.join(', ')}]`,
+    });
 
     return steps;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// COMPARISON WITH BUBBLE SORT
-// ═══════════════════════════════════════════════════════════════════════════
-
 /**
- * Bubble Sort để so sánh
+ * Shaker Sort implementation
  */
-function bubbleSort(arr: number[]): { sorted: number[]; swaps: number } {
-    const workArr = [...arr];
-    let swaps = 0;
-    const n = workArr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        let swapped = false;
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (workArr[j] > workArr[j + 1]) {
-                [workArr[j], workArr[j + 1]] = [workArr[j + 1], workArr[j]];
-                swaps++;
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
-
-    return { sorted: workArr, swaps };
-}
-
-/**
- * Shaker Sort với đếm swap
- */
-function shakerSortWithCount(arr: number[]): { sorted: number[]; swaps: number } {
-    const workArr = [...arr];
-    let swaps = 0;
+export function shakerSort(arr: number[]): void {
     let left = 0;
-    let right = workArr.length - 1;
+    let right = arr.length - 1;
     let swapped = true;
-
-    while (swapped && left < right) {
+    while (left < right && swapped) {
         swapped = false;
-
         for (let i = left; i < right; i++) {
-            if (workArr[i] > workArr[i + 1]) {
-                [workArr[i], workArr[i + 1]] = [workArr[i + 1], workArr[i]];
-                swaps++;
+            if (arr[i] > arr[i + 1]) {
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
                 swapped = true;
             }
         }
         right--;
-
         if (!swapped) break;
         swapped = false;
-
         for (let i = right; i > left; i--) {
-            if (workArr[i] < workArr[i - 1]) {
-                [workArr[i], workArr[i - 1]] = [workArr[i - 1], workArr[i]];
-                swaps++;
+            if (arr[i] < arr[i - 1]) {
+                [arr[i], arr[i - 1]] = [arr[i - 1], arr[i]];
                 swapped = true;
             }
         }
         left++;
     }
-
-    return { sorted: workArr, swaps };
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DEMO FUNCTION
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Demo Shaker Sort với so sánh Bubble Sort
- */
-export function demonstrateShakerSort(): void {
-    console.log('══════════════════════════════════════════════════════');
-    console.log('           SHAKER SORT (COCKTAIL SORT)');
-    console.log('══════════════════════════════════════════════════════\n');
-
-    // Ví dụ với turtle problem
-    // Turtle: 2 ở cuối mảng (phần tử nhỏ ở vị trí xa)
-    const arr = [5, 1, 4, 8, 0, 9, 7, 2];
-    console.log('Mảng ban đầu:', arr);
-    console.log('(Chú ý: 0 ở gần cuối là "turtle")\n');
-
-    // So sánh Bubble vs Shaker
-    const bubbleResult = bubbleSort([...arr]);
-    const shakerResult = shakerSortWithCount([...arr]);
-
-    console.log('--- So sánh với Bubble Sort ---');
-    console.log(`Bubble Sort: ${bubbleResult.swaps} swaps`);
-    console.log(`Shaker Sort: ${shakerResult.swaps} swaps`);
-    console.log(`Tiết kiệm: ${bubbleResult.swaps - shakerResult.swaps} swaps\n`);
-
-    // Chi tiết từng bước
-    const steps = shakerSortWithSteps([...arr]);
-
-    console.log('--- Chi tiết từng bước ---\n');
-    let currentPass = 0;
-    for (const step of steps) {
-        if (step.pass !== currentPass) {
-            console.log(`\n=== Pass ${step.pass} ===`);
-            currentPass = step.pass;
-        }
-        if (step.comparing[0] >= 0) {
-            console.log(step.message);
-        } else {
-            console.log(step.message);
-        }
-    }
-
-    const sorted = [...arr];
-    shakerSort(sorted);
-    console.log('\n[OK] Kết quả cuối cùng:', sorted);
-}
-
-/**
- * Export default
- */
 export default {
     shakerSort,
-    shakerSortWithSteps,
-    demonstrateShakerSort
+    generateShakerSortSteps
 };
