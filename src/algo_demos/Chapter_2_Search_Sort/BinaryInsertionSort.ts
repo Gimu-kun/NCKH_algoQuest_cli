@@ -88,19 +88,8 @@
 // TYPES & INTERFACES
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Interface cho mỗi bước của Binary Insertion Sort
- */
-export interface BinaryInsertionStep {
-    iteration: number;
-    key: number;
-    searchRange: [number, number];  // [left, right] của binary search
-    insertPosition: number;
-    shifted: number[];              // Các phần tử bị dịch
-    arrayState: number[];
-    comparisons: number;            // Số lần so sánh trong binary search
-    message: string;
-}
+// ═══════════════════════════════════════════════════════════════════════════
+// BINARY SEARCH FOR INSERTION POSITION
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BINARY SEARCH FOR INSERTION POSITION
@@ -192,44 +181,125 @@ export function binaryInsertionSort(arr: number[]): void {
 /**
  * Binary Insertion Sort với từng bước visualization
  */
-export function binaryInsertionSortWithSteps(arr: number[]): BinaryInsertionStep[] {
-    const steps: BinaryInsertionStep[] = [];
-    const workArr = [...arr];
-    const n = workArr.length;
+import type { SortingStep } from '../../components/visualizations/types';
+
+/**
+ * generateBinaryInsertionSortSteps - Tạo các bước cho Binary Insertion Sort.
+ * 
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
+ */
+export function generateBinaryInsertionSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const sorted: number[] = [0]; // Initial sorted part
+
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Binary Insertion Sort. Tìm vị trí chèn bằng Binary Search.',
+        codeSnippet: `// BINARY INSERTION SORT
+// Sử dụng Binary Search để tìm vị trí chèn
+for (i = 1; i < n; i++) {
+    key = arr[i];
+    // Binary search trong [0, i-1]
+    // Dịch chuyển và chèn
+}`,
+    });
 
     for (let i = 1; i < n; i++) {
-        const key = workArr[i];
-
-        // Binary Search
-        const { position, comparisons } = binarySearchInsertPosition(
-            workArr, key, 0, i - 1
-        );
-
-        // Ghi lại phần tử bị dịch
-        const shifted: number[] = [];
-        for (let j = position; j < i; j++) {
-            shifted.push(workArr[j]);
-        }
-
-        // Thực hiện dịch chuyển
-        for (let j = i; j > position; j--) {
-            workArr[j] = workArr[j - 1];
-        }
-        workArr[position] = key;
+        const key = array[i];
+        let left = 0;
+        let right = i - 1;
 
         steps.push({
-            iteration: i,
-            key,
-            searchRange: [0, i - 1],
-            insertPosition: position,
-            shifted,
-            arrayState: [...workArr],
-            comparisons,
-            message: `i=${i}: key=${key}, Binary Search trong [0,${i - 1}] (${comparisons} so sánh), ` +
-                `chèn tại vị trí ${position}` +
-                (shifted.length > 0 ? `, dịch [${shifted.join(',')}]` : '')
+            array: [...array],
+            comparing: [i],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Xét phần tử arr[${i}]=${key}. Tìm vị trí trong [0..${i - 1}]`,
+            codeSnippet: `key = arr[${i}]; // ${key}
+left = 0, right = ${i - 1};`,
+        });
+
+        // Binary Search
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+
+            steps.push({
+                array: [...array],
+                comparing: [mid, i], // Compare mid with key (at i)
+                swapping: [],
+                sorted: [...sorted],
+                description: `Binary Search: So sánh key=${key} với arr[${mid}]=${array[mid]} (Range: [${left}, ${right}])`,
+                codeSnippet: `mid = ${(left + right) / 2 | 0}; // ${mid}
+if (arr[mid] > key) ...`,
+            });
+
+            if (array[mid] > key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        // Position found is `left`
+        const position = left;
+
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Tìm thấy vị trí chèn: ${position}. Bắt đầu dịch chuyển từ ${position} đến ${i - 1}.`,
+            codeSnippet: `// Chèn tại ${position}`,
+        });
+
+        // Shifting
+        // To visualize shifting nicely, we can show it step by step or in chunks
+        // Standard Insertion sort usually highlights the shift.
+        // Let's do it in one block logic but mapped to steps if possible, or just one "Shift" step
+
+        // We will shift from right to left to make space
+        for (let j = i; j > position; j--) {
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [j, j - 1], // Visualize as a swap/move
+                sorted: [...sorted],
+                description: `Dịch chuyển arr[${j - 1}]=${array[j - 1]} sang vị trí ${j}`,
+                codeSnippet: `arr[${j}] = arr[${j - 1}];`,
+            });
+
+            array[j] = array[j - 1];
+        }
+
+        array[position] = key;
+        sorted.push(i); // Now up to i is sorted
+
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [position],
+            sorted: Array.from({ length: i + 1 }, (_, k) => k),
+            description: `Chèn key=${key} vào vị trí ${position}.`,
+            codeSnippet: `arr[${position}] = key; // ${key}`,
         });
     }
+
+    // Final
+    const allSorted = Array.from({ length: n }, (_, i) => i);
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: allSorted,
+        description: '[Hoàn thành] Mảng đã được sắp xếp!',
+        codeSnippet: `// ✓ HOÀN THÀNH`,
+    });
 
     return steps;
 }
@@ -307,12 +377,12 @@ export function demonstrateBinaryInsertionSort(): void {
     console.log('Mảng ban đầu:', arr);
 
     // Chi tiết từng bước
-    const steps = binaryInsertionSortWithSteps([...arr]);
+    const steps = generateBinaryInsertionSortSteps([...arr]);
 
     console.log('\n--- Chi tiết từng bước ---\n');
     for (const step of steps) {
-        console.log(step.message);
-        console.log(`   → Mảng: [${step.arrayState.join(', ')}]\n`);
+        console.log(step.description);
+        console.log(`   → Mảng: [${step.array.join(', ')}]\n`);
     }
 
     // So sánh với Regular Insertion Sort
@@ -350,7 +420,7 @@ export function demonstrateBinaryInsertionSort(): void {
  */
 export default {
     binaryInsertionSort,
-    binaryInsertionSortWithSteps,
+    generateBinaryInsertionSortSteps,
     binarySearchInsertPosition,
     demonstrateBinaryInsertionSort
 };

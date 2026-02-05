@@ -44,11 +44,11 @@ export type { default as AnimationControlsType } from './shared/AnimationControl
  * - Hiển thị: comparing, swapping, sorted states.
  */
 export { default as SortingVisualizer } from './sorting/SortingVisualizer';
+export type { SortingVisualizerProps } from './sorting/SortingVisualizer';
 export type {
-    SortingVisualizerProps,
     SortingStep,
     SortingAlgorithmType,
-} from './sorting/SortingVisualizer';
+} from './types';
 
 /**
  * ArrayBar:

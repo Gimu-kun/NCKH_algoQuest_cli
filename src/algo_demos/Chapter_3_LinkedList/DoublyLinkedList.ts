@@ -71,11 +71,136 @@ export interface DoublyNode<T> {
  */
 export interface DLLStep {
     action: 'insert' | 'delete' | 'traverse' | 'search';
-    position?: 'head' | 'tail' | 'middle' | number;
+    index?: number;
     value: number;
     list: number[];
     message: string;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VISUALIZATION GENERATORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function generateDLLInsertHeadSteps(currentList: number[], newValue: number): DLLStep[] {
+    const steps: DLLStep[] = [];
+
+    // Step 1: Create Node
+    steps.push({
+        action: 'insert',
+        value: newValue,
+        list: [...currentList],
+        message: `Tạo node mới [${newValue}].`
+    });
+
+    // Step 2: Update pointers
+    const newList = [newValue, ...currentList];
+    steps.push({
+        action: 'insert',
+        index: 0,
+        value: newValue,
+        list: newList,
+        message: `Chèn [${newValue}] vào HEAD. Cập nhật next/prev pointers.`
+    });
+
+    return steps;
+}
+
+export function generateDLLInsertTailSteps(currentList: number[], newValue: number): DLLStep[] {
+    const steps: DLLStep[] = [];
+
+    // Step 1: Create Node
+    steps.push({
+        action: 'insert',
+        value: newValue,
+        list: [...currentList],
+        message: `Tạo node mới [${newValue}].`
+    });
+
+    // Step 2: Update pointers
+    const newList = [...currentList, newValue];
+    steps.push({
+        action: 'insert',
+        index: newList.length - 1,
+        value: newValue,
+        list: newList,
+        message: `Chèn [${newValue}] vào TAIL. Cập nhật prev pointer.`
+    });
+
+    return steps;
+}
+
+export function generateDLLDeleteHeadSteps(currentList: number[]): DLLStep[] {
+    const steps: DLLStep[] = [];
+
+    if (currentList.length === 0) {
+        steps.push({
+            action: 'delete',
+            value: 0,
+            list: [],
+            message: 'Danh sách rỗng! Không thể xóa.'
+        });
+        return steps;
+    }
+
+    const removedValue = currentList[0];
+
+    // Step 1: Identify
+    steps.push({
+        action: 'delete',
+        index: 0,
+        value: removedValue,
+        list: [...currentList],
+        message: `Xác định HEAD: [${removedValue}].`
+    });
+
+    // Step 2: Remove
+    const newList = currentList.slice(1);
+    steps.push({
+        action: 'delete',
+        value: removedValue,
+        list: newList,
+        message: `Xóa [${removedValue}] khỏi HEAD. Cập nhật HEAD mới.`
+    });
+
+    return steps;
+}
+
+export function generateDLLDeleteTailSteps(currentList: number[]): DLLStep[] {
+    const steps: DLLStep[] = [];
+
+    if (currentList.length === 0) {
+        steps.push({
+            action: 'delete',
+            value: 0,
+            list: [],
+            message: 'Danh sách rỗng! Không thể xóa.'
+        });
+        return steps;
+    }
+
+    const removedValue = currentList[currentList.length - 1];
+
+    // Step 1: Identify
+    steps.push({
+        action: 'delete',
+        index: currentList.length - 1,
+        value: removedValue,
+        list: [...currentList],
+        message: `Xác định TAIL: [${removedValue}].`
+    });
+
+    // Step 2: Remove
+    const newList = currentList.slice(0, -1);
+    steps.push({
+        action: 'delete',
+        value: removedValue,
+        list: newList,
+        message: `Xóa [${removedValue}] khỏi TAIL. Cập nhật TAIL mới.`
+    });
+
+    return steps;
+}
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DOUBLY LINKED LIST CLASS

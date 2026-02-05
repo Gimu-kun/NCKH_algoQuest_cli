@@ -133,7 +133,7 @@ export class CircularSinglyLinkedList<T> {
      * Vì lưu tail, nên head = tail.next luôn accessible
      */
     insertAtHead(data: T): void {
-        const newNode: CircularNode<T> = { data, next: null as any };
+        const newNode: CircularNode<T> = { data, next: null! };
 
         if (this.isEmpty()) {
             // List rỗng: node trỏ về chính nó
@@ -169,7 +169,7 @@ export class CircularSinglyLinkedList<T> {
     insertAfter(afterData: T, data: T): boolean {
         if (this.isEmpty()) return false;
 
-        const newNode: CircularNode<T> = { data, next: null as any };
+        const newNode: CircularNode<T> = { data, next: null! };
         let current = this.tail!.next;  // Start from head
 
         do {

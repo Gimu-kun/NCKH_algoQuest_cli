@@ -35,32 +35,156 @@
  *    - So với **Insertion Sort**: Chậm hơn nếu mảng đã gần như được sorted.
  */
 
-export function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-    // Copy array để giữ tính Pure Function
-    const result = [...arr];
+import type { SortingStep } from '../../components/visualizations/types';
 
-    console.log("--- Bắt đầu Selection Sort ---");
+/**
+ * generateSelectionSortSteps - Tạo các bước cho Selection Sort.
+ *
+ * THUẬT TOÁN SELECTION SORT:
+ * 1. Chia mảng thành 2 phần: sorted (trái) và unsorted (phải).
+ * 2. Tìm phần tử nhỏ nhất trong unsorted.
+ * 3. Swap với phần tử đầu tiên của unsorted.
+ * 4. Mở rộng sorted region sang phải.
+ * 5. Repeat cho đến khi unsorted rỗng.
+ *
+ * @param arr - Mảng cần sắp xếp
+ * @returns Mảng các SortingStep
+ */
+export function generateSelectionSortSteps(arr: number[]): SortingStep[] {
+    const steps: SortingStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const sorted: number[] = [];
 
-    // Vòng lặp chính: Duyệt qua từng vị trí i cần được điền giá trị đúng (Min)
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [],
+        description: 'Bắt đầu Selection Sort. Tìm phần tử nhỏ nhất và đưa về đầu.',
+        codeSnippet: `// SELECTION SORT - O(n²) time, O(1) space
+// Ý tưởng: Chọn min từ unsorted, đưa vào sorted
+for (i = 0; i < n-1; i++) {
+    minIdx = i;
+    for (j = i+1; j < n; j++) {
+        if (arr[j] < arr[minIdx]) minIdx = j;
+    }
+    swap(arr[i], arr[minIdx]);
+}`,
+    });
+
     for (let i = 0; i < n - 1; i++) {
-        let minIndex = i; // Giả sử phần tử đầu tiên của đoạn chưa sort là nhỏ nhất
+        let minIdx = i;
 
-        // Vòng lặp con: Tìm Min thực sự trong đoạn [i+1 ... n]
+        // Find minimum in unsorted portion
         for (let j = i + 1; j < n; j++) {
-            if (result[j] < result[minIndex]) {
-                minIndex = j; // Cập nhật index của Min mới nếu tìm thấy số nhỏ hơn
+            steps.push({
+                array: [...array],
+                comparing: [minIdx, j],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Tìm min: So sánh arr[${minIdx}]=${array[minIdx]} với arr[${j}]=${array[j]}`,
+                codeSnippet: `// Tìm phần tử nhỏ nhất trong vùng unsorted
+if (arr[${j}] < arr[${minIdx}]) {  // ${array[j]} < ${array[minIdx]} ?
+    minIdx = ${j};  // Cập nhật vị trí min
+}`,
+            });
+
+            if (array[j] < array[minIdx]) {
+                minIdx = j;
+                steps.push({
+                    array: [...array],
+                    comparing: [minIdx],
+                    swapping: [],
+                    sorted: [...sorted],
+                    description: `Min mới tìm thấy: arr[${minIdx}]=${array[minIdx]}`,
+                    codeSnippet: `// Tìm thấy min mới!
+minIdx = ${minIdx};  // arr[${minIdx}] = ${array[minIdx]}
+// Tiếp tục tìm trong phần còn lại...`,
+                });
             }
         }
 
-        // Sau khi quét hết, nếu Min không nằm ở vị trí i ban đầu thì Swap
-        // (Nếu minIndex == i tức là phần tử đó đã đúng vị trí, không cần swap)
-        if (minIndex !== i) {
-            console.log(`Swap vị trí ${i} (Giá trị: ${result[i]}) với vị trí Min ${minIndex} (Giá trị: ${result[minIndex]})`);
-            // Kỹ thuật Swap dùng Destructuring
-            [result[i], result[minIndex]] = [result[minIndex], result[i]];
+        // Swap if needed
+        if (minIdx !== i) {
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [i, minIdx],
+                sorted: [...sorted],
+                description: `Swap arr[${i}]=${array[i]} với min arr[${minIdx}]=${array[minIdx]}`,
+                codeSnippet: `// Đưa min về đầu vùng unsorted
+// Swap vị trí ${i} với vị trí ${minIdx}
+[arr[${i}], arr[${minIdx}]] = [arr[${minIdx}], arr[${i}]];
+// ${array[i]} ↔ ${array[minIdx]}`,
+            });
+
+            [array[i], array[minIdx]] = [array[minIdx], array[i]];
+
+            steps.push({
+                array: [...array],
+                comparing: [],
+                swapping: [],
+                sorted: [...sorted],
+                description: `Sau swap: vị trí ${i} có giá trị ${array[i]}`,
+                codeSnippet: `// Kết quả sau swap:
+arr = [${array.join(', ')}]
+// Phần tử ${array[i]} đã ở đúng vị trí`,
+            });
         }
+
+        sorted.push(i);
+        steps.push({
+            array: [...array],
+            comparing: [],
+            swapping: [],
+            sorted: [...sorted],
+            description: `Phần tử ${array[i]} đã ở đúng vị trí ${i}.`,
+            codeSnippet: `// Hoàn thành iteration ${i + 1}
+// sorted region: [${sorted.map(idx => array[idx]).join(', ')}]
+// unsorted region: [${array.slice(i + 1).join(', ')}]`,
+        });
     }
 
+    // Last element is automatically sorted
+    sorted.push(n - 1);
+    steps.push({
+        array: [...array],
+        comparing: [],
+        swapping: [],
+        sorted: [...sorted],
+        description: '[Hoàn thành] Selection Sort đã sắp xếp xong mảng!',
+        codeSnippet: `// ✓ HOÀN THÀNH SELECTION SORT
+// Kết quả: [${array.join(', ')}]
+//
+// ƯU ĐIỂM:
+// - Ít thao tác swap (tối đa n-1 lần)
+// - In-place, không cần bộ nhớ phụ
+//
+// NHƯỢC ĐIỂM:
+// - Unstable sort
+// - Luôn O(n²) dù mảng đã sorted`,
+    });
+
+    return steps;
+}
+
+/**
+ * selectionSort - Phiên bản trả về mảng đã sắp xếp.
+ */
+export function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
+    const result = [...arr];
+    for (let i = 0; i < n - 1; i++) {
+        let minIdx = i;
+        for (let j = i + 1; j < n; j++) {
+            if (result[j] < result[minIdx]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx !== i) {
+            [result[i], result[minIdx]] = [result[minIdx], result[i]];
+        }
+    }
     return result;
 }

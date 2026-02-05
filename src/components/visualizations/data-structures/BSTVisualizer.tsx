@@ -75,6 +75,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
+import { generateBSTInsertSteps, generateBSTSearchSteps } from '../../../algo_demos/Chapter_5_BST/BinarySearchTree';
 
 // =============================================================================
 // TYPES & INTERFACES
@@ -165,30 +166,7 @@ function insertNode(root: TreeNode | null, value: number): TreeNode {
     }
 }
 
-/**
- * searchPath - Tìm đường đi từ root đến value.
- *
- * @param root - Root của tree
- * @param value - Giá trị cần tìm
- * @returns Mảng các node IDs trên đường đi
- */
-function searchPath(root: TreeNode | null, value: number): string[] {
-    const path: string[] = [];
 
-    let current = root;
-    while (current !== null) {
-        path.push(current.id);
-        if (current.value === value) {
-            break;
-        } else if (value < current.value) {
-            current = current.left;
-        } else {
-            current = current.right;
-        }
-    }
-
-    return path;
-}
 
 /**
  * traverseTree - Duyệt cây theo thứ tự được chỉ định.
@@ -344,6 +322,17 @@ class TreeNode {
     const containerWidth = maxX - minX + 100;
 
     // =========================================================================
+    // HELPER: Map Values to IDs
+    // =========================================================================
+    const getIdsFromValues = useCallback((values: number[]): string[] => {
+        if (!values || values.length === 0) return [];
+        // Tìm trong positions
+        return positions
+            .filter(p => values.includes(p.node.value))
+            .map(p => p.node.id);
+    }, [positions]);
+
+    // =========================================================================
     // ACTION HANDLERS
     // =========================================================================
 
@@ -358,29 +347,31 @@ class TreeNode {
             return;
         }
 
-        // Show insertion path
-        if (root) {
-            setMessage(`🔍 Tìm vị trí để chèn ${value}...`);
-            const path = searchPath(root, value);
-            for (let i = 0; i < path.length; i++) {
-                setHighlightedNodes(path.slice(0, i + 1));
-                await new Promise(r => setTimeout(r, 400));
+        // 1. Generate Steps
+        // Cast root to any to be compatible with generator (structure is compatible)
+        const steps = generateBSTInsertSteps(root as any, value);
+
+        // 2. Animate Steps
+        for (const step of steps) {
+            setMessage(step.message);
+            if (step.highlights) {
+                setHighlightedNodes(getIdsFromValues(step.highlights));
             }
+            await new Promise(r => setTimeout(r, 600));
         }
 
-        // Insert the value
+        // 3. Perform Actual Insert (State Update)
         const newRoot = insertNode(root, value);
         setRoot(newRoot);
         setInputValue('');
 
-        // Highlight new node
-        const newPositions = calculatePositions(newRoot);
-        const newNodePos = newPositions.find(p => p.node.value === value);
-        if (newNodePos) {
-            setHighlightedNodes([newNodePos.node.id]);
-        }
-
-        setMessage(`[INSERT] Đã chèn ${value} vào BST.`);
+        // 4. Highlight New Node (Final Step)
+        // Need to recalculate positions to get ID of new node, but for now we can infer
+        // Or just let the re-render handle it.
+        // We can find the node with the value we just inserted.
+        // Since state update is async/batched, highlighting immediately might miss.
+        // But we can set a message.
+        setMessage(`[XONG] Đã chèn ${value} vào cây.`);
         setCodeDisplay(`// INSERT - Chèn value vào BST
 // Rule: Nhỏ hơn sang trái, Lớn hơn sang phải
 
@@ -397,9 +388,9 @@ function insert(node, value) {
     
     return node;
 }`);
-
         setTimeout(() => setHighlightedNodes([]), 1500);
-    }, [inputValue, root]);
+
+    }, [inputValue, root, getIdsFromValues]);
 
     /**
      * handleSearch - Tìm kiếm giá trị trong BST.
@@ -417,26 +408,25 @@ function insert(node, value) {
             return;
         }
 
-        setMessage(`🔍 Đang tìm kiếm ${value}...`);
+        // 1. Generate Steps
+        const steps = generateBSTSearchSteps(root as any, value);
         setFoundNode(null);
 
-        const path = searchPath(root, value);
+        // 2. Animate Steps
+        for (const step of steps) {
+            setMessage(step.message);
+            if (step.highlights) {
+                setHighlightedNodes(getIdsFromValues(step.highlights));
+            }
 
-        // Animate through path
-        for (let i = 0; i < path.length; i++) {
-            setHighlightedNodes(path.slice(0, i + 1));
-            await new Promise(r => setTimeout(r, 500));
+            if (step.action === 'found' && step.nodeValue !== undefined && step.nodeValue !== null) {
+                setFoundNode(getIdsFromValues([step.nodeValue])[0]);
+            }
+
+            await new Promise(r => setTimeout(r, 600));
         }
 
-        // Check if found
-        const foundPosition = positions.find(
-            p => p.node.value === value && path.includes(p.node.id)
-        );
-
-        if (foundPosition) {
-            setFoundNode(foundPosition.node.id);
-            setMessage(`[TÌM THẤY] ${value}! Đi qua ${path.length} nodes.`);
-            setCodeDisplay(`// SEARCH - Tìm value trong BST
+        setCodeDisplay(`// SEARCH - Tìm value trong BST
 // Time Complexity: O(log n)
 
 function search(node, value) {
@@ -451,18 +441,14 @@ function search(node, value) {
 
     // Nếu value lớn hơn -> tìm bên phải
     return search(node.right, value);
-}
-
-// Kết quả: Found ${value} at depth ${path.length - 1}`);
-        } else {
-            setMessage(`[KHÔNG TÌM THẤY] ${value}. Đã kiểm tra ${path.length} nodes.`);
-        }
+}`);
 
         setTimeout(() => {
             setHighlightedNodes([]);
             setFoundNode(null);
         }, 2000);
-    }, [inputValue, isEmpty, root, positions]);
+    }, [inputValue, isEmpty, root, getIdsFromValues]);
+
 
     /**
      * handleTraversal - Thực hiện duyệt cây.

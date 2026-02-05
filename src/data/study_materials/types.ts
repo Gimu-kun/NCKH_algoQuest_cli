@@ -217,6 +217,27 @@ export interface CodeExample {
     sampleOutput?: string;
 }
 
+/**
+ * Interface cho nội dung lý thuyết của một page
+ */
+export interface TheoryContent {
+    introduction: string;
+    keyConcepts: Array<{
+        title: string;
+        content: string;
+        importance: 'basic' | 'important' | 'critical';
+    }>;
+    examples: Array<{
+        title: string;
+        description: string;
+        code?: string;
+        language?: string;
+        explanation?: string;
+    }>;
+    summary: string;
+    readingTime: number; // estimated minutes
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // UTILITY TYPES - TYPES HỖ TRỢ
 // ═══════════════════════════════════════════════════════════════════════════

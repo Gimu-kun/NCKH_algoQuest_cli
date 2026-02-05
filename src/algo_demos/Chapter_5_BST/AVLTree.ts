@@ -80,11 +80,174 @@ export interface AVLStep {
     tree: AVLNode | null;
     balanceFactor?: number;
     message: string;
+    highlights?: number[];
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// HELPER FUNCTIONS - Các hàm hỗ trợ
+// VISUALIZATION GENERATORS
 // ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Helper để deep clone tree (cho visualization snapshots)
+ */
+function cloneTree(node: AVLNode | null): AVLNode | null {
+    if (!node) return null;
+    return JSON.parse(JSON.stringify(node));
+}
+
+/**
+ * Generate steps for AVL Insertion
+ * Note: Performs the insertion on a clone of the root to avoid mutating the original
+ */
+export function generateAVLInsertSteps(root: AVLNode | null, value: number): AVLStep[] {
+    const steps: AVLStep[] = [];
+    const workingRoot = cloneTree(root); // Work on a clone
+
+    // Recursively insert and log steps
+    // Note: We need to update workingRoot reference if rotation changes root
+    // But since it's recursive, we need a wrapper
+
+    function insertWithSteps(node: AVLNode | null, val: number): AVLNode {
+        // Step: Visiting node
+        if (node) {
+            steps.push({
+                action: 'search',
+                node: node.value,
+                tree: cloneTree(workingRoot), // Snapshot toàn bộ cây hiện tại
+                message: `So sánh [${val}] với [${node.value}].`,
+                highlights: [node.value]
+            });
+        }
+
+        if (node === null) {
+            steps.push({
+                action: 'insert',
+                node: val,
+                tree: cloneTree(workingRoot), // Snapshot trước khi insert
+                message: `Vị trí trống. Tạo node mới [${val}].`,
+                highlights: [val]
+            });
+            return createNode(val);
+        }
+
+        if (val < node.value) {
+            node.left = insertWithSteps(node.left, val);
+        } else if (val > node.value) {
+            node.right = insertWithSteps(node.right, val);
+        } else {
+            steps.push({
+                action: 'insert',
+                node: val,
+                tree: cloneTree(workingRoot),
+                message: `Giá trị [${val}] đã tồn tại. Bỏ qua.`,
+                highlights: [node.value]
+            });
+            return node;
+        }
+
+        // Update height
+        updateHeight(node);
+
+        // Get balance
+        const balance = getBalanceFactor(node);
+
+        // Check balance
+        if (Math.abs(balance) > 1) {
+            steps.push({
+                action: 'balance',
+                node: node.value,
+                tree: cloneTree(workingRoot),
+                balanceFactor: balance,
+                message: `Node [${node.value}] mất cân bằng (BF=${balance}). Chuẩn bị xoay.`,
+                highlights: [node.value]
+            });
+        }
+
+        // Case LL
+        if (balance > 1 && val < node.left!.value) {
+            steps.push({
+                action: 'rotate',
+                rotationType: 'LL',
+                node: node.value,
+                tree: cloneTree(workingRoot),
+                message: `LL Case: Xoay phải (Right Rotate) tại [${node.value}].`,
+                highlights: [node.value, node.left!.value]
+            });
+            return rightRotate(node);
+        }
+
+        // Case RR
+        if (balance < -1 && val > node.right!.value) {
+            steps.push({
+                action: 'rotate',
+                rotationType: 'RR',
+                node: node.value,
+                tree: cloneTree(workingRoot),
+                message: `RR Case: Xoay trái (Left Rotate) tại [${node.value}].`,
+                highlights: [node.value, node.right!.value]
+            });
+            return leftRotate(node);
+        }
+
+        // Case LR
+        if (balance > 1 && val > node.left!.value) {
+            steps.push({
+                action: 'rotate',
+                rotationType: 'LR',
+                node: node.value,
+                tree: cloneTree(workingRoot),
+                message: `LR Case: Xoay trái tại con [${node.left!.value}], sau đó xoay phải tại [${node.value}].`,
+                highlights: [node.value, node.left!.value]
+            });
+            node.left = leftRotate(node.left!);
+            return rightRotate(node);
+        }
+
+        // Case RL
+        if (balance < -1 && val < node.right!.value) {
+            steps.push({
+                action: 'rotate',
+                rotationType: 'RL',
+                node: node.value,
+                tree: cloneTree(workingRoot),
+                message: `RL Case: Xoay phải tại con [${node.right!.value}], sau đó xoay trái tại [${node.value}].`,
+                highlights: [node.value, node.right!.value]
+            });
+            node.right = rightRotate(node.right!);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    // Capture initial state
+    steps.push({
+        action: 'insert',
+        node: value,
+        tree: cloneTree(workingRoot),
+        message: `Bắt đầu chèn [${value}] vào AVL Tree.`,
+        highlights: []
+    });
+
+    // Execute logic on the clone
+    // We don't use the return value (new root) here, but the side effects on workingRoot are what we assume...
+    // WAIT. `insertWithSteps` mutates `node` (which is part of `workingRoot` structure) BUT if rotation happens, `node` is replaced by new subtree root.
+    // So we MUST update `workingRoot` result.
+    // Since `insertWithSteps` returns the new root of the subtree, the initial call returns the new root of the WHOLE tree.
+    const newRoot = insertWithSteps(workingRoot, value);
+
+    // Final Step
+    steps.push({
+        action: 'insert',
+        node: value,
+        tree: cloneTree(newRoot), // Snapshot final tree
+        message: `Hoàn tất chèn [${value}]. Cây cân bằng.`,
+        highlights: [value]
+    });
+
+    return steps;
+}
+
 
 /**
  * Lấy chiều cao của node

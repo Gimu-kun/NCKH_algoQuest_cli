@@ -1,129 +1,29 @@
-/**
- * =============================================================================
- * FILE: LinkedListVisualizer.tsx
- * =============================================================================
- *
- * MỤC TIÊU (Purpose):
- * - Trực quan hóa cấu trúc dữ liệu Linked List (Danh sách liên kết).
- * - Minh họa các thao tác: Append, Prepend, Delete, Traverse.
- * - Giúp user hiểu cách nodes liên kết với nhau qua pointers.
- *
- * CẤU TRÚC DỮ LIỆU LINKED LIST (Chi tiết):
- *
- * KHÁI NIỆM (Concept):
- * - Linked List là cấu trúc dữ liệu tuyến tính gồm các nodes.
- * - Mỗi node chứa: DATA (dữ liệu) + NEXT POINTER (con trỏ đến node tiếp theo).
- * - Nodes không cần liền kề trong memory → linh hoạt hơn array.
- *
- * CẤU TRÚC NODE:
- * ┌────────────────────────┐
- * │   ┌───────┬────────┐   │
- * │   │ DATA  │  NEXT  │ ──┼──→ [Next Node hoặc null]
- * │   └───────┴────────┘   │
- * └────────────────────────┘
- *
- * CÁC LOẠI LINKED LIST:
- * 1. Singly Linked List: Mỗi node trỏ đến node kế tiếp.
- * 2. Doubly Linked List: Có thêm PREV pointer, duyệt 2 chiều.
- * 3. Circular Linked List: Node cuối trỏ về node đầu.
- *
- * CÁC THAO TÁC CƠ BẢN (Operations):
- *
- * 1. APPEND (Thêm vào cuối):
- *    - Duyệt đến node cuối → link NEXT đến new node.
- *    - Time: O(n) không có tail pointer, O(1) có tail pointer.
- *
- * 2. PREPEND (Thêm vào đầu):
- *    - New node.NEXT = HEAD → HEAD = new node.
- *    - Time: O(1) - Luôn nhanh!
- *
- * 3. DELETE (Xóa node):
- *    - Tìm node → Relink: prev.NEXT = target.NEXT.
- *    - Time: O(n) để tìm, O(1) để xóa.
- *
- * 4. SEARCH (Tìm kiếm):
- *    - Duyệt từ HEAD đến cuối hoặc tìm thấy.
- *    - Time: O(n).
- *
- * ĐỘ PHỨC TẠP (Complexity):
- * ┌──────────────────┬────────────────┬────────────────┐
- * │ Operation        │ Singly LL      │ Doubly LL      │
- * ├──────────────────┼────────────────┼────────────────┤
- * │ Access (by index)│ O(n)           │ O(n)           │
- * │ Search           │ O(n)           │ O(n)           │
- * │ Prepend          │ O(1)           │ O(1)           │
- * │ Append (w/o tail)│ O(n)           │ O(n)           │
- * │ Append (w/ tail) │ O(1)           │ O(1)           │
- * │ Delete head      │ O(1)           │ O(1)           │
- * │ Delete middle    │ O(n)           │ O(n)           │
- * └──────────────────┴────────────────┴────────────────┘
- *
- * SO SÁNH VỚI ARRAY:
- * ┌─────────────────┬────────────────┬────────────────┐
- * │ Tiêu chí        │ Array          │ Linked List    │
- * ├─────────────────┼────────────────┼────────────────┤
- * │ Access by index │ O(1)           │ O(n)          │
- * │ Insert at start │ O(n)           │ O(1)           │
- * │ Insert at end   │ O(1) amortized │ O(1) with tail │
- * │ Delete at start │ O(n)           │ O(1)           │
- * │ Memory usage    │ Contiguous     │ Scattered      │
- * │ Cache locality  │ Good           │ Poor           │
- * └─────────────────┴────────────────┴────────────────┘
- *
- * KHI NÀO DÙNG LINKED LIST:
- * - Cần insert/delete thường xuyên ở đầu/giữa.
- * - Không cần random access.
- * - Size thay đổi nhiều.
- * - Implement Stack/Queue.
- *
- * ỨNG DỤNG THỰC TẾ:
- * 1. Browser history (back/forward buttons).
- * 2. Music playlist (prev/next song).
- * 3. Undo functionality.
- * 4. Memory allocation (free lists).
- * 5. Hash table chaining.
- *
- * =============================================================================
- */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
+
+import type { LinkedListStep } from '../../../algo_demos/Chapter_3_LinkedList/LinkedList';
+import {
+    generateTraversalSteps,
+    generateInsertAtHeadSteps,
+    generateInsertAtTailSteps,
+    generateDeleteSteps
+} from '../../../algo_demos/Chapter_3_LinkedList/LinkedList';
 
 // =============================================================================
 // TYPES & INTERFACES
 // =============================================================================
 
-/**
- * ListNode - Đại diện cho một node trong linked list.
- */
 interface ListNode {
     id: string;
     value: number;
 }
 
-/**
- * LinkedListVisualizerProps - Props cho component.
- */
 interface LinkedListVisualizerProps {
-    /**
-     * initialItems: Mảng các giá trị ban đầu.
-     */
     initialItems?: number[];
-
-    /**
-     * maxSize: Giới hạn số nodes tối đa.
-     */
     maxSize?: number;
-
-    /**
-     * title: Tiêu đề tùy chọn.
-     */
     title?: string;
-
-    /**
-     * showInfo: Hiển thị thông tin complexity.
-     */
     showInfo?: boolean;
     onRegenerate?: () => void;
 }
@@ -133,7 +33,7 @@ interface LinkedListVisualizerProps {
 // =============================================================================
 
 function generateId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${Date.now()} -${Math.random().toString(36).substr(2, 9)} `;
 }
 
 // =============================================================================
@@ -151,11 +51,6 @@ const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({
     // STATE
     // =========================================================================
 
-    /**
-     * list: Mảng các ListNode.
-     * Index 0 = HEAD.
-     * Mỗi node "trỏ" đến node index + 1.
-     */
     const [list, setList] = useState<ListNode[]>(
         initialItems.map(value => ({ id: generateId(), value }))
     );
@@ -184,7 +79,7 @@ class LinkedList {
         this.size = 0;
     }
     // Các thao tác: Append, Prepend, Delete, Traverse
-}`);
+} `);
 
     // =========================================================================
     // COMPUTED VALUES
@@ -194,224 +89,156 @@ class LinkedList {
     const isFull = list.length >= maxSize;
 
     // =========================================================================
+    // HELPER: Play Animation
+    // =========================================================================
+
+    const playSteps = async (steps: LinkedListStep[]) => {
+        for (const step of steps) {
+            setMessage(step.description);
+
+            // Highlight logic
+            if (step.nodeIndex !== -1) {
+                if (step.type === 'traverse') setTraversingIndex(step.nodeIndex);
+                if (step.type === 'found') setHighlightedIndex(step.nodeIndex);
+                if (step.type === 'insert' || step.type === 'update') setHighlightedIndex(step.nodeIndex);
+            } else {
+                setTraversingIndex(null);
+            }
+
+            // Highlighting specific nodes from array
+            if (step.highlight && step.highlight.length > 0) {
+                // Could map multiple highlights if supported
+                if (step.type !== 'traverse') setHighlightedIndex(step.highlight[0]);
+            }
+
+            await new Promise(r => setTimeout(r, 600));
+        }
+        setTraversingIndex(null);
+        setHighlightedIndex(null);
+    };
+
+    // =========================================================================
     // ACTION HANDLERS
     // =========================================================================
 
-    /**
-     * handlePrepend - Thêm node vào đầu list (thành HEAD mới).
-     *
-     * Flow:
-     * 1. Tạo new node.
-     * 2. new node.next = current HEAD.
-     * 3. HEAD = new node.
-     * Time: O(1) - Không cần duyệt!
-     */
-    const handlePrepend = useCallback(() => {
+    const handlePrepend = useCallback(async () => {
         const value = parseInt(inputValue, 10);
+        if (isNaN(value) || isFull) return;
 
-        if (isNaN(value)) {
-            setMessage('[Lỗi] Vui lòng nhập một số hợp lệ!');
-            return;
-        }
+        const currentValues = list.map(n => n.value);
+        const steps = generateInsertAtHeadSteps(currentValues, value);
 
-        if (isFull) {
-            setMessage(`[Lỗi] List đầy! Tối đa ${maxSize} nodes.`);
-            return;
-        }
+        await playSteps(steps);
 
         const newNode: ListNode = { id: generateId(), value };
-
-        // Prepend = add to beginning
         setList(prev => [newNode, ...prev]);
         setInputValue('');
-        setHighlightedIndex(0);
-        setMessage(`[PREPEND] Thêm ${value} vào đầu. O(1) - Cực nhanh!`);
+
+        setMessage(`[PREPEND] Thêm ${value} vào đầu.O(1) - Cực nhanh!`);
         setCodeDisplay(`// PREPEND - Thêm vào đầu list
 // Time Complexity: O(1)
 
 function prepend(value) {
     const newNode = new Node(${value});
-    
-    // 1. Link new node to current head
     newNode.next = this.head;
-    
-    // 2. Update head
     this.head = newNode;
-}
+} `);
+        setHighlightedIndex(0);
+        setTimeout(() => setHighlightedIndex(null), 1000);
 
-// Result: [${value}] -> [${list.length > 0 ? list[0].value : 'null'}]...`);
+    }, [inputValue, isFull, maxSize, list]); // Added list dependency
 
-        setTimeout(() => setHighlightedIndex(null), 1500);
-    }, [inputValue, isFull, maxSize]);
-
-    /**
-     * handleAppend - Thêm node vào cuối list.
-     *
-     * Flow:
-     * 1. Nếu list rỗng → newNode là HEAD.
-     * 2. Nếu không → duyệt đến node cuối → link đến newNode.
-     * Time: O(n) không có tail, O(1) có tail pointer.
-     */
     const handleAppend = useCallback(async () => {
         const value = parseInt(inputValue, 10);
+        if (isNaN(value) || isFull) return;
 
-        if (isNaN(value)) {
-            setMessage('[Lỗi] Vui lòng nhập một số hợp lệ!');
-            return;
-        }
+        const currentValues = list.map(n => n.value);
+        const steps = generateInsertAtTailSteps(currentValues, value);
+        const traverseSteps = steps.filter(s => s.type === 'traverse');
 
-        if (isFull) {
-            setMessage(`[Lỗi] List đầy! Tối đa ${maxSize} nodes.`);
-            return;
-        }
-
-        // Animate traversal to end
-        if (list.length > 0) {
-            setMessage(`🔍 Đang duyệt đến cuối list... O(n)`);
-            for (let i = 0; i < list.length; i++) {
-                setTraversingIndex(i);
-                await new Promise(r => setTimeout(r, 300));
-            }
-            setTraversingIndex(null);
-        }
+        await playSteps(traverseSteps);
 
         const newNode: ListNode = { id: generateId(), value };
-
         setList(prev => [...prev, newNode]);
         setInputValue('');
-        setHighlightedIndex(list.length);
-        setMessage(`[APPEND] Thêm ${value} vào cuối. Đã duyệt ${list.length} nodes.`);
+
+        setMessage(`[APPEND] Đã thêm ${value} vào cuối.`);
         setCodeDisplay(`// APPEND - Thêm vào cuối list
 // Time Complexity: O(n) (nếu không có tail pointer)
 
 function append(value) {
     const newNode = new Node(${value});
-
-    // 1. If list is empty
     if (!this.head) {
         this.head = newNode;
         return;
     }
-
-    // 2. Traverse to end
     let current = this.head;
     while (current.next) {
-        current = current.next; // Duyệt ${list.length} bước
+        current = current.next;
     }
-
-    // 3. Link last node to new node
     current.next = newNode;
-}`);
+} `);
+        setHighlightedIndex(list.length);
+        setTimeout(() => setHighlightedIndex(null), 1000);
+    }, [inputValue, isFull, maxSize, list]);
 
-        setTimeout(() => setHighlightedIndex(null), 1500);
-    }, [inputValue, isFull, maxSize, list.length]);
-
-    /**
-     * handleDelete - Xóa node theo giá trị.
-     *
-     * Flow:
-     * 1. Nếu HEAD.value === target → HEAD = HEAD.next.
-     * 2. Nếu không → duyệt tìm node → relink: prev.next = target.next.
-     * Time: O(n) để tìm.
-     */
     const handleDelete = useCallback(async () => {
         const value = parseInt(inputValue, 10);
+        if (isNaN(value) || isEmpty) return;
 
-        if (isNaN(value)) {
-            setMessage('[Lỗi] Vui lòng nhập số cần xóa!');
+        const currentValues = list.map(n => n.value);
+        const steps = generateDeleteSteps(currentValues, value);
+        const foundStepIndex = steps.findIndex(s => s.type === 'found');
+
+        if (foundStepIndex === -1 && steps[steps.length - 1].description.includes('Không tìm thấy')) {
+            await playSteps(steps);
             return;
         }
 
-        if (isEmpty) {
-            setMessage('[Lỗi] List rỗng!');
-            return;
-        }
+        const preDeleteSteps = steps.slice(0, foundStepIndex + 1);
+        await playSteps(preDeleteSteps);
 
-        // Find the node
-        let foundIndex = -1;
-        for (let i = 0; i < list.length; i++) {
-            setTraversingIndex(i);
-            setMessage(`🔍 Tìm kiếm: Đang xét node ${i} (value = ${list[i].value})`);
-            await new Promise(r => setTimeout(r, 400));
+        const targetIndex = steps[foundStepIndex].nodeIndex;
+        setList(prev => prev.filter((_, idx) => idx !== targetIndex));
 
-            if (list[i].value === value) {
-                foundIndex = i;
-                break;
-            }
-        }
-        setTraversingIndex(null);
-
-        if (foundIndex === -1) {
-            setMessage(`[Lỗi] Không tìm thấy node với giá trị ${value}!`);
-            return;
-        }
-
-        // Delete the node
-        setList(prev => prev.filter((_, idx) => idx !== foundIndex));
-        setMessage(`[DELETE] Đã xóa node ${value} tại vị trí ${foundIndex}.`);
+        setMessage(`[DELETE] Đã xóa node ${value}.`);
         setCodeDisplay(`// DELETE - Xóa node theo value
-// Time Complexity: O(n) để tìm + O(1) để xóa
+// Time Complexity: O(n)
 
-function delete(value) {
+function delete (value) {
     if (!this.head) return;
-
-    // Case 1: Delete head
     if (this.head.value === ${value}) {
         this.head = this.head.next;
         return;
     }
-
-    // Case 2: Traverse and find
     let current = this.head;
     while (current.next) {
         if (current.next.value === ${value}) {
-            // Relink: Bỏ qua node cần xóa
             current.next = current.next.next;
             return;
         }
         current = current.next;
     }
-}`);
+} `);
     }, [inputValue, isEmpty, list]);
 
-    /**
-     * handleTraverse - Demo duyệt toàn bộ list.
-     */
     const handleTraverse = useCallback(async () => {
-        if (isEmpty) {
-            setMessage('[Lỗi] List rỗng, không có gì để duyệt!');
-            return;
-        }
-
-        setMessage('[TRAVERSE] Bắt đầu duyệt từ HEAD...');
-
-        for (let i = 0; i < list.length; i++) {
-            setTraversingIndex(i);
-            setMessage(`[Duyệt] Node ${i} (value = ${list[i].value})`);
-            await new Promise(r => setTimeout(r, 500));
-        }
-
-        setTraversingIndex(null);
-        setMessage(`[TRAVERSE] Hoàn thành! Đã duyệt ${list.length} nodes.`);
+        if (isEmpty) return;
+        const currentValues = list.map(n => n.value);
+        const steps = generateTraversalSteps(currentValues);
+        await playSteps(steps);
         setCodeDisplay(`// TRAVERSE - Duyệt từng node
 // Time Complexity: O(n)
 
 function traverse() {
     let current = this.head;
-    
-    // Duyệt đến khi current === null
     while (current) {
         print(current.value);
         current = current.next;
     }
-}
-
-// Đã duyệt ${list.length} nodes.`);
+} `);
     }, [isEmpty, list]);
 
-    /**
-     * handleClear - Xóa toàn bộ list.
-     */
     const handleClear = useCallback(() => {
         setList([]);
         setMessage('[Xóa] Đã xóa toàn bộ linked list. HEAD = null.');
@@ -427,36 +254,21 @@ function traverse() {
     // ANIMATION VARIANTS
     // =========================================================================
 
-    const nodeVariants = {
-        initial: {
-            opacity: 0,
-            scale: 0,
-            x: -50,
-        },
+    const nodeVariants: Variants = {
+        initial: { opacity: 0, scale: 0, x: -50 },
         animate: {
-            opacity: 1,
-            scale: 1,
-            x: 0,
-            transition: {
-                type: 'spring' as const,
-                stiffness: 300,
-                damping: 25,
-            },
+            opacity: 1, scale: 1, x: 0,
+            transition: { type: 'spring', stiffness: 300, damping: 25 } as const
         },
         exit: {
-            opacity: 0,
-            scale: 0,
-            y: -50,
-            transition: {
-                duration: 0.3,
-            },
+            opacity: 0, scale: 0, y: -50,
+            transition: { duration: 0.3 }
         },
     };
 
     // =========================================================================
     // RENDER
     // =========================================================================
-
     return (
         <div className="viz-container linked-list-visualizer">
             {/* Header */}
@@ -523,13 +335,22 @@ function traverse() {
                             const isTraversing = traversingIndex === index;
 
                             return (
-                                <React.Fragment key={node.id}>
+                                <motion.div
+                                    key={node.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                >
                                     {/* Node */}
                                     <motion.div
                                         variants={nodeVariants}
                                         initial="initial"
                                         animate="animate"
-                                        exit="exit"
                                         layout
                                         style={{
                                             display: 'flex',
@@ -621,7 +442,6 @@ function traverse() {
                                         <motion.div
                                             initial={{ opacity: 0, scaleX: 0 }}
                                             animate={{ opacity: 1, scaleX: 1 }}
-                                            exit={{ opacity: 0, scaleX: 0 }}
                                             style={{
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -635,7 +455,7 @@ function traverse() {
                                             →
                                         </motion.div>
                                     )}
-                                </React.Fragment>
+                                </motion.div>
                             );
                         })}
                     </AnimatePresence>

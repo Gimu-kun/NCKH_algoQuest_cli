@@ -41,6 +41,150 @@
  *    - So với **Binary Search**: Chậm hơn nhiều (O(n) vs O(log n)), nhưng linh hoạt hơn vì làm việc được trên mảng chưa sort.
  */
 
+import type { LinearSearchStep } from '../../components/visualizations/types';
+
+/**
+ * generateLinearSearchSteps - Tạo các bước cho Linear Search.
+ *
+ * Algorithm đơn giản:
+ * for i = 0 to n-1:
+ *     if arr[i] == target:
+ *         return i
+ * return -1
+ *
+ * @param arr - Mảng để tìm
+ * @param target - Giá trị cần tìm
+ * @returns Mảng các LinearSearchStep
+ */
+export function generateLinearSearchSteps(arr: number[], target: number): LinearSearchStep[] {
+    const steps: LinearSearchStep[] = [];
+    const array = [...arr];
+    const n = array.length;
+    const checkedIndices: number[] = [];
+    let comparisonCount = 0;
+
+    // Initial step
+    steps.push({
+        array,
+        currentIndex: -1,
+        target,
+        checkedIndices: [],
+        foundIndex: -1,
+        description: `Bắt đầu Linear Search. Tìm target = ${target}. Duyệt từ đầu đến cuối.`,
+        isComplete: false,
+        comparisonCount: 0,
+        codeSnippet: `// LINEAR SEARCH - O(n) time, O(1) space
+// Duyệt tuần tự từ đầu đến cuối mảng
+function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target) {
+            return i;  // Tìm thấy!
+        }
+    }
+    return -1;  // Không tìm thấy
+}`,
+    });
+
+    for (let i = 0; i < n; i++) {
+        // Step: Move to current index
+        steps.push({
+            array,
+            currentIndex: i,
+            target,
+            checkedIndices: [...checkedIndices],
+            foundIndex: -1,
+            description: `Xét index ${i}: arr[${i}] = ${array[i]}`,
+            isComplete: false,
+            comparisonCount,
+            codeSnippet: `// Bước ${i + 1}: Xét phần tử tại index ${i}
+for (let i = ${i}; i < ${n}; i++) {
+    // Đang xét: arr[${i}] = ${array[i]}
+    // So sánh với target = ${target}
+}`,
+        });
+
+        // Step: Compare
+        comparisonCount++;
+        steps.push({
+            array,
+            currentIndex: i,
+            target,
+            checkedIndices: [...checkedIndices],
+            foundIndex: -1,
+            description: `So sánh: ${array[i]} ${array[i] === target ? '==' : '!='} ${target}?`,
+            isComplete: false,
+            comparisonCount,
+            codeSnippet: `// So sánh lần ${comparisonCount}
+if (arr[${i}] === target) {  // ${array[i]} === ${target} ?
+    // Kết quả: ${array[i] === target ? 'TRUE - Tìm thấy!' : 'FALSE - Tiếp tục'}
+}`,
+        });
+
+        if (array[i] === target) {
+            // Found!
+            steps.push({
+                array,
+                currentIndex: i,
+                target,
+                checkedIndices: [...checkedIndices],
+                foundIndex: i,
+                description: `[TÌM THẤY] arr[${i}] = ${array[i]} = target. Sau ${comparisonCount} lần so sánh.`,
+                isComplete: true,
+                comparisonCount,
+                codeSnippet: `// ✓ TÌM THẤY!
+if (arr[${i}] === ${target}) {
+    return ${i};  // Trả về index
+}
+// Kết quả: index = ${i}, so sánh ${comparisonCount} lần
+//
+// SO SÁNH VỚI BINARY SEARCH:
+// Linear: O(n) = ${n} lần (worst case)
+// Binary: O(log n) = ${Math.ceil(Math.log2(n))} lần (nếu sorted)`,
+            });
+            return steps;
+        }
+
+        // Not match, mark as checked
+        checkedIndices.push(i);
+        steps.push({
+            array,
+            currentIndex: i,
+            target,
+            checkedIndices: [...checkedIndices],
+            foundIndex: -1,
+            description: `${array[i]} ≠ ${target}. Tiếp tục tìm...`,
+            isComplete: false,
+            comparisonCount,
+            codeSnippet: `// Không khớp, tiếp tục vòng lặp
+// ${array[i]} !== ${target}
+i++;  // i = ${i + 1}
+// Đã kiểm tra: ${checkedIndices.length} phần tử`,
+        });
+    }
+
+    // Not found
+    steps.push({
+        array,
+        currentIndex: -1,
+        target,
+        checkedIndices: [...checkedIndices],
+        foundIndex: -1,
+        description: `[KHÔNG TÌM THẤY] Đã duyệt hết mảng. ${comparisonCount} lần so sánh.`,
+        isComplete: true,
+        comparisonCount,
+        codeSnippet: `// ✗ KHÔNG TÌM THẤY
+// Đã duyệt hết ${n} phần tử
+// So sánh ${comparisonCount} lần
+return -1;
+
+// NHẬN XÉT:
+// Worst case của Linear Search: O(n)
+// Target không có trong mảng hoặc ở cuối`,
+    });
+
+    return steps;
+}
+
 export function linearSearch(arr: number[], target: number): number {
     console.log(`\n--- BẮT ĐẦU LINEAR SEARCH (Tìm kiếm tuyến tính) ---`);
     console.log(`Target: ${target}`);
@@ -67,3 +211,8 @@ export function linearSearch(arr: number[], target: number): number {
     console.log(`--- KẾT THÚC (NOT FOUND) - Trả về -1 ---`);
     return -1;
 }
+
+export default {
+    linearSearch,
+    generateLinearSearchSteps
+};

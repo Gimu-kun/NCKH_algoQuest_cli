@@ -17,7 +17,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content }) => {
 
         lines.forEach((line, index) => {
             // Trim whitespace
-            let cleanLine = line.trim();
+            const cleanLine = line.trim();
 
             // Handle Lists
             if (cleanLine.startsWith('- ') || cleanLine.startsWith('* ')) {

@@ -277,7 +277,7 @@ const springTransition: Transition = {
  * - useMemo: Cache giá trị computed.
  * - useCallback: Cache function reference.
  */
-const ArrayBar: React.FC<ArrayBarProps> = React.memo(({
+const ArrayBar = React.memo(React.forwardRef<HTMLDivElement, ArrayBarProps>(({
     value,
     index,
     state,
@@ -286,7 +286,7 @@ const ArrayBar: React.FC<ArrayBarProps> = React.memo(({
     containerHeight = 250,
     animationDelay = 0,
     onClick,
-}) => {
+}, ref) => {
     // =========================================================================
     // COMPUTED VALUES - Các giá trị tính toán
     // =========================================================================
@@ -355,6 +355,7 @@ const ArrayBar: React.FC<ArrayBarProps> = React.memo(({
 
     return (
         <motion.div
+            ref={ref}
             className="array-bar"
             data-index={index}
             data-value={value}
@@ -489,7 +490,7 @@ const ArrayBar: React.FC<ArrayBarProps> = React.memo(({
             )}
         </motion.div>
     );
-});
+}));
 
 // =============================================================================
 // HELPER FUNCTIONS - Các hàm hỗ trợ

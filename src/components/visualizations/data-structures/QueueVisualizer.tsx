@@ -82,40 +82,24 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../shared/VisualizationStyles.css';
 
+
+import { generateEnqueueSteps, generateDequeueSteps } from '../../../algo_demos/Chapter_4_Stack_Queue/Queue';
+
 // =============================================================================
 // TYPES & INTERFACES
 // =============================================================================
 
-/**
- * QueueItem - Đại diện cho một phần tử trong queue.
- */
 interface QueueItem {
     id: string;
     value: number;
 }
 
-/**
- * QueueVisualizerProps - Props cho component.
- */
+
+
 interface QueueVisualizerProps {
-    /**
-     * initialItems: Mảng các giá trị ban đầu cho queue.
-     */
     initialItems?: number[];
-
-    /**
-     * maxSize: Giới hạn số phần tử tối đa.
-     */
     maxSize?: number;
-
-    /**
-     * title: Tiêu đề tùy chọn.
-     */
     title?: string;
-
-    /**
-     * showInfo: Hiển thị thông tin về complexity.
-     */
     showInfo?: boolean;
     onRegenerate?: () => void;
 }
@@ -143,11 +127,6 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
     // STATE
     // =========================================================================
 
-    /**
-     * queue: Mảng các QueueItem.
-     * - Index 0 = FRONT (sẽ được dequeue trước).
-     * - Index cuối = REAR (mới được enqueue).
-     */
     const [queue, setQueue] = useState<QueueItem[]>(
         initialItems.map(value => ({ id: generateId(), value }))
     );
@@ -157,6 +136,7 @@ const QueueVisualizer: React.FC<QueueVisualizerProps> = ({
     }, [initialItems]);
 
     const [inputValue, setInputValue] = useState<string>('');
+
     const [message, setMessage] = useState<string>('Hàng đợi FIFO: Vào trước, Ra trước.');
     const [frontHighlight, setFrontHighlight] = useState(false);
     const [codeDisplay, setCodeDisplay] = useState<string>(`// QUEUE - FIFO (First In, First Out)
@@ -180,22 +160,12 @@ class Queue {
     const isEmpty = queue.length === 0;
     const isFull = queue.length >= maxSize;
     const frontItem = queue[0];
-    // rearItem được tính khi cần, không cần lưu biến
 
     // =========================================================================
     // ACTION HANDLERS
     // =========================================================================
 
-    /**
-     * handleEnqueue - Thêm phần tử vào cuối hàng đợi (REAR).
-     *
-     * Flow:
-     * 1. Validate input.
-     * 2. Check queue not full.
-     * 3. Create new QueueItem.
-     * 4. Add to end of array (REAR of queue).
-     */
-    const handleEnqueue = useCallback(() => {
+    const handleEnqueue = useCallback(async () => {
         const value = parseInt(inputValue, 10);
 
         if (isNaN(value)) {
@@ -208,14 +178,26 @@ class Queue {
             return;
         }
 
+        // 1. Generate Steps
+        const currentValues = queue.map(q => q.value);
+        const steps = generateEnqueueSteps(currentValues, value);
+
+        // Step 1: Prepare
+        setMessage(steps[0].description);
+        await new Promise(r => setTimeout(r, 400));
+
+        // Step 2: Enqueue
         const newItem: QueueItem = {
             id: generateId(),
             value,
         };
 
         setQueue(prev => [...prev, newItem]);
+
         setInputValue('');
-        setMessage(`[ENQUEUE] Thêm ${value} vào cuối hàng đợi (REAR).`);
+
+        if (steps[1]) setMessage(steps[1].description);
+
         setCodeDisplay(`// ENQUEUE - Thêm vào cuối (REAR)
 // Time Complexity: O(1)
 
@@ -224,41 +206,54 @@ function enqueue(value) {
     this.items.push(${value});
 }
 
-// Queue sau ENQUEUE: [${[...queue.map(q => q.value), value].join(' → ')}]
-// FRONT = ${queue.length > 0 ? queue[0].value : value}, REAR = ${value}`);
+// Queue sau ENQUEUE: [${[...currentValues, value].join(' → ')}]`);
+
+        await new Promise(r => setTimeout(r, 600));
+
+        // Step 3: Complete
+        if (steps[2]) setMessage(steps[2].description);
+
+
     }, [inputValue, isFull, maxSize, queue]);
 
-    /**
-     * handleDequeue - Lấy và xóa phần tử từ đầu hàng đợi (FRONT).
-     *
-     * Flow:
-     * 1. Check queue not empty.
-     * 2. Get front item (index 0).
-     * 3. Remove from array (shift).
-     */
-    const handleDequeue = useCallback(() => {
+    const handleDequeue = useCallback(async () => {
         if (isEmpty) {
             setMessage('[Lỗi] Queue rỗng! Không thể DEQUEUE.');
             return;
         }
 
+        const currentValues = queue.map(q => q.value);
+        const steps = generateDequeueSteps(currentValues);
+
+        // Step 1: Identify Front
+        setMessage(steps[0].description);
+        setFrontHighlight(true);
+        await new Promise(r => setTimeout(r, 500));
+
+        // Step 2: Remove
         const dequeuedItem = queue[0];
+        setFrontHighlight(false);
         setQueue(prev => prev.slice(1));
-        setMessage(`[DEQUEUE] Lấy ${dequeuedItem.value} ra khỏi đầu hàng đợi (FRONT).`);
+
+
+        if (steps[1]) setMessage(steps[1].description);
+
         setCodeDisplay(`// DEQUEUE - Lấy và xóa từ đầu (FRONT)
 // Time Complexity: O(n) với Array, O(1) với Linked List
-// FIFO: First In, First Out
 
 function dequeue() {
-    if (this.items.length === 0) {
-        throw new Error("Queue underflow");
-    }
-    // Lấy và xóa phần tử đầu tiên (FRONT)
-    return this.items.shift();  // => ${dequeuedItem.value}
-}
+    if (this.items.length === 0) throw new Error("Underflow");
+    return this.items.shift(); // => ${dequeuedItem.value}
+}`);
 
-// Queue sau DEQUEUE: [${queue.slice(1).map(q => q.value).join(' → ')}]`);
+        await new Promise(r => setTimeout(r, 600));
+
+        // Step 3: Complete
+        if (steps[2]) setMessage(steps[2].description);
+
+
     }, [isEmpty, queue]);
+
 
     /**
      * handlePeekFront - Xem phần tử FRONT mà không xóa.

@@ -259,7 +259,7 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, graphData,
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [speed, setSpeed] = useState(1);
-    const timerRef = useRef<any>(null);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Use provided graphData or fall back to default
     const nodes = graphData?.nodes || NODES;
@@ -283,7 +283,9 @@ const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ algorithm, graphData,
         } else {
             setIsPlaying(false);
         }
-        return () => clearTimeout(timerRef.current);
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
     }, [isPlaying, currentStepIndex, steps.length, speed]);
 
     const handlePlayPause = () => setIsPlaying(!isPlaying);

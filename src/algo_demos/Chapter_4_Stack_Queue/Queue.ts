@@ -91,3 +91,92 @@ export class Queue<T> {
         console.log("Queue State (Trạng thái Queue):", this.items);
     }
 }
+
+// =============================================================================
+// VISUALIZATION UTILS
+// =============================================================================
+
+export interface QueueStep {
+    type: 'enqueue' | 'dequeue' | 'front' | 'error' | 'complete';
+    index?: number;
+    value?: number;
+    description: string;
+    queueState: number[]; // Snapshot of queue values
+}
+
+export function generateEnqueueSteps(currentQueue: number[], newValue: number): QueueStep[] {
+    const steps: QueueStep[] = [];
+
+    // Step 1: Prepare
+    steps.push({
+        type: 'enqueue',
+        value: newValue,
+        description: `Chuẩn bị Enqueue ${newValue} vào cuối hàng đợi...`,
+        queueState: [...currentQueue]
+    });
+
+    // Step 2: Enqueue
+    const newQueue = [...currentQueue, newValue];
+    steps.push({
+        type: 'enqueue',
+        index: newQueue.length - 1,
+        value: newValue,
+        description: `Enqueue(${newValue}): Thêm vào Rear (vị trí cuối)`,
+        queueState: newQueue
+    });
+
+    // Step 3: Complete
+    steps.push({
+        type: 'complete',
+        index: newQueue.length - 1,
+        description: `Hoàn tất Enqueue. Queue size: ${newQueue.length}`,
+        queueState: newQueue
+    });
+
+    return steps;
+}
+
+export function generateDequeueSteps(currentQueue: number[]): QueueStep[] {
+    const steps: QueueStep[] = [];
+
+    if (currentQueue.length === 0) {
+        steps.push({
+            type: 'error',
+            description: 'Queue Underflow! Không thể Dequeue từ hàng đợi rỗng.',
+            queueState: []
+        });
+        return steps;
+    }
+
+    const frontValue = currentQueue[0];
+
+    // Step 1: Identify Front
+    steps.push({
+        type: 'dequeue',
+        index: 0,
+        value: frontValue,
+        description: `Xác định Front: ${frontValue} tại index 0`,
+        queueState: [...currentQueue]
+    });
+
+    // Step 2: Remove (Shift)
+    // Visualization: Elements shift left?
+    // We just show the state after removal
+    const newQueue = currentQueue.slice(1);
+    steps.push({
+        type: 'dequeue',
+        index: 0,
+        value: frontValue,
+        description: `Dequeue(): Lấy ${frontValue} ra khỏi đầu hàng đợi`,
+        queueState: newQueue
+    });
+
+    // Step 3: Complete
+    steps.push({
+        type: 'complete',
+        description: `Hoàn tất Dequeue. Các phần tử còn lại dời lên đầu.`,
+        queueState: newQueue
+    });
+
+    return steps;
+}

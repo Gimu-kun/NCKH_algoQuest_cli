@@ -63,21 +63,20 @@ export const QuizRunner: React.FC<Props> = ({ quiz, onNext, onPrevious }) => {
             {/* Options */}
             <div className="quiz-options" style={{ display: 'grid', gap: '12px', marginBottom: '24px' }}>
                 {quiz.options.map((option, idx) => {
-                    let className = 'quiz-option';
-                    let style: React.CSSProperties = {
+                    const className = 'quiz-option';
+                    const style: React.CSSProperties = {
                         padding: '16px', borderRadius: '8px', cursor: 'pointer',
-                        background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                        transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '12px'
+                        background: selectedOption === option ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderColor: selectedOption === option ? '#6366f1' : 'rgba(255,255,255,0.1)',
+                        transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '12px',
+                        ...(isSubmitted && option === quiz.correctAnswer && { background: 'rgba(74, 222, 128, 0.2)', borderColor: '#4ade80' }),
+                        ...(isSubmitted && selectedOption === option && option !== quiz.correctAnswer && { background: 'rgba(248, 113, 113, 0.2)', borderColor: '#f87171' })
                     };
-
-                    if (selectedOption === option) {
-                        style.background = 'rgba(99, 102, 241, 0.2)';
-                        style.borderColor = '#6366f1';
-                    }
 
                     if (isSubmitted) {
                         if (option === quiz.correctAnswer) {
-                            style.background = 'rgba(74, 222, 128, 0.2)';
+                            // Already handled in style above
                             style.borderColor = '#4ade80';
                         } else if (selectedOption === option && option !== quiz.correctAnswer) {
                             style.background = 'rgba(248, 113, 113, 0.2)';
