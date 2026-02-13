@@ -465,3 +465,8 @@
 :root.light-theme .grid-input:focus {
     border-color: #4ecca3;
 }
+/* Pathfinding Terrain */
+.grid-cell.grass { background: #4ade80; }
+.grid-cell.sand { background: #facc15; }
+.grid-cell.water-deep { background: #3b82f6; }
+.grid-cell.wall { background: #1e293b; border-color: #334155; }

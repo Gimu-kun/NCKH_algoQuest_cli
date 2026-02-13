@@ -591,13 +591,21 @@ export const PracticePage: React.FC<PracticePageProps> = ({
     try {
       // 1. Tạo function object từ string code của user
       // Security warning: 'new Function' chạy code trong context hiện tại. 
-      // Trong môi trường production thực tế, nên dùng Worker hoặc Server-side sandbox.
-      const func = new Function('return ' + code)();
+      // Add newline before code to prevent single-line comments from breaking the return statement
+      const func = new Function('return \n' + code)();
 
       // 2. Chạy từng test case
       const results = exercise.testCases.map(testCase => {
         try {
-          const result = func(testCase.input);
+          let result;
+          // Feature: Support multiple arguments detection
+          // Nếu function nhận nhiều hơn 1 tham số và input là array, ta spread arguments
+          if (Array.isArray(testCase.input) && func.length > 1) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            result = func(...(testCase.input as any[]));
+          } else {
+            result = func(testCase.input);
+          }
           // So sánh sâu JSON stringify (đơn giản, hiệu quả cho learning data structures)
           const passed = JSON.stringify(result) === JSON.stringify(testCase.expectedOutput);
 
@@ -686,7 +694,7 @@ export const PracticePage: React.FC<PracticePageProps> = ({
               >
                 <div className="text-xs text-emerald-200/80 mb-1">Kết quả test</div>
                 <div className={`text-2xl font-bold ${passedCount === totalTests ? 'text-green-400' :
-                    passedCount > 0 ? 'text-yellow-400' : 'text-red-400'
+                  passedCount > 0 ? 'text-yellow-400' : 'text-red-400'
                   }`}>
                   {passedCount}/{totalTests}
                 </div>

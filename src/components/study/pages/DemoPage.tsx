@@ -42,6 +42,11 @@ import LinkedListVisualizer from '../../visualizations/data-structures/LinkedLis
 import StackVisualizer from '../../visualizations/data-structures/StackVisualizer';
 import QueueVisualizer from '../../visualizations/data-structures/QueueVisualizer';
 import BSTVisualizer from '../../visualizations/data-structures/BSTVisualizer';
+import { HanoiGame } from '../../games/hanoi/HanoiGame';
+import { SortingGame } from '../../games/sorting/SortingGame';
+import { BinarySearchGame } from '../../games/search/BinarySearchGame';
+import { BSTSearchGame } from '../../games/tree/BSTSearchGame';
+import { PathfindingGame } from '../../games/grid/PathfindingGame';
 
 // Import Types
 import type { SortingAlgorithmType } from '../../visualizations/types';
@@ -58,7 +63,7 @@ interface DemoPageProps {
 }
 
 interface VisualizationConfig {
-  type: 'sorting' | 'searching' | 'data-structure' | 'graph' | 'tree';
+  type: 'sorting' | 'searching' | 'data-structure' | 'graph' | 'tree' | 'game';
   algorithm: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>; // Component visualizer tương ứng
@@ -192,20 +197,28 @@ const VISUALIZATION_CONFIGS: Record<string, VisualizationConfig> = {
     defaultData: [23, 29, 15, 19, 31, 7, 9, 5],
     controls: { play: true, pause: true, step: true, reset: true, speed: true }
   },
-  // Binary Search
-  'ch2-p10-demo-binary': {
-    type: 'searching',
-    algorithm: 'binary-search',
-    component: BinarySearchVisualizer,
-    defaultData: [2, 3, 4, 10, 40, 45, 78, 89, 90, 100],
+  // Interchange Sort (New)
+  'ch2-demo-interchange': {
+    type: 'sorting',
+    algorithm: 'interchange',
+    component: SortingVisualizer,
+    defaultData: [64, 34, 25, 12, 22, 11, 90],
     controls: { play: true, pause: true, step: true, reset: true, speed: true }
   },
-  'ch2-demo-binary': {
-    type: 'searching',
-    algorithm: 'binary-search',
-    component: BinarySearchVisualizer,
+  // Binary Search - Upgraded to Game Mode
+  'ch2-p10-demo-binary': {
+    type: 'game',
+    algorithm: 'binary-search-game',
+    component: BinarySearchGame, // Component placeholder, actually handled by layout
     defaultData: [2, 3, 4, 10, 40, 45, 78, 89, 90, 100],
-    controls: { play: true, pause: true, step: true, reset: true, speed: true }
+    controls: { play: false, pause: false, step: false, reset: true, speed: false }
+  },
+  'ch2-demo-binary': {
+    type: 'game',
+    algorithm: 'binary-search-game',
+    component: BinarySearchGame,
+    defaultData: [2, 3, 4, 10, 40, 45, 78, 89, 90, 100],
+    controls: { play: false, pause: false, step: false, reset: true, speed: false }
   },
   // Linear Search
   'ch2-demo-linear': {
@@ -266,11 +279,11 @@ const VISUALIZATION_CONFIGS: Record<string, VisualizationConfig> = {
   // CHAPTER 4: STACK & QUEUE DEMOS
   // ═══════════════════════════════════════════════════════════════════════════
   'ch4-p2-demo-stack': {
-    type: 'data-structure',
-    algorithm: 'stack',
-    component: StackVisualizer,
-    defaultData: [10, 20, 30],
-    controls: { play: true, pause: true, step: true, reset: true, speed: false }
+    type: 'game',
+    algorithm: 'hanoi', // Stack Demo bằng Hanoi Game
+    component: HanoiGame,
+    defaultData: [3],
+    controls: { play: false, pause: false, step: false, reset: true, speed: false }
   },
   'ch4-demo-stack': {
     type: 'data-structure',
@@ -313,6 +326,14 @@ const VISUALIZATION_CONFIGS: Record<string, VisualizationConfig> = {
     component: StackVisualizer,
     defaultData: [],
     controls: { play: true, pause: true, step: true, reset: true, speed: true }
+  },
+  // Pathfinding Game Config (New)
+  'ch4-game-pathfinding': {
+    type: 'game',
+    algorithm: 'pathfinding',
+    component: PathfindingGame,
+    defaultData: [],
+    controls: { play: false, pause: false, step: false, reset: true, speed: false }
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -366,6 +387,14 @@ const VISUALIZATION_CONFIGS: Record<string, VisualizationConfig> = {
     component: BSTVisualizer,
     defaultData: [50, 30, 70, 20, 40, 60, 80],
     controls: { play: true, pause: true, step: true, reset: true, speed: true }
+  },
+  // BST Game Config (New)
+  'ch5-p6-game-bst-search': {
+    type: 'game',
+    algorithm: 'bst-search',
+    component: BSTSearchGame,
+    defaultData: [],
+    controls: { play: false, pause: false, step: false, reset: true, speed: false }
   },
   'ch5-demo-inorder': {
     type: 'tree',
@@ -575,8 +604,57 @@ export const DemoPage: React.FC<DemoPageProps> = ({
     }
   };
 
+
+
+  // GAME MODE RENDERER
+  if (config.type === 'game') {
+    return (
+      <div className="min-h-[600px] bg-gray-900 rounded-xl overflow-hidden p-4">
+        <div className="bg-gray-800/50 rounded-xl border border-gray-700/30 p-4 h-full flex flex-col items-center justify-center">
+          {/* Render Game Components based on algorithm/component */}
+          {config.algorithm === 'hanoi' && (
+            <div className="w-full h-[500px]">
+              <HanoiGame disks={4} startedAt={Date.now()} onProgress={(p) => p.completed && handleAutoComplete()} />
+            </div>
+          )}
+          {config.algorithm === 'pathfinding' && (
+            <div className="w-full h-[500px]">
+              <PathfindingGame rows={12} cols={16} startedAt={Date.now()} onProgress={(p) => p.completed && handleAutoComplete()} />
+            </div>
+          )}
+          {config.algorithm === 'bst-search' && (
+            <BSTSearchGame startedAt={Date.now()} onComplete={() => handleAutoComplete()} />
+          )}
+          {/* Sort & Search games usually require specific props or context, using simplified versions */}
+          {(config.algorithm === 'sorting-race') && (
+            <SortingGame startedAt={Date.now()} onComplete={() => handleAutoComplete()} />
+          )}
+          {(config.algorithm === 'binary-search-game') && (
+            <div className="w-full flex justify-center">
+              <BinarySearchGame min={1} max={100} startedAt={Date.now()} onComplete={() => handleAutoComplete()} />
+            </div>
+          )}
+        </div>
+        <div className="mt-4 flex justify-between items-center text-gray-400 text-sm">
+          <span><i className="fi fi-rr-joystick mr-2"></i>Chế độ Demo Tương Tác</span>
+          <button
+            onClick={() => onComplete && onComplete()}
+            disabled={!isCompleted}
+            className={`px-3 py-1.5 rounded text-xs font-medium ${isCompleted
+              ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
+              : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+              }`}
+          >
+            Tiếp tục →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[600px] bg-gray-900 rounded-xl overflow-hidden">
+
 
       {/* Main Content Area - Split Layout (Input | Visualization) */}
       <div className="p-5 pt-4 overflow-hidden">

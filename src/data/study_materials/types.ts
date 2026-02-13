@@ -74,7 +74,8 @@ export enum ChapterNumber {
     SORTING_SEARCHING = 2,
     LINKED_LIST = 3,
     STACK_QUEUE = 4,
-    BST = 5
+    BST = 5,
+    GRAPH_GRID = 6
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

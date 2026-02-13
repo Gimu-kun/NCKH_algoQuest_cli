@@ -163,7 +163,7 @@ export const HubWorld: React.FC = () => {
                     <button className="test-btn" onClick={() => setScene(GameScene.STUDY_MATERIALS)}>
                         <i className="fi fi-rr-book"></i> Study Materials (Lộ Trình)
                     </button>
-                    <button className="test-btn" onClick={() => setScene(GameScene.MULTIPLAYER_ARENA)}>
+                    <button className="test-btn" onClick={() => setScene(GameScene.MULTIPLAYER)}>
                         <i className="fi fi-rr-users"></i> Multiplayer Arena (Phòng Chờ)
                     </button>
                 </div>

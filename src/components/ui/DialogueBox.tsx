@@ -144,7 +144,7 @@ export const DialogueBox: React.FC = () => {
                 break;
 
             case 'MULTIPLAYER':
-                useGameStore.getState().setScene(GameScene.MULTIPLAYER_ARENA);
+                useGameStore.getState().setScene(GameScene.MULTIPLAYER);
                 break;
 
             case 'DAILY_QUESTS':

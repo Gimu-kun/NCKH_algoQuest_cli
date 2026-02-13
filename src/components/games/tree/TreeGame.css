@@ -1,0 +1,146 @@
+.tree-game-container {
+    width: 100%;
+    height: 600px;
+    background: #0f172a;
+    position: relative;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: hidden;
+    user-select: none;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.8);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.target-display {
+    font-size: 1.2rem;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.highlight {
+    color: #fbbf24;
+    font-size: 1.4rem;
+    margin-left: 0.5rem;
+}
+
+.message-display {
+    font-size: 1rem;
+    color: #94a3b8;
+    text-align: center;
+    flex: 1;
+    margin: 0 1rem;
+}
+
+.reset-btn {
+    background: #334155;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.reset-btn:hover {
+    background: #475569;
+}
+
+.tree-area {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tree-lines {
+    position: absolute;
+    top: 50px;
+    /* Offset for nodes */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    /* Behind nodes */
+}
+
+/* Các node */
+.tree-node {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #334155;
+    border: 2px solid #475569;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e2e8f0;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    /* Center based on coordinate */
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.tree-node:hover {
+    background: #475569;
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.tree-node.current {
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+    background: #0ea5e9;
+    color: white;
+}
+
+.tree-node.visited {
+    border-color: #38bdf8;
+    background: rgba(14, 165, 233, 0.3);
+}
+
+.tree-node.target {
+    background: #10b981 !important;
+    border-color: #34d399 !important;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.game-footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}

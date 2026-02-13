@@ -38,7 +38,8 @@ import { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AlgoLab } from './pages/AlgoLab';
 import { StudyMaterialsPage } from './pages/StudyMaterialsPage';
-import { MultiplayerArena } from './pages/MultiplayerArena';
+import { MultiplayerPage } from './pages/Multiplayer';
+import { GridGamesPage } from './pages/GridGamesPage';
 
 // Định nghĩa Mapping ngoài Component
 const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
@@ -51,7 +52,8 @@ const SCENE_TO_PATH: Partial<Record<GameScene, string>> = {
   [GameScene.LEADERBOARDS]: '/leaderboards',
   [GameScene.ALGO_LAB]: '/lab',
   [GameScene.STUDY_MATERIALS]: '/study',
-  [GameScene.MULTIPLAYER_ARENA]: '/arena',
+  [GameScene.MULTIPLAYER]: '/multiplayer',
+  [GameScene.GRID_GAMES]: '/games',
 };
 
 function App() {
@@ -137,7 +139,6 @@ function App() {
       [GameScene.COMBAT]: '/assets/audio/bgm_combat.mp3',
       [GameScene.SHOP]: '/assets/audio/bgm_shop.mp3',
       [GameScene.ALGO_LAB]: '/assets/audio/bgm_hub.mp3',
-      [GameScene.MULTIPLAYER_ARENA]: '/assets/audio/bgm_hub.mp3',
     };
 
     const track = bgmMap[currentScene];
@@ -188,8 +189,11 @@ function App() {
       case GameScene.STUDY_MATERIALS:
         return <StudyMaterialsPage />;
 
-      case GameScene.MULTIPLAYER_ARENA:
-        return <MultiplayerArena />;
+      case GameScene.MULTIPLAYER:
+        return <MultiplayerPage />;
+
+      case GameScene.GRID_GAMES:
+        return <GridGamesPage />;
 
       default:
         return <MainMenu />;

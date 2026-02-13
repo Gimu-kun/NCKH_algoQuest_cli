@@ -1,0 +1,795 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * MULTIPLAYER PAGE STYLES - GIAO DIỆN TRANG MULTIPLAYER
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * THIẾT KẾ MÀU SẮC (Color Design):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * - Sử dụng palette sáng, tươi, năng động
+ * - Tránh màu tối quá, ưu tiên màu pastel và gradient nhẹ
+ * - Contrast tốt cho accessibility
+ * - Màu chủ đạo: Cyan/Teal (năng động), Mint (dễ chịu)
+ *
+ * NGUYÊN TẮC THIẾT KẾ (Design Principles):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 1. Clarity (Rõ ràng): Phân biệt rõ các sections
+ * 2. Feedback (Phản hồi): Hover, active states rõ ràng
+ * 3. Consistency (Nhất quán): Spacing, sizing đồng nhất
+ * 4. Accessibility (Dễ tiếp cận): Contrast ratio đạt chuẩn WCAG
+ *
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+/* =============================================================================
+   COLOR PALETTE - Bảng màu
+   ============================================================================= */
+
+:root {
+    /* Primary Colors - Màu chính */
+    --mp-primary: #06b6d4;
+    /* Cyan 500 - Chính */
+    --mp-primary-light: #22d3ee;
+    /* Cyan 400 - Sáng */
+    --mp-primary-dark: #0891b2;
+    /* Cyan 600 - Tối */
+
+    /* Secondary Colors - Màu phụ */
+    --mp-secondary: #14b8a6;
+    /* Teal 500 */
+    --mp-secondary-light: #2dd4bf;
+    /* Teal 400 */
+
+    /* Accent Colors - Màu nhấn */
+    --mp-accent: #f59e0b;
+    /* Amber 500 - Vàng */
+    --mp-success: #10b981;
+    /* Emerald 500 - Xanh lá */
+    --mp-warning: #f59e0b;
+    /* Amber 500 - Cảnh báo */
+    --mp-error: #ef4444;
+    /* Red 500 - Lỗi */
+
+    /* Neutral Colors - Màu trung tính (SÁNG HƠN) */
+    --mp-bg-primary: #f0f9ff;
+    /* Sky 50 - Nền chính */
+    --mp-bg-secondary: #ffffff;
+    /* White - Nền phụ */
+    --mp-bg-tertiary: #e0f2fe;
+    /* Sky 100 - Nền thứ ba */
+
+    --mp-text-primary: #0c4a6e;
+    /* Sky 900 - Text chính */
+    --mp-text-secondary: #075985;
+    /* Sky 800 - Text phụ */
+    --mp-text-muted: #0369a1;
+    /* Sky 700 - Text mờ */
+
+    --mp-border: #bae6fd;
+    /* Sky 200 - Border */
+    --mp-border-hover: #7dd3fc;
+    /* Sky 300 - Border hover */
+
+    /* Shadows - Bóng đổ */
+    --mp-shadow-sm: 0 1px 2px 0 rgba(6, 182, 212, 0.05);
+    --mp-shadow-md: 0 4px 6px -1px rgba(6, 182, 212, 0.1), 0 2px 4px -1px rgba(6, 182, 212, 0.06);
+    --mp-shadow-lg: 0 10px 15px -3px rgba(6, 182, 212, 0.1), 0 4px 6px -2px rgba(6, 182, 212, 0.05);
+    --mp-shadow-xl: 0 20px 25px -5px rgba(6, 182, 212, 0.1), 0 10px 10px -5px rgba(6, 182, 212, 0.04);
+
+    /* Spacing */
+    --mp-spacing-xs: 0.5rem;
+    --mp-spacing-sm: 1rem;
+    --mp-spacing-md: 1.5rem;
+    --mp-spacing-lg: 2rem;
+    --mp-spacing-xl: 3rem;
+
+    /* Border Radius */
+    --mp-radius-sm: 0.375rem;
+    --mp-radius-md: 0.5rem;
+    --mp-radius-lg: 0.75rem;
+    --mp-radius-xl: 1rem;
+}
+
+/* =============================================================================
+   LOBBY - Sảnh chính
+   ============================================================================= */
+
+.multiplayer-lobby {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: var(--mp-spacing-lg);
+}
+
+.lobby-header {
+    text-align: center;
+    margin-bottom: var(--mp-spacing-xl);
+}
+
+.lobby-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--mp-primary) 0%, var(--mp-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--mp-spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--mp-spacing-sm);
+}
+
+.lobby-header h1 i {
+    -webkit-text-fill-color: var(--mp-primary);
+}
+
+.lobby-subtitle {
+    font-size: 1.25rem;
+    color: var(--mp-text-secondary);
+    font-weight: 500;
+}
+
+.lobby-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--mp-spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =============================================================================
+   LOBBY SECTIONS - Các phần trong lobby
+   ============================================================================= */
+
+.lobby-section {
+    background: var(--mp-bg-secondary);
+    border-radius: var(--mp-radius-xl);
+    padding: var(--mp-spacing-lg);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+    transition: all 0.3s ease;
+}
+
+.lobby-section:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--mp-shadow-xl);
+    border-color: var(--mp-border-hover);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    margin-bottom: var(--mp-spacing-lg);
+    padding-bottom: var(--mp-spacing-sm);
+    border-bottom: 2px solid var(--mp-border);
+}
+
+.section-header i {
+    font-size: 1.5rem;
+    color: var(--mp-primary);
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mp-text-primary);
+    margin: 0;
+}
+
+/* =============================================================================
+   FORM ELEMENTS - Các phần tử form
+   ============================================================================= */
+
+.form-group {
+    margin-bottom: var(--mp-spacing-md);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--mp-text-primary);
+    margin-bottom: var(--mp-spacing-xs);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--mp-border);
+    border-radius: var(--mp-radius-md);
+    font-size: 1rem;
+    color: var(--mp-text-primary);
+    background: var(--mp-bg-tertiary);
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--mp-primary);
+    background: var(--mp-bg-secondary);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+.form-group input::placeholder {
+    color: var(--mp-text-muted);
+    opacity: 0.6;
+}
+
+/* Range Input */
+.form-group input[type="range"] {
+    padding: 0;
+    height: 8px;
+    background: linear-gradient(to right, var(--mp-primary-light), var(--mp-primary));
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.form-group input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--mp-bg-secondary);
+    border: 3px solid var(--mp-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--mp-shadow-md);
+    transition: all 0.2s ease;
+}
+
+.form-group input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: var(--mp-shadow-lg);
+}
+
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--mp-spacing-xs);
+    font-size: 0.75rem;
+    color: var(--mp-text-muted);
+}
+
+/* =============================================================================
+   BUTTONS - Nút bấm
+   ============================================================================= */
+
+.btn-primary,
+.btn-secondary,
+.btn-ready,
+.btn-start,
+.btn-leave,
+.btn-leave-small,
+.btn-copy {
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--mp-radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--mp-primary) 0%, var(--mp-secondary) 100%);
+    color: white;
+    box-shadow: var(--mp-shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mp-shadow-lg);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--mp-secondary) 0%, var(--mp-secondary-light) 100%);
+    color: white;
+    box-shadow: var(--mp-shadow-md);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mp-shadow-lg);
+}
+
+/* =============================================================================
+   CONNECTION STATUS - Trạng thái kết nối
+   ============================================================================= */
+
+.connection-status {
+    position: fixed;
+    bottom: var(--mp-spacing-lg);
+    right: var(--mp-spacing-lg);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--mp-radius-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    box-shadow: var(--mp-shadow-lg);
+    transition: all 0.3s ease;
+}
+
+.connection-status.connected {
+    background: linear-gradient(135deg, var(--mp-success) 0%, #059669 100%);
+    color: white;
+}
+
+.connection-status.disconnected {
+    background: linear-gradient(135deg, var(--mp-error) 0%, #dc2626 100%);
+    color: white;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* =============================================================================
+   WAITING ROOM - Phòng chờ
+   ============================================================================= */
+
+.waiting-room {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: var(--mp-spacing-lg);
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--mp-spacing-lg);
+    background: var(--mp-bg-secondary);
+    padding: var(--mp-spacing-lg);
+    border-radius: var(--mp-radius-xl);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+}
+
+.room-info h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--mp-text-primary);
+    margin: 0 0 var(--mp-spacing-sm) 0;
+}
+
+.room-code {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    font-size: 1rem;
+    color: var(--mp-text-secondary);
+}
+
+.room-code code {
+    background: var(--mp-bg-tertiary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--mp-radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--mp-primary);
+    border: 2px solid var(--mp-border);
+}
+
+.btn-copy {
+    width: auto;
+    padding: 0.5rem 0.75rem;
+    background: var(--mp-bg-tertiary);
+    color: var(--mp-primary);
+    border: 2px solid var(--mp-border);
+}
+
+.btn-copy:hover {
+    background: var(--mp-primary);
+    color: white;
+    border-color: var(--mp-primary);
+}
+
+.btn-leave {
+    width: auto;
+    background: var(--mp-error);
+    color: white;
+}
+
+.btn-leave:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+/* =============================================================================
+   ROOM CONTENT - Nội dung phòng
+   ============================================================================= */
+
+.room-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--mp-spacing-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+    .room-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.players-section,
+.game-info-section {
+    background: var(--mp-bg-secondary);
+    border-radius: var(--mp-radius-xl);
+    padding: var(--mp-spacing-lg);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+}
+
+.players-section h2,
+.game-info-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mp-text-primary);
+    margin-bottom: var(--mp-spacing-lg);
+    padding-bottom: var(--mp-spacing-sm);
+    border-bottom: 2px solid var(--mp-border);
+}
+
+.players-section h2 i,
+.game-info-section h2 i {
+    color: var(--mp-primary);
+}
+
+/* =============================================================================
+   PLAYERS LIST - Danh sách người chơi
+   ============================================================================= */
+
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mp-spacing-sm);
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-md);
+    padding: var(--mp-spacing-md);
+    background: var(--mp-bg-tertiary);
+    border-radius: var(--mp-radius-lg);
+    border: 2px solid var(--mp-border);
+    transition: all 0.2s ease;
+}
+
+.player-card.ready {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: var(--mp-success);
+}
+
+.player-card.host {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: var(--mp-accent);
+}
+
+.player-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mp-primary) 0%, var(--mp-secondary) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    box-shadow: var(--mp-shadow-md);
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--mp-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-xs);
+}
+
+.host-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--mp-accent);
+    color: white;
+    border-radius: var(--mp-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.player-status {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.status-host {
+    color: var(--mp-accent);
+    font-weight: 600;
+}
+
+.status-ready {
+    color: var(--mp-success);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.status-waiting {
+    color: var(--mp-text-muted);
+}
+
+/* =============================================================================
+   GAME INFO - Thông tin game
+   ============================================================================= */
+
+.game-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mp-spacing-md);
+    margin-bottom: var(--mp-spacing-lg);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--mp-spacing-sm);
+    background: var(--mp-bg-tertiary);
+    border-radius: var(--mp-radius-md);
+    border: 2px solid var(--mp-border);
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--mp-text-secondary);
+}
+
+.detail-value {
+    font-weight: 700;
+    color: var(--mp-primary);
+}
+
+.btn-ready {
+    background: var(--mp-bg-tertiary);
+    color: var(--mp-text-primary);
+    border: 2px solid var(--mp-border);
+}
+
+.btn-ready:hover {
+    background: var(--mp-success);
+    color: white;
+    border-color: var(--mp-success);
+}
+
+.btn-ready.active {
+    background: var(--mp-success);
+    color: white;
+    border-color: var(--mp-success);
+}
+
+.btn-start {
+    background: linear-gradient(135deg, var(--mp-primary) 0%, var(--mp-secondary) 100%);
+    color: white;
+    box-shadow: var(--mp-shadow-md);
+}
+
+.btn-start:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--mp-shadow-lg);
+}
+
+.btn-start:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =============================================================================
+   GAME ARENA - Khu vực chơi game
+   ============================================================================= */
+
+.game-arena {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: var(--mp-spacing-lg);
+}
+
+.arena-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--mp-spacing-lg);
+    background: var(--mp-bg-secondary);
+    padding: var(--mp-spacing-lg);
+    border-radius: var(--mp-radius-xl);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+}
+
+.arena-header h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--mp-text-primary);
+    margin: 0;
+}
+
+.btn-leave-small {
+    width: auto;
+    padding: 0.5rem 1rem;
+    background: var(--mp-error);
+    color: white;
+}
+
+.btn-leave-small:hover {
+    background: #dc2626;
+}
+
+.arena-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--mp-spacing-lg);
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1280px) {
+    .arena-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.game-area {
+    background: var(--mp-bg-secondary);
+    border-radius: var(--mp-radius-xl);
+    padding: var(--mp-spacing-lg);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+}
+
+/* =============================================================================
+   SCOREBOARD - Bảng xếp hạng
+   ============================================================================= */
+
+.scoreboard {
+    background: var(--mp-bg-secondary);
+    border-radius: var(--mp-radius-xl);
+    padding: var(--mp-spacing-lg);
+    box-shadow: var(--mp-shadow-lg);
+    border: 2px solid var(--mp-border);
+    height: fit-content;
+    position: sticky;
+    top: var(--mp-spacing-lg);
+}
+
+.scoreboard h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--mp-text-primary);
+    margin-bottom: var(--mp-spacing-lg);
+    padding-bottom: var(--mp-spacing-sm);
+    border-bottom: 2px solid var(--mp-border);
+}
+
+.scoreboard h3 i {
+    color: var(--mp-accent);
+}
+
+.scoreboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mp-spacing-sm);
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    padding: var(--mp-spacing-sm);
+    background: var(--mp-bg-tertiary);
+    border-radius: var(--mp-radius-md);
+    border: 2px solid var(--mp-border);
+    transition: all 0.2s ease;
+}
+
+.score-item.me {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-color: var(--mp-primary);
+}
+
+.score-item.completed {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: var(--mp-success);
+}
+
+.rank {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mp-primary) 0%, var(--mp-secondary) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.player-name-score {
+    flex: 1;
+    font-weight: 600;
+    color: var(--mp-text-primary);
+}
+
+.me-badge {
+    font-size: 0.75rem;
+    color: var(--mp-primary);
+    font-weight: 500;
+}
+
+.stats {
+    display: flex;
+    align-items: center;
+    gap: var(--mp-spacing-sm);
+    font-size: 0.875rem;
+}
+
+.moves {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--mp-text-secondary);
+    font-weight: 600;
+}
+
+.completed-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--mp-success);
+    color: white;
+    border-radius: var(--mp-radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+}

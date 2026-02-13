@@ -56,6 +56,7 @@ import DemoPage from './pages/DemoPage';
 import QuizPage from './pages/QuizPage';
 import PracticePage from './pages/PracticePage';
 import SummaryPage from './pages/SummaryPage';
+import GamePage from './pages/GamePage';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES & INTERFACES (ĐỊNH NGHĨA KIỂU DỮ LIỆU)
@@ -114,6 +115,13 @@ const PAGE_TYPE_CONFIG = {
     color: 'from-red-500 to-pink-500',
     bgColor: 'bg-red-500/20',
     borderColor: 'border-red-500/50'
+  },
+  [PageType.GAME]: {
+    icon: 'fi-rr-joystick',
+    label: 'Trò Chơi',
+    color: 'from-pink-500 to-rose-500',
+    bgColor: 'bg-pink-500/20',
+    borderColor: 'border-pink-500/50'
   }
 };
 
@@ -610,6 +618,14 @@ export const LearningInterface: React.FC<LearningInterfaceProps> = ({
         return <PracticePage {...baseProps} onComplete={(_code: string, passed: boolean) => handlePageComplete(passed ? 100 : 0)} />;
       case PageType.SUMMARY:
         return <SummaryPage {...baseProps} onModuleComplete={handleModuleComplete} />;
+      case PageType.GAME:
+        return (
+          <GamePage
+            {...baseProps}
+            gameType={currentPage.gameType}
+            onComplete={(score: number) => handlePageComplete(score)}
+          />
+        );
       default:
         return (
           <div className="flex items-center justify-center h-96">

@@ -35,7 +35,8 @@ export const enum PageType {
   DEMO = 'demo',
   QUIZ = 'quiz',
   PRACTICE = 'practice',
-  SUMMARY = 'summary'
+  SUMMARY = 'summary',
+  GAME = 'game'
 }
 
 /**
@@ -60,6 +61,7 @@ export interface LearningPage {
   nextPage?: string;
   chapter: ChapterNumber;
   moduleId: string;
+  gameType?: string;
 }
 
 /**

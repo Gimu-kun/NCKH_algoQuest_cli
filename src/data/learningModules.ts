@@ -205,6 +205,16 @@ export const BASIC_SORTING_MODULE: LearningModule = {
       chapter: ChapterNumber.SORTING_SEARCHING,
       moduleId: 'ch2-basic-sorting',
       prerequisites: ['ch2-p3-practice-bubble'],
+    },
+    {
+      id: 'ch2-p5-game-sorting',
+      type: 'game' as PageType,
+      title: 'Game: Đua Sắp Xếp',
+      estimatedTime: 10,
+      chapter: ChapterNumber.SORTING_SEARCHING,
+      moduleId: 'ch2-basic-sorting',
+      gameType: 'SORTING',
+      prerequisites: ['ch2-p4-quiz-basic-sorting']
     }
   ]
 };
@@ -256,6 +266,26 @@ export const ADVANCED_SORTING_MODULE: LearningModule = {
       chapter: ChapterNumber.SORTING_SEARCHING,
       moduleId: 'ch2-advanced-sorting',
       prerequisites: ['ch2-p7-demo-quick'],
+    },
+    {
+      id: 'ch2-p15-game-merge-sort',
+      type: 'game' as PageType,
+      title: 'Game: Hợp Nhất Sức Mạnh',
+      estimatedTime: 12,
+      chapter: ChapterNumber.SORTING_SEARCHING,
+      moduleId: 'ch2-advanced-sorting',
+      gameType: 'MERGE_SORT',
+      prerequisites: ['ch2-p8-practice-quick']
+    },
+    {
+      id: 'ch2-game-quick-sort',
+      type: 'game' as PageType,
+      title: 'Game: Quick Partition',
+      estimatedTime: 10,
+      chapter: ChapterNumber.SORTING_SEARCHING,
+      moduleId: 'ch2-advanced-sorting',
+      gameType: 'QUICK_SORT',
+      prerequisites: ['ch2-p15-game-merge-sort']
     }
   ]
 };
@@ -273,12 +303,22 @@ export const BINARY_SEARCH_MODULE: LearningModule = {
   difficulty: 'medium',
   pages: [
     {
+      id: 'ch2-p14-game-linear',
+      type: 'game' as PageType,
+      title: 'Game: Tìm Kiếm Theo Hàng',
+      estimatedTime: 8,
+      chapter: ChapterNumber.SORTING_SEARCHING,
+      moduleId: 'ch2-binary-search',
+      gameType: 'LINEAR_SEARCH',
+    },
+    {
       id: 'ch2-p9-theory-binary',
       type: 'theory' as PageType,
       title: 'Binary Search Fundamentals',
       estimatedTime: 12,
       chapter: ChapterNumber.SORTING_SEARCHING,
       moduleId: 'ch2-binary-search',
+      prerequisites: ['ch2-p14-game-linear']
     },
     {
       id: 'ch2-p10-demo-binary',
@@ -306,6 +346,16 @@ export const BINARY_SEARCH_MODULE: LearningModule = {
       chapter: ChapterNumber.SORTING_SEARCHING,
       moduleId: 'ch2-binary-search',
       prerequisites: ['ch2-p11-practice-binary'],
+    },
+    {
+      id: 'ch2-p13-game-binary',
+      type: 'game' as PageType,
+      title: 'Game: Đoán Số Bí Mật',
+      estimatedTime: 10,
+      chapter: ChapterNumber.SORTING_SEARCHING,
+      moduleId: 'ch2-binary-search',
+      gameType: 'BINARY_SEARCH',
+      prerequisites: ['ch2-p12-quiz-searching']
     }
   ]
 };
@@ -360,6 +410,16 @@ export const LINKED_LIST_BASIC_MODULE: LearningModule = {
       chapter: ChapterNumber.LINKED_LIST,
       moduleId: 'ch3-linked-list-basics',
       prerequisites: ['ch3-p3-practice-implementation'],
+    },
+    {
+      id: 'ch3-p5-game-linked-list',
+      type: 'game' as PageType,
+      title: 'Game: Xây Dựng Kết Nối',
+      estimatedTime: 12,
+      chapter: ChapterNumber.LINKED_LIST,
+      moduleId: 'ch3-linked-list-basics',
+      gameType: 'LINKED_LIST',
+      prerequisites: ['ch3-p4-quiz-basics']
     }
   ]
 };
@@ -406,6 +466,26 @@ export const STACK_QUEUE_MODULE: LearningModule = {
       prerequisites: ['ch4-theory-overview', 'ch4-p2-demo-stack'],
     },
     {
+      id: 'ch4-game-pancake-stack',
+      type: 'game' as PageType,
+      title: 'Game: Memory Warehouse',
+      estimatedTime: 10,
+      chapter: ChapterNumber.STACK_QUEUE,
+      moduleId: 'ch4-stack-queue-basics',
+      gameType: 'STACK',
+      prerequisites: ['ch4-p2-demo-stack']
+    },
+    {
+      id: 'ch4-game-ticketing-queue',
+      type: 'game' as PageType,
+      title: 'Game: Phục Vụ Hành Khách',
+      estimatedTime: 10,
+      chapter: ChapterNumber.STACK_QUEUE,
+      moduleId: 'ch4-stack-queue-basics',
+      gameType: 'QUEUE',
+      prerequisites: ['ch4-p3-demo-queue']
+    },
+    {
       id: 'ch4-p4-summary',
       type: 'summary' as PageType,
       title: 'Tóm Tắt Chương 4',
@@ -413,6 +493,16 @@ export const STACK_QUEUE_MODULE: LearningModule = {
       chapter: ChapterNumber.STACK_QUEUE,
       moduleId: 'ch4-stack-queue-basics',
       prerequisites: ['ch4-p3-demo-queue'],
+    },
+    {
+      id: 'ch4-p5-game-hanoi',
+      type: 'game' as PageType,
+      title: 'Game: Tháp Hà Nội',
+      estimatedTime: 15,
+      chapter: ChapterNumber.STACK_QUEUE,
+      moduleId: 'ch4-stack-queue-basics',
+      gameType: 'HANOI',
+      prerequisites: ['ch4-p4-summary']
     }
   ]
 };
@@ -489,7 +579,141 @@ export const BST_MODULE: LearningModule = {
       chapter: ChapterNumber.BST,
       moduleId: 'ch5-bst-advanced',
       prerequisites: ['ch5-p4-demo-bst'],
+    },
+    {
+      id: 'ch5-p6-game-bst-search',
+      type: 'game' as PageType,
+      title: 'Game: Truy Tìm Kho Báu Trên Cây',
+      estimatedTime: 10,
+      chapter: ChapterNumber.BST,
+      moduleId: 'ch5-bst-advanced',
+      gameType: 'BST_SEARCH',
+      prerequisites: ['ch5-p5-summary']
     }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MODULES: ADVANCED ALGORITHMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Module 2.4: More Sorting Algorithms
+ */
+export const MORE_SORTING_MODULE: LearningModule = {
+  id: 'ch2-more-sorting',
+  chapter: ChapterNumber.SORTING_SEARCHING,
+  title: 'Các Thuật Toán Sắp Xếp Khác',
+  description: 'Interchange Sort, Shaker Sort, Shell Sort',
+  totalEstimatedTime: 40,
+  difficulty: 'medium',
+  prerequisites: ['ch2-basic-sorting'],
+  pages: [
+    { id: 'ch2-theory-interchange', type: 'theory' as PageType, title: 'Interchange Sort', estimatedTime: 10, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-more-sorting' },
+    { id: 'ch2-theory-shaker', type: 'theory' as PageType, title: 'Shaker Sort', estimatedTime: 10, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-more-sorting', prerequisites: ['ch2-theory-interchange'] },
+    { id: 'ch2-demo-shaker', type: 'demo' as PageType, title: 'Minh Họa Shaker Sort', estimatedTime: 8, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-more-sorting', prerequisites: ['ch2-theory-shaker'] },
+    { id: 'ch2-theory-shell', type: 'theory' as PageType, title: 'Shell Sort (Diminishing Increment)', estimatedTime: 15, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-more-sorting', prerequisites: ['ch2-demo-shaker'] },
+    { id: 'ch2-demo-shell', type: 'demo' as PageType, title: 'Minh Họa Shell Sort', estimatedTime: 10, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-more-sorting', prerequisites: ['ch2-theory-shell'] }
+  ]
+};
+
+/**
+ * Module 2.5: Efficient Sorting Algorithms
+ */
+export const EFFICIENT_SORTING_MODULE: LearningModule = {
+  id: 'ch2-efficient-sorting',
+  chapter: ChapterNumber.SORTING_SEARCHING,
+  title: 'Sắp Xếp Hiệu Quả Cao',
+  description: 'Heap Sort, Radix Sort, Counting Sort',
+  totalEstimatedTime: 50,
+  difficulty: 'hard',
+  prerequisites: ['ch2-advanced-sorting'],
+  pages: [
+    { id: 'ch2-theory-heap', type: 'theory' as PageType, title: 'Heap Sort Logic', estimatedTime: 15, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-efficient-sorting' },
+    { id: 'ch2-game-heap', type: 'game' as PageType, title: 'Game: Max-Heap Master', estimatedTime: 12, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-efficient-sorting', gameType: 'HEAP_SORT', prerequisites: ['ch2-theory-heap'] },
+    { id: 'ch2-theory-counting', type: 'theory' as PageType, title: 'Counting Sort (Non-comparison)', estimatedTime: 15, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-efficient-sorting', prerequisites: ['ch2-game-heap'] },
+    { id: 'ch2-game-counting', type: 'game' as PageType, title: 'Game: Đếm Số Thần Tốc', estimatedTime: 10, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-efficient-sorting', gameType: 'COUNTING_SORT', prerequisites: ['ch2-theory-counting'] },
+    { id: 'ch2-theory-radix', type: 'theory' as PageType, title: 'Radix Sort (LSD)', estimatedTime: 20, chapter: ChapterNumber.SORTING_SEARCHING, moduleId: 'ch2-efficient-sorting', prerequisites: ['ch2-game-counting'] }
+  ]
+};
+
+/**
+ * Module 3.2: Advanced Linked Lists
+ */
+export const ADVANCED_LINKED_LIST_MODULE: LearningModule = {
+  id: 'ch3-advanced-linked-list',
+  chapter: ChapterNumber.LINKED_LIST,
+  title: 'Linked List Nâng Cao',
+  description: 'Doubly Linked List, Circular Linked List',
+  totalEstimatedTime: 30,
+  difficulty: 'medium',
+  prerequisites: ['ch3-linked-list-basics'],
+  pages: [
+    { id: 'ch3-theory-doubly', type: 'theory' as PageType, title: 'Doubly Linked List Properties', estimatedTime: 15, chapter: ChapterNumber.LINKED_LIST, moduleId: 'ch3-advanced-linked-list' },
+    { id: 'ch3-game-playlist', type: 'game' as PageType, title: 'Game: Máy Phát Nhạc DLL', estimatedTime: 10, chapter: ChapterNumber.LINKED_LIST, moduleId: 'ch3-advanced-linked-list', gameType: 'DOUBLY_LINKED_LIST', prerequisites: ['ch3-theory-doubly'] },
+    { id: 'ch3-theory-circular', type: 'theory' as PageType, title: 'Circular Linked List', estimatedTime: 10, chapter: ChapterNumber.LINKED_LIST, moduleId: 'ch3-advanced-linked-list', prerequisites: ['ch3-game-playlist'] },
+    { id: 'ch3-game-circular', type: 'game' as PageType, title: 'Game: Vòng Quay May Mắn', estimatedTime: 10, chapter: ChapterNumber.LINKED_LIST, moduleId: 'ch3-advanced-linked-list', gameType: 'CIRCULAR_LINKED_LIST', prerequisites: ['ch3-theory-circular'] }
+  ]
+};
+
+/**
+ * Module 4.2: Advanced Queues
+ */
+export const ADVANCED_QUEUE_MODULE: LearningModule = {
+  id: 'ch4-advanced-queues',
+  chapter: ChapterNumber.STACK_QUEUE,
+  title: 'Hàng Đợi Ưu Tiên & Deque',
+  description: 'Priority Queue, Deque và ứng dụng trong tìm đường',
+  totalEstimatedTime: 40,
+  difficulty: 'hard',
+  prerequisites: ['ch4-stack-queue-basics'],
+  pages: [
+    { id: 'ch4-theory-dq', type: 'theory' as PageType, title: 'Deque (Double-ended Queue)', estimatedTime: 10, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues' },
+    { id: 'ch4-game-dq', type: 'game' as PageType, title: 'Game: Vận Chuyển Linh Hoạt (Deque)', estimatedTime: 12, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues', gameType: 'DEQUE', prerequisites: ['ch4-theory-dq'] },
+    { id: 'ch4-demo-dq', type: 'demo' as PageType, title: 'Minh Họa Deque', estimatedTime: 8, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues', prerequisites: ['ch4-game-dq'] },
+    { id: 'ch4-theory-pq', type: 'theory' as PageType, title: 'Priority Queue', estimatedTime: 15, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues', prerequisites: ['ch4-demo-dq'] },
+    { id: 'ch4-game-pq', type: 'game' as PageType, title: 'Game: Phòng Cấp Cứu', estimatedTime: 12, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues', gameType: 'PRIORITY_QUEUE', prerequisites: ['ch4-theory-pq'] },
+    { id: 'ch4-game-pathfinding', type: 'game' as PageType, title: 'Game: Tìm Đường (Dijkstra)', estimatedTime: 15, chapter: ChapterNumber.STACK_QUEUE, moduleId: 'ch4-advanced-queues', gameType: 'PATHFINDING', prerequisites: ['ch4-game-pq'] }
+  ]
+};
+
+/**
+ * Module 5.3: Balanced Trees
+ */
+export const AVL_TREE_MODULE: LearningModule = {
+  id: 'ch5-avl-tree',
+  chapter: ChapterNumber.BST,
+  title: 'Cây Cân Bằng (AVL)',
+  description: 'Cấu trúc cây AVL và các thao tác xoay cây',
+  totalEstimatedTime: 45,
+  difficulty: 'hard',
+  prerequisites: ['ch5-bst-advanced'],
+  pages: [
+    { id: 'ch5-theory-avl', type: 'theory' as PageType, title: 'Cây Cân Bằng (AVL)', estimatedTime: 15, chapter: ChapterNumber.BST, moduleId: 'ch5-avl-tree' },
+    { id: 'ch5-demo-avl', type: 'demo' as PageType, title: 'Minh Họa Tự Cân Bằng', estimatedTime: 10, chapter: ChapterNumber.BST, moduleId: 'ch5-avl-tree', prerequisites: ['ch5-theory-avl'] },
+    { id: 'ch5-game-avl-rotate', type: 'game' as PageType, title: 'Game: Xoay Cây Cân Bằng', estimatedTime: 12, chapter: ChapterNumber.BST, moduleId: 'ch5-avl-tree', gameType: 'AVL_TREE', prerequisites: ['ch5-demo-avl'] }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CHAPTER 6: GRAPH & GRID ALGORITHMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Module 6.1: Grid-based Pathfinding
+ */
+export const GRIDS_MODULE: LearningModule = {
+  id: 'ch6-grid-basics',
+  chapter: ChapterNumber.GRAPH_GRID,
+  title: 'Thuật Toán Trên Lưới (Grid)',
+  description: 'Maze, Flood Fill và Đếm Đảo',
+  totalEstimatedTime: 45,
+  difficulty: 'medium',
+  pages: [
+    { id: 'ch6-theory-grid', type: 'theory' as PageType, title: 'Cấu Trúc Lưới (Grid)', estimatedTime: 10, chapter: ChapterNumber.GRAPH_GRID, moduleId: 'ch6-grid-basics' },
+    { id: 'ch6-game-maze', type: 'game' as PageType, title: 'Game: Thoát Khỏi Mê Cung', estimatedTime: 15, chapter: ChapterNumber.GRAPH_GRID, moduleId: 'ch6-grid-basics', gameType: 'MAZE', prerequisites: ['ch6-theory-grid'] },
+    { id: 'ch6-game-flood', type: 'game' as PageType, title: 'Game: Loang Màu (Flood Fill)', estimatedTime: 12, chapter: ChapterNumber.GRAPH_GRID, moduleId: 'ch6-grid-basics', gameType: 'FLOOD_FILL', prerequisites: ['ch6-game-maze'] },
+    { id: 'ch6-game-island', type: 'game' as PageType, title: 'Game: Đếm Đảo Đào Vàng', estimatedTime: 12, chapter: ChapterNumber.GRAPH_GRID, moduleId: 'ch6-grid-basics', gameType: 'ISLAND', prerequisites: ['ch6-game-flood'] }
   ]
 };
 
@@ -501,12 +725,18 @@ export const ALL_LEARNING_MODULES: LearningModule[] = [
   BIG_O_MODULE,
   TIME_SPACE_MODULE,
   BASIC_SORTING_MODULE,
+  MORE_SORTING_MODULE,
   ADVANCED_SORTING_MODULE,
+  EFFICIENT_SORTING_MODULE,
   BINARY_SEARCH_MODULE,
   LINKED_LIST_BASIC_MODULE,
+  ADVANCED_LINKED_LIST_MODULE,
   STACK_QUEUE_MODULE,
+  ADVANCED_QUEUE_MODULE,
   BINARY_TREE_FUNDAMENTALS_MODULE,
-  BST_MODULE
+  BST_MODULE,
+  AVL_TREE_MODULE,
+  GRIDS_MODULE
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════

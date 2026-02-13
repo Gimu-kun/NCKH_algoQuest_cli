@@ -1,1365 +1,1019 @@
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * MULTIPLAYER STORE (Zustand) - ĐẤU TRƯỜNG NHIỀU NGƯỜI CHƠI
+ * MULTIPLAYER STORE - QUẢN LÝ TRẠNG THÁI NHIỀU NGƯỜI CHƠI
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *
- * MỤC TIÊU THIẾT KẾ (Design Goals)
+ * MÔ TẢ CHỨC NĂNG (Functional Description):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Store này quản lý toàn bộ state và logic cho chế độ multiplayer, bao gồm:
+ * - Room Management: Tạo, tham gia, rời phòng
+ * - Player Synchronization: Đồng bộ trạng thái giữa các người chơi
+ * - Game State: Quản lý trạng thái game đang chơi
+ * - Real-time Communication: Sử dụng BroadcastChannel API + Web Worker
+ *
+ * KIẾN TRÚC KỸ THUẬT (Technical Architecture):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 
+ * 1. STATE MANAGEMENT (Quản lý State):
+ *    - Zustand Store: State management nhẹ, reactive
+ *    - Persist Middleware: Lưu state vào localStorage
+ *    - Immer Integration: Immutable updates dễ dàng
+ *
+ * 2. REAL-TIME COMMUNICATION (Giao tiếp Real-time):
+ *    - BroadcastChannel API: Giao tiếp giữa các tabs/windows
+ *    - Web Worker: Thread riêng cho connection, không block UI
+ *    - Message Protocol: Chuẩn hóa format messages
+ *
+ * 3. ROOM SYSTEM (Hệ thống Phòng):
+ *    - Room ID: UUID duy nhất cho mỗi phòng
+ *    - Host/Guest: Phân biệt người tạo và người tham gia
+ *    - Max Players: Giới hạn số người (mặc định 4)
+ *    - Room State: Waiting, Playing, Finished
+ *
+ * FLOW HOẠT ĐỘNG (Operation Flow):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 
+ * TẠO PHÒNG (Create Room):
+ * 1. User click "Tạo phòng"
+ * 2. Generate room ID (UUID)
+ * 3. Init Web Worker với room channel
+ * 4. Broadcast ROOM_CREATED message
+ * 5. Chuyển sang trạng thái WAITING
+ * 6. Hiển thị room code cho người khác join
+ *
+ * THAM GIA PHÒNG (Join Room):
+ * 1. User nhập room code
+ * 2. Validate room code format
+ * 3. Connect worker đến room channel
+ * 4. Broadcast PLAYER_JOINED message
+ * 5. Nhận danh sách players hiện tại
+ * 6. Sync game state từ host
+ *
+ * ĐỒNG BỘ GAME (Game Sync):
+ * 1. Player thực hiện action (move disk)
+ * 2. Update local state
+ * 3. Broadcast GAME_UPDATE message
+ * 4. Other players nhận message
+ * 5. Update their local state
+ * 6. Re-render UI
+ *
+ * KỸ THUẬT SỬ DỤNG (Techniques Used):
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * 1) KHÔNG CẦN BACKEND (No Server) nhưng vẫn "giả lập" real-time nhiều tab:
- *    - Dùng BroadcastChannel để đồng bộ state giữa các tab cùng trình duyệt
- *    - Phù hợp demo/đồ án: mở 2 tab là thấy lobby/game update
- *    - Không cần deploy server, không cần WebSocket infrastructure
+ * 1. WEB WORKER PATTERN:
+ *    - Tại sao: Main thread bận render UI → heartbeat bị delay
+ *    - Worker thread: Chạy độc lập, không bị throttle nhiều
+ *    - Message passing: postMessage/onmessage
+ *    - Cleanup: terminate worker khi unmount
  *
- * 2) ROOM-BASED MULTIPLAYER (Phòng chơi):
- *    - Host tạo phòng -> phát metadata (room meta) + roster (danh sách player)
- *    - Client join bằng mã phòng (room code) -> handshake -> vào lobby
- *    - Mỗi phòng có settings riêng (số đĩa, max players)
+ * 2. BROADCAST CHANNEL API:
+ *    - Cross-tab communication: Nhiều tabs cùng room
+ *    - Same-origin only: Bảo mật
+ *    - Event-driven: onmessage callback
+ *    - Lightweight: Không cần WebSocket server
  *
- * 3) TÁCH BIỆT TRANSPORT VÀ UI:
- *    - UI chỉ gọi actions (createRoom/joinRoom/leaveRoom/startGame/...)
- *    - Store xử lý message bus và cập nhật state
- *    - Dễ swap transport layer (BroadcastChannel -> WebSocket -> WebRTC)
+ * 3. OPTIMISTIC UPDATES:
+ *    - Update local state ngay lập tức
+ *    - Broadcast sau đó
+ *    - Rollback nếu conflict (advanced)
+ *    - Better UX: Không lag
  *
- * FLOW TỔNG QUAN (High-level Flow)
+ * 4. HEARTBEAT MECHANISM:
+ *    - Gửi PING mỗi 500ms
+ *    - Detect disconnect nếu không nhận PONG
+ *    - Auto-remove inactive players
+ *    - Maintain connection health
+ *
+ * SO SÁNH VỚI CÁC GIẢI PHÁP KHÁC (Comparison):
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * CREATE ROOM FLOW:
- * 1. createRoom() -> tạo roomId -> connectToRoom(host) -> publish room meta
- * 2. Host định kỳ ping để cập nhật lastSeen
- * 3. Host có thể startGame() khi đủ người
+ * | Approach              | Pros                          | Cons                        |
+ * |-----------------------|-------------------------------|------------------------------|
+ * | BroadcastChannel      | ✅ Không cần server           | ❌ Chỉ same-origin          |
+ * |                       | ✅ Rất nhanh (local)          | ❌ Không cross-device       |
+ * |                       | ✅ Đơn giản                   |                             |
+ * |-----------------------|-------------------------------|------------------------------|
+ * | WebSocket             | ✅ Cross-device               | ❌ Cần backend server       |
+ * |                       | ✅ Internet-wide              | ❌ Phức tạp hơn             |
+ * |                       |                               | ❌ Latency cao hơn          |
+ * |-----------------------|-------------------------------|------------------------------|
+ * | WebRTC P2P            | ✅ Peer-to-peer               | ❌ NAT traversal khó        |
+ * |                       | ✅ Không cần server relay     | ❌ Setup phức tạp           |
+ * |                       |                               | ❌ Fallback cần TURN server |
+ * |-----------------------|-------------------------------|------------------------------|
+ * | Firebase Realtime DB  | ✅ Managed service            | ❌ Vendor lock-in           |
+ * |                       | ✅ Offline support            | ❌ Chi phí                  |
+ * |                       |                               | ❌ Overkill cho local game  |
  *
- * JOIN ROOM FLOW:
- * 1. joinRoom(roomId) -> connectToRoom(client) -> send HELLO
- * 2. Host nhận HELLO -> add player -> broadcast roster + WELCOME(target)
- * 3. Client nhận WELCOME -> set room meta + roster
+ * ƯU ĐIỂM THIẾT KẾ (Pros):
+ * - Không cần backend server (giảm complexity)
+ * - Latency thấp (local communication)
+ * - Dễ implement và maintain
+ * - Phù hợp cho local multiplayer (cùng mạng)
  *
- * GAME FLOW:
- * 1. Host startGame() -> broadcast START_GAME
- * 2. All players receive -> gamePhase = 'in_game'
- * 3. Players send HANOI_PROGRESS -> scoreboard updates
- * 4. First to complete wins
+ * NHƯỢC ĐIỂM (Cons):
+ * - Không support cross-device (khác mạng)
+ * - Phụ thuộc browser support BroadcastChannel
+ * - Không có central authority (conflict resolution khó)
  *
- * KỸ THUẬT SỬ DỤNG (Techniques Used)
- * ─────────────────────────────────────────────────────────────────────────────
+ * HƯỚNG MỞ RỘNG (Future Enhancements):
+ * - Thêm WebSocket fallback cho cross-device
+ * - Implement conflict resolution (CRDT)
+ * - Add replay system
+ * - Spectator mode
  *
- * 1) BROADCASTCHANNEL API:
- *    - Web API cho phép giao tiếp giữa các contexts (tabs, windows) cùng origin
- *    - Syntax: new BroadcastChannel(name), postMessage(data), onmessage
- *    - Low latency (< 1ms), không cần server
- *
- * 2) HEARTBEAT MECHANISM (Ping/Pong):
- *    - Mỗi player gửi PING định kỳ (2s)
- *    - Other players update lastSeen
- *    - UI check: nowTick - player.lastSeen <= 6s => online
- *    - Detect disconnect khi không nhận PING
- *
- * 3) LOCALSTORAGE DISCOVERY:
- *    - Host cập nhật public rooms vào localStorage
- *    - Other tabs listen 'storage' event để refresh list
- *    - Cho phép "discover" rooms trong cùng browser
- *
- * 4) ZUSTAND STATE MANAGEMENT:
- *    - Minimal, no-boilerplate state library
- *    - Actions đính kèm trong store
- *    - No reducers, no dispatchers
- *
- * SO SÁNH KIẾN TRÚC MULTIPLAYER (Architecture Comparison)
- * ─────────────────────────────────────────────────────────────────────────────
- *
- * | Approach          | Cross-Device | Authority    | Latency | Complexity |
- * |-------------------|--------------|--------------|---------|------------|
- * | BroadcastChannel  | ❌ No        | None         | ~1ms    | Low        |
- * | WebSocket Server  | ✅ Yes       | Server       | ~50ms   | Medium     |
- * | WebRTC P2P        | ✅ Yes       | Client       | ~20ms   | High       |
- * | Firebase Realtime | ✅ Yes       | Server       | ~100ms  | Medium     |
- *
- * BROADCASTCHANNEL (hiện tại):
- * ✅ Ưu điểm:
- *    - Không cần server -> triển khai nhanh, dễ demo
- *    - Real-time thật giữa các tab
- *    - Zero configuration
- *
- * ❌ Nhược điểm:
- *    - Không chơi được giữa các máy khác nhau
- *    - Không có authoritative server -> dễ "cheat"
- *    - Limited to same browser
- *
- * WEBSOCKET SERVER:
- * ✅ Ưu điểm:
- *    - Cross-device play
- *    - Server authoritative (anti-cheat)
- *    - Persistent connections
- *
- * ❌ Nhược điểm:
- *    - Cần backend infrastructure
- *    - Higher latency
- *    - Server costs
- *
- * WEBRTC P2P:
- * ✅ Ưu điểm:
- *    - Low latency (direct connection)
- *    - No server for game data
- *
- * ❌ Nhược điểm:
- *    - Cần signaling server
- *    - NAT traversal issues
- *    - Complex debugging
- *
- * GỢI Ý MỞ RỘNG (Future Extensions)
- * ─────────────────────────────────────────────────────────────────────────────
- * - Thay transport: WebSocket (server authoritative) / WebRTC (P2P)
- * - Tách module: multiplayerTransport.ts (interfaces) + implementations
- * - Add voice chat với WebRTC
- * - Persist game state cho reconnect
- *
- * @module multiplayerStore
- * @category State Management/Multiplayer
+ * @module MultiplayerStore
+ * @category State Management
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
 import { create } from 'zustand';
-import { usePlayerStore } from './playerStore';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 /* =============================================================================
    TYPE DEFINITIONS - Định nghĩa kiểu dữ liệu
    ============================================================================= */
 
 /**
- * MultiplayerRole - Vai trò của player trong room
- *
- * TYPES:
- * - 'host': người tạo phòng, có quyền start game
- * - 'client': người tham gia, chờ host start
+ * PlayerInfo - Thông tin người chơi
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Lưu trữ thông tin cơ bản của mỗi người chơi trong phòng.
  */
-export type MultiplayerRole = 'host' | 'client';
-
-/**
- * GameId - ID của game mode
- *
- * CURRENT GAMES:
- * - 'hanoi': Tower of Hanoi puzzle
- * - 'maze': Maze Race (BFS pathfinding)
- * - 'flood': Flood Fill Battle (territory control)
- * - 'island': Island Counter (DFS counting)
- */
-export type GameId = 'hanoi' | 'maze' | 'flood' | 'island';
-
-/**
- * PublicRoomSummary - Thông tin phòng công khai
- *
- * PURPOSE:
- * Dùng cho room discovery qua localStorage.
- * Chứa đủ thông tin để hiển thị trong danh sách phòng.
- *
- * TTL (Time To Live):
- * - updatedAt dùng để check freshness
- * - Phòng không update > 15s được coi là "dead"
- */
-export interface PublicRoomSummary {
-  id: string;           // Room ID (6 char uppercase)
-  name: string;         // Display name
-  gameId: GameId;       // Game type
-  maxPlayers: number;   // Max capacity
-  settings: Record<string, unknown>; // Game-specific settings
-  updatedAt: number;    // Last update timestamp
+export interface PlayerInfo {
+    id: string;              // UUID của player
+    name: string;            // Tên hiển thị
+    isHost: boolean;         // Có phải host không
+    isReady: boolean;        // Đã sẵn sàng chưa
+    lastHeartbeat: number;   // Timestamp heartbeat cuối
+    avatar?: string;         // Avatar URL (optional)
 }
 
 /**
- * RoomMeta - Metadata đầy đủ của phòng
- *
- * PURPOSE:
- * Thông tin chi tiết về phòng, lưu trong store khi connected.
+ * GameType - Loại game
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Enum định nghĩa các loại game hỗ trợ multiplayer.
  */
-export interface RoomMeta {
-  id: string;           // Room ID
-  name: string;         // Display name
-  hostId: string;       // Player ID của host
-  gameId: GameId;       // Game type
-  maxPlayers: number;   // Max capacity
-  settings: {
-    hanoiDisks: number;   // Số đĩa cho Tower of Hanoi
-    gridRows?: number;    // Grid rows for Maze/Flood/Island
-    gridCols?: number;    // Grid cols for Maze/Flood/Island
-    landRatio?: number;   // Land ratio for Island game (0-1)
-  };
-  createdAt: number;    // Creation timestamp
+export enum GameType {
+    HANOI = 'HANOI',           // Tháp Hà Nội
+    ISLAND = 'ISLAND',         // Đếm Đảo (DFS)
+    MAZE = 'MAZE',             // Mê Cung (BFS)
+    FLOOD_FILL = 'FLOOD_FILL', // Tô Màu (Loang)
+    SORTING = 'SORTING',       // Sắp xếp (future)
+    PATHFINDING = 'PATHFINDING', // Tìm đường (future)
+    BINARY_SEARCH = 'BINARY_SEARCH', // Tìm kiếm nhị phân
+    BST_SEARCH = 'BST_SEARCH' // Tìm kiếm trên cây BST
 }
 
 /**
- * RoomPlayer - Thông tin player trong phòng
- *
- * PURPOSE:
- * Track state của mỗi player: online status, ready status, game progress.
- *
- * FIELDS:
- * - id: unique identifier
- * - name: display name (from playerStore)
- * - isHost: là host hay không
- * - ready: đã ready trong lobby chưa
- * - lastSeen: last heartbeat timestamp (for online detection)
- * - hanoi/maze/flood/island: game-specific progress
+ * RoomState - Trạng thái phòng
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Enum định nghĩa các trạng thái của phòng chơi.
  */
-export interface RoomPlayer {
-  id: string;
-  name: string;
-  isHost: boolean;
-  ready: boolean;
-  lastSeen: number;
-  // Hanoi progress
-  hanoi?: {
-    encoding: number;
-    moves: number;
-    completed: boolean;
-    finishedAt: number | null;
-  };
-  // Maze progress
-  maze?: {
-    position: { row: number; col: number };
-    moves: number;
-    completed: boolean;
-    finishedAt: number | null;
-  };
-  // Flood Fill progress
-  flood?: {
-    scores: number[];
-    currentPlayer: number;
-    completed: boolean;
-    finishedAt: number | null;
-  };
-  // Island Counter progress
-  island?: {
-    markedIslands: number;
-    answer: number | null;
-    correct: boolean | null;
-    finishedAt: number | null;
-  };
+export enum RoomState {
+    WAITING = 'WAITING',       // Đang chờ người chơi
+    PLAYING = 'PLAYING',       // Đang chơi
+    FINISHED = 'FINISHED'      // Đã kết thúc
 }
 
 /**
- * MultiplayerState - State chính của store
- *
- * SECTIONS:
- * - self: info về current user
- * - status: connection status
- * - role: host/client
- * - room: current room metadata
- * - players: roster của room
- * - gamePhase: lobby/in_game/results
- * - publicRooms: discovered rooms
+ * RoomInfo - Thông tin phòng chơi
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Lưu trữ toàn bộ thông tin và state của một phòng chơi.
+ */
+export interface RoomInfo {
+    id: string;                // Room ID (UUID)
+    name: string;              // Tên phòng
+    gameType: GameType;        // Loại game
+    state: RoomState;          // Trạng thái phòng
+    maxPlayers: number;        // Số người tối đa
+    players: PlayerInfo[];     // Danh sách người chơi
+    hostId: string;            // ID của host
+    createdAt: number;         // Timestamp tạo phòng
+    gameConfig: Record<string, unknown>; // Config game (ví dụ: số đĩa Hanoi)
+}
+
+/**
+ * GameProgress - Tiến trình game của player
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Lưu trữ tiến trình chơi của từng người chơi.
+ * Dùng để so sánh và xếp hạng.
+ */
+export interface GameProgress {
+    playerId: string;          // ID người chơi
+    moves: number;             // Số bước đã đi
+    timeElapsed: number;       // Thời gian đã chơi (ms)
+    completed: boolean;        // Đã hoàn thành chưa
+    finishedAt: number | null; // Timestamp hoàn thành
+    gameState: unknown;        // State cụ thể của game (encoding cho Hanoi)
+}
+
+/**
+ * MessageType - Loại message
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Enum định nghĩa các loại message trong protocol.
+ */
+export enum MessageType {
+    // Room management
+    ROOM_CREATED = 'ROOM_CREATED',
+    PLAYER_JOINED = 'PLAYER_JOINED',
+    PLAYER_LEFT = 'PLAYER_LEFT',
+    PLAYER_READY = 'PLAYER_READY',
+
+    // Game control
+    GAME_START = 'GAME_START',
+    GAME_UPDATE = 'GAME_UPDATE',
+    GAME_END = 'GAME_END',
+
+    // Connection
+    PING = 'PING',
+    PONG = 'PONG',
+
+    // Sync
+    STATE_SYNC = 'STATE_SYNC',
+    REQUEST_SYNC = 'REQUEST_SYNC'
+}
+
+/**
+ * RoomMessage - Message protocol
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Định nghĩa format chuẩn cho tất cả messages.
+ */
+export interface RoomMessage {
+    type: MessageType;         // Loại message
+    roomId: string;            // Room ID
+    senderId: string;          // ID người gửi
+    timestamp: number;         // Timestamp gửi
+    payload: unknown;          // Dữ liệu (type-specific)
+}
+
+/* =============================================================================
+   STORE STATE - Trạng thái Store
+   ============================================================================= */
+
+/**
+ * MultiplayerState - State của Multiplayer Store
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Định nghĩa toàn bộ state quản lý multiplayer.
  */
 export interface MultiplayerState {
-  self: { id: string; name: string };
-  status: 'disconnected' | 'connected';
-  role: MultiplayerRole | null;
+    // Connection state
+    connected: boolean;        // Đã kết nối worker chưa
+    worker: Worker | null;     // Web Worker instance
 
-  room: RoomMeta | null;
-  players: Record<string, RoomPlayer>;
-  gamePhase: 'lobby' | 'in_game' | 'results';
-  gameStartedAt: number | null;
+    // Current room
+    currentRoom: RoomInfo | null; // Phòng hiện tại
+    myPlayerId: string | null;    // ID của mình
 
-  publicRooms: PublicRoomSummary[];
+    // Game progress
+    gameProgress: Map<string, GameProgress>; // Progress của tất cả players
+
+    // UI state
+    showRoomList: boolean;     // Hiển thị danh sách phòng
+    showCreateRoom: boolean;   // Hiển thị form tạo phòng
+    showJoinRoom: boolean;     // Hiển thị form join phòng
 }
 
 /**
- * MultiplayerActions - Actions của store
- *
- * LIFECYCLE:
- * - initSelf(): initialize player identity
- *
- * ROOM MANAGEMENT:
- * - loadPublicRooms(): refresh room list
- * - createRoom(): tạo phòng mới
- * - joinRoom(): tham gia phòng
- * - leaveRoom(): rời phòng
- *
- * GAME ACTIONS:
- * - setReady(): toggle ready status
- * - startGame(): host bắt đầu game
- * - updateHanoiProgress(): sync progress
- *
- * INTERNAL:
- * - _handleMessage(): process incoming messages
+ * MultiplayerActions - Actions của Store
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Định nghĩa các hàm thay đổi state và logic.
  */
 export interface MultiplayerActions {
-  initSelf: () => void;
+    // Connection
+    initWorker: () => void;
+    disconnectWorker: () => void;
 
-  loadPublicRooms: () => void;
-  createRoom: (input: {
-    name: string;
-    maxPlayers: number;
-    gameId?: GameId;
-    hanoiDisks?: number;
-    gridRows?: number;
-    gridCols?: number;
-    landRatio?: number;
-  }) => void;
-  joinRoom: (roomId: string) => void;
-  leaveRoom: () => void;
+    // Room management
+    createRoom: (name: string, gameType: GameType, config: Record<string, unknown>) => void;
+    joinRoom: (roomId: string, playerName: string) => void;
+    leaveRoom: () => void;
 
-  setReady: (ready: boolean) => void;
-  startGame: () => void;
+    // Player actions
+    setReady: (ready: boolean) => void;
+    startGame: () => void;
 
-  // Game-specific progress updates
-  updateHanoiProgress: (progress: {
-    encoding: number;
-    moves: number;
-    completed: boolean;
-    finishedAt: number | null;
-  }) => void;
+    // Game updates
+    updateProgress: (progress: Partial<GameProgress>) => void;
+    broadcastGameState: (gameState: unknown) => void;
 
-  updateMazeProgress: (progress: {
-    position: { row: number; col: number };
-    moves: number;
-    completed: boolean;
-    finishedAt: number | null;
-  }) => void;
+    // Message handling
+    handleMessage: (message: RoomMessage) => void;
 
-  updateFloodProgress: (progress: {
-    scores: number[];
-    currentPlayer: number;
-    completed: boolean;
-    finishedAt: number | null;
-  }) => void;
-
-  updateIslandProgress: (progress: {
-    markedIslands: number;
-    answer: number | null;
-    correct: boolean | null;
-    finishedAt: number | null;
-  }) => void;
-
-  _handleMessage: (msg: RoomMessage) => void;
+    // UI
+    toggleRoomList: () => void;
+    toggleCreateRoom: () => void;
+    toggleJoinRoom: () => void;
 }
 
-type MultiplayerStore = MultiplayerState & MultiplayerActions;
-
 /* =============================================================================
-   MESSAGE PROTOCOL - Giao thức tin nhắn
+   HELPER FUNCTIONS - Hàm tiện ích
    ============================================================================= */
 
 /**
- * RoomMessage - Union type cho tất cả message types
- *
- * PROTOCOL DESIGN:
- * - Mỗi message có type field để discriminate
- * - roomId để filter messages (chỉ xử lý room của mình)
- * - sentAt để ordering và debugging
- *
- * MESSAGE TYPES:
- *
- * HELLO:
- * - Client gửi khi muốn join room
- * - Host nhận và add player
- *
- * WELCOME:
- * - Host gửi cho client mới join
- * - Chứa room meta và roster
- *
- * ROSTER_UPDATE:
- * - Host broadcast khi roster thay đổi
- * - All clients update local roster
- *
- * PLAYER_READY:
- * - Player broadcast khi toggle ready
- *
- * START_GAME:
- * - Host broadcast khi bắt đầu game
- *
- * HANOI_PROGRESS:
- * - Player broadcast game progress
- * - Dùng cho live scoreboard
- *
- * PING:
- * - Heartbeat để detect online/offline
- *
- * LEAVE:
- * - Player broadcast khi rời phòng
+ * generateId - Tạo UUID đơn giản
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Tạo ID duy nhất cho room và player.
+ * 
+ * THUẬT TOÁN (Algorithm):
+ * - Sử dụng crypto.randomUUID() nếu có
+ * - Fallback: timestamp + random
+ * 
+ * @returns UUID string
  */
-type RoomMessage =
-  | {
-    type: 'HELLO';
-    roomId: string;
-    fromPlayer: { id: string; name: string };
-    sentAt: number;
-  }
-  | {
-    type: 'WELCOME';
-    roomId: string;
-    targetPlayerId: string;
-    room: RoomMeta;
-    players: Record<string, RoomPlayer>;
-    sentAt: number;
-  }
-  | {
-    type: 'ROSTER_UPDATE';
-    roomId: string;
-    players: Record<string, RoomPlayer>;
-    sentAt: number;
-  }
-  | {
-    type: 'PLAYER_READY';
-    roomId: string;
-    playerId: string;
-    ready: boolean;
-    sentAt: number;
-  }
-  | {
-    type: 'START_GAME';
-    roomId: string;
-    startedAt: number;
-    sentAt: number;
-  }
-  | {
-    type: 'HANOI_PROGRESS';
-    roomId: string;
-    playerId: string;
-    progress: RoomPlayer['hanoi'];
-    sentAt: number;
-  }
-  | {
-    type: 'MAZE_PROGRESS';
-    roomId: string;
-    playerId: string;
-    progress: RoomPlayer['maze'];
-    sentAt: number;
-  }
-  | {
-    type: 'FLOOD_PROGRESS';
-    roomId: string;
-    playerId: string;
-    progress: RoomPlayer['flood'];
-    sentAt: number;
-  }
-  | {
-    type: 'ISLAND_PROGRESS';
-    roomId: string;
-    playerId: string;
-    progress: RoomPlayer['island'];
-    sentAt: number;
-  }
-  | {
-    type: 'PING';
-    roomId: string;
-    playerId: string;
-    sentAt: number;
-  }
-  | {
-    type: 'LEAVE';
-    roomId: string;
-    playerId: string;
-    sentAt: number;
-  };
-
-/* =============================================================================
-   CONSTANTS - Hằng số
-   ============================================================================= */
-
-/**
- * PUBLIC_ROOMS_KEY - LocalStorage key cho room discovery
- *
- * PURPOSE:
- * Cho phép các tabs cùng browser "see" nhau mà không cần server.
- */
-const PUBLIC_ROOMS_KEY = 'algoquest_public_rooms_v1';
-
-/* =============================================================================
-   UTILITY FUNCTIONS - Hàm tiện ích
-   ============================================================================= */
-
-/**
- * now - Get current timestamp
- *
- * PURPOSE:
- * Wrapper để dễ mock trong tests.
- */
-const now = () => Date.now();
-
-/**
- * generateId - Tạo random ID 6 ký tự
- *
- * ALGORITHM:
- * 1. Random số từ 0 đến 36^6 - 1
- * 2. Convert sang base36 (0-9, a-z)
- * 3. Convert sang uppercase
- * 4. Pad với 0 nếu < 6 chars
- *
- * RESULT: String như "0A12BC"
- *
- * COLLISION PROBABILITY:
- * - 36^6 = ~2 billion combinations
- * - Very low collision cho demo use case
- */
-const generateId = () => {
-  const rand = Math.floor(Math.random() * 36 ** 6);
-  return rand.toString(36).toUpperCase().padStart(6, '0');
-};
-
-/**
- * normalizeRoomId - Chuẩn hóa room ID
- *
- * PURPOSE:
- * - Trim whitespace
- * - Convert to uppercase
- * - Cho phép user nhập "abc123" và match với "ABC123"
- */
-const normalizeRoomId = (roomId: string) => roomId.trim().toUpperCase();
-
-/**
- * safeParseJson - Parse JSON an toàn
- *
- * PURPOSE:
- * Tránh crash khi localStorage chứa dữ liệu không hợp lệ
- *
- * RETURNS:
- * - Parsed object nếu valid
- * - null nếu invalid hoặc empty
- */
-const safeParseJson = <T,>(raw: string | null): T | null => {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
-};
-
-/* =============================================================================
-   LOCALSTORAGE DISCOVERY - Khám phá phòng qua localStorage
-   ============================================================================= */
-
-/**
- * loadRoomsFromStorage - Load danh sách phòng từ localStorage
- *
- * FLOW:
- * 1. Get raw string from localStorage
- * 2. Parse JSON safely
- * 3. Return empty array if invalid
- */
-const loadRoomsFromStorage = (): PublicRoomSummary[] => {
-  const parsed = safeParseJson<PublicRoomSummary[]>(localStorage.getItem(PUBLIC_ROOMS_KEY));
-  return Array.isArray(parsed) ? parsed : [];
-};
-
-/**
- * saveRoomsToStorage - Save danh sách phòng vào localStorage
- *
- * TRIGGERS 'storage' EVENT:
- * Other tabs listening 'storage' event sẽ thấy update.
- */
-const saveRoomsToStorage = (rooms: PublicRoomSummary[]) => {
-  localStorage.setItem(PUBLIC_ROOMS_KEY, JSON.stringify(rooms));
-};
-
-/**
- * upsertPublicRoom - Thêm hoặc update phòng trong danh sách
- *
- * ALGORITHM:
- * 1. Load current list
- * 2. Remove existing entry with same id (if any)
- * 3. Add new entry at front (MRU order)
- * 4. Limit to 30 entries (prevent unbounded growth)
- * 5. Save back
- */
-const upsertPublicRoom = (summary: PublicRoomSummary) => {
-  const rooms = loadRoomsFromStorage();
-  const next = [
-    summary,
-    ...rooms.filter((r) => r.id !== summary.id),
-  ].slice(0, 30);
-  saveRoomsToStorage(next);
-};
-
-/**
- * removePublicRoom - Xóa phòng khỏi danh sách
- *
- * USAGE:
- * Called when host leaves room.
- */
-const removePublicRoom = (roomId: string) => {
-  const rooms = loadRoomsFromStorage();
-  saveRoomsToStorage(rooms.filter((r) => r.id !== roomId));
-};
-
-/* =============================================================================
-   TRANSPORT LAYER - Lớp truyền tải
-   ============================================================================= */
-
-/**
- * Module-level variables for transport
- *
- * Tại sao không để trong store?
- * - BroadcastChannel là mutable instance, không fit Zustand immutable pattern
- * - Timers cần persist across render cycles
- * - Cleanup dễ hơn khi tách biệt
- */
-let channel: BroadcastChannel | null = null;
-let heartbeatTimer: number | null = null;
-let discoveryTimer: number | null = null;
-
-/**
- * post - Gửi message qua BroadcastChannel
- *
- * SAFETY:
- * Check channel exists trước khi post.
- */
-const post = (msg: RoomMessage) => {
-  channel?.postMessage(msg);
-};
-
-/**
- * closeTransport - Đóng connection và cleanup
- *
- * ACTIONS:
- * 1. Clear heartbeat timer
- * 2. Clear discovery timer
- * 3. Close BroadcastChannel
- */
-const closeTransport = () => {
-  if (heartbeatTimer) window.clearInterval(heartbeatTimer);
-  if (discoveryTimer) window.clearInterval(discoveryTimer);
-  heartbeatTimer = null;
-  discoveryTimer = null;
-
-  if (channel) {
-    channel.close();
-    channel = null;
-  }
-};
-
-/**
- * connectTransport - Mở connection mới
- *
- * ALGORITHM:
- * 1. Close existing connection (if any)
- * 2. Create new BroadcastChannel với room-specific name
- *
- * CHANNEL NAME:
- * Format: "algoquest_room_{roomId}"
- * Mỗi room có channel riêng để không nhận message từ room khác.
- */
-const connectTransport = (roomId: string) => {
-  closeTransport();
-  channel = new BroadcastChannel(`algoquest_room_${roomId}`);
-};
-
-/* =============================================================================
-   ZUSTAND STORE - State management
-   ============================================================================= */
-
-/**
- * useMultiplayerStore - Zustand store cho multiplayer
- *
- * USAGE:
- * const { status, createRoom, joinRoom } = useMultiplayerStore();
- *
- * REACTIVE:
- * Component sẽ re-render khi state thay đổi.
- */
-export const useMultiplayerStore = create<MultiplayerStore>((set, get) => ({
-  /* =========================================================================
-     INITIAL STATE - Trạng thái ban đầu
-     ========================================================================= */
-
-  self: { id: generateId(), name: 'Apprentice' },
-  status: 'disconnected',
-  role: null,
-
-  room: null,
-  players: {},
-  gamePhase: 'lobby',
-  gameStartedAt: null,
-
-  publicRooms: [],
-
-  /* =========================================================================
-     ACTIONS - Các hành động
-     ========================================================================= */
-
-  /**
-   * initSelf - Khởi tạo identity của player
-   *
-   * PURPOSE:
-   * Sync name từ playerStore (global player profile).
-   *
-   * WHEN:
-   * Call khi component mount.
-   */
-  initSelf: () => {
-    const { name } = usePlayerStore.getState();
-    set((state) => ({
-      self: {
-        ...state.self,
-        name: name || 'Apprentice'
-      }
-    }));
-  },
-
-  /**
-   * loadPublicRooms - Load và filter danh sách phòng
-   *
-   * FILTER:
-   * Chỉ giữ phòng updated trong 15s qua.
-   * Phòng cũ hơn được coi là "dead".
-   */
-  loadPublicRooms: () => {
-    const rooms = loadRoomsFromStorage();
-    const fresh = rooms.filter((r) => now() - r.updatedAt <= 15_000);
-    set({ publicRooms: fresh });
-  },
-
-  /**
-   * createRoom - Khởi tạo phòng chơi mới (Host side)
-   *
-   * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   * CHI TIẾT CHỨC NĂNG (Detailed Functionality):
-   * Hàm này đóng vai trò là "Constructor" cho một session multiplayer.
-   * Nó thiết lập môi trường cho phòng, bao gồm ID, settings, và người chơi đầu tiên (host).
-   *
-   * FLOW CHI TIẾT (Step-by-Step Flow):
-   * 1. [Identity] Lấy thông tin user hiện tại (self) từ store.
-   * 2. [ID Generation] Tạo Room ID ngẫu nhiên (6 ký tự, uppercase) đảm bảo tính unique (xác suất trùng thấp).
-   * 3. [Meta Setup] Cấu hình metadata cho phòng:
-   *    - Game type (Hanoi, Maze, etc.)
-   *    - Max players limit
-   *    - Game-specific settings (số đĩa, size lưới...)
-   * 4. [Host Setup] Tạo record Player cho host, đánh dấu isHost=true.
-   * 5. [State Update] Commit vào store (Zustand) để UI render lobby.
-   * 6. [Transport] Khởi tạo BroadcastChannel để lắng nghe người khác.
-   * 7. [Listeners] Đăng ký handler cho tin nhắn đến (onmessage).
-   * 8. [Heartbeat] Bắt đầu gửi tín hiệu PING định kỳ (Keep-alive).
-   *
-   * KỸ THUẬT & THUẬT TOÁN (Techniques & Algorithms):
-   * - **UUID Shortening**: Dùng Base36 string generation `Math.random().toString(36)` để tạo ID ngắn gọn, dễ chia sẻ, thay vì UUID v4 dài dòng.
-   * - **Optimistic UI**: Cập nhật UI ngay lập tức trước khi có bất kỳ network acknowledgement nào (vì là Host/Local).
-   * - **Dependency Injection**: Tiêm settings vào room meta để các clients khác có thể đọc được cấu hình game.
-   *
-   * SO SÁNH (Comparison):
-   * - So với **Server-Side Room**: Ở đây room state nằm trên máy Host. Nếu Host F5, phòng bay màu. Server-side thì persistent hơn.
-   * - So với **P2P Hash**: ID ngắn dễ đọc hơn hash dài, nhưng cần đảm bảo entropy đủ lớn.
-   *
-   * ƯU/NHƯỢC ĐIỂM (Pros/Cons):
-   * ✅ **Ưu**: Tức thì (Zero latency), không tốn server cost.
-   * ❌ **Nhược**: Host là Single Point of Failure (SPOF). Host out = Room out.
-   *
-   * @param input - Các tham số cấu hình phòng từ UI
-   */
-  createRoom: (input) => {
-    const roomId = normalizeRoomId(generateId());
-    const createdAt = now();
-    const self = get().self;
-
-    // 1. Create room metadata (Metadata phòng)
-    const room: RoomMeta = {
-      id: roomId,
-      name: input.name.trim() || `Phòng ${roomId}`,
-      hostId: self.id,
-      gameId: input.gameId || 'hanoi',
-      maxPlayers: Math.max(2, Math.min(8, input.maxPlayers)),
-      settings: {
-        hanoiDisks: Math.max(3, Math.min(8, input.hanoiDisks || 5)),
-        gridRows: Math.max(8, Math.min(20, input.gridRows || 15)),
-        gridCols: Math.max(8, Math.min(20, input.gridCols || 15)),
-        landRatio: Math.max(0.2, Math.min(0.6, input.landRatio || 0.4))
-      },
-      createdAt
-    };
-
-    // 2. Create host player entry
-    const hostPlayer: RoomPlayer = {
-      id: self.id,
-      name: self.name,
-      isHost: true,
-      ready: false,
-      lastSeen: now(),
-      hanoi: {
-        encoding: 0,
-        moves: 0,
-        completed: false,
-        finishedAt: null
-      }
-    };
-
-    // 3. Update store state
-    set({
-      status: 'connected',
-      role: 'host',
-      room,
-      players: { [hostPlayer.id]: hostPlayer },
-      gamePhase: 'lobby',
-      gameStartedAt: null
-    });
-
-    // 4. Connect transport
-    connectTransport(roomId);
-
-    // 5. Setup message handler
-    channel!.onmessage = (event) => {
-      const msg = event.data as RoomMessage;
-      get()._handleMessage(msg);
-    };
-
-    // 6. Heartbeat timer - gửi PING mỗi 2s
-    heartbeatTimer = window.setInterval(() => {
-      const state = get();
-      if (!state.room) return;
-
-      // Send PING
-      post({ type: 'PING', roomId: state.room.id, playerId: state.self.id, sentAt: now() });
-
-      // Update own lastSeen
-      set((s) => ({
-        players: {
-          ...s.players,
-          [s.self.id]: {
-            ...s.players[s.self.id],
-            lastSeen: now()
-          }
-        }
-      }));
-    }, 2000);
-
-    // 7. Discovery timer - update localStorage mỗi 3s
-    discoveryTimer = window.setInterval(() => {
-      const state = get();
-      if (!state.room || state.role !== 'host') return;
-
-      upsertPublicRoom({
-        id: state.room.id,
-        name: state.room.name,
-        gameId: state.room.gameId,
-        maxPlayers: state.room.maxPlayers,
-        settings: state.room.settings,
-        updatedAt: now()
-      });
-    }, 3000);
-
-    // 8. Initial publish to localStorage
-    upsertPublicRoom({
-      id: room.id,
-      name: room.name,
-      gameId: room.gameId,
-      maxPlayers: room.maxPlayers,
-      settings: room.settings,
-      updatedAt: now()
-    });
-
-    // 9. Broadcast initial roster
-    post({
-      type: 'ROSTER_UPDATE',
-      roomId,
-      players: get().players,
-      sentAt: now()
-    });
-  },
-
-  /**
-   * joinRoom - Tham gia phòng có sẵn
-   *
-   * FLOW:
-   * 1. Normalize room ID
-   * 2. Update store state (optimistic)
-   * 3. Connect transport
-   * 4. Setup message handler
-   * 5. Setup heartbeat
-   * 6. Send HELLO message
-   * 7. Wait for WELCOME from host
-   *
-   * @param rawRoomId - Room ID (có thể chưa normalized)
-   */
-  joinRoom: (rawRoomId) => {
-    const roomId = normalizeRoomId(rawRoomId);
-    const self = get().self;
-
-    // Set connecting state
-    set({
-      status: 'connected',
-      role: 'client',
-      room: null, // Will be set when WELCOME received
-      players: {},
-      gamePhase: 'lobby',
-      gameStartedAt: null
-    });
-
-    // Connect transport
-    connectTransport(roomId);
-
-    // Setup message handler
-    channel!.onmessage = (event) => {
-      const msg = event.data as RoomMessage;
-      get()._handleMessage(msg);
-    };
-
-    // Heartbeat timer
-    heartbeatTimer = window.setInterval(() => {
-      const state = get();
-      if (!state.role || state.status !== 'connected') return;
-      post({ type: 'PING', roomId, playerId: state.self.id, sentAt: now() });
-    }, 2000);
-
-    // Send HELLO to request join
-    post({
-      type: 'HELLO',
-      roomId,
-      fromPlayer: { id: self.id, name: self.name },
-      sentAt: now()
-    });
-  },
-
-  /**
-   * leaveRoom - Rời phòng hiện tại
-   *
-   * ACTIONS:
-   * 1. Send LEAVE message
-   * 2. If host: remove from localStorage
-   * 3. Close transport
-   * 4. Reset store state
-   */
-  leaveRoom: () => {
-    const state = get();
-
-    if (state.room) {
-      // Broadcast leave
-      post({ type: 'LEAVE', roomId: state.room.id, playerId: state.self.id, sentAt: now() });
-
-      // If host, remove from discovery
-      if (state.role === 'host') removePublicRoom(state.room.id);
+const generateId = (): string => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
     }
+    // Fallback cho browsers cũ
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
 
-    // Cleanup
-    closeTransport();
-
-    // Reset state
-    set({
-      status: 'disconnected',
-      role: null,
-      room: null,
-      players: {},
-      gamePhase: 'lobby',
-      gameStartedAt: null
-    });
-  },
-
-  /**
-   * setReady - Toggle ready status trong lobby
-   *
-   * FLOW:
-   * 1. Update local state
-   * 2. Broadcast PLAYER_READY
-   */
-  setReady: (ready) => {
-    const state = get();
-    if (!state.room) return;
-
-    // Update local
-    set((s) => ({
-      players: {
-        ...s.players,
-        [s.self.id]: {
-          ...s.players[s.self.id],
-          ready
-        }
-      }
-    }));
-
-    // Broadcast
-    post({
-      type: 'PLAYER_READY',
-      roomId: state.room.id,
-      playerId: state.self.id,
-      ready,
-      sentAt: now()
-    });
-  },
-
-  /**
-   * startGame - Host bắt đầu game
-   *
-   * GUARD:
-   * - Must be host
-   * - Must have room
-   *
-   * ACTIONS:
-   * 1. Set gamePhase = 'in_game'
-   * 2. Set gameStartedAt for timer
-   * 3. Broadcast START_GAME
-   */
-  startGame: () => {
-    const state = get();
-    if (!state.room || state.role !== 'host') return;
-
-    const startedAt = now();
-
-    set({ gamePhase: 'in_game', gameStartedAt: startedAt });
-
-    post({ type: 'START_GAME', roomId: state.room.id, startedAt, sentAt: now() });
-  },
-
-  /**
-   * updateHanoiProgress - Gửi progress update
-   *
-   * PURPOSE:
-   * Sync game progress với other players cho live scoreboard.
-   *
-   * FLOW:
-   * 1. Update local player state
-   * 2. Broadcast HANOI_PROGRESS
-   */
-  updateHanoiProgress: (progress) => {
-    const state = get();
-    if (!state.room) return;
-
-    // Update local
-    set((s) => ({
-      players: {
-        ...s.players,
-        [s.self.id]: {
-          ...s.players[s.self.id],
-          hanoi: {
-            encoding: progress.encoding,
-            moves: progress.moves,
-            completed: progress.completed,
-            finishedAt: progress.finishedAt
-          },
-          lastSeen: now()
-        }
-      }
-    }));
-
-    // Broadcast
-    post({
-      type: 'HANOI_PROGRESS',
-      roomId: state.room.id,
-      playerId: state.self.id,
-      progress: {
-        encoding: progress.encoding,
-        moves: progress.moves,
-        completed: progress.completed,
-        finishedAt: progress.finishedAt
-      },
-      sentAt: now()
-    });
-  },
-
-  /**
-   * updateMazeProgress - Gửi Maze game progress
-   */
-  updateMazeProgress: (progress) => {
-    const state = get();
-    if (!state.room) return;
-
-    set((s) => ({
-      players: {
-        ...s.players,
-        [s.self.id]: {
-          ...s.players[s.self.id],
-          maze: {
-            position: progress.position,
-            moves: progress.moves,
-            completed: progress.completed,
-            finishedAt: progress.finishedAt
-          },
-          lastSeen: now()
-        }
-      }
-    }));
-
-    post({
-      type: 'MAZE_PROGRESS',
-      roomId: state.room.id,
-      playerId: state.self.id,
-      progress,
-      sentAt: now()
-    });
-  },
-
-  /**
-   * updateFloodProgress - Gửi Flood Fill game progress
-   */
-  updateFloodProgress: (progress) => {
-    const state = get();
-    if (!state.room) return;
-
-    set((s) => ({
-      players: {
-        ...s.players,
-        [s.self.id]: {
-          ...s.players[s.self.id],
-          flood: {
-            scores: progress.scores,
-            currentPlayer: progress.currentPlayer,
-            completed: progress.completed,
-            finishedAt: progress.finishedAt
-          },
-          lastSeen: now()
-        }
-      }
-    }));
-
-    post({
-      type: 'FLOOD_PROGRESS',
-      roomId: state.room.id,
-      playerId: state.self.id,
-      progress,
-      sentAt: now()
-    });
-  },
-
-  /**
-   * updateIslandProgress - Gửi Island game progress
-   */
-  updateIslandProgress: (progress) => {
-    const state = get();
-    if (!state.room) return;
-
-    set((s) => ({
-      players: {
-        ...s.players,
-        [s.self.id]: {
-          ...s.players[s.self.id],
-          island: {
-            markedIslands: progress.markedIslands,
-            answer: progress.answer,
-            correct: progress.correct,
-            finishedAt: progress.finishedAt
-          },
-          lastSeen: now()
-        }
-      }
-    }));
-
-    post({
-      type: 'ISLAND_PROGRESS',
-      roomId: state.room.id,
-      playerId: state.self.id,
-      progress,
-      sentAt: now()
-    });
-  },
-
-  /**
- * _handleMessage - Xử lý incoming messages
- *
- * PATTERN: Message Handler Pattern
- * - Switch trên message type
- * - Guard clause: check roomId match
- * - Update store state accordingly
- *
- * VISIBILITY:
- * Prefixed với _ để indicate internal use.
- * Không nên call từ UI code.
+/**
+ * generateRoomCode - Tạo room code ngắn gọn
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Tạo code dễ nhớ, dễ chia sẻ (6 ký tự).
+ * 
+ * THUẬT TOÁN (Algorithm):
+ * - Chỉ dùng chữ hoa và số
+ * - Tránh ký tự dễ nhầm (0, O, I, 1)
+ * 
+ * @returns Room code (6 ký tự)
  */
-  _handleMessage: (msg: RoomMessage) => {
-    const state = get();
-
-    // Guard: Skip messages not for our room (except handshake messages)
-    if (msg.type !== 'HELLO' && msg.type !== 'WELCOME' && msg.type !== 'ROSTER_UPDATE') {
-      if (!state.room) return;
-      if (msg.roomId !== state.room.id) return;
+const generateRoomCode = (): string => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Bỏ I, O, 0, 1
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    return code;
+};
 
-    switch (msg.type) {
-      /**
-       * HELLO - Client muốn join room
-       *
-       * HANDLER: Host only
-       *
-       * FLOW:
-       * 1. Check if we are host
-       * 2. Check room capacity
-       * 3. Add player to roster
-       * 4. Send WELCOME to joiner
-       * 5. Broadcast ROSTER_UPDATE to all
-       */
-      case 'HELLO': {
-        if (state.role !== 'host' || !state.room) return;
-        if (msg.roomId !== state.room.id) return;
-        if (Object.keys(state.players).length >= state.room.maxPlayers) return;
+/* =============================================================================
+   ZUSTAND STORE - Tạo Store
+   ============================================================================= */
 
-        const joining = msg.fromPlayer;
+/**
+ * useMultiplayerStore - Multiplayer Store
+ * 
+ * CHỨC NĂNG (Purpose):
+ * Store chính quản lý toàn bộ multiplayer state và logic.
+ */
+export const useMultiplayerStore = create<MultiplayerState & MultiplayerActions>()(
+    persist(
+        (set, get) => ({
+            // ===== INITIAL STATE =====
+            connected: false,
+            worker: null,
+            currentRoom: null,
+            myPlayerId: null,
+            gameProgress: new Map(),
+            showRoomList: false,
+            showCreateRoom: false,
+            showJoinRoom: false,
 
-        // Create new player entry
-        const nextPlayers: Record<string, RoomPlayer> = {
-          ...state.players,
-          [joining.id]: {
-            id: joining.id,
-            name: joining.name,
-            isHost: false,
-            ready: false,
-            lastSeen: now(),
-            hanoi: {
-              encoding: 0,
-              moves: 0,
-              completed: false,
-              finishedAt: null
-            }
-          }
-        };
+            // ===== CONNECTION ACTIONS =====
 
-        set({ players: nextPlayers });
+            /**
+             * initWorker - Khởi tạo Web Worker
+             * 
+             * FLOW:
+             * 1. Tạo Worker instance từ multiplayerWorker.ts
+             * 2. Setup message handler
+             * 3. Set connected = true
+             * 
+             * KỸ THUẬT (Technique):
+             * - Worker chạy trong thread riêng
+             * - Không block UI thread
+             * - Tự động cleanup khi component unmount
+             */
+            initWorker: () => {
+                const state = get();
+                if (state.worker) return; // Đã init rồi
 
-        // Send WELCOME to joiner
-        post({
-          type: 'WELCOME',
-          roomId: state.room.id,
-          targetPlayerId: joining.id,
-          room: state.room,
-          players: nextPlayers,
-          sentAt: now()
-        });
+                try {
+                    // Tạo worker từ file
+                    const worker = new Worker(
+                        new URL('../workers/multiplayerWorker.ts', import.meta.url),
+                        { type: 'module' }
+                    );
 
-        // Broadcast updated roster
-        post({
-          type: 'ROSTER_UPDATE',
-          roomId: state.room.id,
-          players: nextPlayers,
-          sentAt: now()
-        });
-        return;
-      }
+                    // Setup message handler
+                    worker.onmessage = (event) => {
+                        const message = event.data;
 
-      /**
-       * WELCOME - Host chào đón client mới
-       *
-       * HANDLER: Client only
-       *
-       * GUARD: Check targetPlayerId là mình
-       *
-       * ACTIONS:
-       * - Set room metadata
-       * - Set players roster
-       */
-      case 'WELCOME': {
-        if (state.role !== 'client') return;
-        if (msg.targetPlayerId !== state.self.id) return;
+                        switch (message.type) {
+                            case 'CONNECTED':
+                                set({ connected: true });
+                                console.log('[Multiplayer] Worker connected:', message.channelName);
+                                break;
 
-        set({
-          room: msg.room,
-          players: msg.players,
-          gamePhase: 'lobby',
-          gameStartedAt: null
-        });
-        return;
-      }
+                            case 'DISCONNECTED':
+                                set({ connected: false });
+                                console.log('[Multiplayer] Worker disconnected');
+                                break;
 
-      /**
-       * ROSTER_UPDATE - Host broadcast roster changes
-       *
-       * HANDLER: All clients
-       *
-       * ACTIONS:
-       * - Replace local roster with received
-       */
-      case 'ROSTER_UPDATE': {
-        if (!state.room) {
-          if (state.role === 'client') return;
-          return;
+                            case 'RECEIVED':
+                                // Xử lý message nhận được
+                                get().handleMessage(message.message as RoomMessage);
+                                break;
+
+                            case 'ERROR':
+                                console.error('[Multiplayer] Worker error:', message.error);
+                                break;
+
+                            case 'HEARTBEAT_SENT':
+                                // Heartbeat thành công (optional logging)
+                                break;
+                        }
+                    };
+
+                    worker.onerror = (error) => {
+                        console.error('[Multiplayer] Worker error:', error);
+                        set({ connected: false });
+                    };
+
+                    set({ worker, connected: false }); // Connected sẽ true khi nhận CONNECTED message
+                } catch (error) {
+                    console.error('[Multiplayer] Failed to init worker:', error);
+                }
+            },
+
+            /**
+             * disconnectWorker - Ngắt kết nối Worker
+             * 
+             * FLOW:
+             * 1. Gửi STOP message đến worker
+             * 2. Terminate worker
+             * 3. Reset state
+             */
+            disconnectWorker: () => {
+                const state = get();
+                if (!state.worker) return;
+
+                try {
+                    state.worker.postMessage({ type: 'STOP' });
+                    state.worker.terminate();
+                    set({
+                        worker: null,
+                        connected: false,
+                        currentRoom: null
+                    });
+                } catch (error) {
+                    console.error('[Multiplayer] Failed to disconnect worker:', error);
+                }
+            },
+
+            // ===== ROOM MANAGEMENT =====
+
+            /**
+             * createRoom - Tạo phòng mới
+             * 
+             * FLOW:
+             * 1. Generate room ID và player ID
+             * 2. Tạo RoomInfo object
+             * 3. Init worker với room channel
+             * 4. Broadcast ROOM_CREATED
+             * 5. Set currentRoom
+             * 
+             * @param name - Tên phòng
+             * @param gameType - Loại game
+             * @param config - Config game
+             */
+            createRoom: (name, gameType, config) => {
+                const state = get();
+
+                // Generate IDs
+                const roomId = generateRoomCode();
+                const playerId = generateId();
+
+                // Tạo player info
+                const hostPlayer: PlayerInfo = {
+                    id: playerId,
+                    name: 'Host', // TODO: Lấy từ playerStore
+                    isHost: true,
+                    isReady: false,
+                    lastHeartbeat: Date.now()
+                };
+
+                // Tạo room info
+                const room: RoomInfo = {
+                    id: roomId,
+                    name,
+                    gameType,
+                    state: RoomState.WAITING,
+                    maxPlayers: 4,
+                    players: [hostPlayer],
+                    hostId: playerId,
+                    createdAt: Date.now(),
+                    gameConfig: config
+                };
+
+                // Init worker nếu chưa có
+                if (!state.worker) {
+                    get().initWorker();
+                }
+
+                // Wait for worker ready
+                setTimeout(() => {
+                    const worker = get().worker;
+                    if (!worker) {
+                        console.error('[Multiplayer] Worker not ready');
+                        alert('Lỗi: Không thể khởi tạo kết nối. Vui lòng tải lại trang.');
+                        return;
+                    }
+
+                    // Init worker với room channel
+                    worker.postMessage({
+                        type: 'INIT',
+                        roomId,
+                        playerId,
+                        channelName: `arena-${roomId}`
+                    });
+
+                    // Broadcast ROOM_CREATED
+                    const message: RoomMessage = {
+                        type: MessageType.ROOM_CREATED,
+                        roomId,
+                        senderId: playerId,
+                        timestamp: Date.now(),
+                        payload: room
+                    };
+
+                    worker.postMessage({
+                        type: 'SEND',
+                        message
+                    });
+
+                    // Update state
+                    set({
+                        currentRoom: room,
+                        myPlayerId: playerId,
+                        showCreateRoom: false
+                    });
+
+                    console.log('[Multiplayer] Room created:', roomId);
+                }, 500);
+            },
+
+            /**
+             * joinRoom - Tham gia phòng
+             * 
+             * FLOW:
+             * 1. Validate room code
+             * 2. Generate player ID
+             * 3. Init worker với room channel
+             * 4. Broadcast PLAYER_JOINED
+             * 5. Request STATE_SYNC từ host
+             * 
+             * @param roomId - Room code
+             * @param playerName - Tên người chơi
+             */
+            joinRoom: (roomId, playerName) => {
+                const state = get();
+
+                // Validate room code
+                if (!roomId || roomId.length !== 6) {
+                    console.error('[Multiplayer] Invalid room code');
+                    return;
+                }
+
+                const playerId = generateId();
+
+                // Init worker nếu chưa có
+                if (!state.worker) {
+                    get().initWorker();
+                }
+
+                setTimeout(() => {
+                    const worker = get().worker;
+                    if (!worker) {
+                        console.error('[Multiplayer] Worker not ready');
+                        alert('Lỗi: Không thể khởi tạo kết nối. Vui lòng tải lại trang.');
+                        return;
+                    }
+
+                    // Init worker với room channel
+                    worker.postMessage({
+                        type: 'INIT',
+                        roomId,
+                        playerId,
+                        channelName: `arena-${roomId}`
+                    });
+
+                    // Tạo player info
+                    const playerInfo: PlayerInfo = {
+                        id: playerId,
+                        name: playerName,
+                        isHost: false,
+                        isReady: false,
+                        lastHeartbeat: Date.now()
+                    };
+
+                    // Broadcast PLAYER_JOINED
+                    const joinMessage: RoomMessage = {
+                        type: MessageType.PLAYER_JOINED,
+                        roomId,
+                        senderId: playerId,
+                        timestamp: Date.now(),
+                        payload: playerInfo
+                    };
+
+                    worker.postMessage({
+                        type: 'SEND',
+                        message: joinMessage
+                    });
+
+                    // Request sync từ host
+                    const syncRequest: RoomMessage = {
+                        type: MessageType.REQUEST_SYNC,
+                        roomId,
+                        senderId: playerId,
+                        timestamp: Date.now(),
+                        payload: null
+                    };
+
+                    worker.postMessage({
+                        type: 'SEND',
+                        message: syncRequest
+                    });
+
+                    // Update state (room sẽ được sync sau)
+                    set({
+                        myPlayerId: playerId,
+                        showJoinRoom: false
+                    });
+
+                    console.log('[Multiplayer] Joined room:', roomId);
+                }, 500);
+            },
+
+            /**
+             * leaveRoom - Rời phòng
+             * 
+             * FLOW:
+             * 1. Broadcast PLAYER_LEFT
+             * 2. Disconnect worker
+             * 3. Reset state
+             */
+            leaveRoom: () => {
+                const state = get();
+                if (!state.currentRoom || !state.myPlayerId) return;
+
+                const worker = state.worker;
+                if (worker) {
+                    // Broadcast PLAYER_LEFT
+                    const message: RoomMessage = {
+                        type: MessageType.PLAYER_LEFT,
+                        roomId: state.currentRoom.id,
+                        senderId: state.myPlayerId,
+                        timestamp: Date.now(),
+                        payload: null
+                    };
+
+                    worker.postMessage({
+                        type: 'SEND',
+                        message
+                    });
+                }
+
+                // Disconnect và reset
+                get().disconnectWorker();
+                set({
+                    currentRoom: null,
+                    myPlayerId: null,
+                    gameProgress: new Map()
+                });
+
+                console.log('[Multiplayer] Left room');
+            },
+
+            // ===== PLAYER ACTIONS =====
+
+            /**
+             * setReady - Đánh dấu sẵn sàng
+             * 
+             * @param ready - Trạng thái ready
+             */
+            setReady: (ready) => {
+                const state = get();
+                if (!state.currentRoom || !state.myPlayerId) return;
+
+                const message: RoomMessage = {
+                    type: MessageType.PLAYER_READY,
+                    roomId: state.currentRoom.id,
+                    senderId: state.myPlayerId,
+                    timestamp: Date.now(),
+                    payload: { ready }
+                };
+
+                state.worker?.postMessage({
+                    type: 'SEND',
+                    message
+                });
+
+                // Update local state
+                set((s) => ({
+                    currentRoom: s.currentRoom ? {
+                        ...s.currentRoom,
+                        players: s.currentRoom.players.map(p =>
+                            p.id === s.myPlayerId ? { ...p, isReady: ready } : p
+                        )
+                    } : null
+                }));
+            },
+
+            /**
+             * startGame - Bắt đầu game (chỉ host)
+             * 
+             * FLOW:
+             * 1. Check tất cả players ready
+             * 2. Broadcast GAME_START
+             * 3. Chuyển room state sang PLAYING
+             */
+            startGame: () => {
+                const state = get();
+                if (!state.currentRoom || !state.myPlayerId) return;
+
+                // Chỉ host mới start được
+                if (state.currentRoom.hostId !== state.myPlayerId) {
+                    console.error('[Multiplayer] Only host can start game');
+                    return;
+                }
+
+                // Check tất cả ready
+                const allReady = state.currentRoom.players.every(p => p.isReady || p.isHost);
+                if (!allReady) {
+                    console.error('[Multiplayer] Not all players ready');
+                    return;
+                }
+
+                const message: RoomMessage = {
+                    type: MessageType.GAME_START,
+                    roomId: state.currentRoom.id,
+                    senderId: state.myPlayerId,
+                    timestamp: Date.now(),
+                    payload: {
+                        startedAt: Date.now(),
+                        config: state.currentRoom.gameConfig
+                    }
+                };
+
+                state.worker?.postMessage({
+                    type: 'SEND',
+                    message
+                });
+
+                // Update local state
+                set((s) => ({
+                    currentRoom: s.currentRoom ? {
+                        ...s.currentRoom,
+                        state: RoomState.PLAYING
+                    } : null
+                }));
+            },
+
+            // ===== GAME UPDATES =====
+
+            /**
+             * updateProgress - Cập nhật tiến trình
+             * 
+             * @param progress - Partial progress update
+             */
+            updateProgress: (progress) => {
+                const state = get();
+                if (!state.currentRoom || !state.myPlayerId) return;
+
+                const currentProgress = state.gameProgress.get(state.myPlayerId) || {
+                    playerId: state.myPlayerId,
+                    moves: 0,
+                    timeElapsed: 0,
+                    completed: false,
+                    finishedAt: null,
+                    gameState: null
+                };
+
+                const updatedProgress: GameProgress = {
+                    ...currentProgress,
+                    ...progress
+                };
+
+                // Update local
+                const newProgress = new Map(state.gameProgress);
+                newProgress.set(state.myPlayerId, updatedProgress);
+                set({ gameProgress: newProgress });
+
+                // Broadcast
+                const message: RoomMessage = {
+                    type: MessageType.GAME_UPDATE,
+                    roomId: state.currentRoom.id,
+                    senderId: state.myPlayerId,
+                    timestamp: Date.now(),
+                    payload: updatedProgress
+                };
+
+                state.worker?.postMessage({
+                    type: 'SEND',
+                    message
+                });
+            },
+
+            /**
+             * broadcastGameState - Broadcast game state
+             * 
+             * @param gameState - State cụ thể của game
+             */
+            broadcastGameState: (gameState) => {
+                const state = get();
+                if (!state.currentRoom || !state.myPlayerId) return;
+
+                const message: RoomMessage = {
+                    type: MessageType.GAME_UPDATE,
+                    roomId: state.currentRoom.id,
+                    senderId: state.myPlayerId,
+                    timestamp: Date.now(),
+                    payload: { gameState }
+                };
+
+                state.worker?.postMessage({
+                    type: 'SEND',
+                    message
+                });
+            },
+
+            // ===== MESSAGE HANDLING =====
+
+            /**
+             * handleMessage - Xử lý message nhận được
+             * 
+             * FLOW:
+             * 1. Parse message type
+             * 2. Route đến handler tương ứng
+             * 3. Update state
+             * 
+             * @param message - RoomMessage nhận được
+             */
+            handleMessage: (message) => {
+                const state = get();
+
+                // Ignore messages từ chính mình (đã update local rồi)
+                if (message.senderId === state.myPlayerId) return;
+
+                switch (message.type) {
+                    case MessageType.ROOM_CREATED:
+                        // Không cần xử lý (chỉ host tạo)
+                        break;
+
+                    case MessageType.PLAYER_JOINED: {
+                        const playerInfo = message.payload as PlayerInfo;
+                        set((s) => ({
+                            currentRoom: s.currentRoom ? {
+                                ...s.currentRoom,
+                                players: [...s.currentRoom.players, playerInfo]
+                            } : null
+                        }));
+                        console.log('[Multiplayer] Player joined:', playerInfo.name);
+                        break;
+                    }
+
+                    case MessageType.PLAYER_LEFT: {
+                        set((s) => ({
+                            currentRoom: s.currentRoom ? {
+                                ...s.currentRoom,
+                                players: s.currentRoom.players.filter(p => p.id !== message.senderId)
+                            } : null
+                        }));
+                        console.log('[Multiplayer] Player left:', message.senderId);
+                        break;
+                    }
+
+                    case MessageType.PLAYER_READY: {
+                        const { ready } = message.payload as { ready: boolean };
+                        set((s) => ({
+                            currentRoom: s.currentRoom ? {
+                                ...s.currentRoom,
+                                players: s.currentRoom.players.map(p =>
+                                    p.id === message.senderId ? { ...p, isReady: ready } : p
+                                )
+                            } : null
+                        }));
+                        break;
+                    }
+
+                    case MessageType.GAME_START: {
+                        set((s) => ({
+                            currentRoom: s.currentRoom ? {
+                                ...s.currentRoom,
+                                state: RoomState.PLAYING
+                            } : null
+                        }));
+                        console.log('[Multiplayer] Game started');
+                        break;
+                    }
+
+                    case MessageType.GAME_UPDATE: {
+                        const progress = message.payload as GameProgress;
+                        const newProgress = new Map(state.gameProgress);
+                        newProgress.set(progress.playerId, progress);
+                        set({ gameProgress: newProgress });
+                        break;
+                    }
+
+                    case MessageType.REQUEST_SYNC: {
+                        // Nếu là host, gửi STATE_SYNC
+                        if (state.currentRoom && state.myPlayerId === state.currentRoom.hostId) {
+                            const syncMessage: RoomMessage = {
+                                type: MessageType.STATE_SYNC,
+                                roomId: state.currentRoom.id,
+                                senderId: state.myPlayerId,
+                                timestamp: Date.now(),
+                                payload: {
+                                    room: state.currentRoom,
+                                    progress: Array.from(state.gameProgress.entries())
+                                }
+                            };
+
+                            state.worker?.postMessage({
+                                type: 'SEND',
+                                message: syncMessage
+                            });
+                        }
+                        break;
+                    }
+
+                    case MessageType.STATE_SYNC: {
+                        const { room, progress } = message.payload as {
+                            room: RoomInfo;
+                            progress: [string, GameProgress][];
+                        };
+
+                        set({
+                            currentRoom: room,
+                            gameProgress: new Map(progress)
+                        });
+                        console.log('[Multiplayer] State synced');
+                        break;
+                    }
+
+                    case MessageType.PING:
+                        // Respond với PONG
+                        if (state.worker && state.currentRoom && state.myPlayerId) {
+                            const pongMessage: RoomMessage = {
+                                type: MessageType.PONG,
+                                roomId: state.currentRoom.id,
+                                senderId: state.myPlayerId,
+                                timestamp: Date.now(),
+                                payload: null
+                            };
+
+                            state.worker.postMessage({
+                                type: 'SEND',
+                                message: pongMessage
+                            });
+                        }
+                        break;
+
+                    case MessageType.PONG:
+                        // Update lastHeartbeat
+                        set((s) => ({
+                            currentRoom: s.currentRoom ? {
+                                ...s.currentRoom,
+                                players: s.currentRoom.players.map(p =>
+                                    p.id === message.senderId ? { ...p, lastHeartbeat: Date.now() } : p
+                                )
+                            } : null
+                        }));
+                        break;
+
+                    default:
+                        console.warn('[Multiplayer] Unknown message type:', message.type);
+                }
+            },
+
+            // ===== UI ACTIONS =====
+
+            toggleRoomList: () => set((s) => ({ showRoomList: !s.showRoomList })),
+            toggleCreateRoom: () => set((s) => ({ showCreateRoom: !s.showCreateRoom })),
+            toggleJoinRoom: () => set((s) => ({ showJoinRoom: !s.showJoinRoom }))
+        }),
+        {
+            name: 'multiplayer-storage',
+            storage: createJSONStorage(() => localStorage),
+            partialize: (state) => ({
+                // Chỉ persist một số field cần thiết
+                myPlayerId: state.myPlayerId,
+                // Không persist worker, currentRoom (sẽ reconnect)
+            })
         }
-
-        set({ players: msg.players });
-        return;
-      }
-
-      /**
-       * PLAYER_READY - Player toggle ready status
-       *
-       * HANDLER: All in room
-       *
-       * ACTIONS:
-       * - Update player.ready
-       * - Update player.lastSeen
-       */
-      case 'PLAYER_READY': {
-        set((s) => ({
-          players: {
-            ...s.players,
-            [msg.playerId]: {
-              ...s.players[msg.playerId],
-              ready: msg.ready,
-              lastSeen: now()
-            }
-          }
-        }));
-        return;
-      }
-
-      /**
-       * START_GAME - Host bắt đầu game
-       *
-       * HANDLER: All in room
-       *
-       * ACTIONS:
-       * - Set gamePhase = 'in_game'
-       * - Set gameStartedAt for timer
-       */
-      case 'START_GAME': {
-        set({ gamePhase: 'in_game', gameStartedAt: msg.startedAt });
-        return;
-      }
-
-      /**
-       * HANOI_PROGRESS - Player game progress
-       *
-       * HANDLER: All in room
-       *
-       * ACTIONS:
-       * - Update player.hanoi
-       * - Update player.lastSeen
-       */
-      case 'HANOI_PROGRESS': {
-        if (!msg.progress) return;
-
-        set((s) => ({
-          players: {
-            ...s.players,
-            [msg.playerId]: {
-              ...s.players[msg.playerId],
-              hanoi: msg.progress,
-              lastSeen: now()
-            }
-          }
-        }));
-        return;
-      }
-
-      /**
-       * PING - Heartbeat
-       *
-       * HANDLER: All in room
-       *
-       * ACTIONS:
-       * - Update player.lastSeen
-       */
-      case 'PING': {
-        set((s) => ({
-          players: {
-            ...s.players,
-            [msg.playerId]: {
-              ...s.players[msg.playerId],
-              lastSeen: now()
-            }
-          }
-        }));
-        return;
-      }
-
-      /**
-       * LEAVE - Player rời phòng
-       *
-       * HANDLER: All in room
-       *
-       * ACTIONS:
-       * - Remove player từ roster
-       */
-      case 'LEAVE': {
-        set((s) => {
-          const next = { ...s.players };
-          delete next[msg.playerId];
-          return { players: next };
-        });
-        return;
-      }
-    }
-  }
-} as MultiplayerStore));
-
+    )
+);

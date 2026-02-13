@@ -48,7 +48,7 @@ export const RESOURCES: Record<ResourceType, Resource> = {
         name: 'Data-Wood',
         displayName: 'Gỗ Dữ liệu',
         description: 'Tài nguyên phổ biến từ lỗi nhỏ. Dùng để xây dựng và tạo phép.',
-        icon: '/assets/images/items/Data-Wood.png',
+        icon: '/assets/Ảnh Assets/Vật Phẩm/Data-Wood.png',
         stackable: true,
         maxStack: 999
     },
@@ -57,7 +57,7 @@ export const RESOURCES: Record<ResourceType, Resource> = {
         name: 'Logic-Stone',
         displayName: 'Đá Logic',
         description: 'Tài nguyên hiếm từ trùm. Dùng cho xây dựng cao cấp.',
-        icon: '/assets/images/items/Logic-Stone.png',
+        icon: '/assets/Ảnh Assets/Vật Phẩm/Logic-Stone.png',
         stackable: true,
         maxStack: 99
     },
@@ -66,7 +66,7 @@ export const RESOURCES: Record<ResourceType, Resource> = {
         name: 'O-Points',
         displayName: 'Điểm O',
         description: 'Điểm năng lượng đại diện cho độ phức tạp tính toán.',
-        icon: '/assets/images/items/O-Point.png',
+        icon: '/assets/Ảnh Assets/Vật Phẩm/O-Point.png',
         stackable: true,
         maxStack: 9999
     },
@@ -75,7 +75,7 @@ export const RESOURCES: Record<ResourceType, Resource> = {
         name: 'Gold Coin',
         displayName: 'Vàng',
         description: 'Tiền tệ để mua vật phẩm.',
-        icon: '/assets/images/items/Gold Coin.png',
+        icon: '/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png',
         stackable: true,
         maxStack: 999999
     }
@@ -140,7 +140,7 @@ export const SHOP_ITEMS = {
             name: 'Logic Fence',
             displayName: 'Hàng rào Logic',
             description: 'Hàng rào trang trí cho Trang Trại Logic',
-            sprite: '/assets/images/decorations/fence_logic.png',
+            sprite: '/assets/Ảnh Assets/Vật Phẩm/O-Point.png', // Placeholder
             size: { width: 1, height: 1 },
             cost: { dataWood: 10 }
         },
@@ -150,7 +150,7 @@ export const SHOP_ITEMS = {
             name: 'Golem Statue',
             displayName: 'Tượng Golem',
             description: 'Tượng Golem hùng vĩ',
-            sprite: '/assets/images/decorations/golem_statue.png',
+            sprite: '/assets/Ảnh Assets/Vật Phẩm/O-Point.png', // Placeholder
             size: { width: 2, height: 2 },
             cost: { logicStone: 5, dataWood: 50 }
         }
@@ -162,7 +162,7 @@ export const SHOP_ITEMS = {
             name: 'QuickSort Robe',
             displayName: 'Áo choàng QuickSort',
             description: 'Áo choàng bay vút với hiệu ứng gió',
-            sprite: '/assets/images/cosmetics/quicksort_robe.png',
+            sprite: '/assets/Ảnh Assets/Vật Phẩm/O-Point.png', // Placeholder
             vfx: 'wind_particles',
             cost: { logicStone: 20 }
         },
@@ -172,7 +172,7 @@ export const SHOP_ITEMS = {
             name: 'Recursion Hat',
             displayName: 'Mũ Đệ Quy',
             description: 'Mũ hình xoắn ốc',
-            sprite: '/assets/images/cosmetics/recursion_hat.png',
+            sprite: '/assets/Ảnh Assets/Vật Phẩm/O-Point.png', // Placeholder
             cost: { logicStone: 15 }
         }
     ]
