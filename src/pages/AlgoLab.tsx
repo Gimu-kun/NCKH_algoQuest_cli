@@ -202,7 +202,7 @@ export const AlgoLab: React.FC = () => {
                 }
                 setVizKey((prev) => prev + 1);
             }
-        } catch (e) {
+        } catch {
             // Invalid JSON - giữ nguyên
         }
     }, [arrayInput, targetInput]);
@@ -417,7 +417,7 @@ export const AlgoLab: React.FC = () => {
                 {/* Disconnect Button */}
                 <div className="p-4 border-t border-slate-800">
                     <button
-                        onClick={() => setScene(GameScene.MAIN_MENU)}
+                        onClick={() => setScene(GameScene.HUB_WORLD)}
                         className="lab-disconnect-btn w-full"
                     >
                         <i className="fi fi-rr-sign-out-alt"></i>

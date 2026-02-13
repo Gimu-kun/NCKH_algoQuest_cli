@@ -1,0 +1,483 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * HANOI GAME CSS - THÁP HÀ NỘI (Tower of Hanoi)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * MÔ TẢ (Description):
+ * File CSS định nghĩa giao diện cho trò chơi Tháp Hà Nội. Sử dụng layout
+ * linh hoạt với 3 cọc (pegs) và các đĩa (disks) có thể di chuyển.
+ *
+ * BÀI TOÁN THÁP HÀ NỘI (Tower of Hanoi Problem):
+ * - Có N đĩa kích thước khác nhau trên cọc A
+ * - Mục tiêu: chuyển tất cả sang cọc C
+ * - Quy tắc: chỉ 1 đĩa/lần, không đĩa lớn lên đĩa nhỏ
+ * - Số bước tối ưu: 2^N - 1
+ *
+ * CSS TECHNIQUES USED (Kỹ thuật CSS):
+ * - CSS Grid: layout 3 cọc bằng nhau
+ * - Flexbox column-reverse: xếp đĩa từ dưới lên
+ * - CSS Transitions: smooth animations
+ * - Pseudo-elements: rod và base decoration
+ *
+ * SO SÁNH LAYOUT APPROACHES (Comparison):
+ * - Absolute positioning: ❌ khó responsive
+ * - SVG/Canvas: ✅ flexible nhưng phức tạp
+ * - CSS Grid + Flexbox (hiện tại): ✅ đơn giản, responsive
+ *
+ * ƯU ĐIỂM (Pros):
+ * - Responsive tự động
+ * - Animation với framer-motion dễ integrate
+ * - Dễ customize màu sắc
+ *
+ * NHƯỢC ĐIỂM (Cons):
+ * - Disk height cố định (24px)
+ * - Không smooth như Canvas animation
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+/* =============================================================================
+   GAME CONTAINER - Container chính
+   
+   CHỨC NĂNG (Purpose):
+   Wrapper cho toàn bộ game UI bao gồm header, board, và footer.
+   ============================================================================= */
+.hanoi-game {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* =============================================================================
+   HEADER - Thanh tiêu đề và controls
+   
+   CHỨC NĂNG (Purpose):
+   Hiển thị tiêu đề game, stats (số đĩa, số bước, thời gian) và các nút
+   điều khiển (Gợi ý, Auto, Reset).
+   
+   KỸ THUẬT (Technique):
+   - Flexbox space-between: title bên trái, actions bên phải
+   - Glassmorphism: backdrop-filter blur
+   ============================================================================= */
+.hanoi-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(78, 204, 163, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.hanoi-title h2 {
+  font-size: 22px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Stats bar: số đĩa, số bước, thời gian */
+.hanoi-sub {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.hanoi-sub span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Action buttons container */
+.hanoi-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* =============================================================================
+   BUTTON STYLES - Các nút điều khiển
+   
+   CHỨC NĂNG (Purpose):
+   Style cho các nút: Gợi ý (Hint), Auto (solve), Reset.
+   
+   KỸ THUẬT (Technique):
+   - Base style với glassmorphism
+   - .secondary variant cho Reset button
+   ============================================================================= */
+.hanoi-btn {
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(78, 204, 163, 0.35);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.hanoi-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(78, 204, 163, 0.55);
+  box-shadow: 0 4px 12px rgba(78, 204, 163, 0.2);
+}
+
+.hanoi-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.hanoi-btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.hanoi-btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* =============================================================================
+   GAME BOARD - Bàn chơi với 3 cọc
+   
+   CHỨC NĂNG (Purpose):
+   Layout grid 3 cột cho 3 cọc (pegs). Mỗi peg là một button có thể click.
+   
+   THUẬT TOÁN RENDER (Rendering Algorithm):
+   1. encodingToPegs() chuyển encoding -> pegs[3][]
+   2. Map qua 3 pegs, render mỗi peg thành .hanoi-peg
+   3. Trong mỗi peg, map pegs[peg] render các disk
+   
+   KỸ THUẬT (Technique):
+   - CSS Grid 3 cột bằng nhau
+   - Min-height cố định để đảm bảo chiều cao
+   ============================================================================= */
+.hanoi-board {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  min-height: 340px;
+}
+
+/* =============================================================================
+   PEG - Cọc (Rod Container)
+   
+   CHỨC NĂNG (Purpose):
+   Container cho mỗi cọc, bao gồm rod (thanh dọc), base, và disks.
+   Là button có thể click để chọn source/destination.
+   
+   STATES (Trạng thái):
+   - Default: border nhẹ
+   - :hover: border sáng hơn
+   - .selected: đang được chọn làm source (outline xanh)
+   - .hint-from: hint source (outline vàng)
+   - .hint-to: hint destination (outline xanh dương)
+   
+   KỸ THUẬT (Technique):
+   - Flexbox align-items: flex-end để disks xếp từ dưới lên
+   - Relative positioning để rod/base có thể absolute
+   ============================================================================= */
+.hanoi-peg {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid rgba(78, 204, 163, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px 12px 22px;
+  transition: all 150ms ease;
+}
+
+.hanoi-peg:hover {
+  border-color: rgba(78, 204, 163, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Selected state - cọc đang được chọn làm nguồn */
+.hanoi-peg.selected {
+  outline: 2px solid rgba(78, 204, 163, 0.7);
+  border-color: rgba(78, 204, 163, 0.6);
+  box-shadow: 0 0 20px rgba(78, 204, 163, 0.25);
+}
+
+/* Hint from - cọc nguồn gợi ý (màu vàng) */
+.hanoi-peg.hint-from {
+  outline: 2px solid rgba(243, 156, 18, 0.7);
+  box-shadow: 0 0 16px rgba(243, 156, 18, 0.25);
+}
+
+/* Hint to - cọc đích gợi ý (màu xanh dương) */
+.hanoi-peg.hint-to {
+  outline: 2px solid rgba(52, 152, 219, 0.7);
+  box-shadow: 0 0 16px rgba(52, 152, 219, 0.25);
+}
+
+/* Peg label (A, B, C) */
+.hanoi-peg-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  opacity: 0.85;
+}
+
+/* =============================================================================
+   ROD & BASE - Thanh cọc và đế
+   
+   CHỨC NĂNG (Purpose):
+   Decorative elements: rod là thanh dọc, base là đế ngang.
+   Sử dụng absolute positioning để overlay lên disks container.
+   ============================================================================= */
+.hanoi-rod {
+  position: absolute;
+  bottom: 56px;
+  width: 10px;
+  height: 220px;
+  border-radius: 10px;
+  background: rgba(78, 204, 163, 0.25);
+}
+
+.hanoi-base {
+  position: absolute;
+  bottom: 32px;
+  width: 72%;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(78, 204, 163, 0.2);
+}
+
+/* =============================================================================
+   DISKS CONTAINER - Container chứa các đĩa
+   
+   CHỨC NĂNG (Purpose):
+   Container flex để xếp các đĩa từ dưới lên.
+   
+   KỸ THUẬT (Technique):
+   - flex-direction: column-reverse: đĩa đầu tiên trong array ở dưới cùng
+   - align-items: center: canh giữa các đĩa
+   - z-index cao hơn rod để đĩa hiển thị trên rod
+   ============================================================================= */
+.hanoi-disks {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 40px;
+  z-index: 2;
+}
+
+/* =============================================================================
+   DISK - Đĩa
+   
+   CHỨC NĂNG (Purpose):
+   Visual representation của mỗi đĩa. Width được tính động dựa vào size.
+   
+   CÔNG THỨC WIDTH (Width Formula):
+   width = 28 + (disk / disks) * 140 (px)
+   - Đĩa nhỏ nhất (disk=1): 28 + (1/5)*140 = 56px (với 5 đĩa)
+   - Đĩa lớn nhất (disk=5): 28 + (5/5)*140 = 168px
+   
+   KỸ THUẬT (Technique):
+   - Gradient background từ mint -> cyan
+   - Border sáng để tạo depth
+   - Box-shadow để tạo hiệu ứng 3D
+   - framer-motion layout animation cho smooth transitions
+   ============================================================================= */
+.hanoi-disk {
+  height: 26px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+/* =============================================================================
+   FOOTER - Thanh dưới cùng
+   
+   CHỨC NĂNG (Purpose):
+   Hiển thị luật chơi và trạng thái hiện tại (đang chơi / hoàn thành).
+   ============================================================================= */
+.hanoi-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(78, 204, 163, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+/* Luật chơi */
+.hanoi-rule {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Status indicator */
+.hanoi-status {
+  font-family: var(--font-display);
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Completed state - hiển thị xanh lá khi hoàn thành */
+.hanoi-status.done {
+  color: var(--color-primary-light);
+  animation: status-glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes status-glow {
+  from {
+    text-shadow: 0 0 10px rgba(78, 204, 163, 0.3);
+  }
+
+  to {
+    text-shadow: 0 0 20px rgba(78, 204, 163, 0.6);
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE - Điều chỉnh cho màn hình nhỏ
+   
+   CHỨC NĂNG (Purpose):
+   Trên màn hình < 900px, chuyển layout 1 cột để dễ chơi trên mobile.
+   
+   THAY ĐỔI (Changes):
+   - Grid 1 cột thay vì 3
+   - Rod height giảm để fit
+   ============================================================================= */
+@media (max-width: 900px) {
+  .hanoi-board {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .hanoi-rod {
+    height: 180px;
+  }
+
+  .hanoi-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hanoi-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* =============================================================================
+   LIGHT THEME - Giao diện sáng
+   ============================================================================= */
+:root.light-theme .hanoi-header {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(78, 204, 163, 0.2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+:root.light-theme .hanoi-title h2 {
+  color: #1e293b;
+}
+
+:root.light-theme .hanoi-sub {
+  color: #64748b;
+}
+
+:root.light-theme .hanoi-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}
+
+:root.light-theme .hanoi-btn:hover:not(:disabled) {
+  background: #fff;
+  border-color: #4ecca3;
+}
+
+:root.light-theme .hanoi-board {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+:root.light-theme .hanoi-peg {
+  background: rgba(241, 245, 249, 0.5);
+  border-color: transparent;
+}
+
+:root.light-theme .hanoi-peg:hover {
+  background: rgba(78, 204, 163, 0.1);
+}
+
+:root.light-theme .hanoi-peg.selected {
+  background: rgba(78, 204, 163, 0.15);
+  border-color: #4ecca3;
+  box-shadow: 0 0 0 2px rgba(78, 204, 163, 0.2);
+}
+
+:root.light-theme .hanoi-rod {
+  background: linear-gradient(90deg, #cbd5e1, #94a3b8, #cbd5e1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:root.light-theme .hanoi-base {
+  background: linear-gradient(180deg, #e2e8f0, #cbd5e1);
+  border-top: 1px solid #fff;
+}
+
+:root.light-theme .hanoi-peg-label {
+  color: #64748b;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+:root.light-theme .hanoi-footer {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #e2e8f0;
+}
+
+:root.light-theme .hanoi-rule {
+  color: #64748b;
+}
+
+/* Ensure disks are visible in light theme */
+:root.light-theme .hanoi-disk {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

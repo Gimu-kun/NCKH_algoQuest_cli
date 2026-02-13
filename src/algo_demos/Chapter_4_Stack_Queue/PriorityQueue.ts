@@ -197,8 +197,8 @@ export function generateMaxHeapExtractSteps(currentHeap: number[]): PQStep[] {
     // Step 2: Heapify Down
     const length = heap.length;
     while (true) {
-        let left = 2 * index + 1;
-        let right = 2 * index + 2;
+        const left = 2 * index + 1;
+        const right = 2 * index + 2;
         let largest = index;
 
         if (left < length && heap[left] > heap[largest]) {

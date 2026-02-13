@@ -54,7 +54,12 @@ export const enum GameScene {
     ACHIEVEMENTS = 'ACHIEVEMENTS', // Màn hình thành tựu
     LEADERBOARDS = 'LEADERBOARDS', // Bảng xếp hạng
     ALGO_LAB = 'ALGO_LAB',         // Phòng thí nghiệm thuật toán
-    STUDY_MATERIALS = 'STUDY_MATERIALS' // Tài liệu học tập (Dev Tools)
+    STUDY_MATERIALS = 'STUDY_MATERIALS', // Tài liệu học tập (Dev Tools)
+
+    // Đấu trường nhiều người chơi (Multiplayer Arena)
+    // - Lobby: tạo phòng / tham gia phòng
+    // - Games: chạy các mini-game theo phòng (room-based)
+    MULTIPLAYER_ARENA = 'MULTIPLAYER_ARENA'
 }
 
 // State quản lý Session Combat

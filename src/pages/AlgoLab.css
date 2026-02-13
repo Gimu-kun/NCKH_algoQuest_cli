@@ -43,11 +43,19 @@
    ========================================================================== */
 .algo-lab-container {
     background-color: var(--lab-bg-dark);
+    background-color: #0b0f19;
     background-image:
-        radial-gradient(ellipse at top, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-        linear-gradient(var(--lab-grid-color) 1px, transparent 1px),
-        linear-gradient(90deg, var(--lab-grid-color) 1px, transparent 1px);
-    background-size: 100% 100%, 32px 32px, 32px 32px;
+        /* User Image Layer */
+        url('/assets/Ảnh Assets/Backgrounds/AlgoLab_Blueprint.png'),
+        /* CSS Effects Layer */
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    background-size: cover, 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     color: var(--lab-text-primary);
     overflow: hidden;
@@ -272,7 +280,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     background: rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid var(--lab-border);
     font-size: 0.75rem;
@@ -300,7 +308,7 @@
 
 .lab-panel-body {
     flex: 1;
-    padding: 1rem;
+    padding: 1.25rem;
     overflow: auto;
 }
 
@@ -312,7 +320,7 @@
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--lab-border);
     border-radius: 8px;
-    padding: 12px;
+    padding: 14px 16px;
     color: var(--lab-accent);
     font-family: 'Fira Code', 'JetBrains Mono', monospace;
     font-size: 0.875rem;
@@ -462,7 +470,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 12px 18px;
     background: rgba(239, 68, 68, 0.1);
     color: var(--lab-error);
     font-weight: 600;
@@ -505,7 +513,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     background: rgba(0, 0, 0, 0.2);
     border-top: 1px solid var(--lab-border);
     font-size: 0.75rem;

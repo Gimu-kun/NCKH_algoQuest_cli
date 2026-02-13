@@ -144,7 +144,7 @@ export const DialogueBox: React.FC = () => {
                 break;
 
             case 'MULTIPLAYER':
-                useGameStore.getState().showSparky('⚔️ Đấu trường đang được xây dựng! Sớm thôi bạn sẽ có thể thách đấu bạn bè!');
+                useGameStore.getState().setScene(GameScene.MULTIPLAYER_ARENA);
                 break;
 
             case 'DAILY_QUESTS':

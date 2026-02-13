@@ -38,8 +38,7 @@ export const MainMenu: React.FC = () => {
     };
 
     const handleMultiplayer = () => {
-        // TODO: Triển khai menu nhiều người chơi
-        alert('Đấu trường chưa mở cửa!');
+        setScene(GameScene.MULTIPLAYER_ARENA);
     };
 
     const handleSettings = () => {

@@ -1,0 +1,467 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * GRID GAME CSS - Shared styles cho Grid-based Games
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * MÔ TẢ (Description):
+ * CSS chung cho MazeGame, FloodFillGame, IslandGame.
+ * Consistent với HanoiGame.css và MultiplayerArena.css
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
+
+/* =============================================================================
+   GAME CONTAINER
+   ============================================================================= */
+.grid-game {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* =============================================================================
+   HEADER
+   ============================================================================= */
+.grid-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(78, 204, 163, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+}
+
+.grid-title h2 {
+    font-size: 22px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.grid-sub {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.grid-sub span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grid-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* =============================================================================
+   BUTTONS
+   ============================================================================= */
+.grid-btn {
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(78, 204, 163, 0.35);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.grid-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(78, 204, 163, 0.55);
+    box-shadow: 0 4px 12px rgba(78, 204, 163, 0.2);
+}
+
+.grid-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.grid-btn.secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* =============================================================================
+   GRID BOARD - Ma trận cells
+   ============================================================================= */
+.grid-board {
+    display: grid;
+    gap: 2px;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(78, 204, 163, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+}
+
+/* =============================================================================
+   CELL - Ô trong grid
+   ============================================================================= */
+.grid-cell {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Cell Types */
+.grid-cell.empty {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.grid-cell.empty:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.grid-cell.wall {
+    background: rgba(52, 73, 94, 0.8);
+    border: 1px solid rgba(52, 73, 94, 0.9);
+}
+
+.grid-cell.start {
+    background: rgba(46, 204, 113, 0.7);
+    border: 1px solid rgba(46, 204, 113, 0.9);
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+}
+
+.grid-cell.end {
+    background: rgba(231, 76, 60, 0.7);
+    border: 1px solid rgba(231, 76, 60, 0.9);
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+}
+
+.grid-cell.water {
+    background: rgba(52, 152, 219, 0.6);
+    border: 1px solid rgba(52, 152, 219, 0.7);
+}
+
+.grid-cell.land {
+    background: rgba(46, 204, 113, 0.6);
+    border: 1px solid rgba(46, 204, 113, 0.7);
+}
+
+/* Visited state */
+.grid-cell.visited {
+    background: rgba(155, 89, 182, 0.5);
+    border-color: rgba(155, 89, 182, 0.7);
+}
+
+/* Path state */
+.grid-cell.path {
+    background: rgba(243, 156, 18, 0.7);
+    border-color: rgba(243, 156, 18, 0.9);
+    box-shadow: 0 0 8px rgba(243, 156, 18, 0.4);
+}
+
+/* Current player position */
+.grid-cell.current {
+    animation: pulse-cell 1s ease-in-out infinite;
+}
+
+@keyframes pulse-cell {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* =============================================================================
+   PLAYER MARKERS
+   ============================================================================= */
+.player-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.player-marker.player-1 {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.player-marker.player-2 {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.player-marker.player-3 {
+    background: linear-gradient(135deg, #f39c12, #d68910);
+}
+
+.player-marker.player-4 {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+/* =============================================================================
+   FOOTER
+   ============================================================================= */
+.grid-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(78, 204, 163, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+.grid-rule {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grid-status {
+    font-family: var(--font-display);
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grid-status.done {
+    color: var(--color-primary-light);
+    animation: status-glow 1s ease-in-out infinite alternate;
+}
+
+/* =============================================================================
+   CONTROLS - Arrow keys visual
+   ============================================================================= */
+.grid-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.grid-controls-row {
+    display: flex;
+    gap: 4px;
+}
+
+.grid-control-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(78, 204, 163, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+}
+
+.grid-control-btn:hover {
+    background: rgba(78, 204, 163, 0.2);
+    border-color: rgba(78, 204, 163, 0.5);
+}
+
+.grid-control-btn:active {
+    transform: scale(0.95);
+}
+
+/* =============================================================================
+   SCORE DISPLAY
+   ============================================================================= */
+.grid-score {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(78, 204, 163, 0.15);
+    border: 1px solid rgba(78, 204, 163, 0.3);
+}
+
+.grid-score-label {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+}
+
+.grid-score-value {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--color-primary-light);
+}
+
+/* =============================================================================
+   INPUT FORM (for Island Count answer)
+   ============================================================================= */
+.grid-input-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.grid-input {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(78, 204, 163, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: 18px;
+    text-align: center;
+    width: 80px;
+}
+
+.grid-input:focus {
+    outline: none;
+    border-color: rgba(78, 204, 163, 0.6);
+    box-shadow: 0 0 0 3px rgba(78, 204, 163, 0.15);
+}
+
+/* =============================================================================
+   RESPONSIVE
+   ============================================================================= */
+@media (max-width: 768px) {
+    .grid-cell {
+        width: 22px;
+        height: 22px;
+    }
+
+    .grid-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .grid-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* =============================================================================
+   LIGHT THEME - Giao diện sáng
+   ============================================================================= */
+:root.light-theme .grid-header {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(78, 204, 163, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+:root.light-theme .grid-title h2 {
+    color: #1e293b;
+}
+
+:root.light-theme .grid-sub {
+    color: #64748b;
+}
+
+:root.light-theme .grid-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+:root.light-theme .grid-btn:hover:not(:disabled) {
+    background: #fff;
+    border-color: #4ecca3;
+}
+
+:root.light-theme .grid-board {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+:root.light-theme .grid-cell.empty {
+    background: rgba(241, 245, 249, 0.9);
+    border: 1px solid #e2e8f0;
+}
+
+:root.light-theme .grid-cell.empty:hover {
+    background: #f8fafc;
+}
+
+:root.light-theme .grid-cell.wall {
+    background: #475569;
+    border: 1px solid #334155;
+}
+
+:root.light-theme .grid-footer {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e2e8f0;
+}
+
+:root.light-theme .grid-rule {
+    color: #64748b;
+}
+
+:root.light-theme .grid-controls {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+:root.light-theme .grid-control-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+:root.light-theme .grid-control-btn:hover {
+    background: rgba(78, 204, 163, 0.15);
+    border-color: #4ecca3;
+}
+
+:root.light-theme .grid-score {
+    background: rgba(78, 204, 163, 0.1);
+    border: 1px solid rgba(78, 204, 163, 0.25);
+}
+
+:root.light-theme .grid-score-label {
+    color: #475569;
+}
+
+:root.light-theme .grid-score-value {
+    color: #059669;
+}
+
+:root.light-theme .grid-input {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+:root.light-theme .grid-input:focus {
+    border-color: #4ecca3;
+}

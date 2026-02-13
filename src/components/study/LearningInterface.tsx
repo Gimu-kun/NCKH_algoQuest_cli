@@ -443,23 +443,6 @@ export const LearningInterface: React.FC<LearningInterfaceProps> = ({
     return () => clearInterval(interval);
   }, [currentModuleId, currentPageId, updateTimeSpent]);
 
-  /**
-   * Keyboard Navigation Effect
-   * Hỗ trợ phím mũi tên trái/phải để chuyển trang.
-   */
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' && derivedPageIndex > 0) {
-        handlePreviousPage();
-      } else if (e.key === 'ArrowRight' && module && derivedPageIndex < module.pages.length - 1) {
-        handleNextPage();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [derivedPageIndex, module]);
-
   // Handler Functions - Navigation Logic
   // ---------------------------------------------------------------------------
 
@@ -501,6 +484,23 @@ export const LearningInterface: React.FC<LearningInterfaceProps> = ({
       }));
     }, 300);
   }, [module, moduleId, derivedPageIndex, startPage]);
+
+  /**
+   * Keyboard Navigation Effect
+   * Hỗ trợ phím mũi tên trái/phải để chuyển trang.
+   */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && derivedPageIndex > 0) {
+        handlePreviousPage();
+      } else if (e.key === 'ArrowRight' && module && derivedPageIndex < module.pages.length - 1) {
+        handleNextPage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [derivedPageIndex, module, handleNextPage, handlePreviousPage]);
 
   const handlePageSelect = useCallback((index: number) => {
     if (!module || index === derivedPageIndex) return;
