@@ -21,19 +21,29 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGameStore, GameScene } from '../store/gameStore';
-import { HUD } from '../components/ui/HUD';
+import { useGameStore, GameScene } from '../../store/gameStore';
+import { HUD } from '../../components/ui/HUD';
 import './HubWorld.css';
 import Cookies from 'js-cookie'
-import { verifyToken } from '../services/authApiService';
-import type { UserGeneralDto } from '../types/authType';
-import { usePlayerStore } from '../store/playerStore';
+import { verifyToken } from '../../services/authApiService';
+import type { UserGeneralDto } from '../../types/authType';
+import { usePlayerStore } from '../../store/playerStore';
+import { useNavigate } from 'react-router-dom';
+import type { dialogueStateType } from '../../types/dialogueType';
+import { DialogueBox } from '../../components/ui/DialogueBox';
+
 
 export const HubWorld: React.FC = () => {
+    const navigate = useNavigate()
+
     // Truy cập Global State để điều khiển chuyển cảnh và hội thoại
-    const { setScene, openDialogue, openRunicConsole, theme, showSparky } = useGameStore();
+    const [ dialogueState , setDialogueState ] = useState<dialogueStateType>({
+        isOpen:false,
+        npcId:""
+    })
+    const { theme, showSparky } = useGameStore();
     const [isVerifying, setIsVerifying] = useState(true);
     const { hydrateFromServer } = usePlayerStore();
     
@@ -42,7 +52,7 @@ export const HubWorld: React.FC = () => {
           const token = Cookies.get('auth_token');
     
           if (!token) {
-            setScene(GameScene.MAIN_MENU);
+            navigate("/");
             return;
           }
     
@@ -54,7 +64,7 @@ export const HubWorld: React.FC = () => {
     
           if (!response.success) {
             Cookies.remove('auth_token');
-            setScene(GameScene.MAIN_MENU);
+            navigate("/");
           }
           const userData = response.data
           
@@ -65,14 +75,17 @@ export const HubWorld: React.FC = () => {
         };
     
         checkAuth();
-      }, [setScene]);
+      }, []);
 
-    // Handler Actions
+    const handleNpcClick = (id:string) => {
+        setDialogueState(prev => {
+            if (prev.isOpen && prev.npcId === id) {
+                return { isOpen: false, npcId: "" };
+            }
+            return { isOpen: true, npcId: id };
+        });
+    }
 
-    const handleTestBuild = () => {
-        // Mở Bảng Cổ Ngữ với một phép thuật thử nghiệm (Blueprint ID)
-        openRunicConsole('spell_is_increasing');
-    };
 
     if (isVerifying) {
         return (
@@ -87,16 +100,17 @@ export const HubWorld: React.FC = () => {
 
     return (
         <div className="hub-world">
+            {
+                dialogueState.isOpen && 
+                <DialogueBox npcId={dialogueState.npcId} setOpenState={setDialogueState}/>
+            }
             {/* Background Layer - Dynamic theo Theme */}
             <div
                 className="hub-background"
-                style={{
-                    backgroundImage: theme === 'light' ? 'none' : 'url(/assets/Ảnh Assets/Hub World Concept.png)'
-                }}
             />
 
             {/* Heads-Up Display (Thanh trạng thái người chơi) */}
-            <HUD />
+
 
             {/* Main Content Layer */}
             <div className="hub-content">
@@ -109,7 +123,7 @@ export const HubWorld: React.FC = () => {
                 >
                     <h1> Thế Giới Trung Tâm - Thánh Địa Dòng Chảy</h1>
                     <p>Chào mừng bạn trở lại! Hãy gặp gỡ các NPC để nhận nhiệm vụ.</p>
-                    <button className="start-btn" onClick={()=>{setScene(GameScene.STUDY_MATERIALS)}}>Bắt đầu hành trình</button>
+                    <button className="start-btn" onClick={()=>{navigate("/v1/roadmap")}}>Bắt đầu hành trình</button>
                 </motion.div>
 
                 {/* === KHU VỰC NPC (NPC INTERACTION ZONES) === */}
@@ -119,7 +133,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('ALRIC')}
+                        onClick={() =>handleNpcClick("ALRIC")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png" alt="Professor Alric" />
                         <h3>Giáo sư Alric</h3>
@@ -131,7 +145,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('LINH')}
+                        onClick={() => handleNpcClick("LINH")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png" alt="Linh" />
                         <h3>Linh</h3>
@@ -142,7 +156,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('BORK')}
+                        onClick={() => handleNpcClick("BORK")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png" alt="Bork" />
                         <h3>Bork</h3>
@@ -153,7 +167,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('GUILD_LEADER')}
+                        onClick={() => handleNpcClick("LEADER")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png" alt="Guild Leader" />
                         <h3>Chủ Guild</h3>
@@ -164,7 +178,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('ORACLE')}
+                        onClick={() => handleNpcClick("ORACLE")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Nhà Tiên Tri (The Oracle)/Nhà Tiên Tri (Idle).png" alt="Oracle" />
                         <h3>Nhà Tiên Tri</h3>
@@ -175,7 +189,7 @@ export const HubWorld: React.FC = () => {
                     <motion.div
                         className="npc-card"
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => openDialogue('BOOKKEEPER')}
+                        onClick={() => handleNpcClick("BOOKKEEPER")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Kẻ Giữ Sách ( The Bookkeeper)/Kẻ Giữ Sách (Idle).png" alt="Bookkeeper" />
                         <h3>Kẻ Giữ Sách</h3>
@@ -193,11 +207,11 @@ export const HubWorld: React.FC = () => {
                         <i className="fi fi-rr-lock"></i> Trang Trại Logic (Bảo trì)
                     </button>
 
-                    <button className="farm-btn achievements-btn" onClick={() => setScene(GameScene.ACHIEVEMENTS)}>
+                    <button className="farm-btn achievements-btn" onClick={() => navigate("/v1/achievements")}>
                         <i className="fi fi-rr-trophy"></i> Thành Tựu & Huy Hiệu
                     </button>
 
-                    <button className="farm-btn leaderboards-btn" onClick={() => setScene(GameScene.LEADERBOARDS)}>
+                    <button className="farm-btn leaderboards-btn" onClick={() => navigate("/v1/leaderboards")}>
                         <i className="fi fi-rr-stats"></i> Bảng Xếp Hạng
                     </button>
                 </div>
@@ -205,10 +219,10 @@ export const HubWorld: React.FC = () => {
                 {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
                     <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
-                    <button className="test-btn" onClick={handleTestBuild}>
+                    <button className="test-btn" onClick={()=>{}}>
                         <i className="fi fi-rr-hammer"></i> Thử Nghiệm Bảng Cổ Ngữ
                     </button>
-                    <button className="test-btn" onClick={() => setScene(GameScene.STUDY_MATERIALS)}>
+                    <button className="test-btn" onClick={() => navigate("/v1/roadmap")}>
                         <i className="fi fi-rr-book"></i> Study Materials (Lộ Trình)
                     </button>
                 </div>

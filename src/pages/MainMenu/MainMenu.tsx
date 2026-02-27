@@ -20,14 +20,16 @@
 
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useGameStore, GameScene } from '../../store/gameStore';
-import { usePlayerStore } from '../../store/playerStore';
+import { GameScene, useGameStore } from '../../store/gameStore';
 import { ASSETS } from '../../data/AssetPaths';
 import './MainMenu.css';
 import { loginUser, registerUser } from '../../services/authApiService';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 export const MainMenu: React.FC = () => {
+    const navigate = useNavigate()
+
     const modalVariants = {
         hidden: { opacity: 0, scale: 0.85 },
         visible: { opacity: 1, scale: 1 },
@@ -47,8 +49,7 @@ export const MainMenu: React.FC = () => {
         }
     };
 
-    const { setScene, toggleMenu, theme } = useGameStore();
-    const { lastname , firstname , stats } = usePlayerStore();
+    const {setScene, toggleMenu, theme } = useGameStore();
 
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
@@ -76,16 +77,6 @@ export const MainMenu: React.FC = () => {
 
     const handleNewGame = () => {
         setShowStartDialog(true);
-        //setScene(GameScene.HUB_WORLD);
-    };
-
-    const handleContinue = () => {
-        setScene(GameScene.HUB_WORLD);
-    };
-
-    const handleMultiplayer = () => {
-        // TODO: Triển khai menu nhiều người chơi
-        alert('Đấu trường chưa mở cửa!');
     };
 
     const handleSettings = () => {
@@ -104,7 +95,7 @@ export const MainMenu: React.FC = () => {
 
     const startGameAfterAuth = () => {
         setShowStartDialog(false);
-        setScene(GameScene.HUB_WORLD);
+        navigate("/v1/hub")
     };
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +141,6 @@ export const MainMenu: React.FC = () => {
         if (response.success) {
             setMessage({ text: response.message || 'Đăng ký thành công!', type: 'success' });
             resetRegisterForm();
-            // Chuyển về tab đăng nhập sau 1.5s
             setTimeout(() => {
                 setIsSubmitting(false);
                 setAuthMode('login');
@@ -183,15 +173,12 @@ export const MainMenu: React.FC = () => {
             secure: true,         // chỉ gửi qua HTTPS (nên bật khi deploy)
             sameSite: 'strict',   // chống CSRF
           });
-      
+
           setLoginMessage({ text: response.message || 'Đăng nhập thành công!', type: 'success' });
       
           setTimeout(() => {
-            setShowStartDialog(false);
-            setScene(GameScene.HUB_WORLD);
-            setLoginMessage(null);
-            setLoginForm({ username: '', passwords: '' }); // reset form
-          }, 1200);
+            startGameAfterAuth()
+          }, 1000);
         } else {
           setLoginMessage({ text: response.error || 'Đăng nhập thất bại', type: 'error' });
         }
@@ -238,35 +225,6 @@ export const MainMenu: React.FC = () => {
                     onClick={handleNewGame}
                 >
                     <i className="fi fi-rr-bolt"></i> Hành Trình Mới
-                </motion.button>
-
-                {stats.dungeonsCleared > 0 && (
-                    <motion.button
-                        className="menu-btn menu-btn-secondary"
-                        whileHover={{ scale: 1.05, x: 10 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleContinue}
-                    >
-                        <i className="fi fi-rr-book-alt"></i> Tiếp Tục ({firstname + " " + lastname})
-                    </motion.button>
-                )}
-
-                <motion.button
-                    className="menu-btn menu-btn-secondary"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleMultiplayer}
-                >
-                    <i className="fi fi-rr-swords"></i> Đấu Trường
-                </motion.button>
-
-                <motion.button
-                    className="menu-btn menu-btn-secondary"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setScene(GameScene.ALGO_LAB)}
-                >
-                    <i className="fi fi-rr-flask"></i> Phòng Thí Nghiệm
                 </motion.button>
 
                 <motion.button

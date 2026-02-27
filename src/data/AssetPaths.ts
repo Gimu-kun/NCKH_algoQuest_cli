@@ -33,6 +33,7 @@ export const ASSETS = {
     BACKGROUNDS: {
         MAIN_MENU: `${ASSET_BASE}/Main Menu Background.png`,
         HUB_WORLD: `${ASSET_BASE}/Hub World Concept.png`,
+        CHAOS_AREA: `${ASSET_BASE}/Ải Cuối Lõi Hư Không (The Corrupted Core).png`,
     },
 
     // ========== CUTSCENES (Phân cảnh) ==========

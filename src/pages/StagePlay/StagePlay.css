@@ -1,0 +1,198 @@
+.stag_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    /* Cho phép cuộn dọc */
+    overflow-x: hidden;
+}
+
+.stag_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.7) saturate(1.1);
+    z-index: -2;
+}
+
+.stag_background.stage_1{
+    background-image: url('/Users/lehieunghiem/Desktop/NCKH/NCKH_algoQuest_cli/src/assets/Ảnh Assets/Ải/Battle_field_stage_1.png');
+}
+
+.level-1 { font-size: 1.8rem; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; }
+.level-2 { font-size: 1.5rem; color: #34495e; margin-top: 15px; }
+.level-3 { font-size: 1.2rem; font-style: italic; }
+
+
+.content-area {
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 20px;
+    margin-bottom: 80px; /* Chừa chỗ cho footer */
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.step-wrapper {
+    width: 100%;
+    animation: fadeIn 0.5s ease-in-out;
+    color:#000
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.navigation-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+    border-top: 2px solid #444;
+    z-index: 10;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav-btn.next {
+    background: #27ae60;
+    color: white;
+    border: none;
+    transition: all .3s;
+}
+
+.nav-btn.next:hover {
+    background: #2ecc71;
+}
+
+.progress-bar-mini {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.summary-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.summary-card {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.score-circle {
+    width: 120px;
+    height: 120px;
+    border: 8px solid #22c55e;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+}
+
+.score { font-size: 32px; font-weight: 800; color: #1e293b; }
+.total { color: #64748b; font-size: 18px; }
+
+.summary-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn-review {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.exit-stage-btn{
+    background: #c52222;
+    color: white;
+    min-width: 120px;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all .3s;
+    cursor: pointer;
+}
+
+.exit-stage-btn:hover {
+    background: #cc2e2e;
+}
+
+.btn-exit {
+    background: #22c55e;
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.nav-btn.next.disabled-btn {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none !important;
+}
+
+.nav-btn.next.disabled-btn:hover::after {
+    content: "Vui lòng trả lời hết câu hỏi";
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}

@@ -32,6 +32,7 @@ import type { UserGeneralDto } from '../types/authType';
 // Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
     // === Thông Tin Cơ Bản ===
+    id: string;
     firstname: string;
     lastname: string;
     level: number;
@@ -124,6 +125,7 @@ export interface PlayerActions {
 
 // Giá trị khởi tạo mặc định cho người chơi mới
 const initialPlayerState: PlayerState = {
+    id: '',
     firstname: 'Tên',
     lastname: "Họ",
     level: 1,
@@ -176,8 +178,8 @@ export const usePlayerStore = create<PlayerStore>()(
                     username: data.username,
                     role: data.role,
             
-                    firstname: data.firstname,
-                    lastname: data.lastname,
+                    firstname: data.firstName,
+                    lastname: data.lastName,
                     level: data.level,
                     experience: data.exp,
             
@@ -185,8 +187,8 @@ export const usePlayerStore = create<PlayerStore>()(
                         ...state.resources,
                         [ResourceType.O_POINTS]: data.point,
                         [ResourceType.GOLD]: data.gold,
-                        [ResourceType.DATA_WOOD]: data.wood,
-                        [ResourceType.LOGIC_STONE]: data.stone
+                        [ResourceType.DATA_WOOD]: data.woods,
+                        [ResourceType.LOGIC_STONE]: data.stones
                     }
                 }));
             },

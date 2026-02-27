@@ -126,4 +126,4 @@ export const verifyToken = async (token: string): Promise<ApiResponse> => {
         error: (error as Error).message || 'Không thể kết nối server',
       };
     }
-  };
+};

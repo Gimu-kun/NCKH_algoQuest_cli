@@ -1,0 +1,331 @@
+/* QuestionView.css */
+
+:root {
+    --color-success: #22c55e;
+    --color-danger: #ef4444;
+    --color-primary: #3b82f6;
+    --bg-success: #f0fdf4;
+    --bg-danger: #fef2f2;
+    --transition-speed: 0.25s;
+}
+
+.q-container {
+    position: relative;
+    top: 50px;
+    min-height: 70vh;
+    background: white;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    border-left: 6px solid transparent;
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Trạng thái sau khi nộp bài (Review Mode) */
+.q-container.res-success {
+    border-left-color: var(--color-success);
+    background-color: #f0fdf430;
+}
+
+.q-container.res-danger {
+    border-left-color: var(--color-danger);
+    background-color: #fef2f230;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+/* Header & Labels */
+.q-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge.remember {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.badge.understand {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.apply {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.result-indicator {
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.text-green {
+    color: var(--color-success);
+}
+
+.text-red {
+    color: var(--color-danger);
+}
+
+/* MCQ Grid */
+.mcq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.mcq-btn {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    text-align: left;
+    position: relative;
+    min-height: 60px;
+}
+
+.mcq-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    background: #eff6ff;
+}
+
+.mcq-btn.active {
+    border-color: var(--color-primary);
+    background: #3b82f610;
+    box-shadow: 0 0 0 4px #3b82f615;
+}
+
+/* Styles cho chế độ Review */
+.mcq-btn.correct-bright {
+    border-color: var(--color-success) !important;
+    background-color: var(--bg-success) !important;
+    color: #15803d !important;
+    opacity: 1 !important;
+}
+
+.mcq-btn.wrong-bright {
+    border-color: var(--color-danger) !important;
+    background-color: var(--bg-danger) !important;
+    color: #b91c1c !important;
+}
+
+.mcq-label {
+    width: 32px;
+    height: 32px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.status-icon {
+    margin-left: auto;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+/* Text Input (Fill in the blank) */
+.input-feedback-wrapper {
+    margin-top: 15px;
+}
+
+.text-answer-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 12px;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.text-answer-input:focus {
+    border-color: var(--color-primary);
+}
+
+.text-answer-input.correct-border {
+    border-color: var(--color-success);
+    background: var(--bg-success);
+}
+
+.text-answer-input.wrong-border {
+    border-color: var(--color-danger);
+    background: var(--bg-danger);
+}
+
+.correct-answer-hint {
+    margin-top: 12px;
+    padding: 14px;
+    background: #f0f9ff;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-primary);
+    color: #0369a1;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Matching Pair (MP) */
+.mp-container {
+    margin-top: 20px;
+}
+
+.mp-grid {
+    display: flex;
+    gap: 40px;
+}
+
+.mp-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mp-card {
+    position: relative; /* Bắt buộc để line con bám theo */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px;
+    height: 60px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    overflow: hidden; /* Để bo góc đường line dưới */
+}
+
+.mp-card.selected {
+    background-color: #f0f7ff;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+/* ĐƯỜNG VIỀN DƯỚI (BLUE BOTTOM BORDER) */
+.mp-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px; /* Độ dày của viền dưới */
+    background-color: #3b82f6;
+    transform: scaleX(0); /* Mặc định ẩn (thu nhỏ về 0) */
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+/* Hiện đường viền dưới khi có class .selected */
+.mp-card.selected::after {
+    transform: scaleX(1); /* Hiện ra toàn bộ chiều ngang */
+}
+
+.mp-card.done::after {
+    display: none;
+}
+
+/* Hiệu ứng hover nhẹ cho card chưa chọn */
+.mp-card:not(.done):not(.selected):hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}
+
+@keyframes pulse-border {
+    0% {
+        border-color: #3b82f6;
+    }
+
+    50% {
+        border-color: #93c5fd;
+    }
+
+    100% {
+        border-color: #3b82f6;
+    }
+}
+
+.mp-card:hover:not(.done) {
+    border-color: #94a3b8;
+}
+
+.mp-card.done {
+    border-width: 2px;
+    font-weight: 500;
+}
+
+.mp-feedback-msg {
+    margin-top: 15px;
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+/* LaTeX & Images */
+.latex-content {
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.inline-q-img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mcq-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mp-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

@@ -33,10 +33,9 @@ import './HUD.css';
 export const HUD: React.FC = () => {
     // Hooks lấy dữ liệu từ Store
     const { resources, level, firstname, lastname, unlockedSpells } = usePlayerStore();
-    
+    console.log(resources)
     const {
         toggleInventory,
-        toggleMenu,
         toggleQuests,
         sparkyVisible,
         sparkyMessage
@@ -76,74 +75,6 @@ export const HUD: React.FC = () => {
                     <img src="/assets/Ảnh Assets/Vật Phẩm/Gold Coin.png" alt="Gold" />
                     <span>{resources[ResourceType.GOLD]}</span>
                 </div>
-            </div >
-
-            {/* === GÓC DƯỚI TRÁI: PHÍM TẮT KỸ NĂNG === */}
-            <div className="hud-panel hud-spells">
-                <h4><i className="fi fi-rr-magic-wand"></i> Phép Thuật (Hotkeys)</h4>
-                <div className="spell-slots">
-                    {[0, 1, 2, 3].map(index => (
-                        <div key={index} className="spell-slot">
-                            {unlockedSpells[index] ? (
-                                <div className="spell-icon-frame">
-                                    {/* Placeholder icon, replace with specific spell icon later */}
-                                    <img
-                                        src={`/assets/Ảnh Assets/UI/Skill Icon Frame.png`}
-                                        alt="Spell Slot"
-                                    />
-                                    <span className="hotkey">{index + 1}</span>
-                                </div>
-                            ) : (
-                                <div className="spell-slot-empty">
-                                    <span className="hotkey">{index + 1}</span>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div >
-
-            {/* === GÓC DƯỚI PHẢI: MENU HỆ THỐNG === */}
-            < div className="hud-panel hud-menu-buttons" >
-                <motion.button
-                    className="hud-btn"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={toggleInventory}
-                    title="Túi Đồ (B)"
-                >
-                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Bag.png" alt="Inventory" />
-                </motion.button>
-
-                <motion.button
-                    className="hud-btn"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    title="Bản Đồ (M) - Chưa mở"
-                    style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                >
-                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Map.png" alt="Map" />
-                </motion.button>
-
-                <motion.button
-                    className="hud-btn"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={toggleQuests}
-                    title="Nhiệm Vụ (Q)"
-                >
-                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Quest.png" alt="Quests" />
-                </motion.button>
-
-                <motion.button
-                    className="hud-btn"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={toggleMenu}
-                    title="Cài Đặt / Menu (ESC)"
-                >
-                    <img src="/assets/Ảnh Assets/UI/Menu Buttons Exit.png" alt="Menu" />
-                </motion.button>
             </div >
 
             {/* === CỬA SỔ TRỢ LÝ SPARKY (POPUP) === */}

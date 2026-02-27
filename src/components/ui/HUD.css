@@ -29,8 +29,8 @@
 
 /* === PLAYER INFO (TOP LEFT) === */
 .hud-player-info {
-    width: 420px;
-    height: 140px;
+    width: 320px;
+    height: 120px;
 
     /* Hide generic panel styles */
     background-color: transparent !important;
@@ -59,8 +59,8 @@
 .player-avatar {
     position: absolute;
     /* Căn chỉnh vào "Hình tròn" trong ảnh */
-    top: 35px;
-    left: 42px;
+    top: 27px;
+    left: 26px;
     width: 180px;
     height: 180px;
     border-radius: 50%;
@@ -87,8 +87,8 @@
 .player-details h3 {
     position: absolute;
     /* Căn chỉnh vào "Hình chữ nhật" trong ảnh */
-    top: 51px;
-    left: 200px;
+    top: 45px;
+    left: 120px;
     width: 230px;
     /* Giới hạn chiều rộng text */
     margin: 0;
@@ -114,9 +114,9 @@
 .level-badge {
     position: absolute;
     /* Căn chỉnh vào "Hình lục giác" trong ảnh */
-    top: 15px;
+    top: 12px;
     /* Giả định nằm dưới tên */
-    left: 117px;
+    left: 87px;
 
     /* Text Style */
     color: var(--color-text-secondary);
@@ -150,12 +150,11 @@
 .resource-item {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
 .resource-item img {
-    width: 58px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
     image-rendering: pixelated;
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
@@ -192,8 +191,8 @@
 }
 
 .spell-slot {
-    width: 56px;
-    height: 56px;
+    width: 45px;
+    height: 45px;
     position: relative;
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid #444;
@@ -256,13 +255,13 @@
     gap: var(--space-md);
     padding: 10px;
     background: rgba(0, 0, 0, 0.6);
-    border-radius: var(--border-radius-full);
+    border-radius: var(--border-radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(5px);
 }
 
 .hud-btn {
-    width: 56px;
+    width: 90px;
     height: 56px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid transparent;

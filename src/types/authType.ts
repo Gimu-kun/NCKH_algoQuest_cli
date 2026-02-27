@@ -11,12 +11,12 @@ export interface RegisterPayload {
 export interface UserGeneralDto{
   id: string;
   username: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   level:number;
   exp:number;
-  wood:number;
-  stone:number;
+  woods:number;
+  stones:number;
   point:number;
   gold:number;
   role:boolean;
