@@ -9,6 +9,7 @@ import { Roadmap } from "../pages/Roadmap/Roadmap"
 import { Adventure } from "../pages/Adventure/Adventure"
 import { StagePlay } from "../pages/StagePlay/StagePlay"
 import { AlgoLab } from "../pages/AlgoLab"
+import ReviewDetail from "../pages/ReviewDetail/ReviewDetail"
 
 export const RouteList = () => {
     return (
@@ -21,6 +22,7 @@ export const RouteList = () => {
                 <Route path="roadmap" element={<Roadmap/>}/>
                 <Route path="adventure/:id" element={<Adventure/>}/>
                 <Route path="adventure/:id/stage/:stageId" element={<StagePlay />} />
+                <Route path="adventure/review/:progressId" element={<ReviewDetail />} />
                 <Route path="achievements" element={<Achievements/>}/>
                 <Route path="leaderboards" element={<Leaderboards/>}/>
                 <Route path="lab" element={<AlgoLab/>}/>

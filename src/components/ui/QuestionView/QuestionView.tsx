@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import './QuestionView.css';
+import { RenderLatex } from '../LatexRender/QuestionLatexRender';
 
 interface Props {
     question: any;
@@ -43,7 +40,6 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
             .sort(() => Math.random() - 0.5);
     }, [question.id]);
     
-    console.log(question)
     const [leftSelected, setLeftSelected] = useState<string | null>(null);
     const [selectedMcq, setSelectedMcq] = useState<string | null>(null);
     const [textInput, setTextInput] = useState('');
@@ -75,20 +71,7 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
         });
     }, [selectedMcq, textInput, matches]);
 
-    const RenderLatex = ({ content, images }: { content: string; images?: any[] }) => {
-        const processed = content.replace(/#pic(\d+)/g, (match, num) => {
-            const idx = parseInt(num) - 1;
-            return images?.[idx] ? `<img src="http://localhost:8080${images[idx].url}" class="inline-q-img" />` : match;
-        }).replace(/\\\\/g, '\\');
-
-        return (
-            <div className="latex-content">
-                <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex, rehypeRaw]}>
-                    {processed}
-                </ReactMarkdown>
-            </div>
-        );
-    };
+    
 
     const handleReset = () => {
         setMatches({});
@@ -156,7 +139,6 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
 
             <div className="q-body">
                 <RenderLatex content={question.questionContent} images={question.questionImgs} />
-
                 <div className="ans-section">
                     {type === 'mcq' && (
                         <div className="mcq-grid">

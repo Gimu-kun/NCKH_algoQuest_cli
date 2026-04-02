@@ -1,4 +1,6 @@
 .complexity-game-wrapper {
+    position: relative;
+    top: 70px;
     width: 100%;
     background: #0d1117;
     border-radius: 12px;
@@ -255,4 +257,9 @@
 .run-btn.start {
     background: #238636;
     margin-top: 10px;
+}
+
+.exit-stage-btn{
+    width: 100%;
+    margin-bottom: 10px;
 }

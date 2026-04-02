@@ -64,6 +64,7 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     border: 1px solid #d1d5db;
     position: relative;
+    scroll-behavior: smooth;
 }
 
 .page-header {
@@ -77,7 +78,7 @@
 .lesson-title { font-size: 2.2rem; color: #111827; margin-top: 10px; }
 
 /* Section Content */
-.content-section { margin-bottom: 30px; }
+.content-section { font-size: 1rem; margin-bottom: 30px; }
 
 .heading-level-1 { font-size: 1.6rem; color: #1e40af; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; margin-top: 20px; }
 .heading-level-2 { font-size: 1.3rem; color: #1f2937; margin-top: 15px; }
@@ -116,4 +117,15 @@
     color: #9ca3af;
     border-top: 1px dotted #ccc;
     padding-top: 20px;
+}
+.image-box{
+    background-color: #1a1a1a;
+}
+
+.inline-q-img {
+    width: 500px;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: block;
 }

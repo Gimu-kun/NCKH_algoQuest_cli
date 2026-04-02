@@ -2,13 +2,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./StagePlay.css";
 import { useEffect, useState, useMemo } from "react";
 import type { Quest } from "../../types/questType";
-import { getQuestById } from "../../services/singlePlayApiService";
+import { getQuestByIdForStage } from "../../services/singlePlayApiService";
 import { LessonView } from "../../components/ui/LessonView/LessonView";
 import QuestionView from "../../components/ui/QuestionView/QuestionView";
 import { ComplexityGame } from "../../components/ui/ComplexityGame/ComplexityGame";
 import { ComplexityBudgetGame } from "../../components/ui/ComplexityBudget/ComplexityBudget";
 import { usePlayerStore } from "../../store/playerStore";
 import Swal from "sweetalert2";
+import { AlgorithmCodeEditor } from "../../components/ui/AlgorithmCodeEditor/AlgorithmCodeEditor";
 
 export const StagePlay: React.FC = () => {
     const { id: topicId, stageId } = useParams<{ id: string, stageId: string }>();
@@ -31,7 +32,7 @@ export const StagePlay: React.FC = () => {
             if (!stageId) return navigate(`/v1/adventure/${topicId}`);
             try {
                 setLoading(true);
-                const result = await getQuestById(stageId);
+                const result = await getQuestByIdForStage(stageId,userId);
                 if (result.success) setQuestDetail(result.data);
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
@@ -47,12 +48,6 @@ export const StagePlay: React.FC = () => {
             ...prev,
             [questionId]: data
         }));
-    };
-
-    const handleLogAnswers = () => {
-        console.log("=== DỮ LIỆU CÂU TRẢ LỜI CỦA NGƯỜI DÙNG ===");
-        console.log(quizAnswers);
-        alert("Đã log câu trả lời ra Console!");
     };
 
     const nextStep = () => {
@@ -133,12 +128,7 @@ export const StagePlay: React.FC = () => {
                 hydrate(result.data.user);
                 const scoreInfo = result.data;
 
-                if (scoreInfo.isPassed) {
-                    const scoreInfo = result.data;
-                    handleFinishResult(scoreInfo);
-                } else {
-                    alert("Không đủ điểm, thử lại nhé!");
-                }
+                handleFinishResult(scoreInfo);
             }
         } catch (error) {
             Swal.fire('Lỗi', 'Không thể kết nối đến máy chủ hệ thống.', 'error');
@@ -159,7 +149,7 @@ export const StagePlay: React.FC = () => {
                 html: `
                     <div style="text-align: left; padding: 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                         <p style="color: #2ea043; font-weight: bold; font-size: 1.1em;">
-                            ✅ Thuật toán chính xác: ${scoreInfo.correctCount}/${scoreInfo.totalCount}
+                            ✅ Số câu chính xác: ${scoreInfo.correctCount}/${scoreInfo.totalCount}
                         </p>
                         
                         <hr style="border: 0.5px solid #30363d; margin: 15px 0;">
@@ -174,7 +164,7 @@ export const StagePlay: React.FC = () => {
                             </ul>
                         ` : hasNewRewards ? `
                             <p style="color: #58a6ff; font-weight: bold;">📈 Kỷ lục mới!</p>
-                            <p style="font-size: 0.9em;">Bạn đã tối ưu tốt hơn lần trước. Nhận thêm phần chênh lệch:</p>
+                            <p style="font-size: 0.9em;">Bạn đã tối ưu tốt hơn lần trước. Nhận thêm phần thưởng nhé:</p>
                             <ul style="list-style: none; padding-left: 5px;">
                                 ${scoreInfo.earnedExp > 0 ? `<li>⭐ Kinh nghiệm: +${scoreInfo.earnedExp}</li>` : ''}
                                 ${scoreInfo.earnedGold > 0 ? `<li>💰 Vàng: +${scoreInfo.earnedGold}</li>` : ''}
@@ -203,7 +193,7 @@ export const StagePlay: React.FC = () => {
                 icon: 'error',
                 background: '#0d1117',
                 color: '#c9d1d9',
-                confirmButtonText: 'THỬ LẠI',
+                confirmButtonText: 'Quay về bản đồ',
                 confirmButtonColor: '#da3633'
             }).then(() => {
                 navigate(`/v1/adventure/${topicId}`);
@@ -233,8 +223,10 @@ export const StagePlay: React.FC = () => {
                         {currentStepData.type === 'VISUALIZATION' && (
                             currentStepData.data.visualization.visualizationType === "cc" ? (
                                 <ComplexityGame questId={stageId!} visualData={currentStepData.data} />
-                            ) : (
+                            ) : currentStepData.data.visualization.visualizationType === "cb" ? (
                                 <ComplexityBudgetGame questId={stageId!} visualData={currentStepData.data} />
+                            ) : (
+                                <AlgorithmCodeEditor questId={stageId!} visualData={currentStepData.data} />
                             )
                         )}
                     </div>
@@ -248,29 +240,31 @@ export const StagePlay: React.FC = () => {
                     <div className="footer-left">
                         <div className="progress-text">Bước {currentStep + 1} / {steps.length}</div>
                     </div>
-                    <button
-                        className="exit-stage-btn"
-                        onClick={() => {
-                            Swal.fire({
-                                title: 'Rời khỏi ải?',
-                                text: "Tiến trình hiện tại của bạn sẽ không được lưu!",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#d33',
-                                cancelButtonColor: '#3085d6',
-                                confirmButtonText: 'Rời đi',
-                                cancelButtonText: 'Ở lại',
-                                background: '#0d1117',
-                                color: '#c9d1d9',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    navigate(`/v1/adventure/${topicId}`);
-                                }
-                            });
-                        }}
-                    >
-                        <i className="fas fa-arrow-left"></i> Thoát
-                    </button>
+                    <div className="footer-middle">
+                        <button
+                            className="exit-stage-btn"
+                            onClick={() => {
+                                Swal.fire({
+                                    title: 'Rời khỏi ải?',
+                                    text: "Tiến trình hiện tại của bạn sẽ không được lưu!",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Rời đi',
+                                    cancelButtonText: 'Ở lại',
+                                    background: '#0d1117',
+                                    color: '#c9d1d9',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        navigate(`/v1/adventure/${topicId}`);
+                                    }
+                                });
+                            }}
+                        >
+                            <i className="fas fa-arrow-left"></i> Thoát
+                        </button>
+                    </div>
                     <div className="nav-buttons">
                         <button
                             className="nav-btn prev"

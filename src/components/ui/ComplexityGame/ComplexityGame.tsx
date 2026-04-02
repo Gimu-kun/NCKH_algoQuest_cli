@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import "./ComplexityGame.css";
 import { usePlayerStore } from '../../../store/playerStore';
 import { submitVisualChallenge } from '../../../services/singlePlayApiService';
@@ -27,7 +27,7 @@ export const ComplexityGame: React.FC<Props> = ({ questId, visualData }) => {
     const config = JSON.parse(visualization.data);
     const navigate = useNavigate();
     const [inputValue, setInputValue] = useState<string>("5");
-    const [speed, setSpeed] = useState<number>(600);
+    const [speed, setSpeed] = useState<number>(300);
     const [steps, setSteps] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -238,6 +238,29 @@ export const ComplexityGame: React.FC<Props> = ({ questId, visualData }) => {
                 </div>
 
                 <div className="visual-container">
+                    <button
+                                            className="exit-stage-btn"
+                                            onClick={() => {
+                                                Swal.fire({
+                                                    title: 'Rời khỏi ải?',
+                                                    text: "Tiến trình hiện tại của bạn sẽ không được lưu!",
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#d33',
+                                                    cancelButtonColor: '#3085d6',
+                                                    confirmButtonText: 'Rời đi',
+                                                    cancelButtonText: 'Ở lại',
+                                                    background: '#0d1117',
+                                                    color: '#c9d1d9',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        navigate(`/v1/adventure/${topicId}`);
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            <i className="fas fa-arrow-left"></i> Thoát
+                                        </button>
                     <div className="control-card">
                         <label>Input Value (n)</label>
                         <input type="number" className="n-input" value={inputValue}
@@ -246,19 +269,19 @@ export const ComplexityGame: React.FC<Props> = ({ questId, visualData }) => {
                             type="range" min="300" max="900" step="300"
                             value={speed} onChange={(e) => setSpeed(Number(e.target.value))}
                         />
-                        <span>{speed == 900 ? "Chậm" : speed == 600 ? "Vừa" : "Nhanh"}</span>
+                        <span>  Tốc độ: {speed == 900 ? "Chậm" : speed == 600 ? "Vừa" : "Nhanh"}</span>
                         {!isRunning ? (
-                            <button className="run-btn start" onClick={runSimulation}>EXECUTE</button>
+                            <button className="run-btn start" onClick={runSimulation}>Thực thi</button>
                         ) : (
                             <div className="playback-controls">
                                 <button className="control-btn" onClick={handlePauseResume}>
-                                    {isPaused ? "▶ RESUME" : "⏸ PAUSE"}
+                                    {isPaused ? "▶ Tiếp tục" : "⏸ Tạm ngưng"}
                                 </button>
                                 <button className="control-btn" onClick={handleNextStep} disabled={!isPaused}>
-                                    ⏭ STEP
+                                    ⏭ Tiếp
                                 </button>
                                 <button className="control-btn stop" onClick={handleStop}>
-                                    ⏹ STOP
+                                    ⏹ Dừng
                                 </button>
                             </div>
                         )}
@@ -286,7 +309,6 @@ export const ComplexityGame: React.FC<Props> = ({ questId, visualData }) => {
                                     onClick={() => handleGuess(opt.value, config.explanation)}
                                     className="quiz-opt"
                                 >
-                                    {/* Hiển thị số mũ đẹp mắt */}
                                     {opt.label}
                                 </button>
                             ))}

@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './LessonView.css';
+import SmartContentDetailRender from './SmartContentDetailRender';
+import SectionDetailItem from './SectionDetailItem';
 
 interface LessonProps {
     lesson: any;
 }
 
 export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
+    const filteredSections = lesson.sections.filter((sec:any)=>sec.level == 1);
     const [activeSection, setActiveSection] = useState<string>('');
-
-    // Hàm chuyển đổi BBCode/Markdown đơn giản (dành cho [b], [color], $\Rightarrow$)
-    const parseContent = (content: string) => {
-        return content
-            .replace(/\[b\]/g, '<strong>').replace(/\[\/b\]/g, '</strong>')
-            .replace(/\[color=(.*?)\]/g, '<span style="color:$1">').replace(/\[\/color\]/g, '</span>')
-            .replace(/\$\\Rightarrow\$/g, '➔')
-            .replace(/\n/g, '<br/>');
-    };
 
     // Hàm đệ quy để lấy tất cả tiêu đề cho Mục lục (Sidebar)
     const renderTableOfContents = (sections: any[]) => {
@@ -39,6 +33,7 @@ export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
 
     // Hàm đệ quy để hiển thị nội dung chi tiết (Main Content)
     const renderSections = (sections: any[]) => {
+        console.log(sections)
         return sections.map((section) => (
             <div 
                 key={section.id} 
@@ -49,17 +44,7 @@ export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
                     {section.title}
                 </h3>
                 
-                <div 
-                    className="section-body"
-                    dangerouslySetInnerHTML={{ __html: parseContent(section.content) }} 
-                />
-
-                {/* Render Media: Images */}
-                {section.images?.map((img: any) => (
-                    <div key={img.id} className="image-box">
-                        <img src={img.url} alt="Minh họa" />
-                    </div>
-                ))}
+                <SectionDetailItem section={section}/>
 
                 {/* Render Media: Refs (Video/Link) */}
                 {section.refs?.map((ref: any) => (
@@ -80,13 +65,6 @@ export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
                         )}
                     </div>
                 ))}
-
-                {/* ĐỆ QUY: Render các con của section này */}
-                {section.children && section.children.length > 0 && (
-                    <div className="nested-sections">
-                        {renderSections(section.children)}
-                    </div>
-                )}
             </div>
         ));
     };
@@ -97,7 +75,7 @@ export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
             <aside className="lesson-sidebar">
                 <div className="sidebar-header">MỤC LỤC</div>
                 <nav className="toc-nav">
-                    {renderTableOfContents(lesson.sections)}
+                    {renderTableOfContents(filteredSections)}
                 </nav>
             </aside>
 
@@ -110,7 +88,7 @@ export const LessonView: React.FC<LessonProps> = ({ lesson }) => {
                     </header>
                     
                     <div className="page-content">
-                        {renderSections(lesson.sections)}
+                        {renderSections(filteredSections)}
                     </div>
                 </div>
             </main>

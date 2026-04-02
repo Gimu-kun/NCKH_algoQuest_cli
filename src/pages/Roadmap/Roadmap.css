@@ -41,7 +41,7 @@
     flex-wrap: wrap;
     justify-content: center;
     padding: 20px;
-    width: 70%;
+    width: 100%;
     min-width: 250px;
     z-index: 2;
     gap: 55px;
@@ -49,7 +49,7 @@
 
 .topic_card{
     width: 250px;
-    height: 100px;
+    min-height: 100px;
     background-color: red;
     background: var(--color-bg-panel);
     border: var(--border-width-medium) solid var(--color-primary);
@@ -60,6 +60,10 @@
     backdrop-filter: blur(8px);
     transition: all .5s;
     cursor: pointer;
+}
+
+.topic_card_desc{
+    font-size: 13px !important;
 }
 
 .topic_card:hover{

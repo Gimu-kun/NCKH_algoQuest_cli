@@ -121,6 +121,44 @@ export const getQuestById = async (id:string): Promise<ApiResponse<Quest>>=>{
     }
 }
 
+export const getQuestByIdForStage = async (stageId:string, userId:string): Promise<ApiResponse<Quest>>=>{
+    try{
+        const response: AxiosResponse = await apiClient.get(`/quests/stage/${stageId}/${userId}`);
+        const result = response.data;
+
+        return {
+            success: result.success ?? true,
+            message: result.message,
+            data: result.data,
+        };
+    }catch(error){
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+
+            if (axiosError.response?.data) {
+                const serverData = axiosError.response.data as any;
+
+                return {
+                    success: false,
+                    error:
+                        serverData.message ||
+                        serverData.error ||
+                        `Lỗi ${axiosError.response.status}: ${axiosError.response.statusText}`,
+                };
+            }
+
+            return {
+                success: false,
+                error: axiosError.message || 'Server không phản hồi',
+            };
+        }
+        return {
+            success: false,
+            error: (error as Error).message || 'Đã xảy ra lỗi không xác định',
+        };
+    }
+}
+
 export const claimReward = async (questId: string, userId: string): Promise<ApiResponse<any>> => {
     try {
         // Sử dụng URLSearchParams để gửi query params cho request POST
