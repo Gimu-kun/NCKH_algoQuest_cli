@@ -187,7 +187,7 @@ export const NPCS: Record<string, Omit<NPCData, 'quests'>> = {
         features: ['SHOP']
     },
 
-    GUILD_LEADER: {
+    LEADER: {
         id: 'guild_leader',
         name: 'Guild Leader',
         displayName: 'Thủ Lĩnh Guild',

@@ -12,21 +12,25 @@
  * - Các nút điều hướng (Tiếp theo, Bỏ qua, Hoàn tất).
  * - Các nút tính năng đặc biệt (Nhiệm vụ, Cửa hàng, Tập luyện) tùy theo NPC.
  * 
- * @component DialogueBox
+ * @component DialogueBoxx
  * @category UI Components
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState } from 'react';
+import React, { useState, type ActionDispatch } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { NPCS } from '../../data/models/NPC';
 import './DialogueBox.css';
+import type { dialogueStateType } from '../../types/dialogueType';
 
-export const DialogueBox: React.FC = () => {
-    // Hooks truy cập global state
-    const { dialogueOpen, dialogueNPC, closeDialogue } = useGameStore();
+type dialogueBoxProps = {
+    npcId:string,
+    setOpenState: React.Dispatch<React.SetStateAction<dialogueStateType>>
+}
+
+export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) => {
 
     // State cục bộ để theo dõi dòng hội thoại hiện tại
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
@@ -34,13 +38,14 @@ export const DialogueBox: React.FC = () => {
     const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
 
     // Không hiển thị nếu chưa kích hoạt hội thoại
-    if (!dialogueOpen || !dialogueNPC) return null;
+    if (!npcId || npcId == "") return null;
 
     // Lấy dữ liệu NPC từ ID
-    const npc = NPCS[dialogueNPC];
+    const npc = NPCS[npcId];
+    console.log(npc)
 
     if (!npc) {
-        console.error('Không tìm thấy dữ liệu NPC:', dialogueNPC);
+        console.error('Không tìm thấy dữ liệu NPC:', npcId);
         return null; // Hoặc hiển thị UI lỗi fallback
     }
 
@@ -75,7 +80,10 @@ export const DialogueBox: React.FC = () => {
     const handleClose = () => {
         setCurrentDialogueIndex(0);
         setIsSelectingDungeon(false); // Reset state chọn ải
-        closeDialogue();
+        setOpenState({
+            isOpen:false,
+            npcId:""
+        })
     };
 
     /**
@@ -83,7 +91,10 @@ export const DialogueBox: React.FC = () => {
      */
     const handleFeatureClick = (feature: string) => {
         setIsSelectingDungeon(false); // Reset UI mode
-        closeDialogue(); // UI cleanup - Đóng hội thoại trước khi xử lý
+        setOpenState({
+            isOpen:false,
+            npcId:""
+        }) // UI cleanup - Đóng hội thoại trước khi xử lý
 
         switch (feature) {
             case 'SHOP':
@@ -178,6 +189,7 @@ export const DialogueBox: React.FC = () => {
 
     return (
         <div className="dialogue-overlay">
+            <div>tesst</div>
             <AnimatePresence>
                 <motion.div
                     className="dialogue-box"

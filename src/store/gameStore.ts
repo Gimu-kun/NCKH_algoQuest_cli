@@ -54,7 +54,8 @@ export const enum GameScene {
     ACHIEVEMENTS = 'ACHIEVEMENTS', // Màn hình thành tựu
     LEADERBOARDS = 'LEADERBOARDS', // Bảng xếp hạng
     ALGO_LAB = 'ALGO_LAB',         // Phòng thí nghiệm thuật toán
-    STUDY_MATERIALS = 'STUDY_MATERIALS' // Tài liệu học tập (Dev Tools)
+    STUDY_MATERIALS = 'STUDY_MATERIALS', // Tài liệu học tập (Dev Tools)
+    ROADMAP = 'ROADMAP'            // Lộ trình học tập
 }
 
 // State quản lý Session Combat

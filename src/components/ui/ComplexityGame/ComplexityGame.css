@@ -1,0 +1,265 @@
+.complexity-game-wrapper {
+    position: relative;
+    top: 70px;
+    width: 100%;
+    background: #0d1117;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: #e6edf3;
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 10px;
+}
+
+.status-badge {
+    background: #238636;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 20px;
+}
+
+/* CODE IDE STYLE */
+.code-container {
+    background: #010409;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.code-header-bar {
+    background: #161b22;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.code-header-bar .dots {
+    display: flex;
+    gap: 6px;
+}
+
+.code-header-bar .dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #30363d;
+}
+
+.file-name {
+    font-size: 11px;
+    color: #8b949e;
+    font-family: monospace;
+}
+
+.code-window {
+    padding: 15px 0;
+    overflow-x: auto;
+}
+
+.code-line {
+    display: flex;
+    padding: 0 15px;
+    transition: all 0.1s;
+    border-left: 3px solid transparent;
+}
+
+.code-line.highlight {
+    background: rgba(56, 139, 253, 0.15);
+    border-left-color: #58a6ff;
+}
+
+.line-number {
+    width: 30px;
+    color: #484f58;
+    font-family: monospace;
+    font-size: 12px;
+    text-align: right;
+    margin-right: 15px;
+    user-select: none;
+}
+
+.line-content {
+    margin: 0;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    color: #d0d7de;
+    white-space: pre; /* Quan trọng để giữ thụt đầu dòng */
+}
+
+.code-line.highlight .line-content {
+    color: #58a6ff;
+    font-weight: bold;
+}
+
+/* CONTROLS & MONITOR */
+.control-card, .monitor-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.n-input {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    color: #79c0ff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+.run-btn {
+    width: 100%;
+    padding: 12px;
+    background: #238636;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.run-btn:hover:not(:disabled) {
+    background: #2ea043;
+}
+
+.run-btn.active {
+    background: #6e7681;
+}
+
+.monitor-value {
+    font-size: 38px;
+    font-family: monospace;
+    color: #3fb950;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(63, 185, 80, 0.4);
+}
+
+.monitor-label {
+    font-size: 10px;
+    color: #8b949e;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+/* QUIZ OVERLAY */
+.quiz-overlay {
+    margin-top: 25px;
+    animation: fadeIn 0.5s ease;
+}
+
+.quiz-card {
+    background: #161b22;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #58a6ff;
+    text-align: center;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.quiz-opt {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.quiz-opt:hover {
+    background: #30363d;
+    border-color: #58a6ff;
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}   
+
+.playback-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.control-btn {
+    flex: 1;
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: white;
+    padding: 10px 5px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.control-btn:hover {
+    background: #30363d;
+    border-color: #8b949e;
+}
+
+.control-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.control-btn.stop {
+    background: rgba(248, 81, 73, 0.1);
+    color: #f85149;
+    border-color: rgba(248, 81, 73, 0.4);
+}
+
+.control-btn.stop:hover {
+    background: #f85149;
+    color: white;
+}
+
+.status-text {
+    text-align: center;
+    font-size: 12px;
+    color: #58a6ff;
+    margin-top: 10px;
+    font-family: monospace;
+}
+
+.run-btn.start {
+    background: #238636;
+    margin-top: 10px;
+}
+
+.exit-stage-btn{
+    width: 100%;
+    margin-bottom: 10px;
+}

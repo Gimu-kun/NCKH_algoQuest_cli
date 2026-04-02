@@ -27,11 +27,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ResourceType } from '../data/models/Item';
 import { QUEST_DATABASE } from '../data/quests/QuestDatabase';
+import type { UserGeneralDto } from '../types/authType';
 
 // Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
     // === Thông Tin Cơ Bản ===
-    name: string;
+    id: string;
+    firstname: string;
+    lastname: string;
     level: number;
     experience: number;
 
@@ -84,6 +87,9 @@ export interface PlayerState {
 
 // Interface định nghĩa các hành động tương tác với dữ liệu
 export interface PlayerActions {
+
+    hydrateFromServer: (data: UserGeneralDto) => void;
+
     // === Quản Lý Tài Nguyên ===
     addResource: (type: ResourceType, amount: number) => void;
     removeResource: (type: ResourceType, amount: number) => boolean;
@@ -119,7 +125,9 @@ export interface PlayerActions {
 
 // Giá trị khởi tạo mặc định cho người chơi mới
 const initialPlayerState: PlayerState = {
-    name: 'Apprentice',
+    id: '',
+    firstname: 'Tên',
+    lastname: "Họ",
     level: 1,
     experience: 0,
     resources: {
@@ -163,7 +171,27 @@ export const usePlayerStore = create<PlayerStore>()(
     persist(
         (set, get) => ({
             ...initialPlayerState,
-
+            hydrateFromServer:(data) => {
+                set((state) => ({
+                    ...state,
+                    id: data.id,
+                    username: data.username,
+                    role: data.role,
+            
+                    firstname: data.firstName,
+                    lastname: data.lastName,
+                    level: data.level,
+                    experience: data.exp,
+            
+                    resources: {
+                        ...state.resources,
+                        [ResourceType.O_POINTS]: data.point,
+                        [ResourceType.GOLD]: data.gold,
+                        [ResourceType.DATA_WOOD]: data.woods,
+                        [ResourceType.LOGIC_STONE]: data.stones
+                    }
+                }));
+            },
             /**
              * Thêm tài nguyên cho người chơi
              */
