@@ -189,7 +189,6 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
 
     return (
         <div className="dialogue-overlay">
-            <div>tesst</div>
             <AnimatePresence>
                 <motion.div
                     className="dialogue-box"

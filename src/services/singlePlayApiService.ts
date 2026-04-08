@@ -5,6 +5,44 @@ import axios from "axios";
 import type { QuestStatusDto, topicGeneralType } from "../types/topicType";
 import type { Quest } from "../types/questType";
 
+export const getTopic = async (id:string): Promise<ApiResponse<topicGeneralType>> => {
+    try{
+        const response: AxiosResponse = await apiClient.get(`/topics/${id}`);
+        const result = response.data;
+        return {
+            status: result.status,
+            success: result.success ?? true,
+            message: result.message,
+            data: result.data,
+        };
+    }catch(error){
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+
+            if (axiosError.response?.data) {
+                const serverData = axiosError.response.data as any;
+
+                return {
+                    success: false,
+                    error:
+                        serverData.message ||
+                        serverData.error ||
+                        `Lỗi ${axiosError.response.status}: ${axiosError.response.statusText}`,
+                };
+            }
+
+            return {
+                success: false,
+                error: axiosError.message || 'Server không phản hồi',
+            };
+        }
+        return {
+            success: false,
+            error: (error as Error).message || 'Đã xảy ra lỗi không xác định',
+        };
+    }
+}
+
 export const getTopics = async (): Promise<ApiResponse<topicGeneralType[]>> => {
     try{
         const response: AxiosResponse = await apiClient.get("/topics");

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import "./Adventure.css"
 import type { QuestStatusDto, topicGeneralType } from "../../types/topicType"
-import { claimReward, getTopicById, getTopics } from "../../services/singlePlayApiService"
+import { claimReward, getTopicById, getTopic } from "../../services/singlePlayApiService"
 import type { ApiResponse } from "../../types/apiType"
 import { useNavigate, useParams } from "react-router-dom"
 import { usePlayerStore } from "../../store/playerStore"
@@ -11,25 +11,31 @@ export const Adventure: React.FC = () => {
     const [showHistory, setShowHistory] = useState<string | null>(null);
     const [questsStatus, setQuestsStatus] = useState<QuestStatusDto[]>([]);
     const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null);
+    const [topicDetail, setTopicDetail] = useState<topicGeneralType>();
     const userId = usePlayerStore((state) => state.id);
     const navigate = useNavigate()
     const { id: topicId } = useParams<{ id: string }>();
 
     const MAP_COORDINATES: Record<number, { x: number; y: number }[]> = {
         1: [{ x: 15, y: 75 }, { x: 20, y: 70 }, { x: 23, y: 63 }, { x: 22, y: 55 }, { x: 22, y: 46 }, { x: 27, y: 45 }, { x: 33, y: 43 }, { x: 38, y: 40 }, { x: 43, y: 35 }, { x: 43, y: 47 }, { x: 40, y: 53 }, { x: 35, y: 58 }, { x: 34, y: 69 }, { x: 37, y: 79 }, { x: 43, y: 85 }, { x: 38, y: 89 }, { x: 44, y: 95 }, { x: 50, y: 95 }, { x: 56, y: 90 }, { x: 60, y: 85 }, { x: 63, y: 78 }, { x: 60, y: 70 }, { x: 55, y: 65 }, { x: 50, y: 63 }, { x: 55, y: 55 }, { x: 62, y: 60 }, { x: 60, y: 50 }, { x: 65, y: 45 }], // Ải 1
-        2: [{ x: 10, y: 80 }, { x: 30, y: 60 }, { x: 50, y: 40 }, { x: 80, y: 20 }], // Ải 2
+        2: [{ x: 15, y: 75 }, { x: 20, y: 70 }, { x: 25, y: 62 }, { x: 32, y: 55 }, { x: 38, y: 55 }, { x: 35, y: 45 }, { x: 43, y: 40 }, { x: 45, y: 25 }, { x: 50, y: 35 }, { x: 58, y: 40 }, { x: 60, y: 50 }, { x: 65, y: 60 }, { x: 71, y: 65 }, { x: 65, y: 70 }, { x: 60, y: 75 }, { x: 55, y: 72 }, { x: 50, y: 77 }, { x: 48, y: 88 }, { x: 43, y: 95 }, { x: 42, y: 88 }, { x: 44, y: 80 }, { x: 35, y: 65 }, { x: 44, y: 73 }, { x: 47, y: 65 }], // Ải 2
         3: [{ x: 50, y: 10 }, { x: 50, y: 40 }, { x: 50, y: 70 }], // Ải 3
-        4: [{ x: 20, y: 20 }, { x: 80, y: 20 }, { x: 20, y: 80 }, { x: 80, y: 80 }], // Ải 4
+        4: [{ x: 20, y: 20 }, { x: 80, y: 20 }, { x: 20, y: 80 }, { x: 80, y: 80 }], // Ải 4    
         5: [{ x: 30, y: 50 }, { x: 50, y: 30 }, { x: 70, y: 50 }, { x: 50, y: 70 }], // Ải 5
     };
 
-    const fetchDetail = async () => {
-        if (!topicId) return navigate("/v1/roadmap");
+    const fetchTopicDetail = async (topicId:string) => {
+        const result: ApiResponse<topicGeneralType> = await getTopic(topicId);
 
+        if (result.success && result.data) {
+            setTopicDetail(result.data);
+        }
+    }
+
+    const fetchDetail = async (topicId:string) => {
         const result: ApiResponse<QuestStatusDto[]> = await getTopicById(topicId, userId);
 
         if (result.success && result.data) {
-            console.log(result.data)
             setQuestsStatus(result.data);
         }
     };
@@ -49,7 +55,12 @@ export const Adventure: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchDetail();
+        if (!topicId){
+            navigate("/v1/roadmap");
+        }else{
+            fetchDetail(topicId);
+            fetchTopicDetail(topicId)
+        } 
     }, [topicId, userId]);
 
     const handleOpenReward = async (questId: string) => {
@@ -68,7 +79,9 @@ export const Adventure: React.FC = () => {
                     setSelectedQuestId(null)
                 });
                 // Refresh lại dữ liệu để hòm chuyển sang trạng thái 'open'
-                fetchDetail();
+                if(topicId){
+                    fetchDetail(topicId);
+                }
                 console.log(response.data)
                 // Cập nhật lại stats (vàng, exp) trong Store của người chơi
                 usePlayerStore.getState().hydrateFromServer(response.data);
@@ -78,17 +91,17 @@ export const Adventure: React.FC = () => {
         }
     };
 
-    const currentTopicIndex = questsStatus[0]?.quest.indexOrder || 1;
+    const currentTopicIndex = topicDetail?.indexOrder || 1;
     const coords = MAP_COORDINATES[currentTopicIndex] || [];
     const pointsString = coords.map(p => `${p.x},${p.y}`).join(" ");
-
+    console.log(currentTopicIndex)
     return (
         <div className="adv_container">
             <div className={`adv_background bg_${currentTopicIndex}`} />
 
             <div className="map_wrapper">
                 <svg className="map_line_svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <polyline points={pointsString} className="map_path_line" />
+                    <polyline points={pointsString} className={`map_path_line top_${currentTopicIndex}`}/>
                 </svg>
 
                 {questsStatus.map((item, index) => {
@@ -135,7 +148,7 @@ export const Adventure: React.FC = () => {
                                     //Hiển thị cho nút bài học & câu hỏi
                                     quest.type === 'lesson' ?
                                         <button
-                                            className={`map_node_btn ${isSelected ? 'active' : ''}`}
+                                            className={`map_node_btn ${isSelected ? 'active' : ''} top_${currentTopicIndex}`}
                                             onClick={() => {
                                                 if (!unlocked) {
                                                     Swal.fire({
