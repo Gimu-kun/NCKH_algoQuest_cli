@@ -29,6 +29,8 @@ const QUESTIONS: QuizQuestion[] = [
   },
 ];
 
+const SKILLS = ['Search Boost', 'Sort Shield', 'DP Shield', 'Graph Dash', 'Tree Vision'];
+
 const MODE_META: Record<MultiplayerMode, { title: string; description: string }> = {
   DUEL_1V1: {
     title: 'Dau toc do 1v1',
@@ -42,6 +44,30 @@ const MODE_META: Record<MultiplayerMode, { title: string; description: string }>
     title: 'Team Quiz 2v2 theo chapter',
     description: 'Hai doi doi khang theo bo cau hoi chuong da chon.',
   },
+  CODE_DUEL_DRAFT: {
+    title: 'Code Duel Draft 1v1',
+    description: 'Draft 3 ky nang truoc tran, dau tri toc do va chien thuat.',
+  },
+  RACE_TO_PATH: {
+    title: 'Race to Path (2-4 nguoi)',
+    description: 'Toi uu duong di tren do thi, ai toi dich truoc se thang.',
+  },
+  BUG_HUNT_2V2: {
+    title: 'Bug Hunt Arena 2v2',
+    description: 'San bug nhanh, doi nao sua dung nhieu loi hon se thang.',
+  },
+  TOWER_DEFENSE_COOP: {
+    title: 'Tower Defense Algo Co-op',
+    description: 'Phoi hop queue, cache, va chon cau truc de giu lane.',
+  },
+  MEMORY_RELAY: {
+    title: 'Memory Relay (3-5 nguoi)',
+    description: 'Truyen chuoi thao tac DS theo luot, sai mot buoc la mat combo.',
+  },
+  TOURNAMENT_8: {
+    title: 'Tournament Bracket 8',
+    description: 'Dau nhanh theo nhanh dau, vao ban ket va chung ket.',
+  },
 };
 
 function getResultText(state: RoomState | null, myId: string): string {
@@ -50,17 +76,17 @@ function getResultText(state: RoomState | null, myId: string): string {
   const opponentScore = state.players.filter((p) => p.id !== myId).reduce((sum, p) => sum + p.score, 0);
   const myScore = me?.score ?? 0;
 
-  if (state.mode === 'COOP_DUNGEON') {
-    return myScore + opponentScore >= 200
-      ? 'Co-op thanh cong! Hai ban da vuot ai.'
+  if (state.mode === 'COOP_DUNGEON' || state.mode === 'TOWER_DEFENSE_COOP') {
+    return myScore + opponentScore >= 220
+      ? 'Co-op thanh cong! Team da vuot muc tieu.'
       : 'Co-op that bai, can phoi hop tot hon.';
   }
 
-  if (state.mode === 'TEAM_2V2') {
-    return myScore >= opponentScore ? 'Doi cua ban thang vong chapter!' : 'Doi ban thua vong chapter.';
+  if (state.mode === 'TEAM_2V2' || state.mode === 'BUG_HUNT_2V2') {
+    return myScore >= opponentScore ? 'Doi cua ban thang vong nay!' : 'Doi cua ban thua vong nay.';
   }
 
-  return myScore >= opponentScore ? 'Ban thang tran 1v1!' : 'Ban thua tran 1v1.';
+  return myScore >= opponentScore ? 'Ban thang tran!' : 'Ban thua tran!';
 }
 
 export const Multiplayer: React.FC = () => {
@@ -78,6 +104,15 @@ export const Multiplayer: React.FC = () => {
   const [connection, setConnection] = useState({ connected: true, ping: 32 });
   const [timeLeft, setTimeLeft] = useState(30);
 
+  // Mode-specific states
+  const [draftSkills, setDraftSkills] = useState<string[]>([]);
+  const [raceProgress, setRaceProgress] = useState(0);
+  const [bugFixedCount, setBugFixedCount] = useState(0);
+  const [towerHealth, setTowerHealth] = useState(100);
+  const [memoryInput, setMemoryInput] = useState('');
+  const [memoryCombo, setMemoryCombo] = useState(0);
+  const [tournamentRound, setTournamentRound] = useState<'QF' | 'SF' | 'F'>('QF');
+
   const myId = multiplayerRealtimeService.getPlayerId();
   const phase: MatchPhase = roomState?.phase ?? 'LOBBY';
 
@@ -91,6 +126,10 @@ export const Multiplayer: React.FC = () => {
     const pool = byChapter.length ? byChapter : QUESTIONS;
     return pool[questionIndex % pool.length];
   }, [roomState?.chapter, roomState?.questionIndex, localChapter]);
+
+  const memorySequence = useMemo(() => {
+    return ['push', 'push', 'pop', 'enqueue', 'dequeue'];
+  }, []);
 
   useEffect(() => {
     const playerName = `Nguoi-Choi-${myId.slice(-4).toUpperCase()}`;
@@ -148,10 +187,21 @@ export const Multiplayer: React.FC = () => {
   };
 
   const startMatch = () => {
+    if (mode === 'CODE_DUEL_DRAFT' && draftSkills.length < 3) {
+      setLocalFeedback('Mode Draft can chon du 3 ky nang truoc khi bat dau.');
+      return;
+    }
+
     multiplayerRealtimeService.startMatch();
     setSubmitted(false);
     setSelectedAnswer(null);
     setLocalFeedback('');
+    setRaceProgress(0);
+    setBugFixedCount(0);
+    setTowerHealth(100);
+    setMemoryCombo(0);
+    setMemoryInput('');
+    setTournamentRound('QF');
   };
 
   const submitAnswer = () => {
@@ -171,6 +221,12 @@ export const Multiplayer: React.FC = () => {
     setSubmitted(false);
     setSelectedAnswer(null);
     setLocalFeedback('');
+    setRaceProgress(0);
+    setBugFixedCount(0);
+    setTowerHealth(100);
+    setMemoryCombo(0);
+    setMemoryInput('');
+    setTournamentRound('QF');
   };
 
   const backLobby = () => {
@@ -181,9 +237,11 @@ export const Multiplayer: React.FC = () => {
     setLocalFeedback('');
   };
 
-  const onModeChange = (mode: MultiplayerMode) => {
-    setLocalMode(mode);
-    if (roomState?.phase === 'LOBBY') multiplayerRealtimeService.setMode(mode);
+  const onModeChange = (nextMode: MultiplayerMode) => {
+    setLocalMode(nextMode);
+    if (roomState?.phase === 'LOBBY') multiplayerRealtimeService.setMode(nextMode);
+    setDraftSkills([]);
+    setLocalFeedback('');
   };
 
   const onChapterChange = (chapter: number) => {
@@ -195,6 +253,62 @@ export const Multiplayer: React.FC = () => {
     multiplayerRealtimeService.setRole(role);
   };
 
+  const toggleSkill = (skill: string) => {
+    setDraftSkills((prev) => {
+      if (prev.includes(skill)) return prev.filter((s) => s !== skill);
+      if (prev.length >= 3) return prev;
+      return [...prev, skill];
+    });
+  };
+
+  const performRaceMove = (fast: boolean) => {
+    const gain = fast ? 3 : 2;
+    const newProgress = Math.min(12, raceProgress + gain);
+    setRaceProgress(newProgress);
+    multiplayerRealtimeService.submitAnswer(true, timeLeft);
+    if (newProgress >= 12) {
+      multiplayerRealtimeService.finishRound('Ban da ve dich truoc o mode Race to Path!');
+    }
+  };
+
+  const fixBug = (isRealBug: boolean) => {
+    if (isRealBug) {
+      setBugFixedCount((v) => v + 1);
+      multiplayerRealtimeService.submitAnswer(true, timeLeft);
+      setLocalFeedback('Fix dung bug +1');
+    } else {
+      multiplayerRealtimeService.submitAnswer(false, timeLeft);
+      setLocalFeedback('Fix sai, tru diem nhe.');
+    }
+  };
+
+  const defendTower = (action: 'QUEUE' | 'CACHE') => {
+    const delta = action === 'QUEUE' ? 10 : 15;
+    setTowerHealth((hp) => Math.max(0, Math.min(100, hp + delta - 8)));
+    multiplayerRealtimeService.submitAnswer(true, timeLeft);
+  };
+
+  const submitMemoryStep = () => {
+    const expected = memorySequence[memoryCombo % memorySequence.length];
+    if (memoryInput.trim().toLowerCase() === expected) {
+      setMemoryCombo((v) => v + 1);
+      multiplayerRealtimeService.submitAnswer(true, timeLeft);
+      setLocalFeedback('Dung nhip relay!');
+    } else {
+      setMemoryCombo(0);
+      multiplayerRealtimeService.submitAnswer(false, timeLeft);
+      setLocalFeedback('Sai chuoi, reset combo.');
+    }
+    setMemoryInput('');
+  };
+
+  const advanceTournament = () => {
+    if (tournamentRound === 'QF') setTournamentRound('SF');
+    else if (tournamentRound === 'SF') setTournamentRound('F');
+    else multiplayerRealtimeService.finishRound('Ban la nha vo dich Tournament!');
+    multiplayerRealtimeService.submitAnswer(true, timeLeft);
+  };
+
   const canStart = multiplayerRealtimeService.canStart();
   const mode = roomState?.mode ?? localMode;
   const chapter = roomState?.chapter ?? localChapter;
@@ -204,7 +318,7 @@ export const Multiplayer: React.FC = () => {
       <div className="multiplayer-header">
         <div>
           <h1>Dau Truong Multiplayer</h1>
-          <p>Realtime room sync: create/join, ready, timer, ket qua, rematch, reconnect.</p>
+          <p>Full mode pack: lobby, room, ready, ping, reconnect, result, rematch.</p>
         </div>
         <div className="connection-panel">
           <span className={`status-dot ${connection.connected ? 'online' : 'offline'}`} />
@@ -271,12 +385,29 @@ export const Multiplayer: React.FC = () => {
               </div>
             )}
 
+            {mode === 'CODE_DUEL_DRAFT' && (
+              <div className="draft-box">
+                <p>Chon 3 ky nang truoc tran:</p>
+                <div className="chip-row">
+                  {SKILLS.map((skill) => (
+                    <button
+                      key={skill}
+                      className={`chip ${draftSkills.includes(skill) ? 'chip-active' : ''}`}
+                      onClick={() => toggleSkill(skill)}
+                      type="button"
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+                <p>Da chon: {draftSkills.length}/3</p>
+              </div>
+            )}
+
             <div className="ready-row">
               <button onClick={toggleReady}>{myPlayer?.ready ? 'Huy san sang' : 'San sang'}</button>
               <span>Ban: {myPlayer?.ready ? 'Ready' : 'Not ready'}</span>
-              <span>
-                Doi thu: {opponentPlayers.some((p) => p.ready) ? 'Ready' : 'Not ready'}
-              </span>
+              <span>Doi thu: {opponentPlayers.some((p) => p.ready) ? 'Ready' : 'Not ready'}</span>
             </div>
 
             <button className="start-btn" onClick={startMatch} disabled={!canStart}>
@@ -313,11 +444,69 @@ export const Multiplayer: React.FC = () => {
             <button onClick={finishRound}>Ket thuc luot</button>
           </div>
 
+          <div className="mode-widget">
+            {mode === 'RACE_TO_PATH' && (
+              <div className="widget-card">
+                <h3>Race to Path</h3>
+                <p>Tien do den dich: {raceProgress}/12</p>
+                <div className="row">
+                  <button onClick={() => performRaceMove(true)}>Edge Risk (nhanh)</button>
+                  <button onClick={() => performRaceMove(false)}>Edge Safe</button>
+                </div>
+              </div>
+            )}
+
+            {mode === 'BUG_HUNT_2V2' && (
+              <div className="widget-card">
+                <h3>Bug Hunt Arena</h3>
+                <p>Bug da fix: {bugFixedCount}</p>
+                <div className="row">
+                  <button onClick={() => fixBug(true)}>Fix null pointer</button>
+                  <button onClick={() => fixBug(true)}>Fix off-by-one</button>
+                  <button onClick={() => fixBug(false)}>Fix fake bug</button>
+                </div>
+              </div>
+            )}
+
+            {mode === 'TOWER_DEFENSE_COOP' && (
+              <div className="widget-card">
+                <h3>Tower Defense Algo</h3>
+                <p>HP tru: {towerHealth}</p>
+                <div className="row">
+                  <button onClick={() => defendTower('QUEUE')}>Deploy Queue</button>
+                  <button onClick={() => defendTower('CACHE')}>Enable Cache</button>
+                </div>
+              </div>
+            )}
+
+            {mode === 'MEMORY_RELAY' && (
+              <div className="widget-card">
+                <h3>Memory Relay</h3>
+                <p>Combo: {memoryCombo}</p>
+                <p>Nhap lenh tiep theo cua chuoi: {memorySequence.join(' -> ')}</p>
+                <div className="row">
+                  <input
+                    value={memoryInput}
+                    onChange={(e) => setMemoryInput(e.target.value)}
+                    placeholder="VD: push"
+                  />
+                  <button onClick={submitMemoryStep}>Gui lenh</button>
+                </div>
+              </div>
+            )}
+
+            {mode === 'TOURNAMENT_8' && (
+              <div className="widget-card">
+                <h3>Tournament Bracket</h3>
+                <p>Round hien tai: {tournamentRound}</p>
+                <button onClick={advanceTournament}>Advance round</button>
+              </div>
+            )}
+          </div>
+
           <div className="score-line">
             <span>Diem ban: <strong>{myPlayer?.score ?? 0}</strong></span>
-            <span>
-              Diem doi thu: <strong>{opponentPlayers.reduce((sum, p) => sum + p.score, 0)}</strong>
-            </span>
+            <span>Diem doi thu: <strong>{opponentPlayers.reduce((sum, p) => sum + p.score, 0)}</strong></span>
           </div>
 
           {localFeedback && <p className="hint-text">{localFeedback}</p>}
@@ -330,9 +519,7 @@ export const Multiplayer: React.FC = () => {
           <p>{roomState?.resultText || localFeedback}</p>
           <div className="score-line">
             <span>Ban: <strong>{myPlayer?.score ?? 0}</strong></span>
-            <span>
-              Doi thu/Doi con lai: <strong>{opponentPlayers.reduce((sum, p) => sum + p.score, 0)}</strong>
-            </span>
+            <span>Doi thu/Doi con lai: <strong>{opponentPlayers.reduce((sum, p) => sum + p.score, 0)}</strong></span>
           </div>
           <div className="row">
             <button onClick={rematch}>Rematch</button>

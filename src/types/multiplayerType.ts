@@ -1,4 +1,13 @@
-export type MultiplayerMode = 'DUEL_1V1' | 'COOP_DUNGEON' | 'TEAM_2V2';
+export type MultiplayerMode =
+  | 'DUEL_1V1'
+  | 'COOP_DUNGEON'
+  | 'TEAM_2V2'
+  | 'CODE_DUEL_DRAFT'
+  | 'RACE_TO_PATH'
+  | 'BUG_HUNT_2V2'
+  | 'TOWER_DEFENSE_COOP'
+  | 'MEMORY_RELAY'
+  | 'TOURNAMENT_8';
 export type MatchPhase = 'LOBBY' | 'MATCH' | 'RESULT';
 export type CoopRole = 'GIAI_DO' | 'CHIEN_DAU';
 
