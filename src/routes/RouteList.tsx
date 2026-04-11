@@ -11,6 +11,7 @@ const Roadmap = lazy(() => import("../pages/Roadmap/Roadmap").then(module => ({ 
 const Adventure = lazy(() => import("../pages/Adventure/Adventure").then(module => ({ default: module.Adventure })));
 const StagePlay = lazy(() => import("../pages/StagePlay/StagePlay").then(module => ({ default: module.StagePlay })));
 const AlgoLab = lazy(() => import("../pages/AlgoLab").then(module => ({ default: module.AlgoLab })));
+const Multiplayer = lazy(() => import("../pages/Multiplayer/Multiplayer").then(module => ({ default: module.Multiplayer })));
 const ReviewDetail = lazy(() => import("../pages/ReviewDetail/ReviewDetail"));
 
 const RouteFallback = () => <div className="route-fallback">Đang tải màn chơi...</div>;
@@ -31,6 +32,7 @@ export const RouteList = () => {
                     <Route path="achievements" element={<Achievements/>}/>
                     <Route path="leaderboards" element={<Leaderboards/>}/>
                     <Route path="lab" element={<AlgoLab/>}/>
+                    <Route path="multiplayer" element={<Multiplayer/>}/>
                 </Route>
             </Routes>
         </Suspense>
