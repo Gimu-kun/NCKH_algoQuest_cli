@@ -1,0 +1,106 @@
+.bug-hunt-page {
+  min-height: 100%;
+  padding: 110px 24px 40px;
+  color: #f3f7ff;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 95, 109, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 12%, rgba(99, 102, 241, 0.2), transparent 28%),
+    linear-gradient(160deg, #11132a 0%, #1b1f3f 55%, #131834 100%);
+}
+
+.bug-hunt-header h1 {
+  margin: 0;
+  color: #ffcf7d;
+}
+
+.bug-hunt-header p {
+  margin-top: 6px;
+  color: #d8e0ff;
+}
+
+.bug-hunt-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.bug-card,
+.score-card {
+  border-radius: 14px;
+  border: 1px solid rgba(179, 192, 255, 0.24);
+  background: rgba(12, 16, 34, 0.88);
+  padding: 14px;
+}
+
+.bug-top {
+  display: flex;
+  justify-content: space-between;
+  color: #9fe3ff;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: rgba(20, 28, 53, 0.9);
+  border: 1px solid rgba(138, 191, 255, 0.22);
+  border-radius: 10px;
+  padding: 10px;
+  color: #d4e9ff;
+}
+
+.choice-list {
+  display: grid;
+  gap: 8px;
+}
+
+.choice-list button {
+  border-radius: 10px;
+  border: 1px solid rgba(156, 184, 255, 0.3);
+  background: rgba(26, 35, 67, 0.9);
+  color: #f2f7ff;
+  padding: 10px;
+  text-align: left;
+}
+
+.choice-list button.picked {
+  border-color: #ffd166;
+  background: rgba(255, 209, 102, 0.18);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.actions button,
+.score-card button {
+  border-radius: 10px;
+  border: 1px solid rgba(170, 196, 255, 0.3);
+  background: rgba(35, 46, 83, 0.95);
+  color: #f6fbff;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.explain {
+  margin-top: 10px;
+  color: #91f4c9;
+}
+
+.status {
+  color: #ffd166;
+}
+
+ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .bug-hunt-grid {
+    grid-template-columns: 1fr;
+  }
+}

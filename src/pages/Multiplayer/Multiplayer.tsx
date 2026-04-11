@@ -464,6 +464,7 @@ export const Multiplayer: React.FC = () => {
                   <button onClick={() => fixBug(true)}>Fix null pointer</button>
                   <button onClick={() => fixBug(true)}>Fix off-by-one</button>
                   <button onClick={() => fixBug(false)}>Fix fake bug</button>
+                  <button onClick={() => navigate('/v1/multiplayer/bug-hunt')}>Mo game doc lap</button>
                 </div>
               </div>
             )}
