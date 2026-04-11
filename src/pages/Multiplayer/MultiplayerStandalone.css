@@ -1,0 +1,101 @@
+.mp-standalone-page {
+  min-height: 100%;
+  padding: 110px 24px 40px;
+  color: #f2f7ff;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(95, 152, 255, 0.2), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(96, 255, 180, 0.12), transparent 26%),
+    linear-gradient(160deg, #101428 0%, #1b2448 56%, #12183a 100%);
+}
+
+.mp-standalone-header h1 {
+  margin: 0;
+  color: #9fe7ff;
+}
+
+.mp-standalone-header p {
+  margin-top: 6px;
+  color: #d5deff;
+}
+
+.mp-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
+
+.mp-card {
+  border-radius: 14px;
+  border: 1px solid rgba(166, 193, 255, 0.28);
+  background: rgba(12, 18, 36, 0.9);
+  padding: 14px;
+}
+
+.mp-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mp-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mp-btn {
+  border-radius: 10px;
+  border: 1px solid rgba(171, 196, 255, 0.33);
+  background: rgba(30, 40, 77, 0.9);
+  color: #f6fbff;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.mp-btn.primary {
+  background: linear-gradient(135deg, #4ca4ff, #66efc2);
+  color: #06111f;
+  border-color: transparent;
+}
+
+.mp-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.mp-status {
+  color: #ffd166;
+}
+
+.mp-input {
+  border-radius: 10px;
+  border: 1px solid rgba(166, 194, 255, 0.3);
+  background: rgba(22, 33, 66, 0.95);
+  color: #f2f7ff;
+  padding: 10px 12px;
+}
+
+.mp-progress {
+  width: 100%;
+  height: 10px;
+  background: rgba(137, 162, 224, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mp-progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #5ea8ff, #65f1bd);
+}
+
+@media (max-width: 900px) {
+  .mp-grid {
+    grid-template-columns: 1fr;
+  }
+}

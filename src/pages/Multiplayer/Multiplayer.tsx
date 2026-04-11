@@ -342,6 +342,18 @@ export const Multiplayer: React.FC = () => {
         ))}
       </div>
 
+      <div className="panel" style={{ marginBottom: 16 }}>
+        <h2>Quick Launch - Standalone Games</h2>
+        <div className="row">
+          <button onClick={() => navigate('/v1/multiplayer/code-duel')}>Code Duel Draft</button>
+          <button onClick={() => navigate('/v1/multiplayer/race-to-path')}>Race to Path</button>
+          <button onClick={() => navigate('/v1/multiplayer/bug-hunt')}>Bug Hunt Arena</button>
+          <button onClick={() => navigate('/v1/multiplayer/tower-defense')}>Tower Defense Co-op</button>
+          <button onClick={() => navigate('/v1/multiplayer/memory-relay')}>Memory Relay</button>
+          <button onClick={() => navigate('/v1/multiplayer/tournament')}>Tournament Bracket</button>
+        </div>
+      </div>
+
       {phase === 'LOBBY' && (
         <div className="lobby-grid">
           <section className="panel">

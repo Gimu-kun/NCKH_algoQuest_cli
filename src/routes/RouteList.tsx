@@ -13,6 +13,11 @@ const StagePlay = lazy(() => import("../pages/StagePlay/StagePlay").then(module 
 const AlgoLab = lazy(() => import("../pages/AlgoLab").then(module => ({ default: module.AlgoLab })));
 const Multiplayer = lazy(() => import("../pages/Multiplayer/Multiplayer").then(module => ({ default: module.Multiplayer })));
 const BugHuntArena = lazy(() => import("../pages/Multiplayer/BugHuntArena").then(module => ({ default: module.BugHuntArena })));
+const CodeDuelDraft = lazy(() => import("../pages/Multiplayer/CodeDuelDraft").then(module => ({ default: module.CodeDuelDraft })));
+const RaceToPath = lazy(() => import("../pages/Multiplayer/RaceToPath").then(module => ({ default: module.RaceToPath })));
+const TowerDefenseCoop = lazy(() => import("../pages/Multiplayer/TowerDefenseCoop").then(module => ({ default: module.TowerDefenseCoop })));
+const MemoryRelay = lazy(() => import("../pages/Multiplayer/MemoryRelay").then(module => ({ default: module.MemoryRelay })));
+const TournamentBracket = lazy(() => import("../pages/Multiplayer/TournamentBracket").then(module => ({ default: module.TournamentBracket })));
 const ReviewDetail = lazy(() => import("../pages/ReviewDetail/ReviewDetail"));
 
 const RouteFallback = () => <div className="route-fallback">Đang tải màn chơi...</div>;
@@ -35,6 +40,11 @@ export const RouteList = () => {
                     <Route path="lab" element={<AlgoLab/>}/>
                     <Route path="multiplayer" element={<Multiplayer/>}/>
                     <Route path="multiplayer/bug-hunt" element={<BugHuntArena/>}/>
+                    <Route path="multiplayer/code-duel" element={<CodeDuelDraft/>}/>
+                    <Route path="multiplayer/race-to-path" element={<RaceToPath/>}/>
+                    <Route path="multiplayer/tower-defense" element={<TowerDefenseCoop/>}/>
+                    <Route path="multiplayer/memory-relay" element={<MemoryRelay/>}/>
+                    <Route path="multiplayer/tournament" element={<TournamentBracket/>}/>
                 </Route>
             </Routes>
         </Suspense>
