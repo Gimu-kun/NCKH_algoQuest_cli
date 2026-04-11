@@ -238,4 +238,63 @@ describe('multiplayerRealtimeService', () => {
     expect(service.getState()?.mode).toBe('MEMORY_RELAY');
     expect(service.getState()?.chapter).toBe(4);
   });
+
+  it('reconnect keeps the current room state after transport restart', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const module = await import('../multiplayerRealtimeService');
+      const service = module.multiplayerRealtimeService;
+
+      service.createRoom('DUEL_1V1', 2);
+      const roomCodeBefore = service.getState()?.roomCode;
+
+      service.reconnect();
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(service.getState()?.roomCode).toBe(roomCodeBefore);
+      expect(service.getState()?.phase).toBe('LOBBY');
+      expect(service.getState()?.players).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('finishRound moves match into RESULT and clears timer', async () => {
+    const module = await import('../multiplayerRealtimeService');
+    const service = module.multiplayerRealtimeService;
+
+    service.createRoom('DUEL_1V1', 2);
+
+    const mutable = service as unknown as {
+      getState: () => {
+        roomCode: string;
+        mode: 'DUEL_1V1' | 'COOP_DUNGEON' | 'TEAM_2V2' | 'CODE_DUEL_DRAFT' | 'RACE_TO_PATH' | 'BUG_HUNT_2V2' | 'TOWER_DEFENSE_COOP' | 'MEMORY_RELAY' | 'TOURNAMENT_8';
+        chapter: number;
+        phase: 'LOBBY' | 'MATCH' | 'RESULT';
+        hostId: string;
+        timerEndsAt: number | null;
+        questionIndex: number;
+        resultText: string;
+        players: Array<{ id: string; name: string; ready: boolean; score: number; role: 'GIAI_DO' | 'CHIEN_DAU'; team: 'A' | 'B' }>;
+        updatedAt: number;
+      } | null;
+      publish: (state: unknown) => void;
+    };
+
+    const state = mutable.getState();
+    if (!state) throw new Error('State should exist');
+
+    mutable.publish({
+      ...state,
+      phase: 'MATCH',
+      timerEndsAt: Date.now() + 30000,
+    });
+
+    service.finishRound('Match ended cleanly');
+
+    expect(service.getState()?.phase).toBe('RESULT');
+    expect(service.getState()?.timerEndsAt).toBeNull();
+    expect(service.getState()?.resultText).toBe('Match ended cleanly');
+  });
 });
