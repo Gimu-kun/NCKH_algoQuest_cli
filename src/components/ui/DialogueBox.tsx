@@ -22,6 +22,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { NPCS } from '../../data/models/NPC';
+import { useTranslation } from '../../i18n';
+import { useNavigate } from 'react-router-dom';
 import './DialogueBox.css';
 import type { dialogueStateType } from '../../types/dialogueType';
 
@@ -31,6 +33,8 @@ type dialogueBoxProps = {
 }
 
 export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) => {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // State cục bộ để theo dõi dòng hội thoại hiện tại
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
@@ -125,12 +129,12 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                 const questToGive = QUEST_CHAIN.find(q => !completedQuests.includes(q)) || '';
 
                 if (!questToGive) {
-                    useGameStore.getState().showSparky('🎉 Bạn đã hoàn thành tất cả nhiệm vụ chiến dịch! Tuyệt vời!');
+                    useGameStore.getState().showSparky(t('dialogue.allCampaignDone'));
                     break;
                 }
 
                 if (activeQuests.includes(questToGive)) {
-                    useGameStore.getState().showSparky('📋 Bạn đang thực hiện nhiệm vụ này rồi. Hãy kiểm tra Sổ Tay (Q)!');
+                    useGameStore.getState().showSparky(t('dialogue.questInProgress'));
                 } else {
                     startQuest(questToGive);
                     useGameStore.getState().showSparky(`📜 Đã nhận nhiệm vụ: ${QUEST_NAMES[questToGive]}!`);
@@ -139,7 +143,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
             }
 
             case 'TRAINING_AREA':
-                useGameStore.getState().showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.');
+                useGameStore.getState().showSparky(t('dialogue.trainingUpgrading'));
                 break;
 
             case 'ALGO_LAB':
@@ -155,31 +159,31 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                 break;
 
             case 'MULTIPLAYER':
-                useGameStore.getState().showSparky('⚔️ Đấu trường đang được xây dựng! Sớm thôi bạn sẽ có thể thách đấu bạn bè!');
+                navigate('/v1/multiplayer');
                 break;
 
             case 'DAILY_QUESTS':
-                useGameStore.getState().showSparky('📅 Nhiệm vụ hàng ngày đang được phát triển!');
+                useGameStore.getState().showSparky(t('dialogue.dailyQuestsBuilding'));
                 break;
 
             case 'BOSS_EVENTS':
-                useGameStore.getState().showSparky('🌟 Không có sự kiện trùm nào đang diễn ra!');
+                useGameStore.getState().showSparky(t('dialogue.noBossEvent'));
                 break;
 
             case 'CLASSROOM_MODE':
-                useGameStore.getState().showSparky('👨‍🏫 Chế độ lớp học đang được phát triển!');
+                useGameStore.getState().showSparky(t('dialogue.classroomBuilding'));
                 break;
 
             case 'UGC':
             case 'QUESTION_CRAFTER':
             case 'TEST_CRAFTER':
-                useGameStore.getState().showSparky('✍️ Công cụ tạo nội dung đang được hoàn thiện!');
+                useGameStore.getState().showSparky(t('dialogue.contentToolsBuilding'));
                 break;
 
             case 'AI_HINTS':
             case 'ERROR_DETECTION':
             case 'CONTENT_GENERATION':
-                useGameStore.getState().showSparky('Sparky luôn sẵn sàng hỗ trợ bạn!');
+                useGameStore.getState().showSparky(t('dialogue.aiAssistantReady'));
                 break;
 
             default:
@@ -227,7 +231,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                 overflow: 'hidden',
                                 minHeight: 0
                             }}>
-                                <h4 style={{ margin: '0 0 10px 0', flexShrink: 0 }}>🔻 Chọn Thử Thách 🔻</h4>
+                                <h4 style={{ margin: '0 0 10px 0', flexShrink: 0 }}>{t('dialogue.chooseChallenge')}</h4>
                                 {/* Scrollable Grid Container */}
                                 <div className="dungeon-selector-grid" style={{
                                     display: 'grid',
@@ -281,7 +285,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                                 color: '#d4a036'
                                             }}
                                         >
-                                            ⬅️ Quay Lại
+                                            {t('dialogue.back')}
                                         </button>
                                     ) : (
                                         // Khi bình thường: Hiện các nút tính năng chính
@@ -289,7 +293,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                             {/* ƯU TIÊN 1: Nhận Nhiệm Vụ */}
                                             {npc.features?.includes('CAMPAIGN_QUESTS') && (
                                                 <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
-                                                    📜 Nhận Nhiệm Vụ
+                                                    {t('dialogue.claimQuest')}
                                                 </button>
                                             )}
 
@@ -300,7 +304,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                                     onClick={() => setIsSelectingDungeon(true)}
                                                     style={{ background: 'linear-gradient(45deg, #FFD700, #FFA500)', color: '#000', fontWeight: 'bold' }}
                                                 >
-                                                    🗺️ Chọn Ải
+                                                    {t('dialogue.selectStage')}
                                                 </button>
                                             )}
                                         </>
@@ -309,32 +313,32 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                     {/* Các Feature Khác */}
                                     {npc.features?.includes('TRAINING_AREA') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
-                                            🎓 Khu Tập Luyện
+                                            {t('dialogue.trainingArea')}
                                         </button>
                                     )}
                                     {npc.features?.includes('ALGO_LAB') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ALGO_LAB')}>
-                                            🧪 Phòng Thí Nghiệm
+                                            {t('dialogue.algoLab')}
                                         </button>
                                     )}
                                     {npc.features?.includes('SHOP') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
-                                            🛒 Xem Cửa Hàng
+                                            {t('dialogue.shop')}
                                         </button>
                                     )}
                                     {npc.features?.includes('MULTIPLAYER') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
-                                            🤝 Vào Đấu Trường
+                                            {t('dialogue.multiplayerArena')}
                                         </button>
                                     )}
                                     {npc.features?.includes('LEADERBOARDS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('LEADERBOARDS')}>
-                                            🏆 Bảng Xếp Hạng
+                                            {t('dialogue.leaderboards')}
                                         </button>
                                     )}
                                     {npc.features?.includes('ACHIEVEMENTS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')}>
-                                            🎖️ Thành Tựu
+                                            {t('dialogue.achievements')}
                                         </button>
                                     )}
                                 </div>
@@ -346,16 +350,16 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                 {!isSelectingDungeon && (
                                     <>
                                         <button className="btn-skip" onClick={handleClose}>
-                                            Đóng ✕
+                                            {t('dialogue.close')}
                                         </button>
 
                                         {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
                                             <button className="btn-next" onClick={handleNext}>
-                                                Tiếp Theo ➡️
+                                                {t('dialogue.next')}
                                             </button>
                                         ) : (
                                             <button className="btn-close" onClick={handleClose}>
-                                                Hoàn Tất ✓
+                                                {t('dialogue.complete')}
                                             </button>
                                         )}
                                     </>
