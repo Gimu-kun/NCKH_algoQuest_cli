@@ -1,15 +1,23 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./StagePlay.css";
-import { useEffect, useState, useMemo } from "react";
+import { lazy, Suspense, useEffect, useState, useMemo } from "react";
 import type { Quest } from "../../types/questType";
 import { getQuestByIdForStage } from "../../services/singlePlayApiService";
 import { LessonView } from "../../components/ui/LessonView/LessonView";
-import QuestionView from "../../components/ui/QuestionView/QuestionView";
 import { ComplexityGame } from "../../components/ui/ComplexityGame/ComplexityGame";
 import { ComplexityBudgetGame } from "../../components/ui/ComplexityBudget/ComplexityBudget";
 import { usePlayerStore } from "../../store/playerStore";
 import Swal from "sweetalert2";
 import { AlgorithmCodeEditor } from "../../components/ui/AlgorithmCodeEditor/AlgorithmCodeEditor";
+import {
+    PREFETCH_DELAY_KEYBOARD_MS,
+    cancelScheduledMathPrefetch,
+    getAdaptiveHoverPrefetchDelay,
+    questionHasLikelyLatex,
+    scheduleMathPrefetch
+} from "../../utils/mathPrefetch";
+
+const QuestionView = lazy(() => import("../../components/ui/QuestionView/QuestionView"));
 
 export const StagePlay: React.FC = () => {
     const { id: topicId, stageId } = useParams<{ id: string, stageId: string }>();
@@ -96,6 +104,11 @@ export const StagePlay: React.FC = () => {
     if (loading) return <div className="loading-screen">Đang tải nội dung...</div>;
 
     const currentStepData = steps[currentStep];
+    const nextStepData = steps[currentStep + 1];
+
+    const shouldPrefetchForNextAction =
+        (currentStepData?.type === 'QUESTION' && questionHasLikelyLatex(currentStepData.data))
+        || (nextStepData?.type === 'QUESTION' && questionHasLikelyLatex(nextStepData.data));
 
     const handleFinish = async () => {
         // 1. Chuẩn bị dữ liệu Payload
@@ -212,12 +225,14 @@ export const StagePlay: React.FC = () => {
                         )}
 
                         {currentStepData.type === 'QUESTION' && (
-                            <QuestionView
-                                key={currentStepData.data.id}
-                                question={currentStepData.data}
-                                initialValue={quizAnswers[currentStepData.data.id]}
-                                onAnswerChange={(data) => handleUpdateQuizAnswer(currentStepData.data.id, data)}
-                            />
+                            <Suspense fallback={<div className="loading-screen">Đang tải câu hỏi...</div>}>
+                                <QuestionView
+                                    key={currentStepData.data.id}
+                                    question={currentStepData.data}
+                                    initialValue={quizAnswers[currentStepData.data.id]}
+                                    onAnswerChange={(data) => handleUpdateQuizAnswer(currentStepData.data.id, data)}
+                                />
+                            </Suspense>
                         )}
 
                         {currentStepData.type === 'VISUALIZATION' && (
@@ -276,6 +291,10 @@ export const StagePlay: React.FC = () => {
 
                         <button
                             className={`nav-btn next ${currentStep === steps.length - 1 ? 'finish' : ''} ${isNextDisabled() ? 'disabled-btn' : ''}`}
+                            onMouseEnter={() => scheduleMathPrefetch(shouldPrefetchForNextAction, getAdaptiveHoverPrefetchDelay())}
+                            onMouseLeave={cancelScheduledMathPrefetch}
+                            onFocus={() => scheduleMathPrefetch(shouldPrefetchForNextAction, PREFETCH_DELAY_KEYBOARD_MS)}
+                            onBlur={cancelScheduledMathPrefetch}
                             onClick={nextStep}
                             disabled={isNextDisabled()}
                         >

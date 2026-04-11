@@ -212,9 +212,7 @@
     font-family: 'Fira Code', monospace;
 }
 
-/* Đổi màu chữ cho dễ phân biệt log */
-.console-body pre:contains("ERROR") { color: #f85149; }
-.console-body pre:contains("SUCCESS") { color: #3fb950; }
+/* Đổi màu trạng thái log nên thực hiện bằng className trong JSX (không dùng :contains) */
 
 /* Điều chỉnh lại layout editor cho cân đối */
 .editor-inner {

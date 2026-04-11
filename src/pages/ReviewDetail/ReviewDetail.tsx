@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "./ReviewDetail.css";
-import { RenderLatex } from '../../components/ui/LatexRender/QuestionLatexRender';
+
+const RenderLatex = lazy(() =>
+    import('../../components/ui/LatexRender/QuestionLatexRender').then(module => ({ default: module.RenderLatex }))
+);
 
 const ReviewDetail: React.FC = () => {
     const { progressId } = useParams<{ progressId: string }>();
@@ -32,6 +35,12 @@ const ReviewDetail: React.FC = () => {
 
     const { progress, details } = data;
 
+    const renderLatex = (content: string, images?: any[]) => (
+        <Suspense fallback={<span>{content}</span>}>
+            <RenderLatex content={content} images={images} />
+        </Suspense>
+    );
+
     return (
         <div className="review-page">
             {/* Header: Tổng quan kết quả */}
@@ -61,7 +70,7 @@ const ReviewDetail: React.FC = () => {
                             <span className={`type-tag ${item.question.questionType}`}>{item.question.questionType.toUpperCase()}</span>
                             <span className="result-icon">{item.correct ? "✓" : "✗"}</span>
                         </div>
-                        <RenderLatex content={item.question.questionContent} images={item.question.questionImgs} />
+                        {renderLatex(item.question.questionContent, item.question.questionImgs)}
                         <div className="q-content">
                             {item.question.questionType === 'mcq' ? (
                                 <div className="mcq-options">
@@ -75,7 +84,7 @@ const ReviewDetail: React.FC = () => {
                                                 ${isSelected ? 'selected' : ''}`}>
                                                 <span className="radio-circle"></span>
                                                 <span className="opt-text">
-                                                    <RenderLatex content={opt.content} />
+                                                    {renderLatex(opt.content)}
                                                 </span>
                                                 {isSelected && <span className="user-tag">Lựa chọn của bạn</span>}
                                             </div>
@@ -99,19 +108,19 @@ const ReviewDetail: React.FC = () => {
                                         return (
                                             <div key={pair.id} className={`matching-row ${isPairCorrect ? 'pair-success' : 'pair-fail'}`}>
                                                 <div className="col-a">
-                                                    <RenderLatex content={pair.column1} />
+                                                    {renderLatex(pair.column1)}
                                                 </div>
 
                                                 <div className="col-user">
                                                     <div className={`match-badge ${isPairCorrect ? 'bg-success' : 'bg-danger'}`}>
-                                                        <RenderLatex content={userMatchedPair ? userMatchedPair.column2 : "Chưa nối"} />
+                                                        {renderLatex(userMatchedPair ? userMatchedPair.column2 : "Chưa nối")}
                                                     </div>
                                                 </div>
 
                                                 {!isPairCorrect && (
                                                     <div className="col-correct">
                                                         <div className="match-badge bg-system">
-                                                            <RenderLatex content={pair.column2} />
+                                                            {renderLatex(pair.column2)}
                                                         </div>
                                                     </div>
                                                 )}

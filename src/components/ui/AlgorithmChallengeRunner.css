@@ -1,0 +1,334 @@
+.algo-challenge-runner {
+    background: #11111b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    color: #cdd6f4;
+}
+
+.algo-hud {
+    background: linear-gradient(135deg, rgba(137, 180, 250, 0.16), rgba(166, 227, 161, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+}
+
+.algo-hud-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.algo-hud-label {
+    color: #bac2de;
+    font-size: 0.86rem;
+}
+
+.algo-hud-value {
+    color: #f9e2af;
+    font-size: 1.02rem;
+}
+
+.algo-hud-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(90px, 1fr));
+    gap: 8px;
+}
+
+.algo-hud-card {
+    background: rgba(17, 17, 27, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    display: grid;
+    gap: 3px;
+}
+
+.algo-hud-card span {
+    font-size: 0.75rem;
+    color: #a6adc8;
+}
+
+.algo-hud-card strong {
+    font-size: 0.95rem;
+}
+
+.algo-hud-card small {
+    font-size: 0.72rem;
+    color: #9399b2;
+}
+
+.algo-hud-card.easy strong { color: #94e2d5; }
+.algo-hud-card.medium strong { color: #f9e2af; }
+.algo-hud-card.hard strong { color: #f38ba8; }
+
+.algo-challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.algo-challenge-header h3 {
+    margin: 0;
+    color: #f9e2af;
+    font-size: 1.05rem;
+}
+
+.algo-badge {
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.algo-badge.easy { color: #94e2d5; }
+.algo-badge.medium { color: #f9e2af; }
+.algo-badge.hard { color: #f38ba8; }
+
+.algo-prompt {
+    color: #bac2de;
+    margin: 0 0 16px;
+}
+
+.algo-choices {
+    display: grid;
+    gap: 10px;
+}
+
+.algo-choice-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cdd6f4;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.algo-choice-btn.selected {
+    border-color: #89b4fa;
+    background: rgba(137, 180, 250, 0.16);
+}
+
+.algo-choice-btn.correct {
+    border-color: #94e2d5;
+    background: rgba(148, 226, 213, 0.16);
+}
+
+.algo-choice-btn.wrong {
+    border-color: #f38ba8;
+    background: rgba(243, 139, 168, 0.14);
+}
+
+.algo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.algo-actions button {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    cursor: pointer;
+}
+
+.algo-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.algo-medium-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.algo-medium-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.algo-medium-grid label {
+    display: grid;
+    gap: 6px;
+    font-size: 0.86rem;
+    color: #a6adc8;
+}
+
+.algo-medium-grid input,
+.algo-medium-grid select {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 7px 8px;
+}
+
+.algo-code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #0b0b12;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.84rem;
+    margin-bottom: 12px;
+}
+
+.algo-option-label {
+    display: block;
+    font-size: 0.78rem;
+    color: #f9e2af;
+    margin-top: 4px;
+}
+
+.algo-feedback {
+    margin-top: 10px;
+    font-size: 0.92rem;
+    color: #a6e3a1;
+}
+
+.algo-feedback.error {
+    color: #f38ba8;
+}
+
+.algo-array-preview {
+    margin: 10px 0 12px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(17, 17, 27, 0.5);
+}
+
+.algo-array-track {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.algo-array-cell {
+    min-width: 44px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    display: grid;
+    place-items: center;
+}
+
+.algo-array-cell.active {
+    border-color: #f9e2af;
+    background: rgba(249, 226, 175, 0.15);
+}
+
+.algo-array-index {
+    color: #9399b2;
+    font-size: 0.68rem;
+    line-height: 1;
+}
+
+.algo-array-target {
+    margin-top: 8px;
+    color: #f9e2af;
+    font-size: 0.82rem;
+}
+
+.algo-real-viz {
+    margin: 10px 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.algo-viz-lazy-loading {
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    color: #a6adc8;
+    font-size: 0.88rem;
+}
+
+.algo-medium-grid-click {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.algo-medium-dnd-wrap {
+    margin-top: 10px;
+}
+
+.algo-medium-dropzones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.algo-dropzone {
+    min-height: 58px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+    display: grid;
+    place-items: center;
+    gap: 4px;
+    padding: 8px;
+}
+
+.algo-dropzone span {
+    font-size: 0.72rem;
+    color: #9399b2;
+}
+
+.algo-dropzone strong {
+    color: #f9e2af;
+}
+
+.algo-dropzone.filled {
+    border-style: solid;
+    border-color: rgba(137, 180, 250, 0.7);
+    background: rgba(137, 180, 250, 0.14);
+}
+
+.algo-medium-cell {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #cdd6f4;
+    padding: 8px 6px;
+    display: grid;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.algo-medium-cell span {
+    font-size: 0.7rem;
+    color: #9399b2;
+}
+
+.algo-medium-cell.selected {
+    border-color: #89b4fa;
+    background: rgba(137, 180, 250, 0.18);
+}
+
+.algo-medium-cell.dragging {
+    opacity: 0.65;
+    transform: scale(0.98);
+}

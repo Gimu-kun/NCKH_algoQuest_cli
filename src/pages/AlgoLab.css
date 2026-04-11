@@ -500,6 +500,14 @@
     min-height: 0;
 }
 
+.lab-viz-lazy-loading {
+    min-height: 240px;
+    display: grid;
+    place-items: center;
+    color: var(--lab-text-secondary);
+    font-size: 0.92rem;
+}
+
 /* Info Bar */
 .lab-info-bar {
     display: flex;

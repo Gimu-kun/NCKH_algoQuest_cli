@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://algoquest.local/schemas/algorithm-challenge.schema.json",
+  "title": "Algorithm Challenge Set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "chapter", "topic", "challenges"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "chapter": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "challenges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/challenge"
+      }
+    }
+  },
+  "$defs": {
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "challengeBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "difficulty", "prompt", "algorithmKey", "scoring"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "difficulty": {
+          "$ref": "#/$defs/difficulty"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "algorithmKey": {
+          "type": "string",
+          "description": "Internal algorithm id, for example: bubble-sort"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basePoints", "wrongPenalty"],
+          "properties": {
+            "basePoints": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "wrongPenalty": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "firstTryBonus": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "easyChallenge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/challengeBase"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["difficulty", "mode", "visualization", "choices", "correctChoiceId"],
+          "properties": {
+            "difficulty": {
+              "const": "easy"
+            },
+            "mode": {
+              "const": "identify-from-visual"
+            },
+            "visualization": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["demoKey", "snapshotRef"],
+              "properties": {
+                "demoKey": {
+                  "type": "string"
+                },
+                "snapshotRef": {
+                  "type": "string",
+                  "description": "Image or frame id used by UI"
+                }
+              }
+            },
+            "choices": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id", "label", "displayKey"],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "displayKey": {
+                    "type": "string",
+                    "enum": ["A", "B", "C"]
+                  }
+                }
+              }
+            },
+            "correctChoiceId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "mediumChallenge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/challengeBase"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "difficulty",
+            "mode",
+            "algorithmLabel",
+            "initialState",
+            "expectedSteps",
+            "rollbackPolicy"
+          ],
+          "properties": {
+            "difficulty": {
+              "const": "medium"
+            },
+            "mode": {
+              "const": "perform-by-steps"
+            },
+            "algorithmLabel": {
+              "type": "string",
+              "description": "Algorithm name shown to player before interaction"
+            },
+            "initialState": {
+              "type": "object",
+              "description": "UI state used to render first frame"
+            },
+            "expectedSteps": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["step", "action", "payload", "stateAfter"],
+                "properties": {
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "Interaction name, for example: compare, swap, insert"
+                  },
+                  "payload": {
+                    "type": "object"
+                  },
+                  "stateAfter": {
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "rollbackPolicy": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "keepCompletedSteps"],
+              "properties": {
+                "type": {
+                  "const": "keep-n-minus-1"
+                },
+                "keepCompletedSteps": {
+                  "type": "boolean",
+                  "const": true
+                },
+                "maxMistakes": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hardFunctionOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "functionCode", "actualAlgorithm"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "functionCode": {
+          "type": "string"
+        },
+        "actualAlgorithm": {
+          "type": "string"
+        },
+        "displayedAlgorithmLabel": {
+          "type": "string",
+          "description": "Optional label shown in UI for trick mode"
+        }
+      }
+    },
+    "hardChallenge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/challengeBase"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "difficulty",
+            "mode",
+            "hardVariant",
+            "codeTemplate",
+            "missingFunctionName",
+            "visualizationTarget",
+            "options",
+            "correctOptionId"
+          ],
+          "properties": {
+            "difficulty": {
+              "const": "hard"
+            },
+            "mode": {
+              "const": "complete-missing-function"
+            },
+            "hardVariant": {
+              "type": "string",
+              "enum": ["function-only-4", "mixed-labels-4"]
+            },
+            "codeTemplate": {
+              "type": "string"
+            },
+            "missingFunctionName": {
+              "type": "string"
+            },
+            "visualizationTarget": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["demoKey", "expectedBehavior"],
+              "properties": {
+                "demoKey": {
+                  "type": "string"
+                },
+                "expectedBehavior": {
+                  "type": "string",
+                  "description": "Behavior summary that must match when function is selected"
+                }
+              }
+            },
+            "options": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": {
+                "$ref": "#/$defs/hardFunctionOption"
+              }
+            },
+            "correctOptionId": {
+              "type": "string"
+            },
+            "labelRules": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Required when hardVariant = mixed-labels-4",
+              "properties": {
+                "truthfulLabeledOptionIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "misleadingLabeledOptionIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "swappedLabelPair": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "hardVariant": {
+                    "const": "mixed-labels-4"
+                  }
+                }
+              },
+              "then": {
+                "required": ["labelRules"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "challenge": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/easyChallenge"
+        },
+        {
+          "$ref": "#/$defs/mediumChallenge"
+        },
+        {
+          "$ref": "#/$defs/hardChallenge"
+        }
+      ]
+    }
+  }
+}

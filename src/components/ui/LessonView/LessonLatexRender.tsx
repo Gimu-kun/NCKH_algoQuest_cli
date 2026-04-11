@@ -1,5 +1,8 @@
+import React, { lazy, Suspense } from "react";
 import { Box, Typography } from "@mui/material";
-import { InlineMath } from "react-katex";
+import 'katex/dist/katex.min.css';
+
+const InlineMath = lazy(() => import("react-katex").then(module => ({ default: module.InlineMath })));
 
 type UnifiedRenderProps = {
     content: string;
@@ -13,7 +16,11 @@ export const LessonLatexRender = ({ content, images = [] }: UnifiedRenderProps) 
         // 1. Xử lý Latex
         if (part.startsWith('$') && part.endsWith('$')) {
             const math = part.slice(1, -1);
-            return <InlineMath key={index} math={math} />;
+            return (
+                <Suspense key={index} fallback={<span>{math}</span>}>
+                    <InlineMath math={math} />
+                </Suspense>
+            );
         }
 
         // 2. Xử lý Hình ảnh

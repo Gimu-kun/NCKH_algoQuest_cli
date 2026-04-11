@@ -18,24 +18,24 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { ALGO_REGISTRY, type AlgoMetadata } from '../data/algo_registry';
 import { MarkdownViewer } from '../components/ui/MarkdownViewer';
 import { THEORY_CONTENT } from '../data/theory_content';
 
-// Import Visualizers for Embedded Demos
-import SortingVisualizer from '../components/visualizations/sorting/SortingVisualizer';
-import BinarySearchVisualizer from '../components/visualizations/searching/BinarySearchVisualizer';
-import LinearSearchVisualizer from '../components/visualizations/searching/LinearSearchVisualizer';
-import StackVisualizer from '../components/visualizations/data-structures/StackVisualizer';
-import QueueVisualizer from '../components/visualizations/data-structures/QueueVisualizer';
-import LinkedListVisualizer from '../components/visualizations/data-structures/LinkedListVisualizer';
-import BSTVisualizer from '../components/visualizations/data-structures/BSTVisualizer';
-import GraphVisualizer from '../components/visualizations/graph/GraphVisualizer';
-import DPVisualizer from '../components/visualizations/dp/DPVisualizer';
-import ComplexityVisualizer from '../components/visualizations/complexity/ComplexityVisualizer';
+// Import Visualizers for Embedded Demos (lazy-loaded)
+const SortingVisualizer = lazy(() => import('../components/visualizations/sorting/SortingVisualizer'));
+const BinarySearchVisualizer = lazy(() => import('../components/visualizations/searching/BinarySearchVisualizer'));
+const LinearSearchVisualizer = lazy(() => import('../components/visualizations/searching/LinearSearchVisualizer'));
+const StackVisualizer = lazy(() => import('../components/visualizations/data-structures/StackVisualizer'));
+const QueueVisualizer = lazy(() => import('../components/visualizations/data-structures/QueueVisualizer'));
+const LinkedListVisualizer = lazy(() => import('../components/visualizations/data-structures/LinkedListVisualizer'));
+const BSTVisualizer = lazy(() => import('../components/visualizations/data-structures/BSTVisualizer'));
+const GraphVisualizer = lazy(() => import('../components/visualizations/graph/GraphVisualizer'));
+const DPVisualizer = lazy(() => import('../components/visualizations/dp/DPVisualizer'));
+const ComplexityVisualizer = lazy(() => import('../components/visualizations/complexity/ComplexityVisualizer'));
 
 // -----------------------------------------------------------------------------
 // COMPONENT: Embedded Demo Player
@@ -125,7 +125,9 @@ const DemoPlayer: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
                 </button>
             </div>
             <div className="viz-container">
-                {renderViz()}
+                <Suspense fallback={<div className="viz-lazy-loading">Đang tải visualizer...</div>}>
+                    {renderViz()}
+                </Suspense>
             </div>
         </div>
     );
@@ -139,6 +141,15 @@ const DemoPlayer: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
 import { SORTING_CHALLENGES, SORTING_QUIZ } from '../data/study_materials/chapter2_sorting_searching/exercises';
 import ExerciseRunner from '../components/ui/ExerciseRunner';
 import { QuizRunner, type QuizQuestion } from '../components/ui/QuizRunner';
+import AlgorithmChallengeRunner from '../components/ui/AlgorithmChallengeRunner';
+import { getChallengeSetForAlgoId } from '../data/study_materials/challenge_types/chapter2ChallengeSets.ts';
+import {
+    PREFETCH_DELAY_KEYBOARD_MS,
+    cancelScheduledMathPrefetch,
+    containsLikelyLatex,
+    getAdaptiveHoverPrefetchDelay,
+    scheduleMathPrefetch
+} from '../utils/mathPrefetch';
 
 const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
     const [activeTab, setActiveTab] = useState<'learn' | 'demo' | 'quiz' | 'practice'>('learn');
@@ -161,6 +172,8 @@ const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
 
     const practiceData = getPracticeData();
     const quizData = getQuizData();
+    const challengeSet = getChallengeSetForAlgoId(algo.id);
+    const shouldPrefetchMathQuiz = containsLikelyLatex(challengeSet) || containsLikelyLatex(quizData);
 
     return (
         <motion.div
@@ -187,6 +200,10 @@ const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
                 )}
                 <button
                     className={`custom-tab-btn ${activeTab === 'quiz' ? 'active' : ''}`}
+                    onMouseEnter={() => scheduleMathPrefetch(shouldPrefetchMathQuiz, getAdaptiveHoverPrefetchDelay())}
+                    onMouseLeave={cancelScheduledMathPrefetch}
+                    onFocus={() => scheduleMathPrefetch(shouldPrefetchMathQuiz, PREFETCH_DELAY_KEYBOARD_MS)}
+                    onBlur={cancelScheduledMathPrefetch}
                     onClick={() => setActiveTab('quiz')}
                 >
                     <i className="fi fi-rr-list-check"></i> Trắc Nghiệm
@@ -244,7 +261,11 @@ const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
                             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
                             className="tab-content"
                         >
-                            {quizData ? (
+                            {challengeSet ? (
+                                <AlgorithmChallengeRunner
+                                    challengeSet={challengeSet}
+                                />
+                            ) : quizData ? (
                                 <QuizRunner quiz={quizData as QuizQuestion} />
                             ) : (
                                 <div className="empty-state-msg">
@@ -270,7 +291,7 @@ const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
                                     <i className="fi fi-rr-laptop-code"></i>
                                     <h3>Thử thách Coding</h3>
                                     <p>Các bài tập thực hành cho <strong>{algo.name}</strong> sẽ sớm được cập nhật.</p>
-                                    <p>Hãy thử các bài Sort hoặc Search để trải nghiệm trước nhé!</p>
+                                    <p>Hãy thử các bài Sắp xếp hoặc Tìm kiếm để trải nghiệm trước nhé!</p>
                                 </div>
                             )}
                         </motion.div>
@@ -300,6 +321,14 @@ const LessonCard: React.FC<{ algo: AlgoMetadata }> = ({ algo }) => {
                     box-shadow: 0 -2px 10px rgba(138, 173, 244, 0.5);
                 }
                 .custom-tab-btn i { font-size: 1.1rem; }
+
+                .viz-lazy-loading {
+                    min-height: 220px;
+                    display: grid;
+                    place-items: center;
+                    color: #a5adcb;
+                    font-size: 0.92rem;
+                }
 
                 .empty-state-msg {
                     padding: 40px; text-align: center;

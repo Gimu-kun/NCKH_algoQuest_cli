@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AlgoLab.css';
@@ -23,17 +23,17 @@ import './AlgoLab.css';
 // Import Shared Registry
 import { ALGO_REGISTRY as CHAPTERS } from '../data/algo_registry';
 
-// Import Visualization Components
-import SortingVisualizer from '../components/visualizations/sorting/SortingVisualizer';
-import BinarySearchVisualizer from '../components/visualizations/searching/BinarySearchVisualizer';
-import LinearSearchVisualizer from '../components/visualizations/searching/LinearSearchVisualizer';
-import StackVisualizer from '../components/visualizations/data-structures/StackVisualizer';
-import QueueVisualizer from '../components/visualizations/data-structures/QueueVisualizer';
-import LinkedListVisualizer from '../components/visualizations/data-structures/LinkedListVisualizer';
-import BSTVisualizer from '../components/visualizations/data-structures/BSTVisualizer';
-import GraphVisualizer from '../components/visualizations/graph/GraphVisualizer';
-import DPVisualizer from '../components/visualizations/dp/DPVisualizer';
-import ComplexityVisualizer from '../components/visualizations/complexity/ComplexityVisualizer';
+// Import Visualization Components (lazy-loaded)
+const SortingVisualizer = lazy(() => import('../components/visualizations/sorting/SortingVisualizer'));
+const BinarySearchVisualizer = lazy(() => import('../components/visualizations/searching/BinarySearchVisualizer'));
+const LinearSearchVisualizer = lazy(() => import('../components/visualizations/searching/LinearSearchVisualizer'));
+const StackVisualizer = lazy(() => import('../components/visualizations/data-structures/StackVisualizer'));
+const QueueVisualizer = lazy(() => import('../components/visualizations/data-structures/QueueVisualizer'));
+const LinkedListVisualizer = lazy(() => import('../components/visualizations/data-structures/LinkedListVisualizer'));
+const BSTVisualizer = lazy(() => import('../components/visualizations/data-structures/BSTVisualizer'));
+const GraphVisualizer = lazy(() => import('../components/visualizations/graph/GraphVisualizer'));
+const DPVisualizer = lazy(() => import('../components/visualizations/dp/DPVisualizer'));
+const ComplexityVisualizer = lazy(() => import('../components/visualizations/complexity/ComplexityVisualizer'));
 
 // =============================================================================
 // HELPER: Random Graph Generation (Keep local as it's specific to Graph Viz setup)
@@ -546,7 +546,11 @@ export const AlgoLab: React.FC = () => {
                                         <i className="fi fi-rr-chart-tree"></i>
                                         Minh Họa Thuật Toán
                                     </div>
-                                    <div className="lab-viz-content">{renderVisualization()}</div>
+                                    <div className="lab-viz-content">
+                                        <Suspense fallback={<div className="lab-viz-lazy-loading">Đang tải visualizer...</div>}>
+                                            {renderVisualization()}
+                                        </Suspense>
+                                    </div>
                                     <div className="lab-info-bar">
                                         <div className="lab-info-item">
                                             <i className="fi fi-rr-list"></i>

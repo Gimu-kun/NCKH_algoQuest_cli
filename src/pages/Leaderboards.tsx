@@ -29,7 +29,7 @@ import './Leaderboards.css';
 export const Leaderboards: React.FC = () => {
     // Hooks truy cập state
     const { setScene } = useGameStore();
-    const { name } = usePlayerStore();
+    const { firstname, lastname } = usePlayerStore();
 
     // Local state cho loại bảng xếp hạng đang xem
     const [selectedType, setSelectedType] = useState<LeaderboardType>(LeaderboardType.CODE_SPEED);
@@ -44,7 +44,7 @@ export const Leaderboards: React.FC = () => {
     const playerEntry: LeaderboardEntry = {
         rank: 25, // Ví dụ: Đang đứng thứ 25
         playerId: 'current_player',
-        playerName: name,
+        playerName: `${firstname} ${lastname}`.trim(),
         score: 1200,
         stats: {
             avgCodeSpeed: 350,

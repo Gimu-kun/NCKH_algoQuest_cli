@@ -1,5 +1,3 @@
-import { number } from "framer-motion";
-
 export interface RegisterPayload {
   username: string;
   passwords: string;

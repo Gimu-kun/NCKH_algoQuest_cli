@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import 'katex/dist/katex.min.css';
+import React, { lazy, Suspense, useState, useEffect, useMemo } from 'react';
 import './QuestionView.css';
-import { RenderLatex } from '../LatexRender/QuestionLatexRender';
+
+const RenderLatex = lazy(() =>
+    import('../LatexRender/QuestionLatexRender').then(module => ({ default: module.RenderLatex }))
+);
 
 interface Props {
     question: any;
@@ -125,6 +127,12 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
 
     const type = question.questionType.toLowerCase();
 
+    const renderLatexContent = (content: string, images?: any[]) => (
+        <Suspense fallback={<span>{content}</span>}>
+            <RenderLatex content={content} images={images} />
+        </Suspense>
+    );
+
     return (
         <div className="q-container">
             <div className="q-header">
@@ -138,7 +146,7 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
             </div>
 
             <div className="q-body">
-                <RenderLatex content={question.questionContent} images={question.questionImgs} />
+                {renderLatexContent(question.questionContent, question.questionImgs)}
                 <div className="ans-section">
                     {type === 'mcq' && (
                         <div className="mcq-grid">
@@ -149,7 +157,7 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
                                     onClick={() => setSelectedMcq(ans.id)}
                                 >
                                     <span className="mcq-label">{String.fromCharCode(65 + idx)}</span>
-                                    <RenderLatex content={ans.content} />
+                                    {renderLatexContent(ans.content)}
                                 </button>
                             ))}
                         </div>
@@ -177,7 +185,7 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
                                         className={`mp-card ${isDone ? 'done' : ''} ${isSelected ? 'selected' : ''}`}
                                         style={isDone ? { borderColor: matches[item.id].color, backgroundColor: `${matches[item.id].color}10` } : {}}
                                         onClick={() => handleMpClick(item.id, 'left')}>
-                                        <RenderLatex content={item.content} />
+                                        {renderLatexContent(item.content)}
                                     </div>
                                 );
                             })}
@@ -196,7 +204,7 @@ const QuestionView: React.FC<Props> = ({ question, initialValue, onAnswerChange 
                                         className={`mp-card ${isDone ? 'done' : ''} ${isSelected ? 'selected' : ''}`}
                                         style={isDone ? { borderColor: (entry[1] as any).color, backgroundColor: `${(entry[1] as any).color}10` } : {}}
                                         onClick={() => handleMpClick(item.id, 'right')}>
-                                        <RenderLatex content={item.content} />
+                                        {renderLatexContent(item.content)}
                                     </div>
                                 );
                             })}
