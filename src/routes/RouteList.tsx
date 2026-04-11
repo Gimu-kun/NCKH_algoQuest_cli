@@ -18,6 +18,8 @@ const RaceToPath = lazy(() => import("../pages/Multiplayer/RaceToPath").then(mod
 const TowerDefenseCoop = lazy(() => import("../pages/Multiplayer/TowerDefenseCoop").then(module => ({ default: module.TowerDefenseCoop })));
 const MemoryRelay = lazy(() => import("../pages/Multiplayer/MemoryRelay").then(module => ({ default: module.MemoryRelay })));
 const TournamentBracket = lazy(() => import("../pages/Multiplayer/TournamentBracket").then(module => ({ default: module.TournamentBracket })));
+const RankedDraftArena = lazy(() => import("../pages/Multiplayer/RankedDraftArena").then(module => ({ default: module.RankedDraftArena })));
+const CoopRaidBoss = lazy(() => import("../pages/Multiplayer/CoopRaidBoss").then(module => ({ default: module.CoopRaidBoss })));
 const ReviewDetail = lazy(() => import("../pages/ReviewDetail/ReviewDetail"));
 
 const RouteFallback = () => <div className="route-fallback">Đang tải màn chơi...</div>;
@@ -45,6 +47,8 @@ export const RouteList = () => {
                     <Route path="multiplayer/tower-defense" element={<TowerDefenseCoop/>}/>
                     <Route path="multiplayer/memory-relay" element={<MemoryRelay/>}/>
                     <Route path="multiplayer/tournament" element={<TournamentBracket/>}/>
+                    <Route path="multiplayer/ranked-draft" element={<RankedDraftArena/>}/>
+                    <Route path="multiplayer/raid-boss" element={<CoopRaidBoss/>}/>
                 </Route>
             </Routes>
         </Suspense>
