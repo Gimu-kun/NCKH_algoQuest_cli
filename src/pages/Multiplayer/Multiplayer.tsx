@@ -103,6 +103,13 @@ export const Multiplayer: React.FC = () => {
   const [roomState, setRoomState] = useState<RoomState | null>(null);
   const [connection, setConnection] = useState({ connected: true, ping: 32 });
   const [timeLeft, setTimeLeft] = useState(30);
+  const [queueMode, setQueueMode] = useState<MultiplayerMode>('DUEL_1V1');
+  const [queuePing, setQueuePing] = useState(80);
+  const [queueStatus, setQueueStatus] = useState('Chua vao queue');
+  const [inviteeName, setInviteeName] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [reconnectBanner, setReconnectBanner] = useState('');
 
   // Mode-specific states
   const [draftSkills, setDraftSkills] = useState<string[]>([]);
@@ -118,6 +125,10 @@ export const Multiplayer: React.FC = () => {
 
   const myPlayer = roomState?.players.find((p) => p.id === myId);
   const opponentPlayers = roomState?.players.filter((p) => p.id !== myId) ?? [];
+  const profile = multiplayerRealtimeService.getRankProfile();
+  const matchSummary = multiplayerRealtimeService.getMatchSummary();
+  const partyInfo = multiplayerRealtimeService.getParty();
+  const metrics = multiplayerRealtimeService.getRealtimeMetrics();
 
   const currentQuestion = useMemo(() => {
     const chapter = roomState?.chapter ?? localChapter;
@@ -155,10 +166,7 @@ export const Multiplayer: React.FC = () => {
   }, [myId]);
 
   useEffect(() => {
-    if (!roomState?.timerEndsAt || roomState.phase !== 'MATCH') {
-      setTimeLeft(30);
-      return;
-    }
+    if (!roomState?.timerEndsAt || roomState.phase !== 'MATCH') return;
 
     const update = () => {
       const remaining = Math.max(0, Math.ceil((roomState.timerEndsAt! - Date.now()) / 1000));
@@ -173,13 +181,26 @@ export const Multiplayer: React.FC = () => {
     return () => window.clearInterval(interval);
   }, [roomState, myId]);
 
+  useEffect(() => {
+    if (connection.connected) {
+      setReconnectBanner('');
+      return;
+    }
+    setReconnectBanner('Dang reconnect... Trang thai tran se duoc resume khi ket noi lai.');
+  }, [connection.connected]);
+
   const createRoom = () => {
+    setLoadingAction(true);
     const code = multiplayerRealtimeService.createRoom(localMode, localChapter);
     setJoinCode(code);
+    setLoadingAction(false);
   };
 
   const joinRoom = () => {
-    multiplayerRealtimeService.joinRoom(joinCode);
+    setLoadingAction(true);
+    const ok = multiplayerRealtimeService.joinRoom(joinCode);
+    setQueueStatus(ok ? 'Join room thanh cong' : 'Join room that bai');
+    setLoadingAction(false);
   };
 
   const toggleReady = () => {
@@ -193,6 +214,7 @@ export const Multiplayer: React.FC = () => {
     }
 
     multiplayerRealtimeService.startMatch();
+    setTimeLeft(30);
     setSubmitted(false);
     setSelectedAnswer(null);
     setLocalFeedback('');
@@ -207,7 +229,11 @@ export const Multiplayer: React.FC = () => {
   const submitAnswer = () => {
     if (submitted || selectedAnswer === null) return;
     const isCorrect = selectedAnswer === currentQuestion.answerIndex;
-    multiplayerRealtimeService.submitAnswer(isCorrect, timeLeft);
+    const ok = multiplayerRealtimeService.submitAnswer(isCorrect, timeLeft);
+    if (!ok) {
+      setLocalFeedback('Submit bi chan do duplicate/rate-limit.');
+      return;
+    }
     setSubmitted(true);
     setLocalFeedback(isCorrect ? 'Ban tra loi dung!' : 'Ban tra loi sai.');
   };
@@ -218,6 +244,7 @@ export const Multiplayer: React.FC = () => {
 
   const rematch = () => {
     multiplayerRealtimeService.rematch();
+    setTimeLeft(30);
     setSubmitted(false);
     setSelectedAnswer(null);
     setLocalFeedback('');
@@ -235,6 +262,36 @@ export const Multiplayer: React.FC = () => {
     setSelectedAnswer(null);
     setSubmitted(false);
     setLocalFeedback('');
+  };
+
+  const enterQuickMatch = () => {
+    const ticket = multiplayerRealtimeService.joinQuickMatch({ targetMode: queueMode, maxPing: queuePing });
+    setQueueStatus(`Da vao queue ${ticket.ticketId}. Timeout sau 15s.`);
+  };
+
+  const cancelQuickMatch = () => {
+    multiplayerRealtimeService.cancelQuickMatch();
+    setQueueStatus('Da huy queue.');
+  };
+
+  const createParty = () => {
+    const party = multiplayerRealtimeService.createParty();
+    setQueueStatus(`Party tao thanh cong: ${party.partyId}`);
+  };
+
+  const inviteParty = () => {
+    const code = multiplayerRealtimeService.inviteToParty(inviteeName);
+    if (!code) {
+      setQueueStatus('Moi party that bai (party full hoac chua tao).');
+      return;
+    }
+    setInviteCode(code);
+    setQueueStatus('Da tao invite code party.');
+  };
+
+  const acceptParty = () => {
+    const ok = multiplayerRealtimeService.acceptPartyInvite(inviteCode);
+    setQueueStatus(ok ? 'Da vao party.' : 'Invite code khong hop le.');
   };
 
   const onModeChange = (nextMode: MultiplayerMode) => {
@@ -319,6 +376,9 @@ export const Multiplayer: React.FC = () => {
         <div>
           <h1>Dau Truong Multiplayer</h1>
           <p>Full mode pack: lobby, room, ready, ping, reconnect, result, rematch.</p>
+          <p>
+            Rank: <strong>{profile.tier}</strong> | MMR: <strong>{profile.mmr}</strong> | ELO: <strong>{profile.elo}</strong>
+          </p>
         </div>
         <div className="connection-panel">
           <span className={`status-dot ${connection.connected ? 'online' : 'offline'}`} />
@@ -326,6 +386,43 @@ export const Multiplayer: React.FC = () => {
           <span>Ping: {connection.connected ? `${connection.ping} ms` : '--'}</span>
           <button onClick={() => multiplayerRealtimeService.reconnect()}>Reconnect</button>
         </div>
+      </div>
+
+      {reconnectBanner && <div className="reconnect-banner">{reconnectBanner}</div>}
+
+      <div className="lobby-grid">
+        <section className="panel">
+          <h2>Quick Match + Queue</h2>
+          <div className="row">
+            <label>Mode</label>
+            <select value={queueMode} onChange={(e) => setQueueMode(e.target.value as MultiplayerMode)}>
+              {(Object.keys(MODE_META) as MultiplayerMode[]).map((m) => (
+                <option value={m} key={m}>{MODE_META[m].title}</option>
+              ))}
+            </select>
+            <label>Max Ping</label>
+            <input type="number" min={20} max={180} value={queuePing} onChange={(e) => setQueuePing(Number(e.target.value))} />
+          </div>
+          <div className="row">
+            <button onClick={enterQuickMatch}>Quick Match</button>
+            <button onClick={cancelQuickMatch}>Cancel Queue</button>
+          </div>
+          <p className="hint-text">{queueStatus}</p>
+        </section>
+
+        <section className="panel">
+          <h2>Party Invite (2-3 nguoi)</h2>
+          <div className="row">
+            <button onClick={createParty}>Tao Party</button>
+            <input value={inviteeName} onChange={(e) => setInviteeName(e.target.value)} placeholder="Ten nguoi duoc moi" />
+            <button onClick={inviteParty}>Tao invite</button>
+          </div>
+          <div className="row">
+            <input value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Nhap invite code" />
+            <button onClick={acceptParty}>Accept Invite</button>
+          </div>
+          <p>Party: <strong>{partyInfo?.partyId ?? 'Chua co'}</strong> | Members: <strong>{partyInfo?.members.length ?? 0}</strong></p>
+        </section>
       </div>
 
       <div className="mode-grid">
@@ -361,16 +458,25 @@ export const Multiplayer: React.FC = () => {
           <section className="panel">
             <h2>Lobby</h2>
             <div className="row">
-              <button onClick={createRoom}>Tao phong</button>
+              <button onClick={createRoom} disabled={loadingAction}>Tao phong</button>
               <input
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                 placeholder="Nhap ma phong"
               />
-              <button onClick={joinRoom}>Join room</button>
+              <button onClick={joinRoom} disabled={loadingAction}>Join room</button>
             </div>
             <p>Ma phong hien tai: <strong>{roomState?.roomCode || 'Chua co'}</strong></p>
             <p>Host: <strong>{roomState?.hostId === myId ? 'Ban' : 'Nguoi khac'}</strong></p>
+            <div className="player-list">
+              {(roomState?.players ?? []).map((p) => (
+                <div key={p.id} className="player-item">
+                  <span>{p.name}</span>
+                  <span>{p.presence}</span>
+                  <span>{p.ready ? 'READY' : 'WAIT'}</span>
+                </div>
+              ))}
+            </div>
           </section>
 
           <section className="panel">
@@ -540,6 +646,18 @@ export const Multiplayer: React.FC = () => {
             <button onClick={rematch}>Rematch</button>
             <button onClick={backLobby}>Ve Lobby</button>
             <button onClick={() => navigate('/v1/hub')}>Ve Hub</button>
+          </div>
+          <div className="result-summary">
+            <h3>Post-match Summary</h3>
+            <p>XP: +{matchSummary?.xpGained ?? 0}</p>
+            <p>MMR: {matchSummary?.deltaMMR ?? 0} | ELO: {matchSummary?.deltaElo ?? 0}</p>
+            <p>Reward: {matchSummary?.reward ?? 'Chua nhan reward moi'}</p>
+          </div>
+          <div className="metrics-grid">
+            <span>Abandon rate: {metrics.abandonRate}</span>
+            <span>Avg match ms: {metrics.averageMatchDurationMs}</span>
+            <span>Desync count: {metrics.desyncCount}</span>
+            <span>Reconnect count: {metrics.reconnectCount}</span>
           </div>
         </div>
       )}
