@@ -29,6 +29,10 @@ import { ResourceType } from '../data/models/Item';
 import { QUEST_DATABASE } from '../data/quests/QuestDatabase';
 import type { UserGeneralDto } from '../types/authType';
 import { calculateActivityScore } from '../services/learning/scoringAndRewardService';
+import {
+    evaluateUnlockState,
+    type UnlockEvaluationResult
+} from '../services/learning/knowledgeBaseService';
 
 // Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
@@ -47,6 +51,7 @@ export interface PlayerState {
     completedDungeons: string[];  // Danh sách ID các ải đã hoàn thành
     unlockedSpells: string[];     // Danh sách ID các phép thuật (Blueprints)
     unlockedRunes: string[];      // Danh sách ID các cổ ngữ (Runes)
+    conceptCorrectness: Record<string, number>; // Độ thành thạo theo concept (0..1)
 
     // === Kho Đồ (Inventory) ===
     decorations: string[];        // Vật phẩm trang trí Logic Farm (Trong kho)
@@ -101,6 +106,13 @@ export interface PlayerActions {
     completeDungeon: (dungeonId: string) => void;
     unlockSpell: (spellId: string) => void;
     unlockRune: (runeId: string) => void;
+    updateConceptCorrectness: (conceptId: string, correctness: number) => void;
+    evaluateKnowledgeUnlocks: (
+        concepts: string[],
+        prerequisites: Record<string, string[]>,
+        threshold?: number,
+        conceptToRuneId?: Record<string, string>
+    ) => UnlockEvaluationResult;
 
     // === Quản Lý Nhiệm Vụ ===
     startQuest: (questId: string) => void;
@@ -155,6 +167,7 @@ const initialPlayerState: PlayerState = {
     completedDungeons: [],
     unlockedSpells: [],
     unlockedRunes: [],
+    conceptCorrectness: {},
     decorations: [],
     placedDecorations: [], // Init empty
     cosmetics: [],
@@ -280,8 +293,43 @@ export const usePlayerStore = create<PlayerStore>()(
 
             unlockRune: (runeId) => {
                 set((state) => ({
-                    unlockedRunes: [...state.unlockedRunes, runeId]
+                    unlockedRunes: state.unlockedRunes.includes(runeId)
+                        ? state.unlockedRunes
+                        : [...state.unlockedRunes, runeId]
                 }));
+            },
+
+            updateConceptCorrectness: (conceptId, correctness) => {
+                const normalized = Math.max(0, Math.min(1, correctness));
+                set((state) => ({
+                    conceptCorrectness: {
+                        ...state.conceptCorrectness,
+                        [conceptId]: normalized
+                    }
+                }));
+            },
+
+            evaluateKnowledgeUnlocks: (concepts, prerequisites, threshold = 0.5, conceptToRuneId = {}) => {
+                const correctnessMap = get().conceptCorrectness;
+                const evaluation = evaluateUnlockState(concepts, prerequisites, correctnessMap, threshold);
+
+                if (evaluation.unlockedList.length > 0) {
+                    set((state) => {
+                        const nextRunes = [...state.unlockedRunes];
+                        for (const conceptId of evaluation.unlockedList) {
+                            const runeId = conceptToRuneId[conceptId] ?? `rune_learning_${conceptId}`;
+                            if (!nextRunes.includes(runeId)) {
+                                nextRunes.push(runeId);
+                            }
+                        }
+
+                        return {
+                            unlockedRunes: nextRunes
+                        };
+                    });
+                }
+
+                return evaluation;
             },
 
             startQuest: (questId) => {

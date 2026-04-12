@@ -14,6 +14,11 @@ import {
 } from '../../data/study_materials/challenge_types/types';
 import { usePlayerStore } from '../../store/playerStore';
 import { ResourceType } from '../../data/models/Item';
+import {
+    selectChallengeActivities,
+    type ChallengeActType,
+    type ChallengeActivityCandidate
+} from '../../services/learning/challengeOrchestrationService';
 const SortingVisualizer = lazy(() => import('../visualizations/sorting/SortingVisualizer'));
 const BinarySearchVisualizer = lazy(() => import('../visualizations/searching/BinarySearchVisualizer'));
 const LinearSearchVisualizer = lazy(() => import('../visualizations/searching/LinearSearchVisualizer'));
@@ -83,6 +88,26 @@ const toNumberArray = (value: unknown): number[] | null => {
     if (!Array.isArray(value)) return null;
     const allNumbers = value.every(item => typeof item === 'number');
     return allNumbers ? (value as number[]) : null;
+};
+
+const bloomFromDifficulty = (difficulty: AlgorithmChallenge['difficulty']) => {
+    if (difficulty === 'easy') return 'R' as const;
+    if (difficulty === 'medium') return 'U' as const;
+    return 'AP' as const;
+};
+
+const actTypeFromDifficulty = (difficulty: AlgorithmChallenge['difficulty']): ChallengeActType => {
+    if (difficulty === 'easy') return 'Q';
+    if (difficulty === 'medium') return 'V';
+    return 'D';
+};
+
+const buildConceptChainPrerequisites = (concepts: string[]): Record<string, string[]> => {
+    const uniqueConcepts = [...new Set(concepts)];
+    return uniqueConcepts.reduce((acc, concept, idx) => {
+        acc[concept] = idx === 0 ? [] : [uniqueConcepts[idx - 1]];
+        return acc;
+    }, {} as Record<string, string[]>);
 };
 
 const ArrayPreview: React.FC<{ array: number[]; highlight?: number[]; target?: number }> = ({ array, highlight = [], target }) => {
@@ -156,6 +181,8 @@ const ChallengeVisualization: React.FC<{ demoKey: string; array?: number[]; targ
 export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algorithmKey }) => {
     const resources = usePlayerStore(state => state.resources);
     const stats = usePlayerStore(state => state.stats);
+    const updateConceptCorrectness = usePlayerStore(state => state.updateConceptCorrectness);
+    const evaluateKnowledgeUnlocks = usePlayerStore(state => state.evaluateKnowledgeUnlocks);
 
     const filtered = useMemo(() => {
         if (!algorithmKey) return challengeSet.challenges;
@@ -164,8 +191,56 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
 
     const usableChallenges = filtered.length > 0 ? filtered : challengeSet.challenges;
 
+    const orchestratedChallenges = useMemo(() => {
+        const candidates: ChallengeActivityCandidate[] = usableChallenges.map((item, idx) => ({
+            id: `${item.id}::${idx}`,
+            chapter: challengeSet.chapter,
+            bloom: bloomFromDifficulty(item.difficulty),
+            kind: actTypeFromDifficulty(item.difficulty),
+            diffScore: item.difficulty === 'easy' ? 0.2 : item.difficulty === 'medium' ? 0.5 : 0.85,
+        }));
+
+        const byId = new Map(candidates.map((candidate, idx) => [candidate.id, usableChallenges[idx]]));
+        const arranged: AlgorithmChallenge[] = [];
+        const usedIds: string[] = [];
+
+        for (let stage = 1; stage <= usableChallenges.length; stage += 1) {
+            const targetDifficulty = usableChallenges[stage - 1]?.difficulty ?? 'easy';
+            const selected = selectChallengeActivities({
+                stage,
+                actType: actTypeFromDifficulty(targetDifficulty),
+                chapter: challengeSet.chapter,
+                candidates,
+                usedIds,
+            });
+
+            const picked = selected.find(item => !usedIds.includes(item.id)) ?? candidates.find(item => !usedIds.includes(item.id));
+            if (!picked) break;
+
+            usedIds.push(picked.id);
+            const challenge = byId.get(picked.id);
+            if (challenge) arranged.push(challenge);
+        }
+
+        if (arranged.length === usableChallenges.length) return arranged;
+        const missing = usableChallenges.filter(item => !arranged.includes(item));
+        return [...arranged, ...missing];
+    }, [challengeSet.chapter, usableChallenges]);
+
+    const conceptChain = useMemo(() => [...new Set(orchestratedChallenges.map(item => item.algorithmKey))], [orchestratedChallenges]);
+    const conceptPrerequisites = useMemo(() => buildConceptChainPrerequisites(conceptChain), [conceptChain]);
+    const conceptToRune = useMemo(() => conceptChain.reduce((acc, concept) => {
+        acc[concept] = `rune_learning_${concept.replace(/-/g, '_')}`;
+        return acc;
+    }, {} as Record<string, string>), [conceptChain]);
+
+    const handleConceptSolved = (conceptId: string) => {
+        updateConceptCorrectness(conceptId, 1);
+        evaluateKnowledgeUnlocks(conceptChain, conceptPrerequisites, 0.5, conceptToRune);
+    };
+
     const [currentIndex, setCurrentIndex] = useState(0);
-    const challenge = usableChallenges[currentIndex];
+    const challenge = orchestratedChallenges[currentIndex];
 
     if (!challenge) {
         return <div className="algo-challenge-runner">Không có thử thách phù hợp.</div>;
@@ -204,29 +279,31 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
 
             <p className="algo-prompt">{challenge.prompt}</p>
 
-            {isEasyChallenge(challenge) && <EasyChallengeView challenge={challenge} />}
-            {isMediumChallenge(challenge) && <MediumChallengeView challenge={challenge} />}
-            {isHardChallenge(challenge) && <HardChallengeView challenge={challenge} />}
+            {isEasyChallenge(challenge) && <EasyChallengeView challenge={challenge} onSolved={handleConceptSolved} />}
+            {isMediumChallenge(challenge) && <MediumChallengeView challenge={challenge} onSolved={handleConceptSolved} />}
+            {isHardChallenge(challenge) && <HardChallengeView challenge={challenge} onSolved={handleConceptSolved} />}
 
             <div className="algo-actions">
                 <button onClick={() => setCurrentIndex(i => Math.max(0, i - 1))} disabled={currentIndex === 0}>
                     Trước
                 </button>
                 <button
-                    onClick={() => setCurrentIndex(i => Math.min(usableChallenges.length - 1, i + 1))}
-                    disabled={currentIndex === usableChallenges.length - 1}
+                    onClick={() => setCurrentIndex(i => Math.min(orchestratedChallenges.length - 1, i + 1))}
+                    disabled={currentIndex === orchestratedChallenges.length - 1}
                 >
                     Sau
                 </button>
                 <span>
-                    {currentIndex + 1}/{usableChallenges.length}
+                    {currentIndex + 1}/{orchestratedChallenges.length}
                 </span>
             </div>
+
+            <p className="algo-feedback">Lộ trình challenge đang chạy theo pha P1-P6 và unlock kiến thức theo prerequisites.</p>
         </div>
     );
 };
 
-const EasyChallengeView: React.FC<{ challenge: EasyChallenge }> = ({ challenge }) => {
+const EasyChallengeView: React.FC<{ challenge: EasyChallenge; onSolved: (conceptId: string) => void }> = ({ challenge, onSolved }) => {
     const applyChallengeResult = usePlayerStore(state => state.applyChallengeResult);
     const [selected, setSelected] = useState<string>('');
     const [submitted, setSubmitted] = useState(false);
@@ -238,6 +315,7 @@ const EasyChallengeView: React.FC<{ challenge: EasyChallenge }> = ({ challenge }
         if (!selected || submitted) return;
 
         const delta = applyChallengeResult('easy', isCorrect, challenge.scoring, true);
+        if (isCorrect) onSolved(challenge.algorithmKey);
         setScoreDelta(delta);
         setSubmitted(true);
     };
@@ -302,7 +380,7 @@ const EasyChallengeView: React.FC<{ challenge: EasyChallenge }> = ({ challenge }
     );
 };
 
-const MediumChallengeView: React.FC<{ challenge: MediumChallenge }> = ({ challenge }) => {
+const MediumChallengeView: React.FC<{ challenge: MediumChallenge; onSolved: (conceptId: string) => void }> = ({ challenge, onSolved }) => {
     const applyChallengeResult = usePlayerStore(state => state.applyChallengeResult);
     const [stepIndex, setStepIndex] = useState(0);
     const [mistakes, setMistakes] = useState(0);
@@ -365,6 +443,7 @@ const MediumChallengeView: React.FC<{ challenge: MediumChallenge }> = ({ challen
             if (stepIndex + 1 === challenge.expectedSteps.length && !rewarded) {
                 const delta = applyChallengeResult('medium', true, challenge.scoring, mistakes === 0);
                 setScoreDelta(prev => prev + delta);
+                onSolved(challenge.algorithmKey);
                 setRewarded(true);
             }
 
@@ -494,7 +573,7 @@ const MediumChallengeView: React.FC<{ challenge: MediumChallenge }> = ({ challen
     );
 };
 
-const HardChallengeView: React.FC<{ challenge: HardChallenge }> = ({ challenge }) => {
+const HardChallengeView: React.FC<{ challenge: HardChallenge; onSolved: (conceptId: string) => void }> = ({ challenge, onSolved }) => {
     const applyChallengeResult = usePlayerStore(state => state.applyChallengeResult);
     const [selectedOptionId, setSelectedOptionId] = useState('');
     const [submitted, setSubmitted] = useState(false);
@@ -546,6 +625,7 @@ const HardChallengeView: React.FC<{ challenge: HardChallenge }> = ({ challenge }
         const nextAttempts = attempts + 1;
         const isCorrect = selectedOptionId === challenge.correctOptionId && validation.passed;
         const delta = applyChallengeResult('hard', isCorrect, challenge.scoring, nextAttempts === 1 && isCorrect);
+        if (isCorrect) onSolved(challenge.algorithmKey);
 
         setAttempts(nextAttempts);
         setScoreDelta(delta);
