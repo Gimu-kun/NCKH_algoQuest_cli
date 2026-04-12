@@ -44,7 +44,6 @@
     },
     "challengeBase": {
       "type": "object",
-      "additionalProperties": false,
       "required": ["id", "difficulty", "prompt", "algorithmKey", "scoring"],
       "properties": {
         "id": {
@@ -98,13 +97,13 @@
       }
     },
     "easyChallenge": {
+      "unevaluatedProperties": false,
       "allOf": [
         {
           "$ref": "#/$defs/challengeBase"
         },
         {
           "type": "object",
-          "additionalProperties": false,
           "required": ["difficulty", "mode", "visualization", "choices", "correctChoiceId"],
           "properties": {
             "difficulty": {
@@ -157,13 +156,13 @@
       ]
     },
     "mediumChallenge": {
+      "unevaluatedProperties": false,
       "allOf": [
         {
           "$ref": "#/$defs/challengeBase"
         },
         {
           "type": "object",
-          "additionalProperties": false,
           "required": [
             "difficulty",
             "mode",
@@ -255,13 +254,13 @@
       }
     },
     "hardChallenge": {
+      "unevaluatedProperties": false,
       "allOf": [
         {
           "$ref": "#/$defs/challengeBase"
         },
         {
           "type": "object",
-          "additionalProperties": false,
           "required": [
             "difficulty",
             "mode",

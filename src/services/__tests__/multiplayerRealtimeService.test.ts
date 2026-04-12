@@ -204,4 +204,103 @@ describe('multiplayerRealtimeService integration + safety', () => {
     expect(room).toHaveProperty('matchStartedAt');
     expect(room).toHaveProperty('lastActionSeq');
   });
+
+  it('records server reject metadata from submit verification', async () => {
+    vi.doMock('../multiplayerVerificationApiService', () => ({
+      verifyMultiplayerSubmit: vi.fn().mockResolvedValue({
+        accepted: false,
+        code: 'RATE_LIMITED',
+        reason: 'too_many_actions',
+      }),
+      verifyMultiplayerMatchResult: vi.fn().mockResolvedValue(null),
+    }));
+
+    const module = await import('../multiplayerRealtimeService');
+    const service = module.multiplayerRealtimeService;
+    const mutable = service as unknown as { getState: () => any; publish: (state: any) => void; getPlayerId: () => string };
+
+    service.createRoom('DUEL_1V1', 2);
+    const state = mutable.getState();
+    mutable.publish({
+      ...state,
+      phase: 'MATCH',
+      timerEndsAt: Date.now() + 30000,
+      matchStartedAt: Date.now(),
+      players: [
+        ...state.players,
+        {
+          id: 'p2',
+          name: 'Guest',
+          ready: true,
+          score: 0,
+          role: 'GIAI_DO',
+          team: 'B',
+          presence: 'ACTIVE',
+          rankMMR: 1200,
+          ping: 50,
+          lastActionAt: Date.now(),
+        },
+      ].map((p: any) => (p.id === mutable.getPlayerId() ? { ...p, ready: true } : p)),
+    });
+
+    expect(service.submitAnswer(true, 10)).toBe(true);
+    await Promise.resolve();
+
+    const telemetry = service.getRecentTelemetry(10);
+    const submitServer = telemetry.find((item) => item.eventType === 'submit' && 'serverVerified' in item.payload);
+    expect(submitServer?.payload.serverVerified).toBe(false);
+    expect(submitServer?.payload.serverCode).toBe('RATE_LIMITED');
+  });
+
+  it('applies server override deltas to profile and summary', async () => {
+    vi.doMock('../multiplayerVerificationApiService', () => ({
+      verifyMultiplayerSubmit: vi.fn().mockResolvedValue(null),
+      verifyMultiplayerMatchResult: vi.fn().mockResolvedValue({
+        accepted: true,
+        code: 'OK',
+        overrideDeltaMmr: 3,
+        overrideDeltaElo: 2,
+      }),
+    }));
+
+    const module = await import('../multiplayerRealtimeService');
+    const service = module.multiplayerRealtimeService;
+    const mutable = service as unknown as { getState: () => any; publish: (state: any) => void; getPlayerId: () => string };
+
+    service.createRoom('DUEL_1V1', 2);
+    const state = mutable.getState();
+    mutable.publish({
+      ...state,
+      phase: 'MATCH',
+      timerEndsAt: Date.now() + 30000,
+      matchStartedAt: Date.now() - 5000,
+      submittedPlayerIds: [mutable.getPlayerId()],
+      players: [
+        ...state.players.map((p: any) => (p.id === mutable.getPlayerId() ? { ...p, score: 200, ready: true } : p)),
+        {
+          id: 'p2',
+          name: 'Guest',
+          ready: true,
+          score: 150,
+          role: 'GIAI_DO',
+          team: 'B',
+          presence: 'ACTIVE',
+          rankMMR: 1200,
+          ping: 52,
+          lastActionAt: Date.now(),
+        },
+      ],
+    });
+
+    service.finishRound('Done');
+    await Promise.resolve();
+
+    const profile = service.getRankProfile();
+    const summary = service.getMatchSummary();
+
+    expect(summary?.deltaMMR).toBe(3);
+    expect(summary?.deltaElo).toBe(2);
+    expect(profile.history.at(-1)?.deltaMMR).toBe(3);
+    expect(profile.history.at(-1)?.deltaElo).toBe(2);
+  });
 });

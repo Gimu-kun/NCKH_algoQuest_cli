@@ -691,6 +691,24 @@ class MultiplayerRealtimeService {
       clientAt: current,
     }).then((result) => {
       if (!result) return;
+
+      if (result.accepted && Number.isFinite(result.serverDelta)) {
+        const expectedDelta = result.serverDelta ?? delta;
+        const deltaDiff = expectedDelta - delta;
+
+        if (deltaDiff !== 0 && this.roomState) {
+          const players = this.roomState.players.map((p) =>
+            p.id === this.playerId ? { ...p, score: p.score + deltaDiff, lastActionAt: now() } : p
+          );
+
+          this.publish({
+            ...this.roomState,
+            players,
+            lastActionSeq: this.roomState.lastActionSeq + 1,
+          });
+        }
+      }
+
       this.track('submit', {
         serverVerified: result.accepted,
         serverCode: result.code ?? null,
@@ -812,6 +830,40 @@ class MultiplayerRealtimeService {
       clientAt: now(),
     }).then((result) => {
       if (!result) return;
+
+      if (result.accepted && (Number.isFinite(result.overrideDeltaMmr) || Number.isFinite(result.overrideDeltaElo))) {
+        const profileAfterLocal = this.getRankProfile();
+        const finalDeltaMmr = Number.isFinite(result.overrideDeltaMmr) ? (result.overrideDeltaMmr as number) : deltaMMR;
+        const finalDeltaElo = Number.isFinite(result.overrideDeltaElo) ? (result.overrideDeltaElo as number) : deltaElo;
+
+        const mmrDiff = finalDeltaMmr - deltaMMR;
+        const eloDiff = finalDeltaElo - deltaElo;
+
+        if (mmrDiff !== 0 || eloDiff !== 0) {
+          const nextHistory = [...profileAfterLocal.history];
+          if (nextHistory.length > 0) {
+            const last = nextHistory[nextHistory.length - 1];
+            nextHistory[nextHistory.length - 1] = {
+              ...last,
+              deltaMMR: finalDeltaMmr,
+              deltaElo: finalDeltaElo,
+            };
+          }
+
+          this.persistProfile({
+            ...profileAfterLocal,
+            mmr: Math.max(900, profileAfterLocal.mmr + mmrDiff),
+            elo: Math.max(900, profileAfterLocal.elo + eloDiff),
+            history: nextHistory,
+          });
+
+          if (this.matchSummary) {
+            this.matchSummary.deltaMMR = finalDeltaMmr;
+            this.matchSummary.deltaElo = finalDeltaElo;
+          }
+        }
+      }
+
       this.track('finish', {
         serverVerified: result.accepted,
         serverCode: result.code ?? null,
