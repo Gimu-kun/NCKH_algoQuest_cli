@@ -74,6 +74,14 @@
             "firstTryBonus": {
               "type": "integer",
               "minimum": 0
+            },
+            "utilityWeight": {
+              "type": "number",
+              "minimum": 0
+            },
+            "gamma": {
+              "type": "number",
+              "minimum": 0
             }
           }
         }

@@ -15,6 +15,7 @@ import {
 import { usePlayerStore } from '../../store/playerStore';
 import { ResourceType } from '../../data/models/Item';
 import {
+    runChallengeEscalation,
     selectChallengeActivities,
     type ChallengeActType,
     type ChallengeActivityCandidate
@@ -191,7 +192,7 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
 
     const usableChallenges = filtered.length > 0 ? filtered : challengeSet.challenges;
 
-    const orchestratedChallenges = useMemo(() => {
+    const orchestrationTrace = useMemo(() => {
         const candidates: ChallengeActivityCandidate[] = usableChallenges.map((item, idx) => ({
             id: `${item.id}::${idx}`,
             chapter: challengeSet.chapter,
@@ -201,33 +202,38 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
         }));
 
         const byId = new Map(candidates.map((candidate, idx) => [candidate.id, usableChallenges[idx]]));
-        const arranged: AlgorithmChallenge[] = [];
-        const usedIds: string[] = [];
+        const escalation = runChallengeEscalation({
+            context: {
+                lifeMax: 3,
+                totalStages: usableChallenges.length,
+            },
+            getActType: (stage) => {
+                const mappedDifficulty = usableChallenges[Math.min(stage - 1, usableChallenges.length - 1)]?.difficulty ?? 'easy';
+                return actTypeFromDifficulty(mappedDifficulty);
+            },
+            selectActs: (stage, actType, usedIds) =>
+                selectChallengeActivities({
+                    stage,
+                    actType,
+                    chapter: challengeSet.chapter,
+                    candidates,
+                    usedIds,
+                }),
+            executeActs: (_stage, acts) => ({
+                correctness: acts.length > 0 ? 1 : 0,
+            }),
+        });
 
-        for (let stage = 1; stage <= usableChallenges.length; stage += 1) {
-            const targetDifficulty = usableChallenges[stage - 1]?.difficulty ?? 'easy';
-            const selected = selectChallengeActivities({
-                stage,
-                actType: actTypeFromDifficulty(targetDifficulty),
-                chapter: challengeSet.chapter,
-                candidates,
-                usedIds,
-            });
-
-            const picked = selected.find(item => !usedIds.includes(item.id)) ?? candidates.find(item => !usedIds.includes(item.id));
-            if (!picked) break;
-
-            usedIds.push(picked.id);
-            const challenge = byId.get(picked.id);
-            if (challenge) arranged.push(challenge);
-        }
+        const arranged = escalation.usedActivityIds
+            .map(id => byId.get(id))
+            .filter((item): item is AlgorithmChallenge => Boolean(item));
 
         if (arranged.length === usableChallenges.length) return arranged;
         const missing = usableChallenges.filter(item => !arranged.includes(item));
         return [...arranged, ...missing];
     }, [challengeSet.chapter, usableChallenges]);
 
-    const conceptChain = useMemo(() => [...new Set(orchestratedChallenges.map(item => item.algorithmKey))], [orchestratedChallenges]);
+    const conceptChain = useMemo(() => [...new Set(orchestrationTrace.map(item => item.algorithmKey))], [orchestrationTrace]);
     const conceptPrerequisites = useMemo(() => buildConceptChainPrerequisites(conceptChain), [conceptChain]);
     const conceptToRune = useMemo(() => conceptChain.reduce((acc, concept) => {
         acc[concept] = `rune_learning_${concept.replace(/-/g, '_')}`;
@@ -240,7 +246,7 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
     };
 
     const [currentIndex, setCurrentIndex] = useState(0);
-    const challenge = orchestratedChallenges[currentIndex];
+    const challenge = orchestrationTrace[currentIndex];
 
     if (!challenge) {
         return <div className="algo-challenge-runner">Không có thử thách phù hợp.</div>;
@@ -288,13 +294,13 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
                     Trước
                 </button>
                 <button
-                    onClick={() => setCurrentIndex(i => Math.min(orchestratedChallenges.length - 1, i + 1))}
-                    disabled={currentIndex === orchestratedChallenges.length - 1}
+                    onClick={() => setCurrentIndex(i => Math.min(orchestrationTrace.length - 1, i + 1))}
+                    disabled={currentIndex === orchestrationTrace.length - 1}
                 >
                     Sau
                 </button>
                 <span>
-                    {currentIndex + 1}/{orchestratedChallenges.length}
+                    {currentIndex + 1}/{orchestrationTrace.length}
                 </span>
             </div>
 
