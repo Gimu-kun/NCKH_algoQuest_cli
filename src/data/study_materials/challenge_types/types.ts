@@ -95,6 +95,7 @@ export interface AlgorithmChallengeSet {
     version: string;
     chapter: number;
     topic: string;
+    knowledgeGraph?: Record<string, string[]>;
     challenges: AlgorithmChallenge[];
 }
 

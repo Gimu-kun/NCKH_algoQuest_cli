@@ -17,7 +17,7 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState, type ActionDispatch } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
@@ -42,12 +42,10 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
     const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
 
     // Không hiển thị nếu chưa kích hoạt hội thoại
-    if (!npcId || npcId == "") return null;
+    if (!npcId || npcId === "") return null;
 
     // Lấy dữ liệu NPC từ ID
     const npc = NPCS[npcId];
-    console.log(npc)
-
     if (!npc) {
         console.error('Không tìm thấy dữ liệu NPC:', npcId);
         return null; // Hoặc hiển thị UI lỗi fallback
@@ -188,6 +186,10 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
             
             case 'CHALLENGE':
                 navigate("/v1/challenge")
+                break;
+
+            case 'CHALLENGE':
+                navigate('/v1/challenge');
                 break;
 
             default:
@@ -343,6 +345,11 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                     {npc.features?.includes('ACHIEVEMENTS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')}>
                                             {t('dialogue.achievements')}
+                                        </button>
+                                    )}
+                                    {npc.features?.includes('BOSS_EVENTS') && (
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('CHALLENGE')}>
+                                            🎖️ Tiếp nhận thử thách
                                         </button>
                                     )}
                                 </div>

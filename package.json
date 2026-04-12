@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:challenge-schema": "node scripts/validateChallengeSchema.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.1",
@@ -45,6 +46,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-katex": "^3.0.4",
     "@vitejs/plugin-react": "^5.1.1",
+    "ajv": "^8.18.0",
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",

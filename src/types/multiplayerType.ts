@@ -130,3 +130,52 @@ export interface MatchSummary {
   deltaElo: number;
   reward: string | null;
 }
+
+export interface SubmitVerifyPayload {
+  roomCode: string;
+  playerId: string;
+  questionIndex: number;
+  isCorrect: boolean;
+  timeLeft: number;
+  clientAt: number;
+}
+
+export interface SubmitVerifyResponse {
+  accepted: boolean;
+  code?: VerifyRejectCode;
+  reason?: string;
+  serverDelta?: number;
+}
+
+export interface MatchResultVerifyPayload {
+  roomCode: string;
+  playerId: string;
+  mode: MultiplayerMode;
+  chapter: number;
+  score: number;
+  opponentScore: number;
+  submittedPlayerIds: string[];
+  durationMs: number;
+  clientAt: number;
+}
+
+export interface MatchResultVerifyResponse {
+  accepted: boolean;
+  code?: VerifyRejectCode;
+  reason?: string;
+  overrideDeltaElo?: number;
+  overrideDeltaMmr?: number;
+}
+
+export type VerifyRejectCode =
+  | 'OK'
+  | 'ROOM_NOT_FOUND'
+  | 'PLAYER_NOT_IN_ROOM'
+  | 'INVALID_PHASE'
+  | 'OUT_OF_TIME_WINDOW'
+  | 'DUPLICATE_SUBMIT'
+  | 'SUSPECTED_TAMPER'
+  | 'RATE_LIMITED'
+  | 'SERVER_ERROR';
+
+export type MultiplayerVerifyMode = 'off' | 'mock' | 'live';

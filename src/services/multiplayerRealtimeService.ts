@@ -15,6 +15,10 @@ import {
   scoreAndReward,
   toMultiplayerMatchSummary,
 } from './learning/scoringAndRewardService';
+import {
+  verifyMultiplayerMatchResult,
+  verifyMultiplayerSubmit,
+} from './multiplayerVerificationApiService';
 
 type Listener = (state: RoomState | null) => void;
 type ConnectionListener = (payload: { connected: boolean; ping: number }) => void;
@@ -677,6 +681,41 @@ class MultiplayerRealtimeService {
       submittedPlayerIds: [...this.roomState.submittedPlayerIds, this.playerId],
       lastActionSeq: this.roomState.lastActionSeq + 1,
     });
+
+    void verifyMultiplayerSubmit({
+      roomCode: this.roomState.roomCode,
+      playerId: this.playerId,
+      questionIndex: this.roomState.questionIndex,
+      isCorrect,
+      timeLeft,
+      clientAt: current,
+    }).then((result) => {
+      if (!result) return;
+
+      if (result.accepted && Number.isFinite(result.serverDelta)) {
+        const expectedDelta = result.serverDelta ?? delta;
+        const deltaDiff = expectedDelta - delta;
+
+        if (deltaDiff !== 0 && this.roomState) {
+          const players = this.roomState.players.map((p) =>
+            p.id === this.playerId ? { ...p, score: p.score + deltaDiff, lastActionAt: now() } : p
+          );
+
+          this.publish({
+            ...this.roomState,
+            players,
+            lastActionSeq: this.roomState.lastActionSeq + 1,
+          });
+        }
+      }
+
+      this.track('submit', {
+        serverVerified: result.accepted,
+        serverCode: result.code ?? null,
+        serverReason: result.reason ?? null,
+      });
+    });
+
     this.track('submit', { isCorrect, timeLeft, delta });
     return true;
   }
@@ -778,6 +817,62 @@ class MultiplayerRealtimeService {
       myUtility,
       opponentUtility,
     });
+
+    void verifyMultiplayerMatchResult({
+      roomCode: this.roomState.roomCode,
+      playerId: this.playerId,
+      mode: this.roomState.mode,
+      chapter: this.roomState.chapter,
+      score: myScore,
+      opponentScore,
+      submittedPlayerIds: [...this.roomState.submittedPlayerIds],
+      durationMs,
+      clientAt: now(),
+    }).then((result) => {
+      if (!result) return;
+
+      if (result.accepted && (Number.isFinite(result.overrideDeltaMmr) || Number.isFinite(result.overrideDeltaElo))) {
+        const profileAfterLocal = this.getRankProfile();
+        const finalDeltaMmr = Number.isFinite(result.overrideDeltaMmr) ? (result.overrideDeltaMmr as number) : deltaMMR;
+        const finalDeltaElo = Number.isFinite(result.overrideDeltaElo) ? (result.overrideDeltaElo as number) : deltaElo;
+
+        const mmrDiff = finalDeltaMmr - deltaMMR;
+        const eloDiff = finalDeltaElo - deltaElo;
+
+        if (mmrDiff !== 0 || eloDiff !== 0) {
+          const nextHistory = [...profileAfterLocal.history];
+          if (nextHistory.length > 0) {
+            const last = nextHistory[nextHistory.length - 1];
+            nextHistory[nextHistory.length - 1] = {
+              ...last,
+              deltaMMR: finalDeltaMmr,
+              deltaElo: finalDeltaElo,
+            };
+          }
+
+          this.persistProfile({
+            ...profileAfterLocal,
+            mmr: Math.max(900, profileAfterLocal.mmr + mmrDiff),
+            elo: Math.max(900, profileAfterLocal.elo + eloDiff),
+            history: nextHistory,
+          });
+
+          if (this.matchSummary) {
+            this.matchSummary.deltaMMR = finalDeltaMmr;
+            this.matchSummary.deltaElo = finalDeltaElo;
+          }
+        }
+      }
+
+      this.track('finish', {
+        serverVerified: result.accepted,
+        serverCode: result.code ?? null,
+        serverReason: result.reason ?? null,
+        overrideDeltaMmr: result.overrideDeltaMmr ?? null,
+        overrideDeltaElo: result.overrideDeltaElo ?? null,
+      });
+    });
+
     this.publish({
       ...this.roomState,
       phase: 'RESULT',
