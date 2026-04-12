@@ -24,6 +24,7 @@ import { usePlayerStore } from '../../store/playerStore';
 import { NPCS } from '../../data/models/NPC';
 import './DialogueBox.css';
 import type { dialogueStateType } from '../../types/dialogueType';
+import { useNavigate } from 'react-router-dom';
 
 type dialogueBoxProps = {
     npcId:string,
@@ -36,6 +37,8 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
 
     const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
+
+    const navigate = useNavigate();
 
     // Không hiển thị nếu chưa kích hoạt hội thoại
     if (!npcId || npcId == "") return null;
@@ -180,6 +183,10 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
             case 'ERROR_DETECTION':
             case 'CONTENT_GENERATION':
                 useGameStore.getState().showSparky('Sparky luôn sẵn sàng hỗ trợ bạn!');
+                break;
+            
+            case 'CHALLENGE':
+                navigate("/v1/challenge")
                 break;
 
             default:
@@ -348,14 +355,9 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                         <button className="btn-skip" onClick={handleClose}>
                                             Đóng ✕
                                         </button>
-
-                                        {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
-                                            <button className="btn-next" onClick={handleNext}>
-                                                Tiếp Theo ➡️
-                                            </button>
-                                        ) : (
-                                            <button className="btn-close" onClick={handleClose}>
-                                                Hoàn Tất ✓
+                                        {npc.features?.includes('BOSS_EVENTS') && (
+                                            <button className="btn-close" onClick={() => handleFeatureClick('CHALLENGE')}>
+                                                🎖️ Tiếp nhận thử thách
                                             </button>
                                         )}
                                     </>

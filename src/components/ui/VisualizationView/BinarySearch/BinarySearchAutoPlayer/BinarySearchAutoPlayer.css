@@ -1,0 +1,180 @@
+.auto-player .viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #8b949e;
+}
+
+.auto-player .target-val {
+    color: #ffd0a6; /* Màu cam nổi bật cho mục tiêu */
+}
+
+/* --- PLAYBACK CONTROL PANEL --- */
+.playback-panel {
+    background: #0d1117;
+    padding: 10px 25px;
+    border-radius: 12px;
+    border: 1px dashed #30363d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -20px; /* Nối liền với array container */
+}
+
+.playback-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-playback {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    padding: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.btn-playback:hover:not(:disabled) {
+    background: #30363d;
+    color: #58a6ff;
+    border-color: #8b949e;
+}
+
+.btn-playback.play-pause {
+    font-size: 1.5rem;
+    padding: 12px;
+    color: #fff;
+    border-color: #58a6ff;
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.btn-playback.play-pause:hover {
+    background: rgba(88, 166, 255, 0.2);
+}
+
+.btn-playback:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Speed Slider (Dùng Ant Design default hoặc tự viết css) */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8b949e;
+    font-size: 0.85rem;
+    width: 200px; /* Tăng độ rộng slider */
+}
+
+/* --- QUIZ PANEL --- */
+.quiz-panel {
+    background: #010409;
+    padding: 24px;
+    border-radius: 12px;
+    border: 2px solid #30363d;
+    border-left-color: #58a6ff; /* Highlight màu info */
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto;
+    animation: popIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.quiz-header h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.quiz-panel p {
+    color: #8b949e;
+    margin-bottom: 24px;
+}
+
+.quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.quiz-opt-btn {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.quiz-opt-btn:hover:not(:disabled) {
+    background: #30363d;
+    border-color: #8b949e;
+    color: #fff;
+}
+
+.quiz-opt-btn:disabled {
+    cursor: default;
+}
+
+/* Các loại Dialog */
+.dialog-card.error { border-top: 4px solid #f85149; }
+.dialog-card.success { border-top: 4px solid #3fb950; }
+.dialog-card.info { border-top: 4px solid #58a6ff; }
+
+/* Feedback màu cho optionQuiz */
+.quiz-opt-btn.correct {
+    background: #238636;
+    border-color: #3fb950;
+    color: white;
+}
+
+.quiz-opt-btn.wrong {
+    background: rgba(248, 81, 73, 0.1);
+    border-color: #f85149;
+    color: #f85149;
+}
+
+.instruction-box {
+    background: rgba(88, 166, 255, 0.1);
+    border-left: 4px solid #58a6ff;
+    padding: 16px;
+    margin: 20px 0;
+    border-radius: 4px 12px 12px 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 60px;
+    transition: all 0.3s ease;
+}
+
+.instruction-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 5px rgba(88, 166, 255, 0.5));
+}
+
+.instruction-text {
+    color: #c9d1d9;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
