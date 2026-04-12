@@ -183,6 +183,10 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
             case 'CONTENT_GENERATION':
                 useGameStore.getState().showSparky(t('dialogue.aiAssistantReady'));
                 break;
+            
+            case 'CHALLENGE':
+                navigate("/v1/challenge")
+                break;
 
             case 'CHALLENGE':
                 navigate('/v1/challenge');
@@ -367,6 +371,12 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                         ) : (
                                             <button className="btn-close" onClick={handleClose}>
                                                 {t('dialogue.complete')}
+                                            </button>
+                                        )}
+
+                                        {npc.features?.includes('BOSS_EVENTS') && (
+                                            <button className="btn-close" onClick={() => handleFeatureClick('CHALLENGE')}>
+                                                🎖️ Tiếp nhận thử thách
                                             </button>
                                         )}
                                     </>

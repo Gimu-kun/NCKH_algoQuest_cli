@@ -1,0 +1,147 @@
+
+
+.btn-toggle-sidebar {
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+
+.btn-toggle-sidebar:hover {
+    background: #30363d;
+    color: #58a6ff;
+}
+
+.target-box {
+    background: rgba(255, 166, 87, 0.1);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 166, 87, 0.3);
+}
+
+.target-val {
+    color: #ffa657;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+
+.array-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.val-card {
+    width: 55px;
+    height: 55px;
+    border: 2px solid #30363d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.25rem;
+    background: #21262d;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.active .val-card {
+    border-color: #58a6ff;
+    box-shadow: 0 0 15px rgba(88, 166, 255, 0.15);
+}
+
+.dimmed {
+    opacity: 0.15;
+    filter: grayscale(0.8);
+}
+
+.is-mid .val-card {
+    background: #238636;
+    border-color: #3fb950;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.idx-tag {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: #8b949e;
+}
+
+.animated-pointer {
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    margin-left: -18px; /* Căn giữa pointer so với trục transform */
+}
+
+.p-l { top: -50px; background: #a371f7; }
+.p-r { top: -50px; background: #f778ba; }
+.p-m { bottom: -50px; background: #3fb950; }
+
+.hide-mid {
+    opacity: 0 !important;
+    transform: scale(0) translateY(20px) !important;
+}
+
+/* --- DIALOG & OVERLAYS --- */
+.dialog-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 12px;
+}
+
+.dialog-card {
+    background: #1c2128;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 24px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    animation: popIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.dialog-header h4 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.dialog-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #388bfd;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+.control-panel {
+    background: #0d1117;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px dashed #30363d;
+}
+
+.action-step{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}

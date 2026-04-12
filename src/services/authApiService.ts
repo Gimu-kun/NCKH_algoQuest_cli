@@ -1,5 +1,5 @@
 import type { ApiResponse } from "../types/apiType";
-import type { RegisterPayload } from "../types/authType";
+import type { RegisterPayload, UserGeneralDto } from "../types/authType";
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import apiClient from "./apiClient";
 
@@ -112,6 +112,39 @@ export const verifyToken = async (token: string): Promise<ApiResponse> => {
       return {
         success: false,
         error: result.message || 'Token không hợp lệ',
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data) {
+        const serverData = error.response.data as any;
+        return {
+          success: false,
+          error: serverData.message || serverData.error || `Lỗi ${error.response.status}`,
+        };
+      }
+      return {
+        success: false,
+        error: (error as Error).message || 'Không thể kết nối server',
+      };
+    }
+};
+
+export const getUserState = async (userId: string): Promise<ApiResponse<UserGeneralDto>> => {
+    try {
+      const response = await apiClient.get(`/users/${userId}`);
+  
+      const result = response.data;
+  
+      if (response.status === 200 && result.data) {
+        return {
+          success: true,
+          message: result.message || 'dữ liệu hợp lệ',
+          data: result.data,
+        };
+      }
+  
+      return {
+        success: false,
+        error: result.message || 'dữ liệu không hợp lệ',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data) {
