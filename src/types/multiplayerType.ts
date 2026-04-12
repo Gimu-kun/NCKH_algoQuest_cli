@@ -142,6 +142,7 @@ export interface SubmitVerifyPayload {
 
 export interface SubmitVerifyResponse {
   accepted: boolean;
+  code?: VerifyRejectCode;
   reason?: string;
   serverDelta?: number;
 }
@@ -160,7 +161,21 @@ export interface MatchResultVerifyPayload {
 
 export interface MatchResultVerifyResponse {
   accepted: boolean;
+  code?: VerifyRejectCode;
   reason?: string;
   overrideDeltaElo?: number;
   overrideDeltaMmr?: number;
 }
+
+export type VerifyRejectCode =
+  | 'OK'
+  | 'ROOM_NOT_FOUND'
+  | 'PLAYER_NOT_IN_ROOM'
+  | 'INVALID_PHASE'
+  | 'OUT_OF_TIME_WINDOW'
+  | 'DUPLICATE_SUBMIT'
+  | 'SUSPECTED_TAMPER'
+  | 'RATE_LIMITED'
+  | 'SERVER_ERROR';
+
+export type MultiplayerVerifyMode = 'off' | 'mock' | 'live';

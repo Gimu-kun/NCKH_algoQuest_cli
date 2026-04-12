@@ -6,39 +6,55 @@ import type {
   SubmitVerifyResponse,
 } from '../types/multiplayerType';
 import type { ApiResponse } from '../types/apiType';
-
-function isServerVerifyEnabled(): boolean {
-  return Boolean(import.meta.env.VITE_ENABLE_MP_SERVER_VERIFY);
-}
+import {
+  getMultiplayerVerifyMode,
+  isValidResultPayload,
+  isValidSubmitPayload,
+  mockResultVerify,
+  mockSubmitVerify,
+  MP_VERIFY_ENDPOINTS,
+  normalizeResultResponse,
+  normalizeSubmitResponse,
+} from './multiplayerVerificationContract';
 
 export async function verifyMultiplayerSubmit(
   payload: SubmitVerifyPayload,
 ): Promise<SubmitVerifyResponse | null> {
-  if (!isServerVerifyEnabled()) return null;
+  const mode = getMultiplayerVerifyMode();
+  if (mode === 'off') return null;
+  if (!isValidSubmitPayload(payload)) {
+    return { accepted: false, code: 'SUSPECTED_TAMPER', reason: 'invalid_payload' };
+  }
+  if (mode === 'mock') return mockSubmitVerify(payload);
 
   try {
     const response = await apiClient.post<ApiResponse<SubmitVerifyResponse>>(
-      '/multiplayer/verify/submit',
+      MP_VERIFY_ENDPOINTS.submit,
       payload,
     );
-    return response.data?.data ?? null;
+    return normalizeSubmitResponse(response.data?.data);
   } catch {
-    return null;
+    return { accepted: false, code: 'SERVER_ERROR', reason: 'network_or_server_error' };
   }
 }
 
 export async function verifyMultiplayerMatchResult(
   payload: MatchResultVerifyPayload,
 ): Promise<MatchResultVerifyResponse | null> {
-  if (!isServerVerifyEnabled()) return null;
+  const mode = getMultiplayerVerifyMode();
+  if (mode === 'off') return null;
+  if (!isValidResultPayload(payload)) {
+    return { accepted: false, code: 'SUSPECTED_TAMPER', reason: 'invalid_payload' };
+  }
+  if (mode === 'mock') return mockResultVerify(payload);
 
   try {
     const response = await apiClient.post<ApiResponse<MatchResultVerifyResponse>>(
-      '/multiplayer/verify/result',
+      MP_VERIFY_ENDPOINTS.result,
       payload,
     );
-    return response.data?.data ?? null;
+    return normalizeResultResponse(response.data?.data);
   } catch {
-    return null;
+    return { accepted: false, code: 'SERVER_ERROR', reason: 'network_or_server_error' };
   }
 }

@@ -693,6 +693,7 @@ class MultiplayerRealtimeService {
       if (!result) return;
       this.track('submit', {
         serverVerified: result.accepted,
+        serverCode: result.code ?? null,
         serverReason: result.reason ?? null,
       });
     });
@@ -813,6 +814,7 @@ class MultiplayerRealtimeService {
       if (!result) return;
       this.track('finish', {
         serverVerified: result.accepted,
+        serverCode: result.code ?? null,
         serverReason: result.reason ?? null,
         overrideDeltaMmr: result.overrideDeltaMmr ?? null,
         overrideDeltaElo: result.overrideDeltaElo ?? null,
