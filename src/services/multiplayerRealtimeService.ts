@@ -10,6 +10,11 @@ import type {
   RoomState,
   TelemetryEvent,
 } from '../types/multiplayerType';
+import {
+  evaluateMultiplayerUtility,
+  scoreAndReward,
+  toMultiplayerMatchSummary,
+} from './learning/scoringAndRewardService';
 
 type Listener = (state: RoomState | null) => void;
 type ConnectionListener = (payload: { connected: boolean; ping: number }) => void;
@@ -142,6 +147,19 @@ class MultiplayerRealtimeService {
       party: this.party,
       profile: this.getRankProfile(),
     };
+  }
+
+  resetSeason(seasonId: string): void {
+    const profile = this.getRankProfile();
+    this.persistProfile({
+      ...profile,
+      seasonId,
+      placementsPlayed: 0,
+      mmr: 1200,
+      elo: 1200,
+      rewards: [],
+      history: [],
+    });
   }
 
   private emitState(): void {
@@ -666,23 +684,56 @@ class MultiplayerRealtimeService {
   finishRound(resultText: string): void {
     if (!this.roomState) return;
     const durationMs = this.roomState.matchStartedAt ? now() - this.roomState.matchStartedAt : 0;
+    const durationSec = Math.max(1, Math.round(durationMs / 1000));
     const me = this.roomState.players.find((p) => p.id === this.playerId);
     const myScore = me?.score ?? 0;
-    const opponentScore = this.roomState.players
-      .filter((p) => p.id !== this.playerId && p.presence !== 'SPECTATOR')
-      .reduce((sum, p) => sum + p.score, 0);
-    const win = myScore >= opponentScore;
+    const opponents = this.roomState.players.filter((p) => p.id !== this.playerId && p.presence !== 'SPECTATOR');
+    const opponentScore = opponents.reduce((sum, p) => sum + p.score, 0);
+    const opponentSubmittedCount = opponents.filter((p) => this.roomState?.submittedPlayerIds.includes(p.id)).length;
+    const opponentCorrectness = opponents.length > 0 ? opponentSubmittedCount / opponents.length : 0;
+
+    const myUtility = evaluateMultiplayerUtility({
+      score: myScore,
+      correctness: this.roomState.submittedPlayerIds.includes(this.playerId) ? 1 : 0.5,
+      durationSec,
+      lambda: 0.35,
+    });
+
+    const opponentUtility = evaluateMultiplayerUtility({
+      score: opponentScore,
+      correctness: opponentCorrectness,
+      durationSec,
+      lambda: 0.35,
+    });
+
+    const win = myUtility >= opponentUtility;
+    const rewardResult = scoreAndReward({
+      mode: 'multiplay',
+      activityUtility: Math.max(1, Math.round(Math.abs(myUtility))),
+      correctness: this.roomState.submittedPlayerIds.includes(this.playerId) ? 1 : 0,
+      gamma: 0.08,
+      isWin: win,
+      bonusElo: 6,
+      missions: [
+        {
+          id: 'mp_win_utility',
+          completed: false,
+          rewardPoints: 20,
+          checker: (ctx) => Boolean(ctx.isWin),
+        },
+      ],
+    });
 
     const profile = this.getRankProfile();
-    const deltaMMR = win ? 24 : -18;
-    const deltaElo = win ? 20 : -15;
+    const deltaMMR = rewardResult.eloDelta;
+    const deltaElo = rewardResult.eloDelta;
     const placementsPlayed = Math.min(profile.placementsTotal, profile.placementsPlayed + 1);
     const nextProfile: PlayerRankProfile = {
       ...profile,
       placementsPlayed,
       mmr: Math.max(900, profile.mmr + deltaMMR),
       elo: Math.max(900, profile.elo + deltaElo),
-      xp: profile.xp + (win ? 120 : 55),
+      xp: profile.xp + (win ? 130 : 60) + rewardResult.missionRewards,
       history: [
         ...profile.history,
         {
@@ -706,17 +757,27 @@ class MultiplayerRealtimeService {
     }
 
     this.persistProfile(nextProfile);
-    this.matchSummary = {
+    this.matchSummary = toMultiplayerMatchSummary({
       roomCode: this.roomState.roomCode,
       mode: this.roomState.mode,
       resultText,
-      xpGained: win ? 120 : 55,
+      utility: myUtility,
+      scoreReward: rewardResult,
+    });
+    this.matchSummary.reward = reward;
+    this.matchSummary.deltaMMR = deltaMMR;
+    this.matchSummary.deltaElo = deltaElo;
+    this.matchSummary.xpGained = win ? 130 : 60;
+
+    this.track('finish', {
+      durationMs,
+      win,
       deltaMMR,
       deltaElo,
       reward,
-    };
-
-    this.track('finish', { durationMs, win, deltaMMR, deltaElo, reward });
+      myUtility,
+      opponentUtility,
+    });
     this.publish({
       ...this.roomState,
       phase: 'RESULT',

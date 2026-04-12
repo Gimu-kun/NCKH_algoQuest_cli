@@ -28,6 +28,7 @@ import { persist } from 'zustand/middleware';
 import { ResourceType } from '../data/models/Item';
 import { QUEST_DATABASE } from '../data/quests/QuestDatabase';
 import type { UserGeneralDto } from '../types/authType';
+import { calculateActivityScore } from '../services/learning/scoringAndRewardService';
 
 // Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
@@ -117,7 +118,13 @@ export interface PlayerActions {
     applyChallengeResult: (
         difficulty: 'easy' | 'medium' | 'hard',
         correct: boolean,
-        scoring: { basePoints: number; wrongPenalty: number; firstTryBonus?: number },
+        scoring: {
+            basePoints: number;
+            wrongPenalty: number;
+            firstTryBonus?: number;
+            utilityWeight?: number;
+            gamma?: number;
+        },
         firstTry?: boolean
     ) => number;
 
@@ -419,7 +426,10 @@ export const usePlayerStore = create<PlayerStore>()(
 
             applyChallengeResult: (difficulty, correct, scoring, firstTry = false) => {
                 const bonus = correct && firstTry ? scoring.firstTryBonus ?? 0 : 0;
-                const delta = correct ? scoring.basePoints + bonus : -scoring.wrongPenalty;
+                const utility = scoring.utilityWeight ?? scoring.basePoints;
+                const gamma = scoring.gamma ?? 1;
+                const formulaScore = calculateActivityScore(utility, correct ? 1 : 0, gamma);
+                const delta = correct ? formulaScore + bonus : -scoring.wrongPenalty;
 
                 set((state) => {
                     const currentOPoints = state.resources[ResourceType.O_POINTS];

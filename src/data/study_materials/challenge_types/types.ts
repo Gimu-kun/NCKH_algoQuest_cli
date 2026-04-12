@@ -4,6 +4,8 @@ export interface ChallengeScoring {
     basePoints: number;
     wrongPenalty: number;
     firstTryBonus?: number;
+    utilityWeight?: number;
+    gamma?: number;
 }
 
 export interface ChallengeBase {
