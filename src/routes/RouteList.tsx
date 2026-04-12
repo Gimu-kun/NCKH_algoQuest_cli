@@ -20,7 +20,10 @@ const MemoryRelay = lazy(() => import("../pages/Multiplayer/MemoryRelay").then(m
 const TournamentBracket = lazy(() => import("../pages/Multiplayer/TournamentBracket").then(module => ({ default: module.TournamentBracket })));
 const RankedDraftArena = lazy(() => import("../pages/Multiplayer/RankedDraftArena").then(module => ({ default: module.RankedDraftArena })));
 const CoopRaidBoss = lazy(() => import("../pages/Multiplayer/CoopRaidBoss").then(module => ({ default: module.CoopRaidBoss })));
-const ReviewDetail = lazy(() => import("../pages/ReviewDetail/ReviewDetail"));
+const Challenge = lazy(() => import("../pages/Challenge/Challenge").then(module => ({ default: module.Challenge })));
+const ChallengeMenu = lazy(() => import("../pages/ChallengeMenu/ChallengeMenu").then(module => ({ default: module.ChallengeMenu })));
+const ChallengePlay = lazy(() => import("../pages/ChallengePlay/ChallengePlay").then(module => ({ default: module.ChallengePlay })));
+const ReviewDetail = lazy(() => import("../pages/ReviewDetail/ReviewDetail"));  
 
 const RouteFallback = () => <div className="route-fallback">Đang tải màn chơi...</div>;
 
@@ -40,6 +43,10 @@ export const RouteList = () => {
                     <Route path="achievements" element={<Achievements/>}/>
                     <Route path="leaderboards" element={<Leaderboards/>}/>
                     <Route path="lab" element={<AlgoLab/>}/>
+                    <Route path="challenge" element={<Challenge/>}>
+                        <Route path="" element={<ChallengeMenu/>}/>
+                        <Route path=":sessionId/:progressId" element={<ChallengePlay/>}/>
+                    </Route>
                     <Route path="multiplayer" element={<Multiplayer/>}/>
                     <Route path="multiplayer/bug-hunt" element={<BugHuntArena/>}/>
                     <Route path="multiplayer/code-duel" element={<CodeDuelDraft/>}/>
