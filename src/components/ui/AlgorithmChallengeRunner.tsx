@@ -20,6 +20,7 @@ import {
     type ChallengeActType,
     type ChallengeActivityCandidate
 } from '../../services/learning/challengeOrchestrationService';
+import type { UnlockEvaluationResult } from '../../services/learning/knowledgeBaseService';
 const SortingVisualizer = lazy(() => import('../visualizations/sorting/SortingVisualizer'));
 const BinarySearchVisualizer = lazy(() => import('../visualizations/searching/BinarySearchVisualizer'));
 const LinearSearchVisualizer = lazy(() => import('../visualizations/searching/LinearSearchVisualizer'));
@@ -234,15 +235,31 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
     }, [challengeSet.chapter, usableChallenges]);
 
     const conceptChain = useMemo(() => [...new Set(orchestrationTrace.map(item => item.algorithmKey))], [orchestrationTrace]);
-    const conceptPrerequisites = useMemo(() => buildConceptChainPrerequisites(conceptChain), [conceptChain]);
+    const conceptPrerequisites = useMemo(() => {
+        if (challengeSet.knowledgeGraph) {
+            const scoped = conceptChain.reduce((acc, concept) => {
+                const raw = challengeSet.knowledgeGraph?.[concept] ?? [];
+                acc[concept] = raw.filter(pre => conceptChain.includes(pre));
+                return acc;
+            }, {} as Record<string, string[]>);
+
+            const hasAtLeastOneEdge = Object.values(scoped).some((items) => items.length > 0);
+            if (hasAtLeastOneEdge) return scoped;
+        }
+
+        return buildConceptChainPrerequisites(conceptChain);
+    }, [challengeSet.knowledgeGraph, conceptChain]);
     const conceptToRune = useMemo(() => conceptChain.reduce((acc, concept) => {
         acc[concept] = `rune_learning_${concept.replace(/-/g, '_')}`;
         return acc;
     }, {} as Record<string, string>), [conceptChain]);
 
+    const [lastUnlockEvaluation, setLastUnlockEvaluation] = useState<UnlockEvaluationResult | null>(null);
+
     const handleConceptSolved = (conceptId: string) => {
         updateConceptCorrectness(conceptId, 1);
-        evaluateKnowledgeUnlocks(conceptChain, conceptPrerequisites, 0.5, conceptToRune);
+        const evaluation = evaluateKnowledgeUnlocks(conceptChain, conceptPrerequisites, 0.5, conceptToRune);
+        setLastUnlockEvaluation(evaluation);
     };
 
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -305,6 +322,11 @@ export const AlgorithmChallengeRunner: React.FC<Props> = ({ challengeSet, algori
             </div>
 
             <p className="algo-feedback">Lộ trình challenge đang chạy theo pha P1-P6 và unlock kiến thức theo prerequisites.</p>
+            {lastUnlockEvaluation && (
+                <p className="algo-feedback">
+                    Unlock: {lastUnlockEvaluation.unlockedList.length} concept | Thiếu: {lastUnlockEvaluation.deficiencyList.length > 0 ? lastUnlockEvaluation.deficiencyList.join(', ') : 'không có'}
+                </p>
+            )}
         </div>
     );
 };

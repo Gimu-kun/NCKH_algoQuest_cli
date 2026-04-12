@@ -19,6 +19,16 @@
       "type": "string",
       "minLength": 1
     },
+    "knowledgeGraph": {
+      "type": "object",
+      "description": "Optional prerequisite graph: concept -> list of prerequisite concepts",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
     "challenges": {
       "type": "array",
       "minItems": 1,
