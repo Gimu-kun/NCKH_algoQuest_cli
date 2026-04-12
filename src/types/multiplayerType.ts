@@ -130,3 +130,37 @@ export interface MatchSummary {
   deltaElo: number;
   reward: string | null;
 }
+
+export interface SubmitVerifyPayload {
+  roomCode: string;
+  playerId: string;
+  questionIndex: number;
+  isCorrect: boolean;
+  timeLeft: number;
+  clientAt: number;
+}
+
+export interface SubmitVerifyResponse {
+  accepted: boolean;
+  reason?: string;
+  serverDelta?: number;
+}
+
+export interface MatchResultVerifyPayload {
+  roomCode: string;
+  playerId: string;
+  mode: MultiplayerMode;
+  chapter: number;
+  score: number;
+  opponentScore: number;
+  submittedPlayerIds: string[];
+  durationMs: number;
+  clientAt: number;
+}
+
+export interface MatchResultVerifyResponse {
+  accepted: boolean;
+  reason?: string;
+  overrideDeltaElo?: number;
+  overrideDeltaMmr?: number;
+}

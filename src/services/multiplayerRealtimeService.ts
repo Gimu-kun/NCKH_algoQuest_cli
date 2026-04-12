@@ -15,6 +15,10 @@ import {
   scoreAndReward,
   toMultiplayerMatchSummary,
 } from './learning/scoringAndRewardService';
+import {
+  verifyMultiplayerMatchResult,
+  verifyMultiplayerSubmit,
+} from './multiplayerVerificationApiService';
 
 type Listener = (state: RoomState | null) => void;
 type ConnectionListener = (payload: { connected: boolean; ping: number }) => void;
@@ -677,6 +681,22 @@ class MultiplayerRealtimeService {
       submittedPlayerIds: [...this.roomState.submittedPlayerIds, this.playerId],
       lastActionSeq: this.roomState.lastActionSeq + 1,
     });
+
+    void verifyMultiplayerSubmit({
+      roomCode: this.roomState.roomCode,
+      playerId: this.playerId,
+      questionIndex: this.roomState.questionIndex,
+      isCorrect,
+      timeLeft,
+      clientAt: current,
+    }).then((result) => {
+      if (!result) return;
+      this.track('submit', {
+        serverVerified: result.accepted,
+        serverReason: result.reason ?? null,
+      });
+    });
+
     this.track('submit', { isCorrect, timeLeft, delta });
     return true;
   }
@@ -778,6 +798,27 @@ class MultiplayerRealtimeService {
       myUtility,
       opponentUtility,
     });
+
+    void verifyMultiplayerMatchResult({
+      roomCode: this.roomState.roomCode,
+      playerId: this.playerId,
+      mode: this.roomState.mode,
+      chapter: this.roomState.chapter,
+      score: myScore,
+      opponentScore,
+      submittedPlayerIds: [...this.roomState.submittedPlayerIds],
+      durationMs,
+      clientAt: now(),
+    }).then((result) => {
+      if (!result) return;
+      this.track('finish', {
+        serverVerified: result.accepted,
+        serverReason: result.reason ?? null,
+        overrideDeltaMmr: result.overrideDeltaMmr ?? null,
+        overrideDeltaElo: result.overrideDeltaElo ?? null,
+      });
+    });
+
     this.publish({
       ...this.roomState,
       phase: 'RESULT',
