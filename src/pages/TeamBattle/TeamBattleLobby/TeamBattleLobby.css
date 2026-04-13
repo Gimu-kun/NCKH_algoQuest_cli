@@ -1,0 +1,164 @@
+.battle-lobby-container {
+    background: #0d1117;
+    margin: 0 120px;
+    margin-top: 120px;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #30363d;
+    position: relative;
+}
+
+.connection-status {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+.connection-status.on { color: #3fb950; border: 1px solid #3fb950; }
+.connection-status.off { color: #f85149; border: 1px solid #f85149; }
+.teams-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+}
+.team-card {
+    display: flex;
+    gap: 20px;
+    background: #161b22;
+    border-radius: 12px;
+    margin-top: 20px;
+    padding: 25px;
+    min-width: 300px;
+    position: relative;
+}
+
+.team-badge {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    padding: 4px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.team-blue { border: 2px solid #58a6ff; }
+.team-blue .team-badge { background: #58a6ff; color: #000; }
+
+.team-red { border: 2px solid #f85149; }
+.team-red .team-badge { background: #f85149; color: #fff; }
+
+.member-slot {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0d1117;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+}
+
+.member-slot.empty {
+    border: 1px dashed #484f58;
+    opacity: 0.6;
+}
+
+.avatar-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    color: #8b949e;
+}
+
+.status-label {
+    color: #3fb950;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.invite-btn {
+    background: transparent;
+    border: 1px solid #58a6ff;
+    color: #58a6ff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.vs-circle {
+    width: 60px;
+    height: 60px;
+    background: #30363d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 24px;
+    color: #8b949e;
+    margin: 0 20px;
+}
+
+.start-battle-btn {
+    margin-top: 40px;
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);
+    transition: 0.2s;
+}
+
+.start-battle-btn:hover:not(:disabled) {
+    background: #2ea043;
+    transform: translateY(-2px);
+}
+
+.start-battle-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.host-settings {
+    margin-top: 15px;
+    background: #1c2128;
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #30363d;
+}
+
+.slot-actions {
+    display: flex;
+    gap: 10px;
+    font-size: 18px;
+    color: #8b949e;
+}
+
+.slot-actions span:hover {
+    color: #58a6ff;
+    cursor: pointer;
+}
+
+.kick-btn:hover {
+    color: #f85149 !important;
+}
+
+.start-battle-btn:disabled {
+    background: #21262d;
+    border-color: #30363d;
+    color: #484f58;
+    cursor: not-allowed;
+    box-shadow: none;
+}

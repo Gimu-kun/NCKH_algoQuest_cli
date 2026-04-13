@@ -8,4 +8,8 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  define: {
+    // Định nghĩa biến global để các thư viện cũ không bị lỗi
+    global: 'window',
+  }
 })
