@@ -1,3 +1,19 @@
+.back-btn{
+    position: fixed;
+    height: 200px;
+    width: 50px;
+    top: calc(50% - 100px);
+    left: 0;
+    background-color: transparent !important;
+    border: #da3633 1px solid !important;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.back-btn:hover{
+    background-color: #da3633 !important;
+}
+
 .adv_container {
     width: 100%;
     height: 100%;
@@ -6,7 +22,6 @@
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-    /* Cho phép cuộn dọc */
     overflow-x: hidden;
 }
 
@@ -31,6 +46,7 @@
 }
 
 .adv_background.bg_3 {
+    background-position:-20px -50px;
     background-image: url('/assets/Ảnh Assets/Ải/Ải 3 Hành Lang Dây Xích (The Chain Corridor).png');
 }
 
