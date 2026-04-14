@@ -26,11 +26,9 @@ import './MainMenu.css';
 import { loginUser, registerUser } from '../../services/authApiService';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '../../i18n';
 
 export const MainMenu: React.FC = () => {
     const navigate = useNavigate()
-    const { t } = useTranslation();
 
     const modalVariants = {
         hidden: { opacity: 0, scale: 0.85 },
@@ -141,7 +139,7 @@ export const MainMenu: React.FC = () => {
         
 
         if (response.success) {
-            setMessage({ text: response.message || t('mainMenu.registerSuccess'), type: 'success' });
+            setMessage({ text: response.message || 'Đăng ký thành công!', type: 'success' });
             resetRegisterForm();
             setTimeout(() => {
                 setIsSubmitting(false);
@@ -150,7 +148,7 @@ export const MainMenu: React.FC = () => {
             }, 1500);
         } else {
             setIsSubmitting(false);
-            setMessage({ text: response.error || t('mainMenu.registerError'), type: 'error' });
+            setMessage({ text: response.error || 'Đăng ký thất bại', type: 'error' });
         }
     };
 
@@ -176,13 +174,13 @@ export const MainMenu: React.FC = () => {
             sameSite: 'strict',   // chống CSRF
           });
 
-          setLoginMessage({ text: response.message || t('mainMenu.loginSuccess'), type: 'success' });
+          setLoginMessage({ text: response.message || 'Đăng nhập thành công!', type: 'success' });
       
           setTimeout(() => {
             startGameAfterAuth()
           }, 1000);
-                } else {
-                    setLoginMessage({ text: response.error || t('mainMenu.loginError'), type: 'error' });
+        } else {
+          setLoginMessage({ text: response.error || 'Đăng nhập thất bại', type: 'error' });
         }
       };
 
@@ -208,9 +206,9 @@ export const MainMenu: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1 }}
             >
-                <img src={ASSETS.LOGO} alt={t('mainMenu.title')} />
-                <h1><i className="fi fi-rr-magic-wand"></i> {t('mainMenu.subtitle')}</h1>
-                <p className="subtitle">{t('mainMenu.title')}</p>
+                <img src={ASSETS.LOGO} alt="Algorithm Wizard" />
+                <h1><i className="fi fi-rr-magic-wand"></i> Pháp Sư Thuật Toán</h1>
+                <p className="subtitle">Algorithm Wizard</p>
             </motion.div>
 
             {/* Các Nút Menu */}
@@ -226,7 +224,7 @@ export const MainMenu: React.FC = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleNewGame}
                 >
-                    <i className="fi fi-rr-bolt"></i> {t('mainMenu.newGame')}
+                    <i className="fi fi-rr-bolt"></i> Hành Trình Mới
                 </motion.button>
 
                 <motion.button
@@ -235,14 +233,14 @@ export const MainMenu: React.FC = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSettings}
                 >
-                    <i className="fi fi-rr-settings"></i> {t('mainMenu.settings')}
+                    <i className="fi fi-rr-settings"></i> Cài Đặt
                 </motion.button>
             </motion.div>
 
             {/* Thông Tin Phiên Bản */}
             <div className="version-info">
-                <p>{t('mainMenu.phaseLabel')}</p>
-                <p>{t('mainMenu.copyright')}</p>
+                <p>Giai Đoạn 1 - Hạ Tầng Cốt Lõi v1.0</p>
+                <p>© 2025 Algorithm Wizard</p>
             </div>
 
             {/* Sparky Bay Lơ Lửng */}
@@ -292,8 +290,8 @@ export const MainMenu: React.FC = () => {
                             <AnimatePresence mode="wait">
                                 {authMode === 'initial' && (
                                     <motion.div key="initial" variants={formVariants} initial="hidden" animate="visible" exit="hidden">
-                                        <h2 className="dialog-title">{t('mainMenu.startAdventureTitle')}</h2>
-                                        <p className="dialog-subtitle">{t('mainMenu.startAdventureSubtitle')}</p>
+                                        <h2 className="dialog-title">Bắt đầu cuộc phiêu lưu</h2>
+                                        <p className="dialog-subtitle">Bạn muốn bắt đầu như thế nào?</p>
 
                                         <div className="dialog-choices">
                                             <motion.button
@@ -302,7 +300,7 @@ export const MainMenu: React.FC = () => {
                                                 whileTap={{ scale: 0.97 }}
                                                 onClick={() => setAuthMode('login')}
                                             >
-                                                <i className="fi fi-rr-sign-in-alt"></i> {t('mainMenu.login')}
+                                                <i className="fi fi-rr-sign-in-alt"></i> Đăng nhập
                                             </motion.button>
 
                                             <motion.button
@@ -311,7 +309,7 @@ export const MainMenu: React.FC = () => {
                                                 whileTap={{ scale: 0.97 }}
                                                 onClick={() => setAuthMode('register')}
                                             >
-                                                <i className="fi fi-rr-user-plus"></i> {t('mainMenu.register')}
+                                                <i className="fi fi-rr-user-plus"></i> Đăng ký
                                             </motion.button>
                                         </div>
                                     </motion.div>
@@ -319,7 +317,7 @@ export const MainMenu: React.FC = () => {
 
                                 {authMode === 'login' && (
                                     <motion.div key="login" variants={formVariants} initial="hidden" animate="visible" exit="hidden">
-                                        <h2 className="dialog-title">{t('mainMenu.login')}</h2>
+                                        <h2 className="dialog-title">Đăng nhập</h2>
                                         {loginMessage && (
                                         <div className={`message-box ${loginMessage.type}`}>
                                             {loginMessage.text}
@@ -327,12 +325,12 @@ export const MainMenu: React.FC = () => {
                                         )}
                                         <form className="auth-form" onSubmit={handleLoginSubmit}>
                                             <div className="form-group">
-                                                <label htmlFor="login-username">{t('mainMenu.account')}</label>
+                                                <label htmlFor="login-username">Tài khoản</label>
                                                 <input
                                                     id="login-username"
                                                     name="username"
                                                     type="text"
-                                                    placeholder={t('mainMenu.accountOrEmailPlaceholder')}
+                                                    placeholder="Nhập tên tài khoản hoặc email"
                                                     value={loginForm.username}
                                                     onChange={handleLoginInputChange}
                                                     required
@@ -341,12 +339,12 @@ export const MainMenu: React.FC = () => {
                                             </div>
 
                                             <div className="form-group">
-                                                <label htmlFor="login-password">{t('mainMenu.password')}</label>
+                                                <label htmlFor="login-password">Mật khẩu</label>
                                                 <input
                                                     id="login-password"
                                                     name="passwords"
                                                     type="password"
-                                                    placeholder={t('mainMenu.passwordPlaceholder')}
+                                                    placeholder="Nhập mật khẩu"
                                                     value={loginForm.passwords}
                                                     onChange={handleLoginInputChange}
                                                     required
@@ -361,7 +359,7 @@ export const MainMenu: React.FC = () => {
                                                 whileTap={{ scale: 0.97 }}
                                                 disabled={isSubmitting}
                                             >
-                                                {isSubmitting ? `${t('common.loading')}` : t('mainMenu.loginAndStart')}
+                                                {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập và bắt đầu'}
                                             </motion.button>
 
                                             <button
@@ -370,7 +368,7 @@ export const MainMenu: React.FC = () => {
                                                 onClick={() => setAuthMode('initial')}
                                                 disabled={isSubmitting}
                                             >
-                                                ← {t('common.back')}
+                                                ← Quay lại
                                             </button>
                                         </form>
                                     </motion.div>
@@ -378,7 +376,7 @@ export const MainMenu: React.FC = () => {
 
                                 {authMode === 'register' && (
                                     <motion.div key="register" variants={formVariants} initial="hidden" animate="visible" exit="hidden">
-                                        <h2 className="dialog-title">{t('mainMenu.createNewAccount')}</h2>
+                                        <h2 className="dialog-title">Tạo tài khoản mới</h2>
 
                                         {message && (
                                             <div className={`message-box ${message.type}`}>
@@ -389,7 +387,7 @@ export const MainMenu: React.FC = () => {
                                         <form className="auth-form register-form" onSubmit={handleRegisterSubmit}>
                                             {/* Avatar */}
                                             <div className="form-group avatar-group">
-                                                <label>{t('mainMenu.uploadingAvatarOptional')}</label>
+                                                <label>Ảnh đại diện (tùy chọn)</label>
                                                 <div className="avatar-preview-container">
                                                     <div className="avatar-preview">
                                                         {previewAvatar ? (
@@ -410,7 +408,7 @@ export const MainMenu: React.FC = () => {
                                                         disabled={isSubmitting}
                                                     />
                                                     <label htmlFor="avatar-upload" className="file-upload-label">
-                                                        {t('mainMenu.chooseImageDragDrop')}
+                                                        Chọn ảnh hoặc kéo thả
                                                     </label>
                                                 </div>
                                             </div>
@@ -418,12 +416,12 @@ export const MainMenu: React.FC = () => {
                                             {/* Họ + Tên */}
                                             <div className="form-row">
                                                 <div className="form-group">
-                                                    <label htmlFor="register-firstname">{t('mainMenu.lastName')}</label>
+                                                    <label htmlFor="register-firstname">Họ</label>
                                                     <input
                                                         id="register-firstname"
                                                         name="firstName"
                                                         type="text"
-                                                        placeholder={t('mainMenu.firstNamePlaceholder')}
+                                                        placeholder="Hồ"
                                                         value={registerForm.firstName}
                                                         onChange={handleInputChange}
                                                         required
@@ -432,12 +430,12 @@ export const MainMenu: React.FC = () => {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="register-lastname">{t('mainMenu.firstName')}</label>
+                                                    <label htmlFor="register-lastname">Tên</label>
                                                     <input
                                                         id="register-lastname"
                                                         name="lastName"
                                                         type="text"
-                                                        placeholder={t('mainMenu.lastNamePlaceholder')}
+                                                        placeholder="Ngọc Hà"
                                                         value={registerForm.lastName}
                                                         onChange={handleInputChange}
                                                         required
@@ -449,12 +447,12 @@ export const MainMenu: React.FC = () => {
                                             {/* Tài khoản + Mật khẩu */}
                                             <div className="form-row">
                                                 <div className="form-group">
-                                                    <label htmlFor="register-username">{t('mainMenu.account')}</label>
+                                                    <label htmlFor="register-username">Tài khoản</label>
                                                     <input
                                                         id="register-username"
                                                         name="username"
                                                         type="text"
-                                                        placeholder={t('mainMenu.usernameMinLength')}
+                                                        placeholder="Tối thiểu 4 ký tự"
                                                         value={registerForm.username}
                                                         onChange={handleInputChange}
                                                         required
@@ -463,12 +461,12 @@ export const MainMenu: React.FC = () => {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="register-password">{t('mainMenu.password')}</label>
+                                                    <label htmlFor="register-password">Mật khẩu</label>
                                                     <input
                                                         id="register-password"
                                                         name="passwords"
                                                         type="password"
-                                                        placeholder={t('mainMenu.passwordMinLength')}
+                                                        placeholder="Tối thiểu 8 ký tự"
                                                         value={registerForm.passwords}
                                                         onChange={handleInputChange}
                                                         required
@@ -484,7 +482,7 @@ export const MainMenu: React.FC = () => {
                                                 whileTap={{ scale: 0.97 }}
                                                 disabled={isSubmitting}
                                             >
-                                                {isSubmitting ? t('mainMenu.creatingAccount') : t('mainMenu.createAccountAndStart')}
+                                                {isSubmitting ? 'Đang đăng ký...' : 'Tạo tài khoản và bắt đầu'}
                                             </motion.button>
 
                                             <button
@@ -493,7 +491,7 @@ export const MainMenu: React.FC = () => {
                                                 onClick={() => setAuthMode('initial')}
                                                 disabled={isSubmitting}
                                             >
-                                                ← {t('common.back')}
+                                                ← Quay lại
                                             </button>
                                         </form>
                                     </motion.div>

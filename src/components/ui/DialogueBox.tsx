@@ -17,15 +17,14 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState } from 'react';
+import React, { useState, type ActionDispatch } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, GameScene } from '../../store/gameStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { NPCS } from '../../data/models/NPC';
-import { useTranslation } from '../../i18n';
-import { useNavigate } from 'react-router-dom';
 import './DialogueBox.css';
 import type { dialogueStateType } from '../../types/dialogueType';
+import { useNavigate } from 'react-router-dom';
 
 type dialogueBoxProps = {
     npcId:string,
@@ -33,19 +32,21 @@ type dialogueBoxProps = {
 }
 
 export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
 
     // State cục bộ để theo dõi dòng hội thoại hiện tại
     const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
 
     const [isSelectingDungeon, setIsSelectingDungeon] = useState(false);
 
+    const navigate = useNavigate();
+
     // Không hiển thị nếu chưa kích hoạt hội thoại
-    if (!npcId || npcId === "") return null;
+    if (!npcId || npcId == "") return null;
 
     // Lấy dữ liệu NPC từ ID
     const npc = NPCS[npcId];
+    console.log(npc)
+
     if (!npc) {
         console.error('Không tìm thấy dữ liệu NPC:', npcId);
         return null; // Hoặc hiển thị UI lỗi fallback
@@ -127,12 +128,12 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                 const questToGive = QUEST_CHAIN.find(q => !completedQuests.includes(q)) || '';
 
                 if (!questToGive) {
-                    useGameStore.getState().showSparky(t('dialogue.allCampaignDone'));
+                    useGameStore.getState().showSparky('🎉 Bạn đã hoàn thành tất cả nhiệm vụ chiến dịch! Tuyệt vời!');
                     break;
                 }
 
                 if (activeQuests.includes(questToGive)) {
-                    useGameStore.getState().showSparky(t('dialogue.questInProgress'));
+                    useGameStore.getState().showSparky('📋 Bạn đang thực hiện nhiệm vụ này rồi. Hãy kiểm tra Sổ Tay (Q)!');
                 } else {
                     startQuest(questToGive);
                     useGameStore.getState().showSparky(`📜 Đã nhận nhiệm vụ: ${QUEST_NAMES[questToGive]}!`);
@@ -141,7 +142,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
             }
 
             case 'TRAINING_AREA':
-                useGameStore.getState().showSparky(t('dialogue.trainingUpgrading'));
+                useGameStore.getState().showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.');
                 break;
 
             case 'ALGO_LAB':
@@ -157,39 +158,35 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                 break;
 
             case 'MULTIPLAYER':
-                navigate('/v1/multiplayer');
+                useGameStore.getState().showSparky('⚔️ Đấu trường đang được xây dựng! Sớm thôi bạn sẽ có thể thách đấu bạn bè!');
                 break;
 
             case 'DAILY_QUESTS':
-                useGameStore.getState().showSparky(t('dialogue.dailyQuestsBuilding'));
+                useGameStore.getState().showSparky('📅 Nhiệm vụ hàng ngày đang được phát triển!');
                 break;
 
             case 'BOSS_EVENTS':
-                useGameStore.getState().showSparky(t('dialogue.noBossEvent'));
+                useGameStore.getState().showSparky('🌟 Không có sự kiện trùm nào đang diễn ra!');
                 break;
 
             case 'CLASSROOM_MODE':
-                useGameStore.getState().showSparky(t('dialogue.classroomBuilding'));
+                useGameStore.getState().showSparky('👨‍🏫 Chế độ lớp học đang được phát triển!');
                 break;
 
             case 'UGC':
             case 'QUESTION_CRAFTER':
             case 'TEST_CRAFTER':
-                useGameStore.getState().showSparky(t('dialogue.contentToolsBuilding'));
+                useGameStore.getState().showSparky('✍️ Công cụ tạo nội dung đang được hoàn thiện!');
                 break;
 
             case 'AI_HINTS':
             case 'ERROR_DETECTION':
             case 'CONTENT_GENERATION':
-                useGameStore.getState().showSparky(t('dialogue.aiAssistantReady'));
+                useGameStore.getState().showSparky('Sparky luôn sẵn sàng hỗ trợ bạn!');
                 break;
             
             case 'CHALLENGE':
                 navigate("/v1/challenge")
-                break;
-
-            case 'CHALLENGE':
-                navigate('/v1/challenge');
                 break;
 
             default:
@@ -237,7 +234,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                 overflow: 'hidden',
                                 minHeight: 0
                             }}>
-                                <h4 style={{ margin: '0 0 10px 0', flexShrink: 0 }}>{t('dialogue.chooseChallenge')}</h4>
+                                <h4 style={{ margin: '0 0 10px 0', flexShrink: 0 }}>🔻 Chọn Thử Thách 🔻</h4>
                                 {/* Scrollable Grid Container */}
                                 <div className="dungeon-selector-grid" style={{
                                     display: 'grid',
@@ -291,7 +288,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                                 color: '#d4a036'
                                             }}
                                         >
-                                            {t('dialogue.back')}
+                                            ⬅️ Quay Lại
                                         </button>
                                     ) : (
                                         // Khi bình thường: Hiện các nút tính năng chính
@@ -299,7 +296,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                             {/* ƯU TIÊN 1: Nhận Nhiệm Vụ */}
                                             {npc.features?.includes('CAMPAIGN_QUESTS') && (
                                                 <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
-                                                    {t('dialogue.claimQuest')}
+                                                    📜 Nhận Nhiệm Vụ
                                                 </button>
                                             )}
 
@@ -310,7 +307,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                                     onClick={() => setIsSelectingDungeon(true)}
                                                     style={{ background: 'linear-gradient(45deg, #FFD700, #FFA500)', color: '#000', fontWeight: 'bold' }}
                                                 >
-                                                    {t('dialogue.selectStage')}
+                                                    🗺️ Chọn Ải
                                                 </button>
                                             )}
                                         </>
@@ -319,37 +316,32 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                     {/* Các Feature Khác */}
                                     {npc.features?.includes('TRAINING_AREA') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('TRAINING_AREA')}>
-                                            {t('dialogue.trainingArea')}
+                                            🎓 Khu Tập Luyện
                                         </button>
                                     )}
                                     {npc.features?.includes('ALGO_LAB') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ALGO_LAB')}>
-                                            {t('dialogue.algoLab')}
+                                            🧪 Phòng Thí Nghiệm
                                         </button>
                                     )}
                                     {npc.features?.includes('SHOP') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('SHOP')}>
-                                            {t('dialogue.shop')}
+                                            🛒 Xem Cửa Hàng
                                         </button>
                                     )}
                                     {npc.features?.includes('MULTIPLAYER') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
-                                            {t('dialogue.multiplayerArena')}
+                                            🤝 Vào Đấu Trường
                                         </button>
                                     )}
                                     {npc.features?.includes('LEADERBOARDS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('LEADERBOARDS')}>
-                                            {t('dialogue.leaderboards')}
+                                            🏆 Bảng Xếp Hạng
                                         </button>
                                     )}
                                     {npc.features?.includes('ACHIEVEMENTS') && (
                                         <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')}>
-                                            {t('dialogue.achievements')}
-                                        </button>
-                                    )}
-                                    {npc.features?.includes('BOSS_EVENTS') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('CHALLENGE')}>
-                                            🎖️ Tiếp nhận thử thách
+                                            🎖️ Thành Tựu
                                         </button>
                                     )}
                                 </div>
@@ -361,19 +353,8 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                 {!isSelectingDungeon && (
                                     <>
                                         <button className="btn-skip" onClick={handleClose}>
-                                            {t('dialogue.close')}
+                                            Đóng ✕
                                         </button>
-
-                                        {(currentDialogue.nextId || currentDialogueIndex < npc.dialogues.length - 1) ? (
-                                            <button className="btn-next" onClick={handleNext}>
-                                                {t('dialogue.next')}
-                                            </button>
-                                        ) : (
-                                            <button className="btn-close" onClick={handleClose}>
-                                                {t('dialogue.complete')}
-                                            </button>
-                                        )}
-
                                         {npc.features?.includes('BOSS_EVENTS') && (
                                             <button className="btn-close" onClick={() => handleFeatureClick('CHALLENGE')}>
                                                 🎖️ Tiếp nhận thử thách
