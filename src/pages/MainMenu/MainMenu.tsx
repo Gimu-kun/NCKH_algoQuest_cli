@@ -223,6 +223,7 @@ export const MainMenu: React.FC = () => {
                     whileHover={{ scale: 1.05, x: 10 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleNewGame}
+                    aria-label="Bắt đầu hành trình mới"
                 >
                     <i className="fi fi-rr-bolt"></i> Hành Trình Mới
                 </motion.button>
@@ -232,6 +233,7 @@ export const MainMenu: React.FC = () => {
                     whileHover={{ scale: 1.05, x: 10 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSettings}
+                    aria-label="Mở bảng cài đặt"
                 >
                     <i className="fi fi-rr-settings"></i> Cài Đặt
                 </motion.button>
