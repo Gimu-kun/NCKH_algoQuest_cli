@@ -33,12 +33,10 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useNavigate } from 'react-router-dom';
 import type { dialogueStateType } from '../../types/dialogueType';
 import { DialogueBox } from '../../components/ui/DialogueBox';
-import { useTranslation } from '../../i18n';
 
 
 export const HubWorld: React.FC = () => {
     const navigate = useNavigate()
-    const { t } = useTranslation();
 
     // Truy cập Global State để điều khiển chuyển cảnh và hội thoại
     const [ dialogueState , setDialogueState ] = useState<dialogueStateType>({
@@ -94,7 +92,7 @@ export const HubWorld: React.FC = () => {
           <div className="verify-loading-overlay">
             <div className="spinner-container">
               <div className="magic-spinner"></div>
-              <p className="loading-text">{t('hub.verifyingMagic')}</p>
+              <p className="loading-text">Đang xác thực phép thuật...</p>
             </div>
           </div>
         );
@@ -123,9 +121,9 @@ export const HubWorld: React.FC = () => {
                     initial={{ y: -50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                 >
-                    <h1>{t('hub.title')} - {t('hub.subtitle')}</h1>
-                    <p>{t('hub.worldDescription')}</p>
-                    <button className="start-btn" onClick={()=>{navigate("/v1/roadmap")}}>{t('hub.startAdventure')}</button>
+                    <h1> Thế Giới Trung Tâm - Thánh Địa Dòng Chảy</h1>
+                    <p>Chào mừng bạn trở lại! Hãy gặp gỡ các NPC để nhận nhiệm vụ.</p>
+                    <button className="start-btn" onClick={()=>{navigate("/v1/roadmap")}}>Bắt đầu hành trình</button>
                 </motion.div>
 
                 {/* === KHU VỰC NPC (NPC INTERACTION ZONES) === */}
@@ -138,8 +136,8 @@ export const HubWorld: React.FC = () => {
                         onClick={() =>handleNpcClick("ALRIC")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Giáo Sư Alric (The Mentor)/Giáo Sư Alric (Idle).png" alt="Professor Alric" />
-                        <h3>{t('hub.npcs.professor')}</h3>
-                        <p>{t('hub.npcs.professorRole')}</p>
+                        <h3>Giáo sư Alric</h3>
+                        <p>Nhiệm Vụ Chiến Dịch</p>
                         <span className="quest-marker">!</span>
                     </motion.div>
 
@@ -151,7 +149,7 @@ export const HubWorld: React.FC = () => {
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Linh (The Archivist)/Linh (Idle).png" alt="Linh" />
                         <h3>Linh</h3>
-                        <p>{t('hub.librarianAndTraining')}</p>
+                        <p>Huấn Luyện & Thư Viện</p>
                     </motion.div>
 
                     {/* Bork - The Blacksmith */}
@@ -162,7 +160,7 @@ export const HubWorld: React.FC = () => {
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Bork (The Blacksmith)/Bork (Idle).png" alt="Bork" />
                         <h3>Bork</h3>
-                        <p>{t('hub.shopAndDecor')}</p>
+                        <p>Cửa Hàng & Trang Trí</p>
                     </motion.div>
 
                     {/* Guild Leader */}
@@ -172,8 +170,8 @@ export const HubWorld: React.FC = () => {
                         onClick={() => handleNpcClick("LEADER")}
                     >
                         <img src="/assets/Ảnh Assets/Nhân vật/Thủ Lĩnh Guild (The Guild Leader)/Thủ Lĩnh Guild (Idle).png" alt="Guild Leader" />
-                        <h3>{t('hub.guildMaster')}</h3>
-                        <p>{t('hub.multiplayerQuests')}</p>
+                        <h3>Chủ Guild</h3>
+                        <p>Nhiệm Vụ Đa Người Chơi</p>
                     </motion.div>
 
                     {/* The Oracle */}
@@ -201,20 +199,16 @@ export const HubWorld: React.FC = () => {
 
                 {/* === NAVIGATION BUTTONS === */}
                 <div className="farm-access">
-                    <button className="farm-btn" onClick={() => navigate('/v1/multiplayer')}>
-                        <i className="fi fi-rr-swords"></i> Đấu Trường Multiplayer
-                    </button>
-
                     <button
                         className="farm-btn disabled"
-                        onClick={() => showSparky(t('dialogue.trainingUpgrading'))}
+                        onClick={() => showSparky('🚧 Khu vực này đang được nâng cấp! Vui lòng quay lại sau.')}
                         style={{ opacity: 0.6, cursor: 'not-allowed', filter: 'grayscale(1)' }}
                     >
-                        <i className="fi fi-rr-lock"></i> {t('hub.logicFarmMaintenance')}
+                        <i className="fi fi-rr-lock"></i> Trang Trại Logic (Bảo trì)
                     </button>
 
                     <button className="farm-btn achievements-btn" onClick={() => navigate("/v1/achievements")}>
-                        <i className="fi fi-rr-trophy"></i> {t('hub.achievementsAndBadges')}
+                        <i className="fi fi-rr-trophy"></i> Thành Tựu & Huy Hiệu
                     </button>
 
                     <button className="farm-btn leaderboards-btn" onClick={() => navigate("/v1/leaderboards")}>
@@ -224,12 +218,12 @@ export const HubWorld: React.FC = () => {
 
                 {/* === DEV TOOLS (Test Actions) === */}
                 <div className="test-actions">
-                        <h3><i className="fi fi-rr-flask"></i> {t('hub.devModeTitle')}</h3>
+                    <h3><i className="fi fi-rr-flask"></i> Thử Nghiệm (Dev Mode)</h3>
                     <button className="test-btn" onClick={()=>{}}>
-                        <i className="fi fi-rr-hammer"></i> {t('hub.testAncientBoard')}
+                        <i className="fi fi-rr-hammer"></i> Thử Nghiệm Bảng Cổ Ngữ
                     </button>
                     <button className="test-btn" onClick={() => navigate("/v1/roadmap")}>
-                        <i className="fi fi-rr-book"></i> {t('hub.studyMaterialsRoadmap')}
+                        <i className="fi fi-rr-book"></i> Study Materials (Lộ Trình)
                     </button>
                 </div>
             </div>

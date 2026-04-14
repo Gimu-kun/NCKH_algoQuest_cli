@@ -102,7 +102,7 @@
 /* MCQ Grid */
 .mcq-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-top: 20px;
 }
@@ -175,7 +175,7 @@
     padding: 14px 18px;
     border: 2px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: 1rem;
     transition: border-color 0.2s;
     outline: none;
 }
@@ -229,7 +229,7 @@
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     padding: 8px;
-    height: 60px;
+    text-align: center;
     margin-bottom: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -320,9 +320,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .mcq-grid {
-        grid-template-columns: 1fr;
-    }
 
     .mp-grid {
         flex-direction: column;

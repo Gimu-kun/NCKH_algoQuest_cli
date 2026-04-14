@@ -28,12 +28,12 @@ import { persist } from 'zustand/middleware';
 import { ResourceType } from '../data/models/Item';
 import { QUEST_DATABASE } from '../data/quests/QuestDatabase';
 import type { UserGeneralDto } from '../types/authType';
-import { calculateActivityScore } from '../services/learning/scoringAndRewardService';
 
 // Interface chính chứa dữ liệu người chơi
 export interface PlayerState {
     // === Thông Tin Cơ Bản ===
     id: string;
+    username:string;
     firstname: string;
     lastname: string;
     level: number;
@@ -83,8 +83,6 @@ export interface PlayerState {
         spellsBuilt: number;       // Số phép thuật đã chế tạo
         dungeonsCleared: number;   // Số lần vượt ải
         bossesDefeated: number;    // Số trùm đã hạ gục
-        challengePointsByDifficulty: Record<'easy' | 'medium' | 'hard', number>;
-        challengeSolvedByDifficulty: Record<'easy' | 'medium' | 'hard', number>;
     };
 }
 
@@ -115,18 +113,6 @@ export interface PlayerActions {
 
     // === Cập Nhật Thống Kê ===
     recordAnswer: (correct: boolean) => void;
-    applyChallengeResult: (
-        difficulty: 'easy' | 'medium' | 'hard',
-        correct: boolean,
-        scoring: {
-            basePoints: number;
-            wrongPenalty: number;
-            firstTryBonus?: number;
-            utilityWeight?: number;
-            gamma?: number;
-        },
-        firstTry?: boolean
-    ) => number;
 
     // === Thành Tựu & Danh Hiệu ===
     unlockAchievement: (achievementId: string) => void;
@@ -141,6 +127,7 @@ export interface PlayerActions {
 // Giá trị khởi tạo mặc định cho người chơi mới
 const initialPlayerState: PlayerState = {
     id: '',
+    username: '',
     firstname: 'Tên',
     lastname: "Họ",
     level: 1,
@@ -171,17 +158,7 @@ const initialPlayerState: PlayerState = {
         questionsCorrect: 0,
         spellsBuilt: 0,
         dungeonsCleared: 0,
-        bossesDefeated: 0,
-        challengePointsByDifficulty: {
-            easy: 0,
-            medium: 0,
-            hard: 0
-        },
-        challengeSolvedByDifficulty: {
-            easy: 0,
-            medium: 0,
-            hard: 0
-        }
+        bossesDefeated: 0
     }
 };
 
@@ -422,41 +399,6 @@ export const usePlayerStore = create<PlayerStore>()(
                         questionsCorrect: state.stats.questionsCorrect + (correct ? 1 : 0)
                     }
                 }));
-            },
-
-            applyChallengeResult: (difficulty, correct, scoring, firstTry = false) => {
-                const bonus = correct && firstTry ? scoring.firstTryBonus ?? 0 : 0;
-                const utility = scoring.utilityWeight ?? scoring.basePoints;
-                const gamma = scoring.gamma ?? 1;
-                const formulaScore = calculateActivityScore(utility, correct ? 1 : 0, gamma);
-                const delta = correct ? formulaScore + bonus : -scoring.wrongPenalty;
-
-                set((state) => {
-                    const currentOPoints = state.resources[ResourceType.O_POINTS];
-                    const nextOPoints = Math.max(0, currentOPoints + delta);
-
-                    return {
-                        resources: {
-                            ...state.resources,
-                            [ResourceType.O_POINTS]: nextOPoints
-                        },
-                        stats: {
-                            ...state.stats,
-                            questionsAnswered: state.stats.questionsAnswered + 1,
-                            questionsCorrect: state.stats.questionsCorrect + (correct ? 1 : 0),
-                            challengePointsByDifficulty: {
-                                ...state.stats.challengePointsByDifficulty,
-                                [difficulty]: state.stats.challengePointsByDifficulty[difficulty] + delta
-                            },
-                            challengeSolvedByDifficulty: {
-                                ...state.stats.challengeSolvedByDifficulty,
-                                [difficulty]: state.stats.challengeSolvedByDifficulty[difficulty] + (correct ? 1 : 0)
-                            }
-                        }
-                    };
-                });
-
-                return delta;
             },
 
             unlockAchievement: (achievementId) => {

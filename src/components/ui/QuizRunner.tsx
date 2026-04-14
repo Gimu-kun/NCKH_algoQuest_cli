@@ -37,11 +37,6 @@ export const QuizRunner: React.FC<Props> = ({ quiz, onNext, onPrevious }) => {
     };
 
     const isCorrect = selectedOption === quiz.correctAnswer;
-    const difficultyVi = quiz.difficulty === 'easy'
-        ? 'Dễ'
-        : quiz.difficulty === 'medium'
-            ? 'Trung bình'
-            : 'Khó';
 
     return (
         <div className="quiz-runner" style={{
@@ -56,7 +51,7 @@ export const QuizRunner: React.FC<Props> = ({ quiz, onNext, onPrevious }) => {
                     background: quiz.difficulty === 'easy' ? 'rgba(74, 222, 128, 0.2)' : quiz.difficulty === 'medium' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(248, 113, 113, 0.2)',
                     color: quiz.difficulty === 'easy' ? '#4ade80' : quiz.difficulty === 'medium' ? '#fbbf24' : '#f87171'
                 }}>
-                    {difficultyVi}
+                    {quiz.difficulty.toUpperCase()}
                 </span>
             </div>
 
@@ -142,7 +137,7 @@ export const QuizRunner: React.FC<Props> = ({ quiz, onNext, onPrevious }) => {
                             fontWeight: 'bold'
                         }}
                     >
-                        Kiểm tra
+                        Kiểm Tra
                     </button>
                 ) : (
                     <button
@@ -152,7 +147,7 @@ export const QuizRunner: React.FC<Props> = ({ quiz, onNext, onPrevious }) => {
                             background: '#313244', color: 'white', cursor: 'pointer'
                         }}
                     >
-                        Làm lại
+                        Làm Lại
                     </button>
                 )}
             </div>
