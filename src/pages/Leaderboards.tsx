@@ -18,33 +18,91 @@
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePlayerStore } from '../store/playerStore';
 import { useGameStore, GameScene } from '../store/gameStore';
 import { MOCK_LEADERBOARDS, LeaderboardType } from '../data/leaderboards';
 import type { LeaderboardEntry } from '../data/leaderboards';
+import {
+    fetchGlobalLeaderboard,
+    fetchWeeklyLeaderboard,
+    fetchPlayerRank,
+} from '../services/leaderboardsApiService';
 import './Leaderboards.css';
 
 export const Leaderboards: React.FC = () => {
     // Hooks truy cập state
     const { setScene } = useGameStore();
-    const { name } = usePlayerStore();
+    const playerId = usePlayerStore(state => state.id);
+    const firstName = usePlayerStore(state => state.firstname);
+    const lastName = usePlayerStore(state => state.lastname);
 
     // Local state cho loại bảng xếp hạng đang xem
     const [selectedType, setSelectedType] = useState<LeaderboardType>(LeaderboardType.CODE_SPEED);
+    const [apiEntries, setApiEntries] = useState<LeaderboardEntry[] | null>(null);
+    const [playerRank, setPlayerRank] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Lấy dữ liệu bảng xếp hạng tương ứng (Mock Data)
-    const currentLeaderboard = MOCK_LEADERBOARDS[selectedType];
+    const currentLeaderboard = apiEntries
+        ? {
+            ...MOCK_LEADERBOARDS[selectedType],
+            entries: apiEntries,
+            lastRefresh: new Date(),
+        }
+        : MOCK_LEADERBOARDS[selectedType];
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadLeaderboard = async () => {
+            setIsLoading(true);
+            try {
+                let entries: LeaderboardEntry[] = [];
+
+                if (
+                    selectedType === LeaderboardType.CODE_SPEED ||
+                    selectedType === LeaderboardType.BIG_O_MASTER ||
+                    selectedType === LeaderboardType.ALL_TIME
+                ) {
+                    entries = await fetchGlobalLeaderboard(50);
+                } else if (selectedType === LeaderboardType.WEEKLY) {
+                    entries = await fetchWeeklyLeaderboard(50);
+                }
+
+                if (isMounted && entries.length > 0) {
+                    setApiEntries(entries);
+                } else if (isMounted) {
+                    setApiEntries(null);
+                }
+
+                if (isMounted && playerId) {
+                    const rank = await fetchPlayerRank(playerId);
+                    setPlayerRank(rank);
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadLeaderboard();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [playerId, selectedType]);
 
     /**
      * Dữ liệu giả lập thứ hạng của người chơi hiện tại
      * Trong thực tế, dữ liệu này sẽ được fetch từ Backend API
      */
     const playerEntry: LeaderboardEntry = {
-        rank: 25, // Ví dụ: Đang đứng thứ 25
-        playerId: 'current_player',
-        playerName: name,
+        rank: playerRank ?? 25,
+        playerId: playerId || 'current_player',
+        playerName: `${firstName} ${lastName}`.trim() || 'Người Chơi',
         score: 1200,
         stats: {
             avgCodeSpeed: 350,
@@ -116,6 +174,7 @@ export const Leaderboards: React.FC = () => {
                     <span className="last-refresh">
                         Cập nhật cuối: {currentLeaderboard.lastRefresh.toLocaleTimeString('vi-VN')} {currentLeaderboard.lastRefresh.toLocaleDateString('vi-VN')}
                     </span>
+                    {isLoading && <span className="last-refresh">Đang đồng bộ dữ liệu từ máy chủ...</span>}
                 </div>
 
                 {/* === PLAYER RANK CARD (STICKY) === */}

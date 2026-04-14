@@ -1,11 +1,13 @@
 import axios from 'axios';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
+import { ENV } from '../config/environment';
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: ENV.API_BASE_URL,
   timeout: 10000,
   headers: {
     'Accept': 'application/json',
+    'Content-Type': 'application/json',
   },
 });
 
@@ -16,5 +18,17 @@ apiClient.interceptors.request.use((config) => {
     }
     return config;
   });
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.warn('[API] Unauthorized - clearing auth token');
+      localStorage.removeItem('auth_token');
+      Cookies.remove('auth_token');
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;
