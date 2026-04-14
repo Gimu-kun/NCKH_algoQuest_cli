@@ -33,6 +33,7 @@ import type { UserGeneralDto } from '../types/authType';
 export interface PlayerState {
     // === Thông Tin Cơ Bản ===
     id: string;
+    username:string;
     firstname: string;
     lastname: string;
     level: number;
@@ -126,6 +127,7 @@ export interface PlayerActions {
 // Giá trị khởi tạo mặc định cho người chơi mới
 const initialPlayerState: PlayerState = {
     id: '',
+    username: '',
     firstname: 'Tên',
     lastname: "Họ",
     level: 1,

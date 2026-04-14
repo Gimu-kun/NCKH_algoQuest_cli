@@ -295,7 +295,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                         <>
                                             {/* ƯU TIÊN 1: Nhận Nhiệm Vụ */}
                                             {npc.features?.includes('CAMPAIGN_QUESTS') && (
-                                                <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')}>
+                                                <button className="feature-btn" onClick={() => handleFeatureClick('CAMPAIGN_QUESTS')} aria-label="Nhận nhiệm vụ chiến dịch mới">
                                                     📜 Nhận Nhiệm Vụ
                                                 </button>
                                             )}
@@ -306,6 +306,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                                     className="feature-btn"
                                                     onClick={() => setIsSelectingDungeon(true)}
                                                     style={{ background: 'linear-gradient(45deg, #FFD700, #FFA500)', color: '#000', fontWeight: 'bold' }}
+                                                    aria-label="Chọn ải để bắt đầu cuộc phiêu lưu"
                                                 >
                                                     🗺️ Chọn Ải
                                                 </button>
@@ -320,7 +321,7 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                         </button>
                                     )}
                                     {npc.features?.includes('ALGO_LAB') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('ALGO_LAB')}>
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('ALGO_LAB')} aria-label="Vào phòng thí nghiệm thuật toán">
                                             🧪 Phòng Thí Nghiệm
                                         </button>
                                     )}
@@ -330,17 +331,17 @@ export const DialogueBox: React.FC<dialogueBoxProps> = ({npcId,setOpenState}) =>
                                         </button>
                                     )}
                                     {npc.features?.includes('MULTIPLAYER') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')}>
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('MULTIPLAYER')} aria-label="Vào đấu trường chơi với người khác">
                                             🤝 Vào Đấu Trường
                                         </button>
                                     )}
                                     {npc.features?.includes('LEADERBOARDS') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('LEADERBOARDS')}>
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('LEADERBOARDS')} aria-label="Xem bảng xếp hạng toàn cầu">
                                             🏆 Bảng Xếp Hạng
                                         </button>
                                     )}
                                     {npc.features?.includes('ACHIEVEMENTS') && (
-                                        <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')}>
+                                        <button className="feature-btn" onClick={() => handleFeatureClick('ACHIEVEMENTS')} aria-label="Xem các thành tựu đã đạt được">
                                             🎖️ Thành Tựu
                                         </button>
                                     )}

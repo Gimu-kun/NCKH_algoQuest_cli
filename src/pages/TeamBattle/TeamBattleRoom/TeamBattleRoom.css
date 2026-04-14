@@ -1,0 +1,123 @@
+.battle-container {
+    background: #0d1117;
+    height: 100vh;
+    color: #c9d1d9;
+    padding: 20px;
+}
+
+/* --- Lobby Style --- */
+.lobby-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+}
+
+.lobby-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    width: 600px;
+}
+
+.teams-setup {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.team {
+    width: 200px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.team.blue { border: 2px solid #58a6ff; box-shadow: 0 0 10px rgba(88, 166, 255, 0.2); }
+.team.red { border: 2px solid #f85149; box-shadow: 0 0 10px rgba(248, 81, 73, 0.2); }
+
+.player {
+    background: #0d1117;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.player.empty { color: #8b949e; border: 1px dashed #484f58; }
+
+/* --- Battle Arena --- */
+.battle-arena {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.battle-header {
+    display: flex;
+    justify-content: space-between;
+    background: #161b22;
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.dual-editor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    flex: 1;
+}
+
+.editor-block {
+    background: #010409;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-tag {
+    background: #21262d;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+    color: #8b949e;
+    border-bottom: 1px solid #30363d;
+}
+
+.code-mirror-fake, .main-textarea {
+    flex: 1;
+    padding: 15px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    background: transparent;
+    color: #e6edf3;
+    border: none;
+    resize: none;
+    outline: none;
+}
+
+.partner-view { opacity: 0.7; }
+
+/* --- Footer --- */
+.battle-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.submit-battle-btn {
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-battle-btn:hover { background: #2ea043; transform: scale(1.05); }
