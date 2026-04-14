@@ -6,6 +6,7 @@ import type { ApiResponse } from "../../types/apiType"
 import { useNavigate } from "react-router-dom"
 export const Roadmap: React.FC = () => {
     const [topicsList, setTopicsList] = useState<topicGeneralType[]>([])
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -17,7 +18,6 @@ export const Roadmap: React.FC = () => {
         }
         getTopicsList();
     }, [])
-
     return (
         <div className="rm_container">
             <div className="rm_background" />

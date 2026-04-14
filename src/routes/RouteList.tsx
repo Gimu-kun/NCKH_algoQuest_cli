@@ -13,6 +13,7 @@ import ReviewDetail from "../pages/ReviewDetail/ReviewDetail"
 import { Challenge } from "../pages/Challenge/Challenge"
 import { ChallengeMenu } from "../pages/ChallengeMenu/ChallengeMenu"
 import { ChallengePlay } from "../pages/ChallengePlay/ChallengePlay"
+import TeamBattleLobbyWrapper from "../pages/TeamBattle/TeamBattleLobbyWrapper/TeamBattleLobbyWrapper"
 
 export const RouteList = () => {
     return (
@@ -33,6 +34,7 @@ export const RouteList = () => {
                     <Route path="" element={<ChallengeMenu/>}/>
                     <Route path=":sessionId/:progressId" element={<ChallengePlay/>}/>
                 </Route>
+                <Route path="battle/lobby/:roomId" element={<TeamBattleLobbyWrapper />} />
             </Route>
         </Routes>
     )
