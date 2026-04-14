@@ -7,12 +7,30 @@ export const viTranslations = {
   // ═══════════════════════════════════════════════════════════════
   mainMenu: {
     title: 'AlgoQuest - Cuộc Phiêu Lưu Thuật Toán',
+    subtitle: 'Pháp Sư Thuật Toán',
     newGame: 'Chơi Mới',
     continueGame: 'Tiếp Tục',
     multiplayer: 'Chế Độ Nhiều Người',
     settings: 'Cài Đặt',
     logout: 'Đăng Xuất',
     version: 'Phiên Bản',
+    phaseLabel: 'Giai Đoạn 1 - Hạ Tầng Cốt Lõi v1.0',
+    copyright: '© 2025 AlgoQuest',
+    startAdventureTitle: 'Bắt đầu cuộc phiêu lưu',
+    startAdventureSubtitle: 'Bạn muốn bắt đầu như thế nào?',
+    account: 'Tài khoản',
+    accountOrEmailPlaceholder: 'Nhập tên tài khoản hoặc email',
+    passwordPlaceholder: 'Nhập mật khẩu',
+    firstNamePlaceholder: 'Hồ',
+    lastNamePlaceholder: 'Ngọc Hà',
+    usernameMinLength: 'Tối thiểu 4 ký tự',
+    passwordMinLength: 'Tối thiểu 8 ký tự',
+    loginAndStart: 'Đăng nhập và bắt đầu',
+    creatingAccount: 'Đang tạo tài khoản...',
+    createAccountAndStart: 'Tạo tài khoản và bắt đầu',
+    createNewAccount: 'Tạo tài khoản mới',
+    uploadingAvatarOptional: 'Ảnh đại diện (tùy chọn)',
+    chooseImageDragDrop: 'Chọn ảnh hoặc kéo thả',
     
     // Login/Register
     login: 'Đăng Nhập',
@@ -43,6 +61,16 @@ export const viTranslations = {
     welcome: 'Chào mừng bạn trở lại!',
     worldDescription: 'Chào mừng bạn trở lại! Hãy gặp gỡ các NPC để nhận nhiệm vụ.',
     startAdventure: 'Bắt Đầu Hành Trình',
+    verifyingMagic: 'Đang xác thực phép thuật...',
+    logicFarmMaintenance: 'Trang Trại Logic (Bảo trì)',
+    achievementsAndBadges: 'Thành Tựu & Huy Hiệu',
+    devModeTitle: 'Thử Nghiệm (Dev Mode)',
+    testAncientBoard: 'Thử Nghiệm Bảng Cổ Ngữ',
+    studyMaterialsRoadmap: 'Tài Liệu Học Tập (Lộ Trình)',
+    guildMaster: 'Chủ Guild',
+    multiplayerQuests: 'Nhiệm Vụ Đa Người Chơi',
+    librarianAndTraining: 'Huấn Luyện & Thư Viện',
+    shopAndDecor: 'Cửa Hàng & Trang Trí',
     
     // NPCs
     npcs: {
@@ -368,6 +396,34 @@ export const viTranslations = {
       multiplayerBuilding: '⚔️ Đấu trường đang được xây dựng!',
       comingSoon: 'Sớm thôi bạn sẽ có thể thách đấu bạn bè!',
     },
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // DIALOGUE BOX
+  // ═══════════════════════════════════════════════════════════════
+  dialogue: {
+    chooseChallenge: '🔻 Chọn Thử Thách 🔻',
+    back: '⬅Quay Lại',
+    close: 'Đóng ✕',
+    next: 'Tiếp Theo',
+    complete: 'Hoàn Tất ✓',
+    claimQuest: 'Nhận Nhiệm Vụ',
+    selectStage: 'Chọn Ải',
+    trainingArea: 'Khu Tập Luyện',
+    algoLab: 'Phòng Thí Nghiệm',
+    shop: 'Xem Cửa Hàng',
+    multiplayerArena: 'Vào Đấu Trường',
+    leaderboards: 'Bảng Xếp Hạng',
+    achievements: 'Thành Tựu',
+    allCampaignDone: 'Bạn đã hoàn thành tất cả nhiệm vụ chiến dịch! Tuyệt vời!',
+    questInProgress: 'Bạn đang thực hiện nhiệm vụ này rồi. Hãy kiểm tra Sổ Tay (Q)!',
+    trainingUpgrading: 'Khu vực này đang được nâng cấp! Vui lòng quay lại sau.',
+    multiplayerBuilding: 'Đấu trường đang được xây dựng! Sớm thôi bạn sẽ có thể thách đấu bạn bè!',
+    dailyQuestsBuilding: 'Nhiệm vụ hàng ngày đang được phát triển!',
+    noBossEvent: 'Không có sự kiện trùm nào đang diễn ra!',
+    classroomBuilding: 'Chế độ lớp học đang được phát triển!',
+    contentToolsBuilding: 'Công cụ tạo nội dung đang được hoàn thiện!',
+    aiAssistantReady: 'Sparky luôn sẵn sàng hỗ trợ bạn!'
   },
 
   // ═══════════════════════════════════════════════════════════════

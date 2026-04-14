@@ -1,0 +1,322 @@
+.section_list{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    max-height: unset;
+    overflow: unset;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.section_item{
+    position: relative;
+    width: 80%;
+    height: 110px;
+    background-color: aliceblue;
+    background: #ffffff;
+    border: var(--border-width-medium) solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    pointer-events: auto;
+    box-shadow: var(--shadow-glow-primary);
+    backdrop-filter: blur(8px);
+    transition: all .5s;
+    cursor: pointer;
+}
+
+.section_item.locked {
+    opacity: 0.9;
+    filter: grayscale(0.8);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* thêm icon lock */
+.section_item.locked::before {
+    background-color: gray;
+}
+
+.section_item.current {
+    box-shadow: 0 0 20px #00eaff;
+}
+
+.section_item.current .stage_num {
+    background-color: #00eaff;
+}
+
+.section_item.current::before{
+    background-color: #ffef3a;
+}
+
+.section_item.passed {
+    opacity: 0.9;
+    border-color: #95a5a6;
+    filter: brightness(0.85);
+}
+
+.section_item.passed::before {
+    background-color: #2ecc71;
+    border-color: #ffffff;
+}
+
+.section_item:hover {
+    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+    border-color: #00eaff;
+}
+
+.section_item:hover .stage_num {
+    background-color: #00eaff;
+    color: black;
+}
+
+.section_item:hover .section_item_container {
+    filter: brightness(1.2);
+}
+
+.stage_num{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 40px;
+    width: 120px;
+    text-align: center;
+    line-height: 40px;
+    font-weight: 700;
+    border-radius: 0 3px 0 25px;
+    background-color: #3498db;
+}
+
+.stage_content {
+    display: flex;
+    color: white;
+    padding: 12px;
+    display: flex;
+    justify-content: start;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+}
+
+.stage_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stage_title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stage_type_badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.stage_type_badge.passed{
+    background-color: #2ecc71;
+}
+
+/* Q */
+.stage_type_badge.type-Q:not(.passed) {
+    background-color: #3498db;
+}
+
+/* D */
+.stage_type_badge.type-D:not(.passed) {
+    background-color: #9b59b6;
+}
+
+/* V (boss) */
+.stage_type_badge.type-V:not(.passed) {
+    background: linear-gradient(45deg, #ff0000, #ff9900);
+    color: white;
+}
+
+.stage_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 200px;
+}
+
+.info_item {
+    display: flex;
+    font-size: 16px;
+}
+
+.label {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.value {
+    font-weight: 600;
+}
+
+.value.difficulty-EASY {
+    color: #2ecc71;
+}
+
+.value.difficulty-MEDIUM {
+    color: #f1c40f;
+}
+
+.value.difficulty-HARD {
+    color: #e74c3c;
+}
+
+.section_item::before {
+    content: "";
+    position: absolute;
+    left: -41px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border: 3px solid #3498db;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* Line nối xuống item tiếp theo */
+.section_item::after {
+    content: "";
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    width: 2px;
+    height: calc(100% + 10px); /* + gap */
+    background-color: white;
+}
+
+.section_item:last-child::after {
+    display: none;
+}
+
+/* EASY */
+.section_item.difficulty-EASY {
+    border-color: #2ecc71;
+}
+.section_item.difficulty-EASY .stage_num {
+    background-color: #2ecc71;
+}
+
+/* MEDIUM */
+.section_item.difficulty-MEDIUM {
+    border-color: #f1c40f;
+}
+.section_item.difficulty-MEDIUM .stage_num {
+    background-color: #f1c40f;
+}
+
+/* HARD */
+.section_item.difficulty-HARD {
+    border-color: #e74c3c;
+}
+.section_item.difficulty-HARD .stage_num {
+    background-color: #e74c3c;
+}
+
+.section_item.locked .section_item_container{
+    border-radius: var(--border-radius-sm);
+    background-color: gray;
+}
+
+/* Q - Question */
+.section_item.type-Q:not(.locked) .section_item_container {
+    border-radius: var(--border-radius-sm);
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+/* D - Decision */
+.section_item.type-D:not(.locked) .section_item_container {
+    border-radius: var(--border-radius-sm);
+    background: linear-gradient(135deg, #42275a, #734b6d);
+}
+
+/* V - Boss / Special */
+.section_item.type-V:not(.locked) .section_item_container {
+    border-radius: var(--border-radius-sm);
+    background: linear-gradient(135deg, #000000, #434343);
+}
+
+/* Phase 1-6 ánh sáng khác nhau */
+.section_item[class*="phrase-1"] { filter: brightness(1); }
+.section_item[class*="phrase-2"] { filter: brightness(0.95); }
+.section_item[class*="phrase-3"] { filter: brightness(0.9); }
+.section_item[class*="phrase-4"] { filter: brightness(0.85); }
+.section_item[class*="phrase-5"] { filter: brightness(0.8); }
+.section_item[class*="phrase-6"] { filter: brightness(0.75); }
+
+.section_item_container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: rgb(46, 74, 74);
+    overflow: hidden;
+}
+
+/* Container tổng của thanh máu trong Menu */
+.menu-health-container {
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(22, 27, 34, 0.8);
+    padding: 10px 25px;
+    border-radius: 5px;
+    border: 1px solid #30363d;
+    margin-bottom: 30px;
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.2);
+}
+
+.health-label {
+    font-weight: bold;
+    color: #00eaff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.hearts-wrapper {
+    display: flex;
+    gap: 5px;
+}
+
+/* Icon trái tim */
+.menu-heart-icon {
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.menu-heart-icon.alive {
+    filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.6));
+    animation: menu-heartbeat 2s infinite;
+}
+
+.menu-heart-icon.dead {
+    filter: grayscale(1) opacity(0.2);
+    transform: scale(0.9);
+}
+
+/* Hiệu ứng đập nhẹ cho tim còn sống */
+@keyframes menu-heartbeat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}

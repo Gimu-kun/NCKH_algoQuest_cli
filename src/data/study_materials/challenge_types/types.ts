@@ -4,6 +4,8 @@ export interface ChallengeScoring {
     basePoints: number;
     wrongPenalty: number;
     firstTryBonus?: number;
+    utilityWeight?: number;
+    gamma?: number;
 }
 
 export interface ChallengeBase {
@@ -93,6 +95,7 @@ export interface AlgorithmChallengeSet {
     version: string;
     chapter: number;
     topic: string;
+    knowledgeGraph?: Record<string, string[]>;
     challenges: AlgorithmChallenge[];
 }
 

@@ -1,3 +1,19 @@
+.back-btn{
+    position: fixed;
+    height: 200px;
+    width: 50px;
+    top: calc(50% - 100px);
+    left: 0;
+    background-color: transparent !important;
+    border: #da3633 1px solid !important;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.back-btn:hover{
+    background-color: #da3633 !important;
+}
+
 .adv_container {
     width: 100%;
     height: 100%;
@@ -6,7 +22,6 @@
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-    /* Cho phép cuộn dọc */
     overflow-x: hidden;
 }
 
@@ -31,6 +46,7 @@
 }
 
 .adv_background.bg_3 {
+    background-position:-20px -50px;
     background-image: url('/assets/Ảnh Assets/Ải/Ải 3 Hành Lang Dây Xích (The Chain Corridor).png');
 }
 
@@ -145,6 +161,8 @@
 
 /* Nút tròn đại diện cho điểm trên map */
 .map_node_btn {
+    display: flex;
+    justify-content: center;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -157,7 +175,11 @@
 
 .map_node_btn.top_2{
     border: 4px solid var(--color-accent-red);
-    box-shadow: 0 0 15px var(--color-accent-red);
+    box-shadow: 0 0 15px var(--color-primary);
+}
+
+.map_node_btn:not(.is-locked){
+    color: #0d1117;
 }
 
 .map_node_btn:not(.is-locked):hover, .map_node_btn:not(.is-locked).active {
@@ -190,6 +212,7 @@
 }
 
 .card_header h3{
+    width: 100%;
     font-size: var(--text-xl);
 }
 
@@ -307,6 +330,10 @@
 }
 
 .fc_close_btn{
+    width: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
     background-color: transparent;
     border:none;
     font-size: 2rem;

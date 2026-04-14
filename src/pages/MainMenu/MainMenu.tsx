@@ -26,11 +26,9 @@ import './MainMenu.css';
 import { loginUser, registerUser } from '../../services/authApiService';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '../../i18n';
 
 export const MainMenu: React.FC = () => {
     const navigate = useNavigate()
-    const { t } = useTranslation();
 
     const modalVariants = {
         hidden: { opacity: 0, scale: 0.85 },
