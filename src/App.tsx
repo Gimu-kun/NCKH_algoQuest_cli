@@ -16,40 +16,41 @@
  * @category Core Application
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  */
+import { useEffect } from 'react';
 import './App.css';
 import { RouteList } from './routes/RouteList';
+import { useGameStore } from './store/gameStore';
+import { usePlayerStore } from './store/playerStore';
+import { initializeAutoSync } from './services/playerSyncService';
 
 function App() {
-  /*
-  // Áp dụng lớp giao diện (Theme Class)
+  const theme = useGameStore((state) => state.theme);
+
   useEffect(() => {
     if (theme === 'light') {
       document.documentElement.classList.add('light-theme');
+      document.documentElement.classList.remove('dark-theme');
     } else {
       document.documentElement.classList.remove('light-theme');
+      document.documentElement.classList.add('dark-theme');
     }
   }, [theme]);
 
-  // Quản lý Nhạc nền (BGM System)
   useEffect(() => {
-    const bgmMap: Record<string, string> = {
-      [GameScene.MAIN_MENU]: '/assets/audio/bgm_menu.mp3',
-      [GameScene.HUB_WORLD]: '/assets/audio/bgm_hub.mp3',
-      [GameScene.LOGIC_FARM]: '/assets/audio/bgm_farm.mp3',
-      [GameScene.DUNGEON]: '/assets/audio/bgm_dungeon.mp3',
-      [GameScene.COMBAT]: '/assets/audio/bgm_combat.mp3',
-      [GameScene.SHOP]: '/assets/audio/bgm_shop.mp3',
-      [GameScene.ALGO_LAB]: '/assets/audio/bgm_hub.mp3',
-    };
+    const cleanup = initializeAutoSync(() => {
+      const player = usePlayerStore.getState();
+      return {
+        playerId: player.id,
+        currentLevel: player.level,
+        totalExperience: player.experience,
+        achievements: player.achievements,
+        questsCompleted: player.completedQuests.length,
+        lastSyncTime: Date.now(),
+      };
+    });
 
-    const track = bgmMap[currentScene];
-    if (track) {
-      import('./game/audio/AudioManager').then(({ audioManager }) => {
-        audioManager.playBGM(track);
-      }).catch(e => console.warn('Audio system failed to load:', e));
-    }
-  }, [currentScene]);
-  */
+    return () => cleanup();
+  }, []);
 
   return (
     <div className="app">
