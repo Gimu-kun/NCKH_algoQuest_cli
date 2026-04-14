@@ -212,33 +212,33 @@ function countInversions(arr: number[]): number {
 export const SORTING_QUIZ: Exercise[] = [
     {
         id: 'ch2-quiz1',
-        title: 'Thuật toán ổn định',
+        title: 'Stable Sort',
         titleVi: 'Sắp xếp ổn định',
         difficulty: 'medium',
-        description: 'Thuật toán nào sau đây KHÔNG ổn định (stable)?',
-        options: ['Sắp xếp trộn (Merge Sort)', 'Sắp xếp chèn (Insertion Sort)', 'Sắp xếp nhanh (Quick Sort)', 'Sắp xếp nổi bọt (Bubble Sort)'],
-        correctAnswer: 'Sắp xếp nhanh (Quick Sort)',
-        explanation: 'Quick Sort không ổn định vì bước partition có thể làm đổi thứ tự tương đối của các phần tử bằng nhau.'
+        description: 'Thuật toán nào sau đây KHÔNG stable?',
+        options: ['Merge Sort', 'Insertion Sort', 'Quick Sort', 'Bubble Sort'],
+        correctAnswer: 'Quick Sort',
+        explanation: 'Quick Sort không stable vì partition có thể đảo thứ tự các phần tử bằng nhau.'
     },
     {
         id: 'ch2-quiz2',
-        title: 'Tốt nhất cho mảng gần sắp xếp',
-        titleVi: 'Tốt nhất cho mảng gần sắp xếp',
+        title: 'Best for Nearly Sorted',
+        titleVi: 'Tốt nhất cho mảng gần sorted',
         difficulty: 'medium',
         description: 'Thuật toán nào TỐT NHẤT cho mảng gần như đã sắp xếp?',
-        options: ['Sắp xếp nhanh (Quick Sort)', 'Sắp xếp chèn (Insertion Sort)', 'Sắp xếp trộn (Merge Sort)', 'Sắp xếp chọn (Selection Sort)'],
-        correctAnswer: 'Sắp xếp chèn (Insertion Sort)',
-        explanation: 'Insertion Sort có độ phức tạp tốt nhất là O(n). Với mảng gần sắp xếp, số lần dời phần tử rất ít nên chạy hiệu quả.'
+        options: ['Quick Sort', 'Insertion Sort', 'Merge Sort', 'Selection Sort'],
+        correctAnswer: 'Insertion Sort',
+        explanation: 'Insertion Sort có O(n) best case. Với mảng gần sorted, ít phải shift.'
     },
     {
         id: 'ch2-quiz3',
-        title: 'Sắp xếp tại chỗ',
+        title: 'In-place Sorting',
         titleVi: 'Sắp xếp tại chỗ',
         difficulty: 'easy',
         description: 'Thuật toán nào KHÔNG in-place (cần O(n) bộ nhớ phụ)?',
-        options: ['Sắp xếp nhanh (Quick Sort)', 'Sắp xếp vun đống (Heap Sort)', 'Sắp xếp trộn (Merge Sort)', 'Sắp xếp chọn (Selection Sort)'],
-        correctAnswer: 'Sắp xếp trộn (Merge Sort)',
-        explanation: 'Merge Sort thường cần O(n) bộ nhớ phụ cho mảng tạm trong quá trình trộn.'
+        options: ['Quick Sort', 'Heap Sort', 'Merge Sort', 'Selection Sort'],
+        correctAnswer: 'Merge Sort',
+        explanation: 'Merge Sort cần O(n) space cho mảng tạm khi merge.'
     }
 ];
 

@@ -6,13 +6,6 @@ import type { ApiResponse } from "../../types/apiType"
 import { useNavigate, useParams } from "react-router-dom"
 import { usePlayerStore } from "../../store/playerStore"
 import Swal from "sweetalert2"
-import {
-    PREFETCH_DELAY_KEYBOARD_MS,
-    cancelScheduledMathPrefetch,
-    getAdaptiveHoverPrefetchDelay,
-    questHasLikelyLatex,
-    scheduleMathPrefetch
-} from "../../utils/mathPrefetch"
 export const Adventure: React.FC = () => {
     const [historyList, setHistoryList] = useState<any[]>([]);
     const [showHistory, setShowHistory] = useState<string | null>(null);
@@ -115,7 +108,6 @@ export const Adventure: React.FC = () => {
                     const { quest, completed, unlocked } = item;
                     const pos = coords[index] || { x: 50, y: 50 };
                     const isSelected = selectedQuestId === quest.id;
-                    const shouldPrefetchMath = questHasLikelyLatex(quest);
                     console.log(quest)
                     return (
                         <div
@@ -237,10 +229,6 @@ export const Adventure: React.FC = () => {
                                                     )}
                                                     <button
                                                         className="opt_btn start"
-                                                        onMouseEnter={() => scheduleMathPrefetch(shouldPrefetchMath, getAdaptiveHoverPrefetchDelay())}
-                                                        onMouseLeave={cancelScheduledMathPrefetch}
-                                                        onFocus={() => scheduleMathPrefetch(shouldPrefetchMath, PREFETCH_DELAY_KEYBOARD_MS)}
-                                                        onBlur={cancelScheduledMathPrefetch}
                                                         onClick={() => navigate(`/v1/adventure/${topicId}/stage/${quest.id}`)}
                                                     >
                                                         {completed ? "Luyện tập lại" : "Bắt đầu"}
@@ -257,8 +245,6 @@ export const Adventure: React.FC = () => {
                                                             <div
                                                                 key={progress.id}
                                                                 className="history_item"
-                                                                onMouseEnter={() => scheduleMathPrefetch(shouldPrefetchMath, getAdaptiveHoverPrefetchDelay())}
-                                                                onMouseLeave={cancelScheduledMathPrefetch}
                                                                 onClick={() => navigate(`/v1/adventure/review/${progress.id}`)}
                                                             >
                                                                 <div className="history_info">
@@ -327,10 +313,6 @@ export const Adventure: React.FC = () => {
 
                                                 <button
                                                     className="opt_btn start"
-                                                    onMouseEnter={() => scheduleMathPrefetch(shouldPrefetchMath, getAdaptiveHoverPrefetchDelay())}
-                                                    onMouseLeave={cancelScheduledMathPrefetch}
-                                                    onFocus={() => scheduleMathPrefetch(shouldPrefetchMath, PREFETCH_DELAY_KEYBOARD_MS)}
-                                                    onBlur={cancelScheduledMathPrefetch}
                                                     onClick={() => navigate(`/v1/adventure/${topicId}/stage/${quest.id}`)}
                                                 >
                                                     {completed ? "Chơi lại" : "Chơi"}
